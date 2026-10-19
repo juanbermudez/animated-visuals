@@ -11,6 +11,8 @@ Animated Visual is MIT-licensed (see `LICENSE`). It builds on other people's wor
 - **interface-design** guidance (adapted from jakubkrehel/skills, MIT, and Vercel's Web Interface Guidelines, MIT) informed the interaction, motion and accessibility rules.
 - **Konsistent** by Vercel Labs ([github.com/vercel-labs/konsistent](https://github.com/vercel-labs/konsistent), Apache-2.0): optional structural linting, see `references/konsistent.md` and `konsistent/`. Not bundled.
 
+- **SapiMouse** (Margit Antal, Norbert Fejér and Krisztián Buza, Sapientia University; [dataset](https://www.ms.sapientia.ro/~manyi/sapimouse/sapimouse.html); paper: "SapiMouse: Mouse Dynamics-based User Authentication Using Deep Feature Learning", 2021): the pointer-movement numbers in `references/interaction.md` are summary statistics computed from it. No recorded data is included in this repository.
+
 ## Libraries the guidance works with (not bundled)
 
 - **Motion** (`motion`, formerly Framer Motion, MIT) for React sites.
