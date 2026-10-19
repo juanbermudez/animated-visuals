@@ -2861,10 +2861,27 @@ code { font: 0.875em var(--fs-font-mono); }
       done = null;
       then?.();
     };
+    // If frames stall (a background tab or a hidden pane never fires requestAnimationFrame), land at once instead of
+    // leaving the plate half open.
+    let watch = 0;
+    const land = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+      Object.assign(box, { x: goal.x, y: goal.y, w: goal.w, s: goal.s, vx: 0, vy: 0, vw: 0, vs: 0 });
+      place();
+      const then = done;
+      done = null;
+      then?.();
+    };
+    const guard = () => {
+      clearTimeout(watch);
+      watch = setTimeout(() => { if (raf && performance.now() - last > 200) land(); else if (raf) guard(); }, 250);
+    };
     const glide = (target, then) => {
       goal = target;
       done = then;
       if (!raf) { last = performance.now(); raf = requestAnimationFrame(step); }
+      guard();
     };
     const onResize = () => { if (phase === "open") { Object.assign(box, expandedBox()); if (!fill) { zoom(box.s); relayout(); } place(); } };
     const fade = (node, show, duration) => node.animate([{ opacity: show ? 0 : 1 }, { opacity: show ? 1 : 0 }], { duration, easing: "ease-out", fill: "both" });
@@ -2953,6 +2970,7 @@ code { font: 0.875em var(--fs-font-mono); }
     }
     function finishClose() {
       cancelAnimationFrame(raf);
+      clearTimeout(watch);
       raf = 0;
       done = null;
       removeEventListener("resize", onResize);

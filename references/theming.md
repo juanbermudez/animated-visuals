@@ -20,7 +20,7 @@ Colors: `--fs-bg`, `--fs-surface` (plate), `--fs-surface-2` (hover/raised), `--f
 
 Type: `--fs-font-body`, `--fs-font-display`, `--fs-font-mono`, `--fs-font-figure` (text inside figures), `--fs-size-title|status|label|tick|caption`, `--fs-weight-title`, `--fs-head-case`, `--fs-head-tracking`.
 
-Shape and motion: `--fs-radius`, `--fs-radius-inner`, `--fs-radius-control`, `--fs-border`, `--fs-control-size`, `--fs-stroke-hair|edge|series`, `--fs-dim`, `--fs-dur`, `--fs-dur-step`, `--fs-ease`.
+Shape and motion: `--fs-radius`, `--fs-radius-inner`, `--fs-radius-control`, `--fs-border`, `--fs-frame-width` (the plate's frame band, 4px) and `--fs-frame` (its color, surface-2 by default), `--fs-control-size`, `--fs-stroke-hair|edge|series`, `--fs-dim`, `--fs-dur`, `--fs-dur-step`, `--fs-ease`.
 
 In canvas, use `f.C` (`f.C.fg`, `f.C.accent`, `f.C.c[0]`, `f.C.font`, `f.C.dim`, `f.C.edge`, `f.C.series`); in SVG, set attributes from `f.C` in `render` or use `var(--fs-…)` in CSS.
 

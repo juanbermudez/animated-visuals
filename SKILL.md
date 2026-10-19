@@ -17,10 +17,11 @@ Every figure proves one claim, is minimal and on-brand, moves only to show a pro
 6. **Build.**
    - Standalone page or Artifact: copy `assets/plate-template.html` (themes + `FS` runtime inlined, four working demos: stepped SVG flow with linked prose, one-clock timeline with a physics time scrubber and a computed counterfactual bracket, explorable chart with a scrubbable number and a settings popover, curl-noise field with a draggable, resizable focus). To change shared layers, edit `assets/plate-src.html`, `themes/*` or `assets/runtime/fs-runtime.js` and run `node scripts/build-template.mjs`.
    - React / Next.js: `assets/react/` (see its README): `useFigure`, `FigurePlate`, `FlowDiagram`, `ExplorableLine` (nivo), `FocusField` (R3F).
-   - Domain guides: `references/diagrams.md`, `references/charts.md`, `references/webgl.md`, `references/motion.md`.
+   - Domain guides: `references/diagram-types.md` (the 27 types and 7 semantic patterns: what moves, what the reader can do), `references/diagrams.md`, `references/charts.md`, `references/webgl.md`, `references/motion.md`.
 7. **Critique, then refine.** Look at the render; name what is weak (clutter, no focal point, unlabeled mark, a number that disagrees, motion that decorates, a control nobody needs). Fix one concern at a time; two passes minimum.
 8. **Verify.** Every state, default theme in both modes plus one dark and one light Omarchy theme, 1440 and 390 widths, reduced motion, keyboard, console, programmatic control from the console, measured frame times: `references/verification.md`. Capture stills and short clips for anything that moves.
 9. **Deliver.** A page for others is published as an Artifact (load `artifact-design` first) or saved where asked. Report what was verified and what was not.
+10. **Optional lint.** In a TypeScript project with several figures, offer to set up Konsistent so every figure declares its claim, status, sources and tips: `references/konsistent.md`. Ask before installing.
 
 ## Quality bar
 
@@ -51,12 +52,14 @@ Every figure proves one claim, is minimal and on-brand, moves only to show a pro
 | `references/theming.md` | layers, token contract, switching/overriding, Omarchy palettes and contrast, host-site bridges |
 | `references/art-direction.md` | the zef register, plate anatomy, type, encoding, strokes, density, data honesty, other registers |
 | `references/choosing-form.md` | claim → form, medium, delivery target |
+| `references/diagram-types.md` | the 27 diagram types and 7 semantic patterns (after diagram-design), each with what moves, what the reader can do, and the trap |
 | `references/diagrams.md` | layout, nodes, connectors, packets, stepping, state machines, responsive re-layout |
 | `references/charts.md` | chart craft, hand-built charts with `FS`, nivo (theme, gotchas), annotation, statistics |
 | `references/webgl.md` | three.js / R3F integration and budgets, stateless vs ping-pong particles, depth-of-field focus, pmndrs `math` vs `maath` |
 | `references/motion.md` | what may move, timing tokens, easing/damping/springs, one clock, reduced motion |
 | `references/verification.md` | browser checklist, motion capture, gotchas, reporting |
 | `references/alex-zhang-notes.md` | patterns and failures from Alex Zhang's interactive figures |
+| `references/konsistent.md` | optional: lint a project's figures with Konsistent (claim, status, sources, tips, plate, heavy libraries); offer it, don't impose it |
 
 ## Files
 

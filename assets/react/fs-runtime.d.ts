@@ -120,8 +120,10 @@ export type FsSpec = {
   tipHover?: boolean;
   /** Widest texts each changing output can show, so the layout never shifts. */
   reserve?: Record<string, string[] | ((f: FsFigureState) => string[])>;
-  /** Set false to remove the expand button. */
-  expand?: boolean;
+  /** Expand button: true or "fit" (default) scales the plate, proportions kept, to 84% of the viewport's width or
+   * height, whichever it reaches first; "fill" lays it out again at 84vw (up to 84vh), for drawings that reflow well,
+   * such as Mermaid; false removes the button. */
+  expand?: boolean | "fit" | "fill";
   init?: (f: FsFigureState) => void;
   update?: (f: FsFigureState, dt: number) => void;
   render: (f: FsFigureState, ctx: CanvasRenderingContext2D | null) => void;

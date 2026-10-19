@@ -1,0 +1,41 @@
+{
+  "conventionSpecVersion": "v1",
+  "conventions": [
+    {
+      "name": "figure-declares-meta",
+      "description": "Every figure exports `meta: FigureMeta` (title, one-sentence claim, status, sources). TypeScript checks the fields: a measured figure must name its sources.",
+      "must": {
+        "exportConstants": [{ "name": "meta", "type": "FigureMeta" }],
+        "importTypes": [{ "name": "FigureMeta" }]
+      }
+    },
+    {
+      "name": "figure-declares-tips",
+      "description": "Every figure exports `tips: FigureTips` so each non-obvious part a stranger might not know has a plain explanation behind a hover or focus.",
+      "must": {
+        "exportConstants": [{ "name": "tips", "type": "FigureTips" }]
+      }
+    },
+    {
+      "name": "figure-exports-component",
+      "description": "A figure file exports one component named after the file (polling-toy.tsx exports PollingToy).",
+      "must": {
+        "exportFunctions": [{ "name": "${figure.toPascalCase()}" }]
+      }
+    },
+    {
+      "name": "figure-renders-in-a-plate",
+      "description": "Figures render inside FigurePlate, which gives them the frame, head, caption, tips, expand and stable layout.",
+      "must": {
+        "importValues": [{ "name": "FigurePlate" }]
+      }
+    },
+    {
+      "name": "figure-keeps-heavy-libraries-out",
+      "description": "Ordinary figures stay light: three.js, react-three-fiber and mermaid belong in a separate, lazily loaded *.webgl.tsx or *.diagram.tsx file.",
+      "mustNot": {
+        "importValuesFrom": ["three", "three/*", "@react-three/*", "mermaid"]
+      }
+    }
+  ]
+}
