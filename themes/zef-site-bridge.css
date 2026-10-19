@@ -1,0 +1,51 @@
+/* Use inside zef-builder-site (instead of zef.css): figure tokens follow the site's own tokens,
+   so its dark/light modes and Omarchy palettes (data-style-palette) flow into every figure.
+   The runtime resolves var() chains and color-mix() through a probe, so canvas figures follow too. */
+:root {
+  --fs-bg: var(--bg);
+  --fs-surface: var(--zef-diagram-bg);
+  --fs-surface-2: var(--zef-diagram-surface);
+  --fs-line: var(--zef-diagram-border);
+  --fs-line-strong: var(--gray-7);
+  --fs-faint: var(--gray-8);
+  --fs-muted: var(--muted);
+  --fs-fg: var(--fg);
+  --fs-strong: var(--gray-12);
+  --fs-accent: var(--zef-diagram-accent);
+  --fs-c1: var(--violet-topaz);
+  --fs-c2: var(--jade);
+  --fs-c3: var(--citrine);
+  --fs-c4: var(--amethyst);
+  --fs-c5: var(--gray-11);
+  --fs-c6: var(--cement);
+  --fs-good: var(--jade);
+  --fs-bad: var(--muted);
+  --fs-font-body: var(--font-body), system-ui, sans-serif;
+  --fs-font-display: var(--font-heading), system-ui, sans-serif;
+  --fs-font-mono: var(--font-mono), ui-monospace, monospace;
+  --fs-font-figure: var(--fs-font-body);
+  --fs-size-title: 14px;
+  --fs-weight-title: 600;
+  --fs-size-status: 11px;
+  --fs-size-label: 11px;
+  --fs-size-tick: 11px;
+  --fs-size-caption: 12px;
+  --fs-head-case: none;
+  --fs-head-tracking: -0.01em;
+  --fs-radius: var(--radius-large);
+  --fs-radius-inner: var(--radius-base);
+  --fs-radius-control: 4px;
+  --fs-border: 1px;
+  --fs-frame-width: var(--zef-frame-width);
+  --fs-frame: var(--zef-frame-color);
+  --fs-control-size: 44px;
+  --fs-stroke-hair: 1;
+  --fs-stroke-edge: 1.1;
+  --fs-stroke-series: 1.75;
+  --fs-dim: 0.28;
+  --fs-dur: var(--zef-soft-transition-duration, 240ms);
+  --fs-dur-step: 480ms;
+  --fs-ease: var(--zef-soft-transition-ease, cubic-bezier(0.16, 1, 0.3, 1));
+  --fs-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --fs-shadow: var(--zef-floating-shadow);
+}

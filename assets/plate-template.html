@@ -1,0 +1,3788 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animated Visual Plates</title>
+<meta name="description" content="Starter: themed figure plates with a one-clock runtime, programmable controls, linked prose and four working demos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* ---- themes/zef.css ---- */
+/* Default theme: matches zef-builder-site (Juan Bermudez's site). Monochrome; the accent is ink.
+   Dark is the published default. Light applies with data-fs-mode="light", or by system preference
+   when no mode or theme is forced. Values mirror styles/site/palette.css and tokens.css. */
+
+:root,
+[data-fs-theme="zef"] {
+  color-scheme: dark;
+  --fs-bg: #191919;
+  --fs-surface: #191919;
+  --fs-surface-2: #1f1f1f;
+  --fs-line: #2d2d2d;
+  --fs-line-strong: #3a3a3a;
+  --fs-faint: #555555;
+  --fs-muted: #8a8a8a;
+  --fs-fg: #ededed;
+  --fs-strong: #ffffff;
+  --fs-accent: #fafafa;
+  /* Achromatic categories: tell them apart by texture and labels too. */
+  --fs-c1: #ededed;
+  --fs-c2: #b0b0b0;
+  --fs-c3: #8f8f8f;
+  --fs-c4: #d0d0d0;
+  --fs-c5: #9a9a9a;
+  --fs-c6: #6e6e6e;
+  --fs-good: #ededed;
+  --fs-bad: #8a8a8a;
+}
+
+:root[data-fs-mode="light"],
+[data-fs-theme="zef"][data-fs-mode="light"],
+[data-fs-theme="zef-light"] {
+  color-scheme: light;
+  --fs-bg: #f2f2f2;
+  --fs-surface: #ffffff;
+  --fs-surface-2: #eeeeee;
+  --fs-line: #e2e2e2;
+  --fs-line-strong: #c9c9c9;
+  --fs-faint: #b3b3b3;
+  --fs-muted: #6c6c6c;
+  --fs-fg: #111111;
+  --fs-strong: #000000;
+  --fs-accent: #111111;
+  --fs-c1: #111111;
+  --fs-c2: #4a4a4a;
+  --fs-c3: #7a7a7a;
+  --fs-c4: #3d3d3d;
+  --fs-c5: #5c5c5c;
+  --fs-c6: #8f8f8f;
+  --fs-good: #111111;
+  --fs-bad: #6c6c6c;
+  --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-fs-mode]):not([data-fs-theme]) {
+    color-scheme: light;
+    --fs-bg: #f2f2f2;
+    --fs-surface: #ffffff;
+    --fs-surface-2: #eeeeee;
+    --fs-line: #e2e2e2;
+    --fs-line-strong: #c9c9c9;
+    --fs-faint: #b3b3b3;
+    --fs-muted: #6c6c6c;
+    --fs-fg: #111111;
+    --fs-strong: #000000;
+    --fs-accent: #111111;
+    --fs-c1: #111111;
+    --fs-c2: #4a4a4a;
+    --fs-c3: #7a7a7a;
+    --fs-c4: #3d3d3d;
+    --fs-c5: #5c5c5c;
+    --fs-c6: #8f8f8f;
+    --fs-good: #111111;
+    --fs-bad: #6c6c6c;
+    --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+  }
+}
+
+/* Type, shape and motion: the site's figure grammar. Themes override color only unless they say otherwise. */
+:root {
+  --fs-font-body: "Manrope", system-ui, sans-serif;
+  --fs-font-display: "Manrope", system-ui, sans-serif;
+  --fs-font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  /* Text inside figures (labels, ticks, captions). The notebook register switches this to mono. */
+  --fs-font-figure: var(--fs-font-body);
+  --fs-size-title: 14px;
+  --fs-weight-title: 600;
+  --fs-size-status: 11px;
+  --fs-size-label: 11px;
+  --fs-size-tick: 11px;
+  --fs-size-caption: 12px;
+  --fs-head-case: none;
+  --fs-head-tracking: -0.01em;
+  --fs-radius: 12px;
+  --fs-radius-inner: 6px;
+  --fs-radius-control: 4px;
+  --fs-border: 1px;
+  --fs-control-size: 44px;
+  --fs-stroke-hair: 1;
+  --fs-stroke-edge: 1.1;
+  --fs-stroke-series: 1.75;
+  --fs-dim: 0.28;
+  --fs-dur: 240ms;
+  --fs-dur-step: 480ms;
+  --fs-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --fs-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 24%), 0 14px 32px -6px rgb(0 0 0 / 44%);
+}
+/* ---- end themes/zef.css ---- */
+/* ---- themes/notebook.css ---- */
+/* Alternate register: the lab notebook (from the "Conscious Micro-Epochs" paper guide).
+   Monochrome with an amber focus signal, mono type inside figures, uppercase plate heads,
+   square corners. Apply with data-fs-theme="notebook" (dark) or "notebook-light". */
+
+[data-fs-theme="notebook"],
+[data-fs-theme="notebook-light"] {
+  --fs-font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --fs-font-body: "Newsreader", Georgia, serif;
+  --fs-font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --fs-font-figure: var(--fs-font-mono);
+  --fs-size-title: 11.5px;
+  --fs-weight-title: 500;
+  --fs-head-case: uppercase;
+  --fs-head-tracking: 0.08em;
+  --fs-size-caption: 12.5px;
+  --fs-radius: 0px;
+  --fs-radius-inner: 0px;
+  --fs-radius-control: 2px;
+  --fs-control-size: 32px;
+}
+
+[data-fs-theme="notebook"] {
+  color-scheme: dark;
+  --fs-bg: #0b0b0b;
+  --fs-surface: #121212;
+  --fs-surface-2: #1b1b1b;
+  --fs-line: #2b2b2b;
+  --fs-line-strong: #3a3a3a;
+  --fs-faint: #545452;
+  --fs-muted: #9c9c98;
+  --fs-fg: #e9e9e6;
+  --fs-strong: #ffffff;
+  --fs-accent: #e8c26b;
+  --fs-c1: #e9e9e6;
+  --fs-c2: #9c9c98;
+  --fs-c3: #6f6f6c;
+  --fs-c4: #c9c9c5;
+  --fs-c5: #85857f;
+  --fs-c6: #545452;
+  --fs-good: #e9e9e6;
+  --fs-bad: #9c9c98;
+}
+
+[data-fs-theme="notebook-light"] {
+  color-scheme: light;
+  --fs-bg: #f6f6f3;
+  --fs-surface: #ededea;
+  --fs-surface-2: #e3e3df;
+  --fs-line: #cfcfca;
+  --fs-line-strong: #b8b8b2;
+  --fs-faint: #a4a49f;
+  --fs-muted: #5c5c58;
+  --fs-fg: #161616;
+  --fs-strong: #000000;
+  --fs-accent: #a8741a;
+  --fs-c1: #161616;
+  --fs-c2: #5c5c58;
+  --fs-c3: #85857f;
+  --fs-c4: #3a3a37;
+  --fs-c5: #6f6f6c;
+  --fs-c6: #a4a49f;
+  --fs-good: #161616;
+  --fs-bad: #5c5c58;
+  --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+}
+/* ---- end themes/notebook.css ---- */
+/* ---- themes/omarchy.css ---- */
+/* Generated by animated-visual/scripts/build-themes.mjs from themes/omarchy.json — do not edit.
+   Figure tokens: apply with data-fs-theme on :root or any figure.
+   Palettes: Omarchy 81fd2d2 (https://github.com/basecamp/omarchy/tree/81fd2d23ca6e3462183a4dc8360de3113fa8d80c/themes). MIT (Omarchy, basecamp/omarchy). Palette values from each theme's colors.toml; original theme authors retain credit (Catppuccin, Everforest, Flexoki, Gruvbox, Kanagawa, Nord, Rosé Pine, Tokyo Night). */
+
+[data-fs-theme="catppuccin-latte"] { /* muted raised to 82% for 4.5:1 */
+  color-scheme: light;
+
+  --fs-bg: #eff1f5;
+  --fs-surface: #f8f9fa;
+  --fs-surface-2: #eaecf1;
+  --fs-line: #e2e5eb;
+  --fs-line-strong: #bec1cc;
+  --fs-faint: #a3a6b5;
+  --fs-muted: #676a81;
+  --fs-fg: #4c4f69;
+  --fs-strong: #4c4f69;
+  --fs-accent: #1e66f5;
+  --fs-c1: #1e66f5;
+  --fs-c2: #40a02b;
+  --fs-c3: #c08240;
+  --fs-c4: #cd70b9;
+  --fs-c5: #179299;
+  --fs-c6: #d84e2b;
+  --fs-good: #40a02b;
+  --fs-bad: #d20f39;
+  --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+}
+
+[data-fs-theme="catppuccin"] { /* muted raised to 61% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #1e1e2e;
+  --fs-surface: #1e1e2e;
+  --fs-surface-2: #222233;
+  --fs-line: #313244;
+  --fs-line-strong: #3c3e51;
+  --fs-faint: #494c60;
+  --fs-muted: #8388a1;
+  --fs-fg: #cdd6f4;
+  --fs-strong: #cdd6f4;
+  --fs-accent: #89b4fa;
+  --fs-c1: #89b4fa;
+  --fs-c2: #a6e3a1;
+  --fs-c3: #f9e2af;
+  --fs-c4: #f5c2e7;
+  --fs-c5: #94e2d5;
+  --fs-c6: #f6b6ab;
+  --fs-good: #a6e3a1;
+  --fs-bad: #f38ba8;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="ethereal"] { /* muted raised to 59% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #060b1e;
+  --fs-surface: #060b1e;
+  --fs-surface-2: #0b1022;
+  --fs-line: #1e202f;
+  --fs-line-strong: #2e2d39;
+  --fs-faint: #403b44;
+  --fs-muted: #8d7770;
+  --fs-fg: #ffcead;
+  --fs-strong: #ffcead;
+  --fs-accent: #7d82d9;
+  --fs-c1: #7d82d9;
+  --fs-c2: #92a593;
+  --fs-c3: #e9bb4f;
+  --fs-c4: #c89dc1;
+  --fs-c5: #a3bfd1;
+  --fs-c6: #eb8b54;
+  --fs-good: #92a593;
+  --fs-bad: #ed5b5a;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="everforest"] { /* muted raised to 73% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #2d353b;
+  --fs-surface: #2d353b;
+  --fs-surface-2: #31393e;
+  --fs-line: #404648;
+  --fs-line-strong: #4b4f50;
+  --fs-faint: #575a58;
+  --fs-muted: #a29c8b;
+  --fs-fg: #d3c6aa;
+  --fs-strong: #d3c6aa;
+  --fs-accent: #7fbbb3;
+  --fs-c1: #7fbbb3;
+  --fs-c2: #a7c080;
+  --fs-c3: #dbbc7f;
+  --fs-c4: #d699b6;
+  --fs-c5: #83c092;
+  --fs-c6: #e09d7f;
+  --fs-good: #a7c080;
+  --fs-bad: #e67e80;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="flexoki-light"] {
+  color-scheme: light;
+
+  --fs-bg: #fffcf0;
+  --fs-surface: #fffef8;
+  --fs-surface-2: #f8f5e9;
+  --fs-line: #ebe9de;
+  --fs-line-strong: #b4b1a9;
+  --fs-faint: #8b8983;
+  --fs-muted: #65635f;
+  --fs-fg: #100f0f;
+  --fs-strong: #100f0f;
+  --fs-accent: #205ea6;
+  --fs-c1: #205ea6;
+  --fs-c2: #879a39;
+  --fs-c3: #b68e1c;
+  --fs-c4: #ce5d97;
+  --fs-c5: #39a298;
+  --fs-c6: #d0772b;
+  --fs-good: #879a39;
+  --fs-bad: #d14d41;
+  --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+}
+
+[data-fs-theme="gruvbox"] { /* muted raised to 71% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #282828;
+  --fs-surface: #282828;
+  --fs-surface-2: #2c2c2b;
+  --fs-line: #3b3935;
+  --fs-line-strong: #46433d;
+  --fs-faint: #534e45;
+  --fs-muted: #9e8f75;
+  --fs-fg: #d4be98;
+  --fs-strong: #d4be98;
+  --fs-accent: #7daea3;
+  --fs-c1: #7daea3;
+  --fs-c2: #a9b665;
+  --fs-c3: #d8a657;
+  --fs-c4: #d3869b;
+  --fs-c5: #89b482;
+  --fs-c6: #e1875c;
+  --fs-good: #a9b665;
+  --fs-bad: #ea6962;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="hackerman"] {
+  color-scheme: dark;
+
+  --fs-bg: #0b0c16;
+  --fs-surface: #0b0c16;
+  --fs-surface-2: #0f111b;
+  --fs-line: #20242e;
+  --fs-line-strong: #2d333d;
+  --fs-faint: #3d444e;
+  --fs-muted: #707d87;
+  --fs-fg: #ddf7ff;
+  --fs-strong: #ddf7ff;
+  --fs-accent: #82fb9c;
+  --fs-c1: #829dd4;
+  --fs-c2: #4fe88f;
+  --fs-c3: #50f7d4;
+  --fs-c4: #86a7df;
+  --fs-c5: #7cf8f7;
+  --fs-c6: #50f7a3;
+  --fs-good: #4fe88f;
+  --fs-bad: #50f872;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="kanagawa"] { /* muted raised to 61% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #1f1f28;
+  --fs-surface: #1f1f28;
+  --fs-surface-2: #23232c;
+  --fs-line: #333339;
+  --fs-line-strong: #403f43;
+  --fs-faint: #4e4d4e;
+  --fs-muted: #8c897d;
+  --fs-fg: #dcd7ba;
+  --fs-strong: #dcd7ba;
+  --fs-accent: #dcd7ba;
+  --fs-c1: #7e9cd8;
+  --fs-c2: #76946a;
+  --fs-c3: #c0a36e;
+  --fs-c4: #957fb8;
+  --fs-c5: #6a9589;
+  --fs-c6: #c17158;
+  --fs-good: #76946a;
+  --fs-bad: #c34043;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="last-horizon"] {
+  color-scheme: dark;
+
+  --fs-bg: #0c0b0c;
+  --fs-surface: #0c0b0c;
+  --fs-surface-2: #111011;
+  --fs-line: #242324;
+  --fs-line-strong: #333233;
+  --fs-faint: #444444;
+  --fs-muted: #7e7f7f;
+  --fs-fg: #fafcfb;
+  --fs-strong: #e2dddc;
+  --fs-accent: #b59790;
+  --fs-c1: #b59790;
+  --fs-c2: #87a9b0;
+  --fs-c3: #6b5e73;
+  --fs-c4: #c4d8e2;
+  --fs-c5: #a5a0b6;
+  --fs-c6: #c38b7b;
+  --fs-good: #87a9b0;
+  --fs-bad: #c38b7b;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="lumon"] { /* muted raised to 59% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #16242d;
+  --fs-surface: #16242d;
+  --fs-surface-2: #1a2832;
+  --fs-line: #2b3942;
+  --fs-line-strong: #37454f;
+  --fs-faint: #45535e;
+  --fs-muted: #808e99;
+  --fs-fg: #d6e2ee;
+  --fs-strong: #f2fcff;
+  --fs-accent: #8bc9eb;
+  --fs-c1: #6fb8e3;
+  --fs-c2: #5e95bc;
+  --fs-c3: #6fa4c9;
+  --fs-c4: #8bc9eb;
+  --fs-c5: #b4e4f6;
+  --fs-c6: #8bc9eb;
+  --fs-good: #5e95bc;
+  --fs-bad: #4d86b0;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="lupine"] {
+  color-scheme: light;
+
+  --fs-bg: #fafafa;
+  --fs-surface: #fdfdfd;
+  --fs-surface-2: #f3f3f3;
+  --fs-line: #e9e9e9;
+  --fs-line-strong: #b7b7b7;
+  --fs-faint: #929292;
+  --fs-muted: #707070;
+  --fs-fg: #212121;
+  --fs-strong: #000000;
+  --fs-accent: #3264eb;
+  --fs-c1: #3264eb;
+  --fs-c2: #4a2fd0;
+  --fs-c3: #026fde;
+  --fs-c4: #8a4ad7;
+  --fs-c5: #0c67de;
+  --fs-c6: #026fde;
+  --fs-good: #4a2fd0;
+  --fs-bad: #c900c4;
+  --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+}
+
+[data-fs-theme="matte-black"] { /* muted raised to 67% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #121212;
+  --fs-surface: #121212;
+  --fs-surface-2: #161616;
+  --fs-line: #242424;
+  --fs-line-strong: #2f2f2f;
+  --fs-faint: #3c3c3c;
+  --fs-muted: #7f7f7f;
+  --fs-fg: #bebebe;
+  --fs-strong: #bebebe;
+  --fs-accent: #e68e0d;
+  --fs-c1: #e68e0d;
+  --fs-c2: #ffc107;
+  --fs-c3: #ba2824;
+  --fs-c4: #d35f5f;
+  --fs-c5: #bebebe;
+  --fs-c6: #c63d3d;
+  --fs-good: #ffc107;
+  --fs-bad: #d35f5f;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="miasma"] { /* muted raised to 69% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #222222;
+  --fs-surface: #222222;
+  --fs-surface-2: #262625;
+  --fs-line: #343432;
+  --fs-line-strong: #3e3e3b;
+  --fs-faint: #4a4a46;
+  --fs-muted: #8c8c80;
+  --fs-fg: #c2c2b0;
+  --fs-strong: #c2c2b0;
+  --fs-accent: #78824b;
+  --fs-c1: #78824b;
+  --fs-c2: #5f875f;
+  --fs-c3: #b36d43;
+  --fs-c4: #bb7744;
+  --fs-c5: #c9a554;
+  --fs-c6: #8e6444;
+  --fs-good: #5f875f;
+  --fs-bad: #796b57;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="nord"] { /* muted raised to 65% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #2e3440;
+  --fs-surface: #2e3440;
+  --fs-surface-2: #323844;
+  --fs-line: #414753;
+  --fs-line-strong: #4c525f;
+  --fs-faint: #595f6b;
+  --fs-muted: #989eaa;
+  --fs-fg: #d8dee9;
+  --fs-strong: #d8dee9;
+  --fs-accent: #81a1c1;
+  --fs-c1: #81a1c1;
+  --fs-c2: #a3be8c;
+  --fs-c3: #ebcb8b;
+  --fs-c4: #b48ead;
+  --fs-c5: #88c0d0;
+  --fs-c6: #d5967a;
+  --fs-good: #a3be8c;
+  --fs-bad: #bf616a;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="osaka-jade"] { /* muted raised to 67% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #111c18;
+  --fs-surface: #111c18;
+  --fs-surface-2: #15201b;
+  --fs-line: #242e26;
+  --fs-line-strong: #2f392f;
+  --fs-faint: #3c4638;
+  --fs-muted: #81876a;
+  --fs-fg: #c1c497;
+  --fs-strong: #f7e8b2;
+  --fs-accent: #509475;
+  --fs-c1: #509475;
+  --fs-c2: #549e6a;
+  --fs-c3: #459451;
+  --fs-c4: #d2689c;
+  --fs-c5: #2dd5b7;
+  --fs-c6: #a2734b;
+  --fs-good: #549e6a;
+  --fs-bad: #ff5345;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="retro-82"] { /* muted raised to 57% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #05182e;
+  --fs-surface: #05182e;
+  --fs-surface-2: #0a1d32;
+  --fs-line: #1f2e3e;
+  --fs-line-strong: #2f3b47;
+  --fs-faint: #404a51;
+  --fs-muted: #858276;
+  --fs-fg: #f6dcac;
+  --fs-strong: #f6dcac;
+  --fs-accent: #faa968;
+  --fs-c1: #3f8f8a;
+  --fs-c2: #028391;
+  --fs-c3: #e97b3c;
+  --fs-c4: #3f8f8a;
+  --fs-c5: #8cbfb8;
+  --fs-c6: #faa968;
+  --fs-good: #028391;
+  --fs-bad: #f85525;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="ristretto"] { /* muted raised to 61% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #2c2525;
+  --fs-surface: #2c2525;
+  --fs-surface-2: #302929;
+  --fs-line: #413939;
+  --fs-line-strong: #4d4545;
+  --fs-faint: #5b5252;
+  --fs-muted: #988d8e;
+  --fs-fg: #e6d9db;
+  --fs-strong: #e6d9db;
+  --fs-accent: #f38d70;
+  --fs-c1: #f38d70;
+  --fs-c2: #adda78;
+  --fs-c3: #f9cc6c;
+  --fs-c4: #a8a9eb;
+  --fs-c5: #85dacc;
+  --fs-c6: #fb9a77;
+  --fs-good: #adda78;
+  --fs-bad: #fd6883;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="rose-pine"] { /* muted raised to 84% for 4.5:1 */
+  color-scheme: light;
+
+  --fs-bg: #faf4ed;
+  --fs-surface: #fdfaf7;
+  --fs-surface-2: #f5efea;
+  --fs-line: #ede8e5;
+  --fs-line-strong: #c9c4cc;
+  --fs-faint: #aeaab9;
+  --fs-muted: #6f6b8c;
+  --fs-fg: #575279;
+  --fs-strong: #575279;
+  --fs-accent: #56949f;
+  --fs-c1: #56949f;
+  --fs-c2: #286983;
+  --fs-c3: #b9865c;
+  --fs-c4: #907aa9;
+  --fs-c5: #c77d7e;
+  --fs-c6: #ca7e59;
+  --fs-good: #286983;
+  --fs-bad: #b4637a;
+  --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+}
+
+[data-fs-theme="solitude"] { /* muted raised to 63% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #101315;
+  --fs-surface: #101315;
+  --fs-surface-2: #141719;
+  --fs-line: #232628;
+  --fs-line-strong: #2f3234;
+  --fs-faint: #3d4042;
+  --fs-muted: #7e8182;
+  --fs-fg: #cacccc;
+  --fs-strong: #a5aeb4;
+  --fs-accent: #798186;
+  --fs-c1: #798186;
+  --fs-c2: #9fa5a9;
+  --fs-c3: #d9dbdc;
+  --fs-c4: #aeaeae;
+  --fs-c5: #707070;
+  --fs-c6: #5c6366;
+  --fs-good: #9fa5a9;
+  --fs-bad: #5c6366;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="starship"] {
+  color-scheme: dark;
+
+  --fs-bg: #1c1c1e;
+  --fs-surface: #1c1c1e;
+  --fs-surface-2: #212123;
+  --fs-line: #333335;
+  --fs-line-strong: #414143;
+  --fs-faint: #515153;
+  --fs-muted: #868688;
+  --fs-fg: #f5f5f7;
+  --fs-strong: #ffffff;
+  --fs-accent: #ff9f0a;
+  --fs-c1: #8fb8de;
+  --fs-c2: #ff9f0a;
+  --fs-c3: #ffc27a;
+  --fs-c4: #ff8fa3;
+  --fs-c5: #a6dcef;
+  --fs-c6: #ff6a3d;
+  --fs-good: #ff9f0a;
+  --fs-bad: #ff5f4a;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="tokyo-night"] { /* muted raised to 73% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #1a1b26;
+  --fs-surface: #1a1b26;
+  --fs-surface-2: #1d1f2a;
+  --fs-line: #2a2b39;
+  --fs-line-strong: #333545;
+  --fs-faint: #3e4052;
+  --fs-muted: #7f85a2;
+  --fs-fg: #a9b1d6;
+  --fs-strong: #c0caf5;
+  --fs-accent: #7aa2f7;
+  --fs-c1: #7aa2f7;
+  --fs-c2: #9ece6a;
+  --fs-c3: #e0af68;
+  --fs-c4: #ad8ee6;
+  --fs-c5: #449dab;
+  --fs-c6: #eb927b;
+  --fs-good: #9ece6a;
+  --fs-bad: #f7768e;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="vantablack"] { /* muted raised to 57% for 4.5:1 */
+  color-scheme: dark;
+
+  --fs-bg: #000000;
+  --fs-surface: #000000;
+  --fs-surface-2: #000000;
+  --fs-line: #070707;
+  --fs-line-strong: #161616;
+  --fs-faint: #292929;
+  --fs-muted: #777777;
+  --fs-fg: #ffffff;
+  --fs-strong: #ffffff;
+  --fs-accent: #8d8d8d;
+  --fs-c1: #8d8d8d;
+  --fs-c2: #b6b6b6;
+  --fs-c3: #cecece;
+  --fs-c4: #9b9b9b;
+  --fs-c5: #b0b0b0;
+  --fs-c6: #b9b9b9;
+  --fs-good: #b6b6b6;
+  --fs-bad: #a4a4a4;
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%);
+}
+
+[data-fs-theme="white"] {
+  color-scheme: light;
+
+  --fs-bg: #ffffff;
+  --fs-surface: #ffffff;
+  --fs-surface-2: #f6f6f6;
+  --fs-line: #e7e7e7;
+  --fs-line-strong: #a4a4a4;
+  --fs-faint: #747474;
+  --fs-muted: #494949;
+  --fs-fg: #000000;
+  --fs-strong: #000000;
+  --fs-accent: #6e6e6e;
+  --fs-c1: #1a1a1a;
+  --fs-c2: #3a3a3a;
+  --fs-c3: #4a4a4a;
+  --fs-c4: #2e2e2e;
+  --fs-c5: #3e3e3e;
+  --fs-c6: #2a2a2a;
+  --fs-good: #3a3a3a;
+  --fs-bad: #2a2a2a;
+  --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+}
+/* ---- end themes/omarchy.css ---- */
+/* ---- themes/base.css ---- */
+/* Animated Visual plate structure. Uses only --fs-* tokens (see themes/README.md), so any theme file
+   restyles it. Mirrors the zef site's figure grammar: header / stage / toolbar / caption. */
+
+.fs-plate {
+  container-type: inline-size;
+  margin: 1.75rem 0;
+  overflow: hidden;
+  color: var(--fs-fg);
+  font-family: var(--fs-font-figure);
+  background: var(--fs-surface);
+  /* A 4px frame band, the same treatment as the host's framed images, diagrams and embeds. */
+  border: var(--fs-frame-width, 4px) solid var(--fs-frame, var(--fs-surface-2));
+  border-radius: var(--fs-radius);
+}
+
+/* Head: title, then status, then actions; on narrow plates the actions stay top right and the status drops below. */
+.fs-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 4px 16px;
+  align-items: baseline;
+  padding: 14px 20px 0;
+}
+
+.fs-head > :not(.fs-title, .fs-head-actions) {
+  grid-row: 1;
+  grid-column: 2;
+  justify-self: end;
+}
+
+@container (max-width: 560px) {
+  .fs-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .fs-head > :not(.fs-title, .fs-head-actions) {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+
+.fs-title {
+  margin: 0 auto 0 0;
+  font: var(--fs-weight-title) var(--fs-size-title) / 1.5 var(--fs-font-figure);
+  letter-spacing: var(--fs-head-tracking);
+  text-transform: var(--fs-head-case);
+}
+
+.fs-status {
+  color: var(--fs-muted);
+  font-size: var(--fs-size-status);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+.fs-stage {
+  position: relative;
+  padding: 8px 12px;
+}
+
+.fs-stage:focus-visible {
+  outline: 2px solid var(--fs-accent);
+  outline-offset: -3px;
+  border-radius: var(--fs-radius-inner);
+}
+
+/* Direct children only: libraries (nivo, three) size their own nested SVG/canvas. */
+.fs-stage > :is(canvas, svg) {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.fs-stage svg text {
+  font-family: var(--fs-font-figure);
+}
+
+.fs-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--fs-control-size);
+  padding: 0 12px 0 20px;
+  border-top: var(--fs-border) solid var(--fs-line);
+}
+
+.fs-position {
+  color: var(--fs-muted);
+  font-size: var(--fs-size-label);
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+.fs-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  align-items: center;
+}
+
+.fs-controls button,
+button.fs-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--fs-control-size);
+  height: var(--fs-control-size);
+  padding: 0 9px;
+  color: inherit;
+  font: inherit;
+  font-size: var(--fs-size-label);
+  background: transparent;
+  border: 0;
+  border-radius: var(--fs-radius-control);
+  cursor: pointer;
+  transition: background var(--fs-dur) var(--fs-ease);
+}
+
+.fs-controls button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* Hit areas reach 40px (44px on touch) without growing the visual. */
+.fs-controls button,
+.fs-iconbtn {
+  position: relative;
+}
+
+.fs-controls button::after,
+.fs-iconbtn::after {
+  position: absolute;
+  inset: min(0px, calc((var(--fs-control-size) - 40px) / 2)) -2px;
+  content: "";
+}
+
+@media (pointer: coarse) {
+  .fs-controls button::after,
+  .fs-iconbtn::after {
+    inset: min(0px, calc((var(--fs-control-size) - 44px) / 2)) -2px;
+  }
+}
+
+.fs-controls button:not(:disabled):active,
+.fs-iconbtn:active {
+  scale: 0.96;
+}
+
+.fs-controls button,
+.fs-iconbtn {
+  transition:
+    background var(--fs-dur) var(--fs-ease),
+    color var(--fs-dur) var(--fs-ease),
+    scale 150ms var(--fs-ease);
+}
+
+/* Icon buttons swap icons in one box: the outgoing icon shrinks and blurs as the new one arrives. */
+.fs-controls button.fs-play,
+.fs-iconbtn {
+  display: inline-grid;
+  place-items: center;
+}
+
+.fs-ico {
+  grid-area: 1 / 1;
+  transition:
+    opacity 300ms var(--fs-ease),
+    scale 300ms var(--fs-ease),
+    filter 300ms var(--fs-ease);
+}
+
+.fs-play .fs-ico,
+.fs-expand .fs-ico-close,
+.fs-expand[aria-expanded="true"] .fs-ico-open {
+  opacity: 0;
+  scale: 0.25;
+  filter: blur(4px);
+}
+
+.fs-play:not([data-state]) .fs-ico-play,
+.fs-play[data-state="play"] .fs-ico-play,
+.fs-play[data-state="pause"] .fs-ico-pause,
+.fs-play[data-state="replay"] .fs-ico-replay,
+.fs-expand[aria-expanded="true"] .fs-ico-close {
+  opacity: 1;
+  scale: 1;
+  filter: none;
+}
+
+.fs-controls button[aria-pressed="true"] {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fs-controls button:focus-visible,
+.fs-param input:focus-visible,
+.fs-scrub:focus-visible {
+  outline: 2px solid var(--fs-accent);
+  outline-offset: -3px;
+}
+
+@media (hover: hover) {
+  .fs-controls button:not(:disabled):hover {
+    background: var(--fs-surface-2);
+  }
+}
+
+/* A labelled parameter control: label, value, slider. */
+.fs-param {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  min-height: var(--fs-control-size);
+  padding: 0 6px;
+  color: var(--fs-muted);
+  font-size: var(--fs-size-label);
+}
+
+.fs-param output {
+  min-width: 4ch;
+  color: var(--fs-fg);
+  font-variant-numeric: tabular-nums;
+}
+
+.fs-param input[type="range"] {
+  width: clamp(96px, 18vw, 180px);
+  accent-color: var(--fs-fg);
+}
+
+.fs-dots {
+  display: inline-flex;
+  gap: 5px;
+  padding: 0 6px;
+}
+
+.fs-dots i {
+  width: 5px;
+  height: 5px;
+  background: var(--fs-line-strong);
+  border-radius: 50%;
+  transition: background var(--fs-dur) var(--fs-ease);
+}
+
+.fs-dots i[data-on] {
+  background: var(--fs-fg);
+}
+
+/* Stacked captions: every caption occupies the same cell, so the box keeps the tallest height. */
+.fs-stack {
+  position: relative;
+  display: grid;
+}
+
+.fs-stack > * {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  opacity: 0;
+  filter: blur(2px);
+  transition:
+    opacity 220ms var(--fs-ease),
+    filter 220ms var(--fs-ease),
+    visibility 0s linear 220ms;
+}
+
+.fs-stack > [data-on] {
+  visibility: visible;
+  opacity: 1;
+  filter: none;
+  transition-delay: 0s;
+}
+
+.fs-sr,
+.fs-stack > .fs-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+/* Changing values reserve their widest text (set by the runtime) and keep digits one width. */
+.fs-reserve {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.fs-step-text {
+  min-height: 1.5em;
+  margin: 0;
+  padding: 0 20px 12px;
+  color: var(--fs-muted);
+  font-size: var(--fs-size-caption);
+  line-height: 1.5;
+}
+
+.fs-caption {
+  margin: 0;
+  padding: 4px 20px 12px;
+  color: var(--fs-muted);
+  font-size: var(--fs-size-caption);
+  line-height: 1.5;
+}
+
+.fs-toolbar + .fs-caption {
+  padding-top: 0;
+}
+
+/* Readouts: the numbers a figure argues for, as real text. */
+/* Dividers belong to the cells (right and bottom), so an odd last row never shows an empty block. */
+.fs-readouts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin: 0;
+  overflow: hidden;
+  border-top: var(--fs-border) solid var(--fs-line);
+}
+
+.fs-readout {
+  min-width: 0;
+  padding: 12px 20px 14px;
+  box-shadow:
+    var(--fs-border) 0 0 var(--fs-line),
+    0 var(--fs-border) 0 var(--fs-line);
+}
+
+.fs-readout b {
+  display: block;
+  font: 600 20px/1.2 var(--fs-font-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.fs-readout span {
+  color: var(--fs-muted);
+  font-size: var(--fs-size-caption);
+}
+
+/* Inline scrubbable number in prose: drag sideways or use arrow keys. */
+.fs-scrub {
+  padding: 0 2px;
+  color: var(--fs-fg);
+  font-variant-numeric: tabular-nums;
+  border-bottom: 1px dashed var(--fs-line-strong);
+  border-radius: 2px;
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
+}
+
+.fs-scrub:hover,
+.fs-scrub[data-active] {
+  background: var(--fs-surface-2);
+  border-bottom-color: var(--fs-fg);
+}
+
+/* Prose words linked to figure parts. */
+[data-fs-ref] {
+  text-decoration: underline dotted var(--fs-line-strong);
+  text-underline-offset: 3px;
+  cursor: default;
+  transition: color var(--fs-dur) var(--fs-ease);
+}
+
+[data-fs-ref][data-active] {
+  color: var(--fs-strong);
+  text-decoration-color: var(--fs-accent);
+}
+
+/* The one thing happening now: a left rule and a soft tint. Clear it when the work moves on. */
+.fs-live {
+  margin-inline: -7px;
+  padding-inline: 7px;
+  background: color-mix(in srgb, var(--fs-accent) 9%, transparent);
+  border-radius: var(--fs-radius-control);
+  box-shadow: inset 2px 0 0 var(--fs-accent);
+}
+
+/* Phase chip: the face of a state machine. The dot's pulse period encodes urgency. */
+.fs-chip {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 10px;
+  color: var(--fs-fg);
+  font-size: var(--fs-size-label);
+  background: color-mix(in srgb, var(--fs-accent) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--fs-accent) 40%, transparent);
+  border-radius: 999px;
+}
+
+.fs-chip::before {
+  width: 6px;
+  height: 6px;
+  content: "";
+  background: var(--fs-accent);
+  border-radius: 50%;
+}
+
+.fs-chip[data-pulse="slow"]::before {
+  animation: fs-pulse 1.1s ease-in-out infinite;
+}
+
+.fs-chip[data-pulse="fast"]::before {
+  animation: fs-pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes fs-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ---- Direct-manipulation handles: invisible hit targets over the drawing; the figure draws the visual. ---- */
+.fs-handles {
+  position: absolute;
+  pointer-events: none;
+}
+
+.fs-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.fs-handle[data-dragging] {
+  cursor: grabbing;
+}
+
+.fs-handle:focus-visible {
+  outline: 2px solid var(--fs-accent);
+  outline-offset: 2px;
+}
+
+/* ---- Physics slider: vertical bar handle, value bubble, rubber band at both ends. ---- */
+.fs-slider {
+  display: inline-grid;
+  grid-template-columns: auto minmax(96px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+  min-height: var(--fs-control-size);
+  color: var(--fs-muted);
+  font-size: var(--fs-size-label);
+  outline: none;
+}
+
+.fs-slider-label {
+  white-space: nowrap;
+}
+
+.fs-slider-track {
+  position: relative;
+  display: block;
+  height: 28px;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.fs-slider-track::before {
+  position: absolute;
+  top: 50%;
+  right: calc(-1 * var(--fs-over-right, 0px));
+  left: calc(-1 * var(--fs-over-left, 0px));
+  height: 2px;
+  margin-top: -1px;
+  content: "";
+  background: var(--fs-line-strong);
+  border-radius: 1px;
+}
+
+.fs-slider-fill {
+  position: absolute;
+  top: 50%;
+  left: calc(-1 * var(--fs-over-left, 0px));
+  height: 2px;
+  margin-top: -1px;
+  background: var(--fs-fg);
+  border-radius: 1px;
+}
+
+.fs-slider-mark {
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 8px;
+  margin: -4px 0 0 -0.5px;
+  background: var(--fs-line-strong);
+}
+
+.fs-slider-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 4px;
+  height: 18px;
+  margin: -9px 0 0 -2px;
+  background: var(--fs-fg);
+  border-radius: 2px;
+  box-shadow: 0 0 0 3px var(--fs-surface);
+  transition:
+    height 220ms var(--fs-ease-spring),
+    width 220ms var(--fs-ease-spring),
+    margin 220ms var(--fs-ease-spring);
+}
+
+.fs-slider:hover .fs-slider-thumb {
+  height: 22px;
+  margin-top: -11px;
+}
+
+.fs-slider[data-active] .fs-slider-thumb {
+  width: 5px;
+  height: 26px;
+  margin: -13px 0 0 -2.5px;
+}
+
+.fs-slider:focus-visible .fs-slider-thumb {
+  outline: 2px solid var(--fs-accent);
+  outline-offset: 3px;
+}
+
+.fs-slider-bubble {
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  padding: 2px 6px;
+  color: var(--fs-surface);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  background: var(--fs-fg);
+  border-radius: var(--fs-radius-control);
+  opacity: 0;
+  transform: translate(-50%, 4px) scale(0.85);
+  transition:
+    opacity 140ms var(--fs-ease),
+    transform 280ms var(--fs-ease-spring);
+}
+
+.fs-slider[data-active] .fs-slider-bubble,
+.fs-slider:focus-visible .fs-slider-bubble {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.fs-slider-value {
+  min-width: 4ch;
+  color: var(--fs-fg);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The toolbar's position readout already shows the time; the scrubber keeps only its drag bubble. */
+.fs-toolbar:has(.fs-position) [data-fs-seek] .fs-slider-value {
+  display: none;
+}
+
+/* ---- Tabs: examples of the same idea; a pill slides to the active one. ---- */
+.fs-tabbar {
+  padding: 10px 20px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.fs-tabs {
+  position: relative;
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--fs-surface-2);
+  border-radius: calc(var(--fs-radius-control) + 3px);
+  isolation: isolate;
+}
+
+.fs-tabs button {
+  position: relative;
+  z-index: 1;
+  height: 30px;
+  padding: 0 12px;
+  color: var(--fs-muted);
+  font: inherit;
+  font-size: var(--fs-size-label);
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  border-radius: var(--fs-radius-control);
+  cursor: pointer;
+  transition:
+    color var(--fs-dur) var(--fs-ease),
+    scale 150ms var(--fs-ease);
+}
+
+.fs-tabs button::after {
+  position: absolute;
+  inset: -5px 0;
+  content: "";
+}
+
+.fs-tabs button:hover,
+.fs-tabs button[aria-selected="true"] {
+  color: var(--fs-fg);
+}
+
+.fs-tabs button:active {
+  scale: 0.96;
+}
+
+.fs-tabs button:focus-visible {
+  outline: 2px solid var(--fs-accent);
+  outline-offset: -2px;
+}
+
+.fs-tabs-ink {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 0;
+  z-index: 0;
+  background: var(--fs-surface);
+  border: var(--fs-border) solid var(--fs-line);
+  border-radius: var(--fs-radius-control);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--fs-fg) 8%, transparent);
+  transition:
+    transform 420ms var(--fs-ease-spring),
+    width 320ms var(--fs-ease);
+}
+
+/* ---- Head actions: settings and expand, 32px icons with 40px targets. ---- */
+.fs-head {
+  position: relative;
+}
+
+.fs-head-actions {
+  display: inline-flex;
+  grid-row: 1;
+  grid-column: -2;
+  gap: 4px;
+  align-items: center;
+  align-self: center;
+  margin: -6px -10px -6px 0;
+}
+
+.fs-iconbtn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--fs-muted);
+  background: transparent;
+  border: 0;
+  border-radius: var(--fs-radius-control);
+  cursor: pointer;
+}
+
+.fs-iconbtn:hover,
+.fs-iconbtn[aria-expanded="true"] {
+  color: var(--fs-fg);
+  background: var(--fs-surface-2);
+}
+
+.fs-iconbtn:focus-visible {
+  outline: 2px solid var(--fs-accent);
+  outline-offset: 2px;
+}
+
+.fs-settings svg {
+  transition: transform 260ms var(--fs-ease-spring);
+}
+
+.fs-settings[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+
+.fs-popover {
+  position: fixed;
+  inset: auto;
+  width: min(288px, calc(100vw - 24px));
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  color: var(--fs-fg);
+  font-family: var(--fs-font-figure);
+  background: var(--fs-surface);
+  border: var(--fs-border) solid var(--fs-line);
+  border-radius: calc(var(--fs-radius) - 2px);
+  box-shadow: var(--fs-shadow);
+  transform-origin: top right;
+}
+
+.fs-popover:popover-open,
+.fs-popover:not([popover]):not([hidden]) {
+  animation: fs-pop-in 260ms var(--fs-ease-spring) both;
+}
+
+@keyframes fs-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+}
+
+.fs-popover-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 14px;
+  color: var(--fs-muted);
+  font-size: var(--fs-size-label);
+}
+
+.fs-popover-reset {
+  padding: 4px 6px;
+  margin: -4px -6px;
+  color: var(--fs-muted);
+  font: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--fs-radius-control);
+  cursor: pointer;
+}
+
+.fs-popover-reset:hover {
+  color: var(--fs-fg);
+  background: var(--fs-surface-2);
+}
+
+.fs-popover-body {
+  display: grid;
+  gap: 2px;
+  padding: 0 14px 10px;
+}
+
+.fs-popover-body .fs-slider {
+  display: grid;
+  grid-template-columns: minmax(72px, auto) minmax(96px, 1fr) auto;
+}
+
+/* Switch: a knob that springs across. */
+.fs-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  padding: 0;
+  color: var(--fs-muted);
+  font: inherit;
+  font-size: var(--fs-size-label);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.fs-switch i {
+  position: relative;
+  width: 28px;
+  height: 16px;
+  background: var(--fs-line-strong);
+  border-radius: 8px;
+  transition: background var(--fs-dur) var(--fs-ease);
+}
+
+.fs-switch i::after {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  content: "";
+  background: var(--fs-surface);
+  border-radius: 50%;
+  transition: transform 300ms var(--fs-ease-spring);
+}
+
+.fs-switch[aria-checked="true"] i {
+  background: var(--fs-fg);
+}
+
+.fs-switch[aria-checked="true"] i::after {
+  transform: translateX(12px);
+}
+
+.fs-switch:focus-visible {
+  outline: 2px solid var(--fs-accent);
+  outline-offset: 2px;
+  border-radius: var(--fs-radius-control);
+}
+
+.fs-segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  min-height: 40px;
+  color: var(--fs-muted);
+  font-size: var(--fs-size-label);
+}
+
+.fs-segmented span {
+  margin-right: auto;
+}
+
+.fs-segmented button {
+  padding: 5px 8px;
+  color: var(--fs-muted);
+  font: inherit;
+  background: transparent;
+  border: var(--fs-border) solid var(--fs-line);
+  border-radius: var(--fs-radius-control);
+  cursor: pointer;
+}
+
+.fs-segmented button[aria-pressed="true"] {
+  color: var(--fs-fg);
+  border-color: var(--fs-fg);
+}
+
+/* ---- Timeline surface: the drawing itself scrubs. ---- */
+.fs-scrubbable > :is(canvas, svg) {
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.fs-scrubbable > .fs-scrub-off {
+  cursor: default;
+}
+
+:root.fs-grabbing,
+:root.fs-grabbing * {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* ---- Tips: short explanations after a hover delay (top layer, never clipped). ---- */
+.fs-tip {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: max-content;
+  max-width: min(264px, calc(100vw - 16px));
+  margin: 0;
+  padding: 9px 11px 10px;
+  overflow: visible;
+  color: var(--fs-fg);
+  font: 400 var(--fs-size-caption) / 1.45 var(--fs-font-figure);
+  pointer-events: none;
+  background: var(--fs-surface);
+  border: var(--fs-border) solid var(--fs-line-strong);
+  border-radius: calc(var(--fs-radius) - 4px);
+  box-shadow: var(--fs-shadow);
+  opacity: 0;
+  transform: translateY(4px) scale(0.98);
+  transition:
+    opacity 140ms var(--fs-ease),
+    transform 220ms var(--fs-ease);
+}
+
+.fs-tip[data-side="bottom"] {
+  transform: translateY(-4px) scale(0.98);
+}
+
+.fs-tip.fs-tip-glide {
+  transition:
+    opacity 140ms var(--fs-ease),
+    transform 220ms var(--fs-ease),
+    translate 240ms var(--fs-ease);
+}
+
+.fs-tip[data-open] {
+  opacity: 1;
+  transform: none;
+}
+
+.fs-tip b {
+  display: block;
+  margin-bottom: 2px;
+  font-weight: 600;
+  font-size: var(--fs-size-label);
+}
+
+.fs-tip span {
+  display: block;
+  color: var(--fs-muted);
+}
+
+[data-fs-tip] {
+  cursor: help;
+}
+
+/* ---- Expand: the plate rises nearly full screen; a holder keeps its place in the page. ---- */
+:root.fs-modal-open {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+
+.fs-holder {
+  display: block;
+}
+
+.fs-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  background: color-mix(in srgb, var(--fs-bg, var(--fs-surface)) 72%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.fs-plate[data-fs-expanded] {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483001;
+  /* The "fill" expand (spec.expand: "fill"); the default "fit" pins the plate's own box and scales it. */
+  width: 84vw;
+  max-width: none;
+  height: fit-content;
+  max-height: 84dvh;
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  box-shadow: var(--fs-shadow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fs-plate *,
+  .fs-popover,
+  .fs-popover *,
+  .fs-tip,
+  .fs-chip::before {
+    transition-duration: 0s !important;
+    animation: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .fs-head,
+  .fs-caption,
+  .fs-step-text,
+  .fs-tabbar {
+    padding-inline: 14px;
+  }
+
+  .fs-toolbar {
+    padding-left: 14px;
+  }
+
+  .fs-stage {
+    padding: 6px;
+  }
+
+  .fs-plate[data-fs-expanded] {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+}
+/* ---- end themes/base.css ---- */
+
+/* ---- page (replace freely; figures only depend on the theme and base layers above) ---- */
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--fs-bg); }
+body { margin: 0; color: var(--fs-fg); background: var(--fs-bg); font: 400 16px/1.625 var(--fs-font-body); letter-spacing: 0.002em; -webkit-font-smoothing: antialiased; }
+main { width: min(46rem, 100% - 48px); margin: 0 auto; padding: 72px 0 120px; }
+h1 { margin: 0 0 12px; font: 500 1.75rem/1.3 var(--fs-font-display); letter-spacing: 0.008em; }
+h2 { margin: 3.5rem 0 0.75rem; font: 500 1.25rem/1.3 var(--fs-font-display); }
+p { margin: 0 0 1rem; }
+.lede { color: var(--fs-muted); font-size: 1.1875rem; }
+.wide { width: min(58rem, 100vw - 32px); margin-inline: calc((min(46rem, 100vw - 48px) - min(58rem, 100vw - 32px)) / 2); }
+.themebar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 28px 0 0; color: var(--fs-muted); font-size: 12px; }
+.themebar select { padding: 6px 8px; color: var(--fs-fg); font: inherit; background: var(--fs-surface); border: 1px solid var(--fs-line); border-radius: 6px; }
+.themebar select:focus-visible { outline: 2px solid var(--fs-accent); outline-offset: 2px; }
+code { font: 0.875em var(--fs-font-mono); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Figures that explain by being played with.</h1>
+  <p class="lede">Four starter plates on one runtime. Each figure is a function of a clock, a step and a few parameters, so buttons, sliders, words in the text and code all drive it the same way.</p>
+  <div class="themebar">
+    <label for="theme">Theme</label>
+    <select id="theme">
+      <optgroup label="Site"><option value="zef">Zef (default)</option><option value="zef-light">Zef light</option></optgroup>
+      <optgroup label="Registers"><option value="notebook">Lab notebook</option><option value="notebook-light">Lab notebook light</option></optgroup>
+      <optgroup label="Omarchy" id="omarchy-themes"></optgroup>
+    </select>
+    <span>Try <code>FS.get('fig-time').seek(4.8)</code> in the console.</span>
+  </div>
+
+  <!-- Fig 1: stepped architecture flow in SVG, linked to words in the prose. -->
+  <h2>A request moves through the system</h2>
+  <p>Every event reaches the <span data-fs-ref="fig-flow:router">router</span> first. Most are answered from <span data-fs-ref="fig-flow:memory">memory</span>; only novel ones pay for the <span data-fs-ref="fig-flow:model">model</span>.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-flow-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-flow-title">Where a request spends its time</h3><span class="fs-status">Fig. 1 · illustrative</span></header>
+    <div class="fs-stage"><svg id="fig-flow" viewBox="0 0 960 300" role="img" aria-label="Diagram: input, router, model and memory, output"></svg></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-flow:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-flow" aria-hidden="true"></span><button type="button" data-fs="fig-flow prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-flow next" aria-label="Next step">Next</button><button type="button" data-fs="fig-flow play">Pause</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-flow:caption" aria-live="polite"></p>
+  </figure>
+
+  <!-- Fig 2: a one-clock timeline with a counterfactual lane, chapters and a computed bracket. -->
+  <h2>Overlapping tool calls finishes sooner</h2>
+  <p>Both runs do the same work. The second starts the fetch while the search is still running, so it answers at <span data-fs-out="fig-time:overlapEnd"></span> instead of <span data-fs-out="fig-time:seqEnd"></span>.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-time-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-time-title">Sequential vs overlapped tool calls</h3><span class="fs-chip" id="fig-time-chip" data-fs-out="fig-time:phase" aria-live="polite"></span></header>
+    <div class="fs-stage"><canvas id="fig-time" role="img" aria-label="Two lanes on one time axis; the overlapped run answers earlier"></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-time:t"></span>
+      <div class="fs-controls">
+        <button type="button" data-fs="fig-time chapter-prev" aria-label="Previous event">←</button>
+        <div data-fs-seek="fig-time" data-label="Time"></div>
+        <button type="button" data-fs="fig-time chapter-next" aria-label="Next event">→</button>
+        <button type="button" data-fs="fig-time play">Play</button>
+      </div>
+    </div>
+    <p class="fs-caption">Illustrative timings. Drag across the lanes to move through time, click a moment to jump there, hover a block to see what it is.</p>
+  </figure>
+
+  <!-- Fig 3: an explorable chart; the parameter lives in the prose and in the toolbar. -->
+  <h2>Smoothing hides the plateau</h2>
+  <p>The run stalls briefly mid-training. At a smoothing of <span data-fs-scrub="fig-curve:smooth"></span>, that plateau shows up <span data-fs-out="fig-curve:bump"></span> tall instead of <span data-fs-out="fig-curve:rawBump"></span>, and peaks <span data-fs-out="fig-curve:lag"></span> steps late. Drag the number.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-curve-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-curve-title">Validation loss, raw and smoothed</h3><span class="fs-status">Fig. 3 · simulated, seeded</span></header>
+    <div class="fs-stage"><canvas id="fig-curve" role="img" aria-label="Noisy loss curve with an exponentially smoothed line"></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position">Hover for values · drag the number in the text</span>
+    </div>
+    <div class="fs-readouts">
+      <div class="fs-readout"><b data-fs-out="fig-curve:bump"></b><span>plateau height after smoothing (raw <span data-fs-out="fig-curve:rawBump"></span>)</span></div>
+      <div class="fs-readout"><b data-fs-out="fig-curve:lag"></b><span>steps the smoothed peak lags</span></div>
+    </div>
+  </figure>
+
+  <!-- Fig 4: a running process with a focus. -->
+  <h2>Attention bends the flow</h2>
+  <figure class="fs-plate wide" aria-labelledby="fig-field-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-field-title">Attention recruits only what is near it</h3><span class="fs-status">Fig. 4</span></header>
+    <div class="fs-stage"><canvas id="fig-field" role="img" aria-label="Particles drifting along a smooth flow; a focus gathers nearby particles"></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-field:recruited"></span>
+      <div class="fs-controls"><button type="button" data-fs="fig-field play">Pause</button></div>
+    </div>
+    <p class="fs-caption">Particles follow the curl of a smooth potential, so the flow never piles up or empties. Try: drag the ring, then its edge knob. Notice: only particles inside the ring are recruited; the rest keep their course. Strength and field scale are in settings.</p>
+  </figure>
+</main>
+
+<script>
+/* ---- assets/runtime/fs-runtime.js ---- */
+/* Animated Visual runtime. Global `FS` (from the project's first name, Figure Studio). No dependencies.
+ *
+ * A figure is a pure function of its state: one clock `t` (a timeline or a running process),
+ * a discrete `step`, and named `params` that ease toward their targets. Play, scrub, step,
+ * parameter changes, prose links and agents all go through one controller, so any state can
+ * be shown, linked to and verified.
+ *
+ *   const fig = FS.figure('fig-id', { height, duration, loop, chapters, steps, params,
+ *                                     init, update, render, settle });
+ *   fig.play() .pause() .seek(t) .chapter(±1) .goto(n) .next() .prev()
+ *      .set(name, value) .reset() .state() .apply(state) .on(event, fn) .out(name, text) .redraw()
+ *   FS.get(id), FS.list(), FS.setTheme(name, scope?), FS.setMode('light' | 'dark' | null)
+ *
+ * Declarative bindings (any element on the page):
+ *   data-fs="id play|next|prev|reset|chapter-next|chapter-prev"   buttons
+ *   data-fs-param="id:name"   range/number/select/checkbox, two-way
+ *   data-fs-seek="id"         range input over the timeline
+ *   data-fs-out="id:name"     text output: a param, or t, step, caption, or anything set by fig.out()
+ *   data-fs-dots="id"         step dots
+ *   data-fs-scrub="id:name"   a number in prose that can be dragged or arrowed
+ *   data-fs-ref="id:key"      a word in prose linked to part `key` of the figure (hover/focus both ways)
+ *   data-fs-tip="text"        a short explanation shown after a hover delay (title in data-fs-tip-title)
+ *
+ * Timelines: spec.timeAxis(f) -> { x0, x1 } makes the whole drawing a scrub surface (drag, click, flick);
+ * the clock glides to every target (seek(t, { animate: true })). spec.tips + spec.tipAt(f, x, y) explain
+ * drawn parts on hover. Every plate gets an expand button that opens it nearly full screen.
+ */
+((global) => {
+  
+  const reducedQuery = matchMedia("(prefers-reduced-motion: reduce)");
+  const figures = new Map();
+  let raf = 0;
+  let last = 0;
+
+  // ---------- math ----------
+  const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const remap = (x, a, b, c, d) => c + (d - c) * clamp((x - a) / (b - a));
+  /** Frame-rate independent approach to a target. lambda ≈ 4 soft … 14 snappy. */
+  const damp = (cur, target, lambda, dt) => lerp(cur, target, 1 - Math.exp(-lambda * dt));
+  /** Critically damped spring (smooth damp); keeps velocity across target changes. */
+  function spring(s, target, smoothTime, dt) {
+    const omega = 2 / Math.max(1e-4, smoothTime);
+    const x = omega * dt;
+    const decay = 1 / (1 + x + 0.48 * x * x + 0.235 * x * x * x);
+    const change = s.value - target;
+    const temp = (s.velocity + omega * change) * dt;
+    s.velocity = (s.velocity - omega * temp) * decay;
+    s.value = target + (change + temp) * decay;
+    return s;
+  }
+  const ease = {
+    smooth: (t) => t * t * t * (t * (6 * t - 15) + 10),
+    out: (t) => 1 - (1 - t) ** 3,
+    inOut: (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2),
+  };
+  /** Progress of t through [t0, t1], eased; the building block of declared timelines. */
+  const window_ = (t, t0, t1, fn = ease.smooth) => fn(clamp((t - t0) / Math.max(1e-6, t1 - t0)));
+  function rng(seed) {
+    return () => {
+      seed |= 0;
+      seed = (seed + 0x6d2b79f5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const gauss = (r) => Math.sqrt(-2 * Math.log(1 - r())) * Math.cos(2 * Math.PI * r());
+
+  // ---------- theme tokens ----------
+  const COLOR_TOKENS = ["bg", "surface", "surface-2", "line", "line-strong", "faint", "muted", "fg", "strong", "accent", "good", "bad", "c1", "c2", "c3", "c4", "c5", "c6"];
+  const camel = (s) => s.replace(/-(\w)/g, (_, c) => c.toUpperCase());
+  function readTheme(f) {
+    // Resolve through a probe inside the figure so per-figure themes and var() chains work in canvas.
+    // One probe per token: reading them all costs one style pass, cheap enough to repeat every frame of a theme tween.
+    if (!f.probes) {
+      const box = document.createElement("span");
+      box.hidden = true;
+      f.probes = COLOR_TOKENS.map((token) => {
+        const probe = document.createElement("span");
+        probe.style.color = `var(--fs-${token})`;
+        box.append(probe);
+        return probe;
+      });
+      f.plate.append(box);
+    }
+    const C = { c: [] };
+    COLOR_TOKENS.forEach((token, i) => {
+      const value = getComputedStyle(f.probes[i]).color;
+      if (/^c\d$/.test(token)) C.c.push(value);
+      else C[camel(token)] = value;
+    });
+    const cs = getComputedStyle(f.plate);
+    C.font = cs.getPropertyValue("--fs-font-figure").trim() || "system-ui, sans-serif";
+    C.mono = cs.getPropertyValue("--fs-font-mono").trim() || "ui-monospace, monospace";
+    C.dim = parseFloat(cs.getPropertyValue("--fs-dim")) || 0.28;
+    C.edge = parseFloat(cs.getPropertyValue("--fs-stroke-edge")) || 1.1;
+    C.series = parseFloat(cs.getPropertyValue("--fs-stroke-series")) || 1.75;
+    f.C = C;
+    f.patterns = {};
+    f.dirty = true;
+  }
+
+  // ---------- canvas kit ----------
+  const k = {
+    font: (f, size = 11, weight = 400, mono = false) => `${weight} ${size}px ${mono ? f.C.mono : f.C.font}`,
+    text(f, c, s, x, y, o = {}) {
+      c.font = k.font(f, o.size || 11, o.weight || 400, o.mono);
+      c.fillStyle = o.color || f.C.muted;
+      c.textAlign = o.align || "left";
+      c.textBaseline = o.base || "alphabetic";
+      // Multiplies with the caller's alpha and restores it, so faded groups stay faded.
+      const prev = c.globalAlpha;
+      c.globalAlpha = prev * (o.alpha == null ? 1 : o.alpha);
+      c.fillText(s, x, y);
+      c.globalAlpha = prev;
+    },
+    /** Text with a halo in the stage color so it stays legible over marks. */
+    label(f, c, s, x, y, o = {}) {
+      c.save();
+      c.font = k.font(f, o.size || 11, o.weight || 500, o.mono);
+      c.textAlign = o.align || "left";
+      c.textBaseline = o.base || "middle";
+      c.lineJoin = "round";
+      c.lineWidth = 4;
+      c.strokeStyle = o.halo || f.C.surface;
+      c.globalAlpha *= o.alpha == null ? 1 : o.alpha;
+      c.strokeText(s, x, y);
+      c.fillStyle = o.color || f.C.fg;
+      c.fillText(s, x, y);
+      c.restore();
+    },
+    line(c, x1, y1, x2, y2) {
+      c.beginPath();
+      c.moveTo(x1, y1);
+      c.lineTo(x2, y2);
+      c.stroke();
+    },
+    arrow(c, x1, y1, x2, y2, color, width = 1.1) {
+      c.strokeStyle = color;
+      c.fillStyle = color;
+      c.lineWidth = width;
+      k.line(c, x1, y1, x2, y2);
+      const a = Math.atan2(y2 - y1, x2 - x1);
+      c.beginPath();
+      c.moveTo(x2, y2);
+      c.lineTo(x2 - 7 * Math.cos(a - 0.42), y2 - 7 * Math.sin(a - 0.42));
+      c.lineTo(x2 - 7 * Math.cos(a + 0.42), y2 - 7 * Math.sin(a + 0.42));
+      c.closePath();
+      c.fill();
+    },
+    rrect(c, x, y, w, h, r) {
+      c.beginPath();
+      c.roundRect ? c.roundRect(x, y, w, h, r) : c.rect(x, y, w, h);
+    },
+    /** Diagonal hatch: a second state that reads without hue. */
+    hatch(f, c, color, gap = 5) {
+      const key = color + gap + f.dpr;
+      if (!f.patterns[key]) {
+        const s = Math.max(2, Math.round(gap * f.dpr));
+        const tile = document.createElement("canvas");
+        tile.width = tile.height = s;
+        const g = tile.getContext("2d");
+        g.strokeStyle = color;
+        g.lineWidth = Math.max(1, 1.1 * f.dpr);
+        g.beginPath();
+        g.moveTo(-1, s + 1); g.lineTo(s + 1, -1);
+        g.moveTo(-1, 1); g.lineTo(1, -1);
+        g.moveTo(s - 1, s + 1); g.lineTo(s + 1, s - 1);
+        g.stroke();
+        const p = c.createPattern(tile, "repeat");
+        p.setTransform?.(new DOMMatrix().scale(1 / f.dpr));
+        f.patterns[key] = p;
+      }
+      return f.patterns[key];
+    },
+    /** A bracket between x0 and x1 with end ticks and a centered label (e.g. a computed saving). */
+    bracket(f, c, x0, x1, y, text, o = {}) {
+      c.strokeStyle = o.color || f.C.fg;
+      c.lineWidth = 1.2;
+      c.globalAlpha = o.alpha == null ? 1 : o.alpha;
+      c.beginPath();
+      c.moveTo(x0, y - 6); c.lineTo(x0, y + 6);
+      c.moveTo(x0, y); c.lineTo(x1, y);
+      c.moveTo(x1, y - 6); c.lineTo(x1, y + 6);
+      c.stroke();
+      c.globalAlpha = 1;
+      if (text) k.label(f, c, text, (x0 + x1) / 2, y - 12, { align: "center", alpha: o.alpha, color: o.color });
+    },
+    /** The timeline's "now": a line with a knob that grows while the surface is held. */
+    playhead(f, c, x, y0, y1) {
+      const held = f.drag === "time";
+      c.strokeStyle = f.C.strong;
+      c.lineWidth = held ? 1.75 : 1;
+      k.line(c, x, y0, x, y1);
+      const r = held ? 6 : 4.5;
+      c.fillStyle = f.C.surface;
+      c.beginPath(); c.arc(x, y1, r + 2, 0, 7); c.fill();
+      c.fillStyle = f.C.accent;
+      c.beginPath(); c.arc(x, y1, r, 0, 7); c.fill();
+    },
+    /** Where a click would go: a faint dashed line and the time, only while hovering a scrub surface. */
+    hoverTime(f, c, y0, y1, toX, format) {
+      if (f.hoverT == null || f.drag) return;
+      const x = toX(f.hoverT);
+      c.save();
+      c.strokeStyle = f.C.muted;
+      c.globalAlpha *= 0.55;
+      c.setLineDash([2, 3]);
+      k.line(c, x, y0, x, y1);
+      c.restore();
+      k.label(f, c, format(f.hoverT), x, y0 - 2, { size: 11, align: "center", base: "bottom", color: f.C.muted, weight: 500 });
+    },
+  };
+
+
+  // ---------- physics, handles, sliders, settings ----------
+  /** Rubber band (iOS-style): travel beyond a bound is compressed, never unbounded. */
+  function rubber(x, min, max, dim, c = 0.55) {
+    if (x < min) return min - (1 - 1 / (((min - x) * c) / dim + 1)) * dim;
+    if (x > max) return max + (1 - 1 / (((x - max) * c) / dim + 1)) * dim;
+    return x;
+  }
+  /** Damped spring toward target (stiffness k, damping ratio z; z < 1 overshoots). Returns true when settled. */
+  function springTo(s, target, dt, k = 420, z = 0.62) {
+    const c = 2 * z * Math.sqrt(k);
+    for (let left = dt; left > 0; left -= 1 / 240) {
+      const h = Math.min(left, 1 / 240);
+      s.velocity += (-k * (s.value - target) - c * s.velocity) * h;
+      s.value += s.velocity * h;
+    }
+    if (Math.abs(s.value - target) < 0.05 && Math.abs(s.velocity) < 0.5) { s.value = target; s.velocity = 0; return true; }
+    return false;
+  }
+  /** Track a drag on the window (pointer capture is best-effort: it throws for synthetic input). */
+  function trackDrag(el, e, move, end) {
+    try { el.setPointerCapture(e.pointerId); } catch { /* window listeners still follow the pointer */ }
+    const id = e.pointerId;
+    const onMove = (ev) => { if (ev.pointerId === id) move(ev); };
+    const onEnd = (ev) => {
+      if (ev.pointerId !== id) return;
+      removeEventListener("pointermove", onMove);
+      removeEventListener("pointerup", onEnd);
+      removeEventListener("pointercancel", onEnd);
+      end(ev);
+    };
+    addEventListener("pointermove", onMove);
+    addEventListener("pointerup", onEnd);
+    addEventListener("pointercancel", onEnd);
+  }
+  const animations = new Set();
+  /** Run fn(dt) every frame until it returns true. */
+  function animate(fn) { animations.add(fn); wake(); return () => animations.delete(fn); }
+
+  /* Direct manipulation: spec.handles = { key: { label, get(f) -> {x, y}, set(f, x, y, phase), bounds(f) -> {x0, y0, x1, y1}, radius, step } }
+     Coordinates are CSS px of the figure element. Handles are real focusable elements over the figure, so they
+     work with keyboard and touch while the canvas keeps page scrolling. Past the bounds they rubber-band and
+     spring back on release. */
+  function bindHandles(f) {
+    const specs = f.spec.handles;
+    if (!specs) return;
+    const layer = document.createElement("div");
+    layer.className = "fs-handles";
+    f.stage.append(layer);
+    f.handleLayer = layer;
+    f.handles = {};
+    f.drag = null;
+    f.handleHover = null;
+    for (const [key, h] of Object.entries(specs)) {
+      const el = document.createElement("button");
+      el.type = "button";
+      el.className = "fs-handle";
+      el.dataset.key = key;
+      el.setAttribute("aria-label", h.label || key);
+      if (h.description) el.title = h.description;
+      layer.append(el);
+      const state = { key, el, h, grab: null, settle: null };
+      f.handles[key] = state;
+      // bounds(f) may return null: the handle applies its own constraint (e.g. a radius) in set().
+      const bounds = () => (h.bounds ? h.bounds(f) : { x0: 0, y0: 0, x1: f.w, y1: f.h });
+      const move = (e) => {
+        if (!state.grab) return;
+        const b = bounds();
+        const z = zoomOf(f);
+        let x = state.grab.x + (e.clientX - state.grab.px) / z;
+        let y = state.grab.y + (e.clientY - state.grab.py) / z;
+        if (b) {
+          const dim = Math.max(36, Math.min(b.x1 - b.x0, b.y1 - b.y0) * 0.22);
+          x = rubber(x, b.x0, b.x1, dim);
+          y = rubber(y, b.y0, b.y1, dim);
+        }
+        h.set(f, x, y, "drag");
+        f.emit("drag", { key, x, y });
+        f.dirty = true; wake();
+      };
+      const release = () => {
+        if (!state.grab) return;
+        state.grab = null;
+        f.drag = null;
+        delete el.dataset.dragging;
+        const b = bounds();
+        const p = h.get(f);
+        // release(f) may choose the resting point (e.g. the ring at its clamped radius).
+        const target = h.release?.(f) ?? (b ? { x: clamp(p.x, b.x0, b.x1), y: clamp(p.y, b.y0, b.y1) } : p);
+        const sx = { value: p.x, velocity: 0 };
+        const sy = { value: p.y, velocity: 0 };
+        if (reducedQuery.matches || (sx.value === target.x && sy.value === target.y)) h.set(f, target.x, target.y, "settle");
+        else state.settle = animate((dt) => {
+          const done = springTo(sx, target.x, dt) & springTo(sy, target.y, dt);
+          h.set(f, sx.value, sy.value, "settle");
+          f.dirty = true;
+          return done;
+        });
+        f.emit("dragend", { key, ...target });
+        f.dirty = true; wake();
+      };
+      el.addEventListener("pointerdown", (e) => {
+        if (e.button > 0) return;
+        e.preventDefault();
+        state.settle?.();
+        const p = h.get(f);
+        state.grab = { px: e.clientX, py: e.clientY, x: p.x, y: p.y };
+        f.drag = key;
+        el.dataset.dragging = "";
+        f.emit("dragstart", { key });
+        f.dirty = true; wake();
+        trackDrag(el, e, move, release);
+      });
+      el.addEventListener("pointerenter", () => { f.handleHover = key; f.dirty = true; wake(); });
+      el.addEventListener("pointerleave", () => { if (f.handleHover === key) f.handleHover = null; f.dirty = true; wake(); });
+      el.addEventListener("focus", () => { f.handleHover = key; f.dirty = true; wake(); });
+      el.addEventListener("blur", () => { if (f.handleHover === key) f.handleHover = null; f.dirty = true; wake(); });
+      el.addEventListener("keydown", (e) => {
+        const step = (h.step || 8) * (e.shiftKey ? 4 : 1);
+        const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
+        if (!d) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const b = bounds() || { x0: -Infinity, y0: -Infinity, x1: Infinity, y1: Infinity };
+        const p = h.get(f);
+        h.set(f, clamp(p.x + d[0], b.x0, b.x1), clamp(p.y + d[1], b.y0, b.y1), "key");
+        const rest = h.release?.(f);
+        if (rest) h.set(f, rest.x, rest.y, "key");
+        f.dirty = true; wake();
+      });
+    }
+    f.cleanup.push(() => layer.remove());
+  }
+  function positionHandles(f) {
+    if (!f.handles) return;
+    const layer = f.handleLayer;
+    layer.style.left = `${f.el.offsetLeft}px`;
+    layer.style.top = `${f.el.offsetTop}px`;
+    layer.style.width = `${f.w}px`;
+    layer.style.height = `${f.h}px`;
+    for (const state of Object.values(f.handles)) {
+      const p = state.h.get(f);
+      const r = typeof state.h.radius === "function" ? state.h.radius(f) : state.h.radius || 18;
+      const hidden = state.h.hidden?.(f);
+      state.el.hidden = !!hidden;
+      state.el.style.width = state.el.style.height = `${r * 2}px`;
+      state.el.style.transform = `translate(${(p.x - r).toFixed(1)}px, ${(p.y - r).toFixed(1)}px)`;
+    }
+  }
+
+  /* Physics slider: vertical bar handle, value bubble, rubber band past both ends with a springy settle,
+     magnet to marks. o = { label, min, max, step, marks: [{ value, label }], get(), set(value, phase), format(value) }. */
+  function buildSlider(root, o) {
+    root.classList.add("fs-slider");
+    root.innerHTML = '<span class="fs-slider-label"></span><span class="fs-slider-track"><span class="fs-slider-fill"></span><span class="fs-slider-thumb"><span class="fs-slider-bubble"></span></span></span><output class="fs-slider-value"></output>';
+    const [label, track, fill, thumb, bubble, out] = [".fs-slider-label", ".fs-slider-track", ".fs-slider-fill", ".fs-slider-thumb", ".fs-slider-bubble", ".fs-slider-value"].map((q) => root.querySelector(q));
+    label.textContent = o.label || "";
+    if (!o.label) label.remove();
+    root.setAttribute("role", "slider");
+    root.tabIndex = 0;
+    root.setAttribute("aria-label", o.label || "Value");
+    root.setAttribute("aria-valuemin", o.min);
+    root.setAttribute("aria-valuemax", o.max);
+    for (const mark of o.marks || []) {
+      const m = document.createElement("span");
+      m.className = "fs-slider-mark";
+      m.style.left = `${((mark.value - o.min) / (o.max - o.min)) * 100}%`;
+      if (mark.label) m.title = mark.label;
+      track.append(m);
+    }
+    const fmt = o.format || ((v) => String(+v.toFixed(3)));
+    const width = () => track.clientWidth || 1;
+    const toPos = (v) => ((v - o.min) / (o.max - o.min)) * width();
+    const quantize = (v) => {
+      v = clamp(v, o.min, o.max);
+      // Magnet: values near a mark snap to it.
+      for (const mark of o.marks || []) if (Math.abs(toPos(v) - toPos(mark.value)) < 6) return mark.value;
+      return o.step ? clamp(Math.round((v - o.min) / o.step) * o.step + o.min, o.min, o.max) : v;
+    };
+    const display = { value: 0, velocity: 0 };
+    let dragging = false;
+    let grabOffset = 0;
+    let stop = null;
+    function paint() {
+      const w = width();
+      const p = display.value;
+      thumb.style.transform = `translateX(${p.toFixed(2)}px)`;
+      fill.style.width = `${clamp(p, 0, w).toFixed(2)}px`;
+      // The track stretches with the thumb past either end, then springs back with it.
+      root.style.setProperty("--fs-over-left", `${Math.max(0, -p).toFixed(2)}px`);
+      root.style.setProperty("--fs-over-right", `${Math.max(0, p - w).toFixed(2)}px`);
+      const v = o.get();
+      const text = fmt(v);
+      out.textContent = text;
+      bubble.textContent = text;
+      root.setAttribute("aria-valuenow", v);
+      root.setAttribute("aria-valuetext", text);
+    }
+    function settleTo(target) {
+      stop?.();
+      if (reducedQuery.matches) { display.value = target; display.velocity = 0; paint(); return; }
+      stop = animate((dt) => { const done = springTo(display, target, dt); paint(); return done; });
+    }
+    function sync(immediate = false) {
+      if (dragging) return;
+      if (immediate) { stop?.(); display.value = toPos(o.get()); display.velocity = 0; paint(); }
+      else settleTo(toPos(o.get()));
+    }
+    const xOf = (e) => e.clientX - track.getBoundingClientRect().left;
+    track.addEventListener("pointerdown", (e) => {
+      if (e.button > 0) return;
+      e.preventDefault();
+      root.focus({ preventScroll: true });
+      stop?.();
+      dragging = true;
+      root.dataset.active = "";
+      const x = xOf(e);
+      const onThumb = Math.abs(x - display.value) < 10;
+      grabOffset = onThumb ? x - display.value : 0;
+      if (!onThumb) {
+        // Jump to the pointer with a spring, then follow it.
+        o.set(quantize(o.min + (x / width()) * (o.max - o.min)), "drag");
+        const target = x;
+        stop = animate((dt) => { const done = springTo(display, target, dt, 900, 0.8); paint(); return done || !dragging; });
+      }
+      trackDrag(track, e, follow, release);
+    });
+    const follow = (e) => {
+      if (!dragging) return;
+      stop?.();
+      const w = width();
+      const x = rubber(xOf(e) - grabOffset, 0, w, Math.max(28, w * 0.18));
+      display.value = x;
+      o.set(quantize(o.min + (clamp(x, 0, w) / w) * (o.max - o.min)), "drag");
+      paint();
+    };
+    const release = () => {
+      if (!dragging) return;
+      dragging = false;
+      delete root.dataset.active;
+      settleTo(toPos(o.get()));
+    };
+    root.addEventListener("keydown", (e) => {
+      const unit = o.step || (o.max - o.min) / 100;
+      const d = { ArrowRight: unit, ArrowUp: unit, ArrowLeft: -unit, ArrowDown: -unit, PageUp: unit * 10, PageDown: -unit * 10 }[e.key];
+      let next;
+      if (d !== undefined) next = o.get() + d * (e.shiftKey ? 10 : 1);
+      else if (e.key === "Home") next = o.min;
+      else if (e.key === "End") next = o.max;
+      else return;
+      e.preventDefault();
+      e.stopPropagation();
+      o.set(quantize(next), "key");
+      sync();
+    });
+    new ResizeObserver(() => { display.value = toPos(o.get()); paint(); }).observe(track);
+    display.value = toPos(o.get());
+    paint();
+    return { root, sync };
+  }
+
+  function paramSlider(f, name, root) {
+    const p = f.spec.params?.[name];
+    return buildSlider(root, {
+      label: root.dataset.label ?? p.label ?? name,
+      min: p.min ?? 0,
+      max: p.max ?? 1,
+      step: p.step,
+      marks: p.marks || (p.markDefault === false ? [] : [{ value: p.value, label: "default" }]),
+      get: () => f.params[name],
+      set: (v) => f.api.set(name, v),
+      format: p.format,
+    });
+  }
+
+  /* Tabs: switch between examples of the same idea (an inline param with `options`). A pill slides to the
+     active tab on a soft spring; ←/→, Home and End move between tabs; the tabs are a real tablist. */
+  function buildTabs(root, o) {
+    root.classList.add("fs-tabs");
+    root.setAttribute("role", "tablist");
+    root.setAttribute("aria-label", o.label || "Examples");
+    root.textContent = "";
+    const ink = document.createElement("span");
+    ink.className = "fs-tabs-ink";
+    ink.setAttribute("aria-hidden", "true");
+    root.append(ink);
+    const buttons = o.options.map((option) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.setAttribute("role", "tab");
+      b.textContent = option.label ?? String(option.value);
+      b.addEventListener("click", () => { o.set(option.value); sync(); });
+      root.append(b);
+      return [b, option.value];
+    });
+    let placed = false;
+    function sync() {
+      const value = o.get();
+      for (const [b, v] of buttons) {
+        const on = v === value;
+        b.setAttribute("aria-selected", String(on));
+        b.tabIndex = on ? 0 : -1;
+        if (on && b.offsetWidth) {
+          if (!placed) ink.style.transition = "none";
+          ink.style.width = `${b.offsetWidth}px`;
+          ink.style.transform = `translateX(${b.offsetLeft}px)`;
+          if (!placed) { void ink.offsetWidth; ink.style.transition = ""; placed = true; }
+        }
+      }
+    }
+    root.addEventListener("keydown", (e) => {
+      const i = buttons.findIndex(([, v]) => v === o.get());
+      const n = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: buttons.length - 1 }[e.key];
+      if (n === undefined) return;
+      e.preventDefault();
+      const next = (n + buttons.length) % buttons.length;
+      o.set(buttons[next][1]);
+      sync();
+      buttons[next][0].focus();
+    });
+    new ResizeObserver(() => sync()).observe(root);
+    sync();
+    return { root, sync };
+  }
+  function paramTabs(f, name, root) {
+    const p = f.spec.params?.[name];
+    return buildTabs(root, {
+      label: root.dataset.label ?? p.label ?? name,
+      options: p.options,
+      get: () => f.params[name],
+      set: (v) => f.api.set(name, v),
+    });
+  }
+
+  const SETTINGS_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>';
+
+  /* Settings popover: every param that is not the figure's own interaction lives here (placement
+     defaults to "settings"; use placement: "inline" for the control the reader is meant to play with). */
+  function buildSettings(f) {
+    const entries = Object.entries(f.spec.params || {}).filter(([, p]) => (p.placement ?? "settings") === "settings" && !p.hidden);
+    if (!entries.length) return;
+    const group = headActions(f);
+    if (!group) return;
+    const trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "fs-iconbtn fs-settings";
+    trigger.innerHTML = SETTINGS_ICON;
+    trigger.setAttribute("aria-label", "Figure settings");
+    trigger.setAttribute("aria-expanded", "false");
+    trigger.setAttribute("aria-haspopup", "dialog");
+    const pop = document.createElement("div");
+    pop.className = "fs-popover";
+    pop.id = `${f.id}-settings`;
+    pop.setAttribute("role", "dialog");
+    pop.setAttribute("aria-label", "Figure settings");
+    trigger.setAttribute("aria-controls", pop.id);
+    const native = typeof pop.showPopover === "function";
+    if (native) pop.popover = "auto";
+    else pop.hidden = true;
+    pop.innerHTML = '<div class="fs-popover-head"><span>Settings</span><button type="button" class="fs-popover-reset">Reset</button></div><div class="fs-popover-body"></div>';
+    const body = pop.querySelector(".fs-popover-body");
+    const controls = [];
+    for (const [name, p] of entries) {
+      if (typeof p.value === "number") {
+        const row = document.createElement("div");
+        body.append(row);
+        controls.push(paramSlider(f, name, row));
+      } else if (typeof p.value === "boolean") {
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "fs-switch";
+        row.setAttribute("role", "switch");
+        row.innerHTML = `<span>${p.label || name}</span><i aria-hidden="true"></i>`;
+        const syncSwitch = () => row.setAttribute("aria-checked", String(!!f.params[name]));
+        row.addEventListener("click", () => { f.api.set(name, !f.params[name]); syncSwitch(); });
+        syncSwitch();
+        body.append(row);
+        controls.push({ sync: syncSwitch });
+      } else if (Array.isArray(p.options)) {
+        const row = document.createElement("div");
+        row.className = "fs-segmented";
+        row.setAttribute("role", "group");
+        row.setAttribute("aria-label", p.label || name);
+        row.innerHTML = `<span>${p.label || name}</span>`;
+        const buttons = p.options.map((option) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.textContent = option.label ?? option.value;
+          b.addEventListener("click", () => { f.api.set(name, option.value); sync(); });
+          row.append(b);
+          return [b, option.value];
+        });
+        const sync = () => { for (const [b, value] of buttons) b.setAttribute("aria-pressed", String(f.params[name] === value)); };
+        sync();
+        body.append(row);
+        controls.push({ sync });
+      }
+    }
+    pop.querySelector(".fs-popover-reset").addEventListener("click", () => {
+      for (const [name, p] of entries) f.api.set(name, p.value);
+      for (const c of controls) c.sync();
+    });
+    group.append(trigger);
+    f.plate.append(pop);
+    const place = () => {
+      const r = trigger.getBoundingClientRect();
+      const w = pop.offsetWidth || 272;
+      pop.style.top = `${Math.round(r.bottom + 8)}px`;
+      pop.style.left = `${Math.round(clamp(r.right - w, 12, innerWidth - w - 12))}px`;
+    };
+    const isOpen = () => (native ? pop.matches(":popover-open") : !pop.hidden);
+    const open = () => {
+      if (native) pop.showPopover();
+      else pop.hidden = false;
+      place();
+      for (const c of controls) c.sync();
+      trigger.setAttribute("aria-expanded", "true");
+      pop.querySelector(".fs-slider, .fs-switch, .fs-segmented button")?.focus({ preventScroll: true });
+      addEventListener("scroll", place, { passive: true });
+      addEventListener("resize", place);
+    };
+    const closed = () => {
+      trigger.setAttribute("aria-expanded", "false");
+      removeEventListener("scroll", place);
+      removeEventListener("resize", place);
+    };
+    const close = (returnFocus) => {
+      if (native) pop.hidePopover();
+      else pop.hidden = true;
+      closed();
+      if (returnFocus) trigger.focus({ preventScroll: true });
+    };
+    if (native) pop.addEventListener("toggle", (e) => { if (e.newState === "closed") closed(); });
+    trigger.addEventListener("click", () => (isOpen() ? close(false) : open()));
+    pop.addEventListener("keydown", (e) => { if (e.key === "Escape") { e.preventDefault(); close(true); } });
+    if (!native) {
+      const outside = (e) => { if (isOpen() && !pop.contains(e.target) && e.target !== trigger && !trigger.contains(e.target)) close(false); };
+      document.addEventListener("pointerdown", outside);
+      f.cleanup.push(() => document.removeEventListener("pointerdown", outside));
+    }
+    f.settings = { open, close, controls };
+    f.sliders.push(...controls);
+    f.cleanup.push(() => { trigger.remove(); pop.remove(); closed(); });
+  }
+
+
+  /** How much a drawing is scaled on screen (1 unless its plate is expanded): pointer math divides by it. */
+  const zoomOf = (f) => {
+    const w = f.el.getBoundingClientRect().width;
+    return f.w && w ? w / f.w : 1;
+  };
+
+  // ---------- head actions, stable outputs, timeline surface, tips, expand ----------
+  /** Settings and expand share one right-aligned group in the plate head. */
+  function headActions(f) {
+    const head = f.plate.querySelector(".fs-head");
+    if (!head) return null;
+    let group = head.querySelector(":scope > .fs-head-actions");
+    if (!group) {
+      group = document.createElement("span");
+      group.className = "fs-head-actions";
+      head.append(group);
+      f.cleanup.push(() => group.remove());
+    }
+    return group;
+  }
+
+  /* Values that change must not move the layout: an output reserves the width of its widest possible
+     text (measured when it is visible, otherwise estimated in ch with tabular figures). */
+  function reserve(el, samples) {
+    const texts = samples.map(String).filter(Boolean);
+    if (!texts.length) return;
+    el.classList.add("fs-reserve");
+    if (!el.isConnected || !el.getClientRects().length) {
+      el.style.minWidth = `${Math.max(...texts.map((t) => t.length))}ch`;
+      return;
+    }
+    const probe = el.cloneNode(false);
+    probe.removeAttribute("id");
+    probe.removeAttribute("data-fs-out");
+    probe.style.cssText += ";position:absolute;visibility:hidden;left:-9999px;top:0;width:auto;min-width:0;max-width:none;white-space:nowrap";
+    el.parentElement.append(probe);
+    let width = 0;
+    for (const t of texts) { probe.textContent = t; width = Math.max(width, probe.getBoundingClientRect().width); }
+    const cs = getComputedStyle(probe);
+    if (cs.boxSizing === "content-box") width -= parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth);
+    probe.remove();
+    el.style.minWidth = `${Math.ceil(width)}px`;
+  }
+  function reserveOutputs(f) {
+    const auto = {};
+    if (Number.isFinite(f.duration)) {
+      const fmt = f.spec.formatTime || ((t) => `${t.toFixed(1)} s`);
+      auto.t = [fmt(0), fmt(f.duration), fmt(f.duration * 0.888)];
+    }
+    const steps = (f.spec.steps || []).length;
+    if (steps) auto.step = [`${steps} / ${steps}`];
+    const specs = { ...auto, ...(f.spec.reserve || {}) };
+    document.querySelectorAll(`[data-fs-out^="${f.id}:"]`).forEach((out) => {
+      const name = out.dataset.fsOut.slice(f.id.length + 1);
+      const samples = typeof specs[name] === "function" ? specs[name](f) : specs[name];
+      if (samples?.length) reserve(out, samples);
+    });
+  }
+
+  /* Step captions are stacked in one grid cell, so the box always has the height of the longest
+     caption and swapping steps is a crossfade, never a jump. A hidden twin carries the live text. */
+  function stackCaptions(f, out) {
+    const steps = f.spec.steps || [];
+    if (!out.fsStack) {
+      out.textContent = "";
+      out.classList.add("fs-stack");
+      out.removeAttribute("aria-live");
+      const items = steps.map((s) => {
+        const span = document.createElement("span");
+        span.textContent = s.caption ?? "";
+        span.setAttribute("aria-hidden", "true");
+        out.append(span);
+        return span;
+      });
+      const live = document.createElement("span");
+      live.className = "fs-sr";
+      live.setAttribute("aria-live", "polite");
+      out.append(live);
+      out.fsStack = { items, live };
+    }
+    out.fsStack.items.forEach((span, i) => { span.toggleAttribute("data-on", i === f.step); });
+    const text = steps[f.step]?.caption ?? "";
+    if (out.fsStack.live.textContent !== text) out.fsStack.live.textContent = text;
+  }
+
+  /* Timeline surface: spec.timeAxis(f) -> { x0, x1, t0?, t1?, area? } maps time onto the drawing (CSS px of the figure);
+     `area: { x, y, w, h }` limits where the surface responds (e.g. the chart half of a split figure).
+     Hover previews the time under the pointer; press and drag sideways scrubs (the clock glides to the
+     pointer); a click jumps there; a flick coasts a little further. Vertical touch drags still scroll the page. */
+  function bindScrub(f) {
+    const axis = f.spec.timeAxis;
+    if (!axis || !Number.isFinite(f.duration)) return;
+    const el = f.el;
+    f.stage.classList.add("fs-scrubbable");
+    const toT = (clientX) => {
+      const a = axis(f);
+      const t0 = a.t0 ?? 0;
+      const t1 = a.t1 ?? f.duration;
+      const x = (clientX - el.getBoundingClientRect().left) / zoomOf(f);
+      return clamp(t0 + ((x - a.x0) / (a.x1 - a.x0)) * (t1 - t0), 0, f.duration);
+    };
+    f.timeToX = (t) => {
+      const a = axis(f);
+      const t0 = a.t0 ?? 0;
+      const t1 = a.t1 ?? f.duration;
+      return a.x0 + ((t - t0) / (t1 - t0)) * (a.x1 - a.x0);
+    };
+    let press = null;
+    const inArea = (e) => {
+      const area = axis(f).area;
+      if (!area) return true;
+      const r = el.getBoundingClientRect();
+      const z = zoomOf(f);
+      const x = (e.clientX - r.left) / z;
+      const y = (e.clientY - r.top) / z;
+      return x >= area.x && x <= area.x + area.w && y >= area.y && y <= area.y + area.h;
+    };
+    const onHover = (e) => {
+      if (press || e.pointerType === "touch") return;
+      const inside = inArea(e);
+      el.classList.toggle("fs-scrub-off", !inside);
+      const next = inside ? toT(e.clientX) : null;
+      if (next === f.hoverT) return;
+      f.hoverT = next;
+      f.dirty = true; wake();
+    };
+    const onLeave = () => { if (!press) { f.hoverT = null; f.dirty = true; wake(); } };
+    const onDown = (e) => {
+      if (e.button > 0 || !inArea(e)) return;
+      if (e.pointerType === "mouse") e.preventDefault();
+      press = { x: e.clientX, y: e.clientY, moved: false, samples: [] };
+      trackDrag(el, e, (ev) => {
+        if (!press) return;
+        const dx = ev.clientX - press.x;
+        const dy = ev.clientY - press.y;
+        if (!press.moved) {
+          if (Math.hypot(dx, dy) < 4) return;
+          if (ev.pointerType !== "mouse" && Math.abs(dy) > Math.abs(dx)) { press = null; return; }
+          press.moved = true;
+          f.api.pause();
+          f.drag = "time";
+          hideTip();
+          document.documentElement.classList.add("fs-grabbing");
+        }
+        const t = toT(ev.clientX);
+        press.samples.push({ t, at: ev.timeStamp });
+        if (press.samples.length > 5) press.samples.shift();
+        f.hoverT = t;
+        f.api.seek(t, { animate: true, smooth: 0.07 });
+        f.emit("scrub", t);
+      }, (ev) => {
+        const p = press;
+        press = null;
+        document.documentElement.classList.remove("fs-grabbing");
+        if (!p) return;
+        f.drag = null;
+        if (!p.moved) {
+          if (ev.type === "pointerup") { f.api.pause(); f.api.seek(toT(ev.clientX), { animate: true }); }
+        } else {
+          // Projected landing: a fast release keeps a little of its speed, then settles.
+          const a = p.samples[0];
+          const b = p.samples[p.samples.length - 1];
+          const v = a && b && b.at > a.at ? (b.t - a.t) / ((b.at - a.at) / 1000) : 0;
+          if (Math.abs(v) > f.duration * 0.6) f.api.seek(b.t + v * 0.12, { animate: true, smooth: 0.3 });
+        }
+        if (ev.pointerType === "touch") f.hoverT = null;
+        f.dirty = true; wake();
+      });
+    };
+    el.addEventListener("pointermove", onHover);
+    el.addEventListener("pointerleave", onLeave);
+    el.addEventListener("pointerdown", onDown);
+    f.cleanup.push(() => {
+      el.removeEventListener("pointermove", onHover);
+      el.removeEventListener("pointerleave", onLeave);
+      el.removeEventListener("pointerdown", onDown);
+    });
+  }
+
+  /* Explanations: a title and one or two plain sentences. They open after a hover delay; once one is
+     open, neighbours open at once and the tip glides between them. Keyboard focus opens immediately,
+     a tap toggles on touch, Escape closes. Tips are supplements: essential facts stay on the figure. */
+  const TIP_DELAY = 500;
+  const TIP_WARM = 450;
+  const TIP_GRACE = 100;
+  const tip = { el: null, timer: 0, closeTimer: 0, hiddenAt: -1e9, open: false, source: null };
+  function tipElement() {
+    if (tip.el) return tip.el;
+    const el = document.createElement("div");
+    el.className = "fs-tip";
+    el.id = "fs-tip";
+    el.setAttribute("role", "tooltip");
+    if (typeof el.showPopover === "function") el.popover = "manual";
+    else el.hidden = true;
+    el.innerHTML = "<b></b><span></span>";
+    document.body.append(el);
+    tip.el = el;
+    return el;
+  }
+  function placeTip(anchor, glide) {
+    const el = tip.el;
+    const w = el.offsetWidth;
+    const h = el.offsetHeight;
+    const below = anchor.top - h - 10 < 8;
+    const x = clamp(anchor.left + anchor.width / 2 - w / 2, 8, innerWidth - w - 8);
+    const y = below ? anchor.bottom + 10 : anchor.top - h - 10;
+    el.dataset.side = below ? "bottom" : "top";
+    el.classList.toggle("fs-tip-glide", glide);
+    el.style.translate = `${Math.round(x)}px ${Math.round(y)}px`;
+  }
+  function showTip(content, anchor, source) {
+    const el = tipElement();
+    clearTimeout(tip.closeTimer);
+    const wasOpen = tip.open;
+    el.querySelector("b").textContent = content.title || "";
+    el.querySelector("b").hidden = !content.title;
+    el.querySelector("span").textContent = content.body || "";
+    if (!wasOpen) {
+      if (el.popover) { if (!el.matches(":popover-open")) el.showPopover(); }
+      else el.hidden = false;
+    }
+    placeTip(typeof anchor === "function" ? anchor() : anchor, wasOpen && !reducedQuery.matches);
+    if (!wasOpen) {
+      void el.offsetWidth; // the closed style is computed first, so the open state transitions
+      el.dataset.open = "";
+    }
+    if (tip.source && tip.source !== source) tip.source.removeAttribute?.("aria-describedby");
+    tip.source = source;
+    source?.setAttribute?.("aria-describedby", "fs-tip");
+    tip.open = true;
+  }
+  function hideTip() {
+    clearTimeout(tip.timer);
+    clearTimeout(tip.closeTimer);
+    if (!tip.open) return;
+    tip.open = false;
+    tip.hiddenAt = performance.now();
+    tip.source?.removeAttribute?.("aria-describedby");
+    tip.source = null;
+    const el = tip.el;
+    delete el.dataset.open;
+    setTimeout(() => {
+      if (tip.open) return;
+      if (el.popover) { if (el.matches(":popover-open")) el.hidePopover(); }
+      else el.hidden = true;
+    }, 140);
+  }
+  function requestTip(content, anchor, source, immediate = false) {
+    if (!content || (!content.title && !content.body)) { releaseTip(); return; }
+    clearTimeout(tip.timer);
+    clearTimeout(tip.closeTimer);
+    const warm = tip.open || performance.now() - tip.hiddenAt < TIP_WARM;
+    if (immediate || warm) showTip(content, anchor, source);
+    else tip.timer = setTimeout(() => showTip(content, anchor, source), TIP_DELAY);
+  }
+  function releaseTip() {
+    clearTimeout(tip.timer);
+    clearTimeout(tip.closeTimer);
+    tip.closeTimer = setTimeout(hideTip, TIP_GRACE);
+  }
+  addEventListener("keydown", (e) => { if (e.key === "Escape") hideTip(); });
+  addEventListener("scroll", () => { if (tip.open) hideTip(); }, { passive: true, capture: true });
+  function bindTipElement(node, content) {
+    node.dataset.fsTipBound = "";
+    const rect = () => node.getBoundingClientRect();
+    node.addEventListener("pointerenter", (e) => { if (e.pointerType !== "touch") requestTip(content(), rect, node); });
+    node.addEventListener("pointerleave", (e) => { if (e.pointerType !== "touch") releaseTip(); });
+    node.addEventListener("focus", () => { if (node.matches(":focus-visible")) requestTip(content(), rect, node, true); });
+    node.addEventListener("blur", hideTip);
+    node.addEventListener("pointerup", (e) => {
+      if (e.pointerType !== "touch") return;
+      if (tip.open && tip.source === node) hideTip();
+      else requestTip(content(), rect, node, true);
+    });
+  }
+  /** Canvas or SVG parts: spec.tips = { key: { title, body } }, spec.tipAt(f, x, y) -> key | { key, x, y } | null. */
+  function bindFigureTips(f) {
+    if (!f.spec.tips || !f.spec.tipAt) return;
+    const el = f.el;
+    let current = null;
+    const onMove = (e) => {
+      if (e.pointerType === "touch" || f.drag) return;
+      const r = el.getBoundingClientRect();
+      const z = zoomOf(f);
+      const hit = f.spec.tipAt(f, (e.clientX - r.left) / z, (e.clientY - r.top) / z);
+      const key = hit && typeof hit === "object" ? hit.key : hit;
+      if (key === current) return;
+      current = key ?? null;
+      if (f.spec.tipHover !== false) setHover(f, current);
+      if (!current) { releaseTip(); return; }
+      const ax = hit && typeof hit === "object" && hit.x != null ? r.left + hit.x : e.clientX;
+      const ay = hit && typeof hit === "object" && hit.y != null ? r.top + hit.y : e.clientY;
+      requestTip(f.spec.tips[current], { left: ax, top: ay - 6, width: 0, bottom: ay + 6 }, el);
+    };
+    const onLeave = () => { current = null; if (f.spec.tipHover !== false) setHover(f, null); releaseTip(); };
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerleave", onLeave);
+    f.cleanup.push(() => { el.removeEventListener("pointermove", onMove); el.removeEventListener("pointerleave", onLeave); });
+  }
+
+  /* Expand: the plate itself rises into the top layer (no DOM move, so canvases, state and framework
+     ownership survive), a holder keeps its place in the page, and a FLIP transform carries it from its
+     slot to nearly full screen and back. Interruptible both ways; Escape, the close button or a click on
+     the backdrop close it; focus stays inside while open and returns to the button. */
+  const ICON = (paths, cls) => `<svg class="${cls}" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+  const EXPAND_ICONS = ICON('<path d="M14 4h6v6M10 20H4v-6M20 4l-6.5 6.5M4 20l6.5-6.5"/>', "fs-ico fs-ico-open") + ICON('<path d="M6 6l12 12M18 6L6 18"/>', "fs-ico fs-ico-close");
+  const PLAY_ICONS = ICON('<path d="M8 5.5v13l10-6.5z" fill="currentColor" stroke="none"/>', "fs-ico fs-ico-play") + ICON('<path d="M8.5 5.5v13M15.5 5.5v13" stroke-width="2.2"/>', "fs-ico fs-ico-pause") + ICON('<path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5M4.5 4.5V9H9"/>', "fs-ico fs-ico-replay");
+  function bindExpand(f) {
+    const plate = f.plate;
+    if (plate.fsExpand) { f.expand = plate.fsExpand; return; }
+    if (!plate.classList.contains("fs-plate") || f.spec.expand === false || plate.dataset.fsExpand === "false") return;
+    const group = headActions(f);
+    if (!group) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "fs-iconbtn fs-expand";
+    btn.innerHTML = EXPAND_ICONS;
+    btn.setAttribute("aria-label", "Expand figure");
+    btn.setAttribute("aria-expanded", "false");
+    group.append(btn);
+    const members = () => [...figures.values()].filter((g) => g.plate === plate);
+    const relayout = () => { for (const g of members()) { g.resize(); draw(g); } };
+    let phase = "closed";
+    let holder = null;
+    let backdrop = null;
+    // Two ways to expand. "fit" (the default) keeps the plate's own layout and scales it until it fills 84% of the
+    // viewport's width or height, whichever it reaches first, so its proportions never change; the canvas renders at
+    // the scaled resolution. "fill" (spec.expand === "fill", for drawings that reflow well, like Mermaid) lays the
+    // plate out again at 84vw, up to 84vh tall. Either way the motion rides a critically damped spring (ω 26, settled in
+    // about 0.35 s), every frame is real, both ends match their resting layouts, and a reversal keeps its velocity.
+    const OMEGA = 26;
+    const fill = f.spec.expand === "fill";
+    const box = { x: 0, y: 0, w: 0, s: 1, vx: 0, vy: 0, vw: 0, vs: 0 };
+    let rest = null;
+    let goal = null;
+    let done = null;
+    let raf = 0;
+    let last = 0;
+    const zoom = (z) => { for (const g of members()) g.zoom = z; };
+    const place = () => {
+      if (fill) {
+        plate.style.left = `${box.x}px`;
+        plate.style.top = `${box.y}px`;
+        plate.style.width = `${box.w}px`;
+        relayout();
+      } else {
+        plate.style.transform = `translate(${box.x - rest.left}px, ${box.y - rest.top}px) scale(${box.s})`;
+      }
+    };
+    const pin = (r) => {
+      rest = r;
+      plate.style.inset = "auto";
+      plate.style.margin = "0";
+      plate.style.left = `${r.left}px`;
+      plate.style.top = `${r.top}px`;
+      plate.style.width = `${r.width}px`;
+      plate.style.maxHeight = fill ? "" : "none";
+      plate.style.transformOrigin = "0 0";
+      Object.assign(box, { x: r.left, y: r.top, w: r.width, s: 1, vx: 0, vy: 0, vw: 0, vs: 0 });
+      place();
+    };
+    const unpin = () => { for (const p of ["inset", "margin", "left", "top", "width", "max-height", "transform", "transform-origin"]) plate.style.removeProperty(p); };
+    // Where the expanded plate rests.
+    const expandedBox = () => {
+      if (!fill) {
+        const s = Math.max(1, Math.min((innerWidth * 0.84) / rest.width, (innerHeight * 0.84) / rest.height));
+        return { x: (innerWidth - rest.width * s) / 2, y: (innerHeight - rest.height * s) / 2, w: rest.width, s };
+      }
+      const pinned = plate.getAttribute("style");
+      unpin();
+      relayout();
+      const r = plate.getBoundingClientRect();
+      if (pinned !== null) plate.setAttribute("style", pinned);
+      place();
+      return { x: r.left, y: r.top, w: r.width, s: 1 };
+    };
+    const step = (now) => {
+      const dt = Math.min(1 / 30, (now - last) / 1000 || 1 / 60);
+      last = now;
+      let moving = false;
+      for (const k of ["x", "y", "w", "s"]) {
+        const v = `v${k}`;
+        box[v] += (-OMEGA * OMEGA * (box[k] - goal[k]) - 2 * OMEGA * box[v]) * dt;
+        box[k] += box[v] * dt;
+        const tol = k === "s" ? 0.0008 : 0.4;
+        if (Math.abs(box[k] - goal[k]) > tol || Math.abs(box[v]) > tol * 10) moving = true;
+      }
+      if (!moving) Object.assign(box, { x: goal.x, y: goal.y, w: goal.w, s: goal.s, vx: 0, vy: 0, vw: 0, vs: 0 });
+      place();
+      if (moving) { raf = requestAnimationFrame(step); return; }
+      raf = 0;
+      const then = done;
+      done = null;
+      then?.();
+    };
+    const glide = (target, then) => {
+      goal = target;
+      done = then;
+      if (!raf) { last = performance.now(); raf = requestAnimationFrame(step); }
+    };
+    const onResize = () => { if (phase === "open") { Object.assign(box, expandedBox()); if (!fill) { zoom(box.s); relayout(); } place(); } };
+    const fade = (node, show, duration) => node.animate([{ opacity: show ? 0 : 1 }, { opacity: show ? 1 : 0 }], { duration, easing: "ease-out", fill: "both" });
+    const focusables = () => [...plate.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter((n) => !n.disabled && n.getClientRects().length);
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        if (plate.querySelector(".fs-popover:popover-open")) return;
+        e.preventDefault();
+        close();
+      } else if (e.key === "Tab") {
+        const items = focusables();
+        if (!items.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && (document.activeElement === first || !plate.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && (document.activeElement === last || !plate.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
+      }
+    };
+    const onOutside = (e) => {
+      if (plate.contains(e.target) || e.target.closest?.(".fs-popover, .fs-tip")) return;
+      close();
+    };
+    const label = (open) => {
+      btn.setAttribute("aria-expanded", String(open));
+      btn.setAttribute("aria-label", open ? "Close expanded figure" : "Expand figure");
+    };
+    function open() {
+      if (phase === "open" || phase === "opening") return;
+      if (phase === "closing") {
+        phase = "opening";
+        delete plate.dataset.fsClosing;
+        label(true);
+        backdrop?.getAnimations().forEach((a) => { a.reverse(); });
+        glide(expandedBox(), finishOpen);
+        return;
+      }
+      for (const g of members()) g.settings?.close(false);
+      hideTip();
+      const from = plate.getBoundingClientRect();
+      const cs = getComputedStyle(plate);
+      holder = document.createElement("div");
+      holder.className = "fs-holder";
+      // The placeholder takes the plate's exact box (wide plates break out of the column), so closing lands on it.
+      holder.style.width = `${from.width}px`;
+      holder.style.maxWidth = "none";
+      holder.style.height = `${from.height}px`;
+      holder.style.margin = cs.margin;
+      plate.before(holder);
+      backdrop = document.createElement("div");
+      backdrop.className = "fs-backdrop";
+      document.body.append(backdrop);
+      document.documentElement.classList.add("fs-modal-open");
+      if (typeof plate.showPopover === "function") { plate.popover = "manual"; plate.showPopover(); }
+      plate.dataset.fsExpanded = "";
+      phase = "opening";
+      label(true);
+      const reduced = reducedQuery.matches;
+      fade(backdrop, true, reduced ? 120 : 280);
+      pin(from);
+      const target = expandedBox();
+      if (!fill) { zoom(target.s); relayout(); }
+      if (reduced) { Object.assign(box, target); place(); finishOpen(); }
+      else glide(target, finishOpen);
+      addEventListener("resize", onResize);
+      btn.focus({ preventScroll: true });
+      document.addEventListener("keydown", onKey, true);
+      document.addEventListener("pointerdown", onOutside, true);
+      f.emit("expand", true);
+    }
+    function finishOpen() {
+      phase = "open";
+      if (fill) { unpin(); relayout(); }
+    }
+    function close() {
+      if (phase === "closed" || phase === "closing") return;
+      phase = "closing";
+      plate.dataset.fsClosing = "";
+      label(false);
+      const reduced = reducedQuery.matches;
+      backdrop?.getAnimations().forEach((a) => { a.cancel(); });
+      if (backdrop) fade(backdrop, false, reduced ? 100 : 260);
+      if (reduced) { finishClose(); return; }
+      if (fill && !raf) { const r = plate.getBoundingClientRect(); pin(rest); Object.assign(box, { x: r.left, y: r.top, w: r.width }); place(); }
+      const h = holder.getBoundingClientRect();
+      glide({ x: h.left, y: h.top, w: h.width, s: 1 }, finishClose);
+    }
+    function finishClose() {
+      cancelAnimationFrame(raf);
+      raf = 0;
+      done = null;
+      removeEventListener("resize", onResize);
+      unpin();
+      zoom(1);
+      document.removeEventListener("keydown", onKey, true);
+      document.removeEventListener("pointerdown", onOutside, true);
+      delete plate.dataset.fsExpanded;
+      delete plate.dataset.fsClosing;
+      if (plate.popover) { if (plate.matches(":popover-open")) plate.hidePopover(); plate.removeAttribute("popover"); }
+      holder?.remove();
+      holder = null;
+      backdrop?.remove();
+      backdrop = null;
+      document.documentElement.classList.remove("fs-modal-open");
+      phase = "closed";
+      relayout();
+      btn.focus({ preventScroll: true });
+      f.emit("expand", false);
+    }
+    btn.addEventListener("click", () => (phase === "open" || phase === "opening" ? close() : open()));
+    plate.fsExpand = { open, close, isOpen: () => phase === "open" || phase === "opening" };
+    f.expand = plate.fsExpand;
+    f.cleanup.push(() => { if (phase !== "closed") finishClose(); btn.remove(); delete plate.fsExpand; });
+  }
+
+  // ---------- figures ----------
+  function figure(id, spec) {
+    const el = document.getElementById(id);
+    if (!el) throw new Error(`FS: no element #${id}`);
+    const plate = el.closest(".fs-plate") || el.parentElement;
+    const stage = el.closest(".fs-stage") || el.parentElement;
+    const isCanvas = el instanceof HTMLCanvasElement;
+    const f = {
+      id, el, spec, plate, stage,
+      ctx: isCanvas ? el.getContext("2d") : null,
+      w: 0, h: 0, dpr: 1,
+      t: 0, duration: spec.duration ?? Infinity, rate: 1,
+      tTarget: null, tState: { value: 0, velocity: 0 }, tSmooth: 0.22, hoverT: null, drag: null,
+      playing: false, visible: false, dirty: true, started: false,
+      step: 0, from: 0, stepT: 1,
+      params: {}, v: {}, hover: null, state: {}, outputs: {},
+      listeners: {}, C: { c: [] }, patterns: {}, cleanup: [], sliders: [],
+    };
+    for (const [name, p] of Object.entries(spec.params || {})) f.params[name] = f.v[name] = p.value;
+    const emit = (event, detail) => {
+      for (const fn of f.listeners[event] || []) fn(detail, api);
+      f.el.dispatchEvent(new CustomEvent(`fs:${event}`, { detail, bubbles: true }));
+    };
+    const finite = Number.isFinite(f.duration);
+    const api = {
+      id,
+      element: el,
+      get t() { return f.t; },
+      get step() { return f.step; },
+      get playing() { return f.playing; },
+      get params() { return { ...f.params }; },
+      play() {
+        if (f.tTarget !== null) { f.t = f.tTarget; f.tTarget = null; }
+        if (finite && f.t >= f.duration - 1e-6) f.t = 0;
+        f.playing = true; f.started = true; emit("play"); sync(f); wake();
+      },
+      pause() { f.playing = false; emit("pause"); sync(f); wake(); },
+      toggle() { f.playing ? api.pause() : api.play(); },
+      /** seek(t) jumps; seek(t, { animate: true, smooth }) glides there (a new target retargets mid-flight). */
+      seek(t, options = {}) {
+        const to = finite ? clamp(t, 0, f.duration) : Math.max(0, t);
+        f.started = true;
+        if (options.animate && !reducedQuery.matches) {
+          if (f.tTarget === null) f.tState = { value: f.t, velocity: 0 };
+          f.tTarget = to;
+          f.tSmooth = options.smooth ?? 0.22;
+        } else {
+          f.tTarget = null;
+          f.t = to;
+        }
+        f.dirty = true; emit("seek", to); sync(f); wake();
+      },
+      chapter(dir) {
+        const now = f.tTarget ?? f.t;
+        const marks = [0, ...(spec.chapters || []).map((c) => c.t), ...(finite ? [f.duration] : [])].sort((a, b) => a - b);
+        const target = dir > 0 ? marks.find((m) => m > now + 1e-3) : [...marks].reverse().find((m) => m < now - 1e-3);
+        if (target !== undefined) { api.pause(); api.seek(target, { animate: true }); }
+      },
+      goto(n) {
+        const steps = spec.steps || [];
+        n = clamp(Math.round(n), 0, Math.max(0, steps.length - 1));
+        if (n === f.step) return;
+        f.from = f.step; f.step = n; f.stepT = reducedQuery.matches ? 1 : 0;
+        spec.onStep?.(f, n);
+        emit("step", n); sync(f); f.dirty = true; wake();
+      },
+      next() { api.goto(f.step + 1); },
+      prev() { api.goto(f.step - 1); },
+      set(name, value, options = {}) {
+        if (typeof name === "object") { for (const key in name) api.set(key, name[key], value); return; }
+        const p = spec.params?.[name];
+        if (!p) throw new Error(`FS: unknown param ${name} on #${id}`);
+        if (typeof p.value === "number") value = clamp(Number(value), p.min ?? -Infinity, p.max ?? Infinity);
+        f.params[name] = value;
+        if (options.instant || reducedQuery.matches || typeof value !== "number") f.v[name] = value;
+        spec.onParam?.(f, name, value);
+        emit("param", { name, value }); sync(f); f.dirty = true; wake();
+      },
+      reset() {
+        for (const [name, p] of Object.entries(spec.params || {})) api.set(name, p.value);
+        api.goto(0); api.seek(0);
+        spec.init?.(f);
+        emit("reset");
+      },
+      state: () => ({ t: f.tTarget ?? f.t, step: f.step, params: { ...f.params }, playing: f.playing }),
+      apply(s) {
+        if (s.params) api.set(s.params, { instant: true });
+        if (s.step != null) api.goto(s.step);
+        if (s.t != null) api.seek(s.t);
+        if (s.playing === true) api.play();
+        if (s.playing === false) api.pause();
+      },
+      on(event, fn) {
+        if (!f.listeners[event]) f.listeners[event] = [];
+        f.listeners[event].push(fn);
+        return () => { f.listeners[event] = f.listeners[event].filter((g) => g !== fn); };
+      },
+      out(name, text) { f.outputs[name] = String(text); writeOutputs(f); },
+      hover(key) { setHover(f, key); },
+      openSettings() { f.settings?.open(); },
+      closeSettings() { f.settings?.close(false); },
+      redraw() { f.dirty = true; wake(); },
+      expand() { f.expand?.open(); },
+      collapse() { f.expand?.close(); },
+      /** Release observers and listeners (call on unmount / route change). */
+      dispose() {
+        for (const fn of f.cleanup) fn();
+        f.probes?.[0]?.parentElement?.remove();
+        figures.delete(id);
+      },
+    };
+    f.api = api;
+    f.emit = emit;
+    figures.set(id, f);
+    readTheme(f);
+    const plateObserver = new MutationObserver(() => { readTheme(f); wake(); });
+    plateObserver.observe(plate, { attributes: true, attributeFilter: ["data-fs-theme", "data-fs-mode"] });
+    f.cleanup.push(() => plateObserver.disconnect());
+    spec.init?.(f);
+
+    const resize = () => {
+      // Layout width, not getBoundingClientRect: a transform (the expand FLIP) must not change the drawing size.
+      const cs = getComputedStyle(stage);
+      const w = Math.floor(stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight));
+      if (w <= 0) return;
+      const h = Math.round(spec.height ? spec.height(w) : w * 0.5);
+      // An expanded plate is scaled up, so it renders at its on-screen resolution.
+      const dpr = Math.min(4, Math.min(2, devicePixelRatio || 1) * (f.zoom || 1));
+      if (w === f.w && h === f.h && dpr === f.dpr) return;
+      f.w = w; f.h = h; f.dpr = dpr;
+      if (isCanvas) {
+        el.style.height = `${h}px`;
+        el.width = Math.round(w * dpr);
+        el.height = Math.round(h * dpr);
+        f.patterns = {};
+      }
+      spec.resize?.(f);
+      f.dirty = true; wake();
+    };
+    f.resize = resize;
+    const sizes = new ResizeObserver(resize);
+    sizes.observe(stage);
+    const views = new IntersectionObserver((entries) => {
+      const entry = entries[entries.length - 1];
+      f.visible = entry.isIntersecting;
+      // Narrative timelines start once, when enough of the figure is in view.
+      if (f.visible && !f.started && entry.intersectionRatio >= 0.35 && spec.autoplay !== false && !reducedQuery.matches) api.play();
+      f.dirty = true; wake();
+    }, { threshold: [0, 0.35, 0.6], rootMargin: "60px" });
+    views.observe(el);
+    f.cleanup.push(() => { sizes.disconnect(); views.disconnect(); });
+    resize();
+    applyReduced(f);
+    bindKeys(f);
+    bindHandles(f);
+    bindScrub(f);
+    bindFigureTips(f);
+    buildSettings(f);
+    bindExpand(f);
+    bindAll();
+    sync(f);
+    reserveOutputs(f);
+    return api;
+  }
+
+  function applyReduced(f) {
+    if (!reducedQuery.matches) return;
+    f.playing = false;
+    f.stepT = 1;
+    for (const name in f.params) f.v[name] = f.params[name];
+    // Show the payoff of a timeline, or a representative moment of a process.
+    if (Number.isFinite(f.duration)) f.t = f.spec.keyframe ?? f.duration;
+    else if (f.spec.update && f.spec.settle) for (let i = 0; i < f.spec.settle * 60; i++) { f.spec.update(f, 1 / 60); f.t += 1 / 60; }
+    f.dirty = true;
+  }
+
+  function bindKeys(f) {
+    const stage = f.stage;
+    if (!stage.hasAttribute("tabindex")) stage.tabIndex = 0;
+    const onKey = (e) => {
+      const steps = (f.spec.steps || []).length;
+      const keys = {
+        " ": () => f.api.toggle(),
+        ArrowRight: () => (steps ? f.api.next() : f.api.chapter(1)),
+        ArrowLeft: () => (steps ? f.api.prev() : f.api.chapter(-1)),
+        Home: () => (steps ? f.api.goto(0) : f.api.seek(0, { animate: true })),
+        End: () => (steps ? f.api.goto(steps - 1) : f.api.seek(f.duration, { animate: true })),
+      };
+      if (keys[e.key]) { e.preventDefault(); keys[e.key](); }
+    };
+    stage.addEventListener("keydown", onKey);
+    f.cleanup.push(() => stage.removeEventListener("keydown", onKey));
+  }
+
+  // ---------- declarative bindings ----------
+  const parse = (value) => { const [id, rest] = value.split(/[: ]/); return { f: figures.get(id), rest }; };
+  function bindAll() {
+    document.querySelectorAll("[data-fs]:not([data-fs-bound])").forEach((el) => {
+      const [id, action] = el.dataset.fs.split(" ");
+      const f = figures.get(id);
+      if (!f) return;
+      el.dataset.fsBound = "";
+      if (action === "play") { el.classList.add("fs-iconbtn", "fs-play"); el.innerHTML = PLAY_ICONS; }
+      el.addEventListener("click", () => {
+        const a = f.api;
+        ({ play: a.toggle, next: a.next, prev: a.prev, reset: a.reset, "chapter-next": () => a.chapter(1), "chapter-prev": () => a.chapter(-1) })[action]?.();
+      });
+    });
+    document.querySelectorAll("div[data-fs-param]:not([data-fs-bound]), span[data-fs-param]:not([data-fs-bound])").forEach((root) => {
+      const { f, rest: name } = parse(root.dataset.fsParam);
+      if (!f || !f.spec.params?.[name]) return;
+      root.dataset.fsBound = "";
+      f.sliders.push(Array.isArray(f.spec.params[name].options) ? paramTabs(f, name, root) : paramSlider(f, name, root));
+    });
+    document.querySelectorAll("div[data-fs-seek]:not([data-fs-bound])").forEach((root) => {
+      const f = figures.get(root.dataset.fsSeek);
+      if (!f || !Number.isFinite(f.duration)) return;
+      root.dataset.fsBound = "";
+      const slider = buildSlider(root, {
+        label: root.dataset.label,
+        min: 0,
+        max: f.duration,
+        marks: (f.spec.chapters || []).map((c) => ({ value: c.t, label: c.label })),
+        get: () => f.tTarget ?? f.t,
+        set: (t, phase) => { if (phase === "drag" || phase === "key") f.api.pause(); f.api.seek(t, { animate: true, smooth: phase === "drag" ? 0.07 : 0.2 }); },
+        format: f.spec.formatTime || ((t) => `${t.toFixed(1)} s`),
+      });
+      f.seekSliders = [...(f.seekSliders || []), slider];
+      f.sliders.push(slider);
+    });
+    document.querySelectorAll("input[data-fs-param]:not([data-fs-bound]), select[data-fs-param]:not([data-fs-bound])").forEach((input) => {
+      const { f, rest: name } = parse(input.dataset.fsParam);
+      const p = f?.spec.params?.[name];
+      if (!p) return;
+      input.dataset.fsBound = "";
+      if (input.type === "range" || input.type === "number") {
+        for (const key of ["min", "max", "step"]) if (p[key] != null && !input.hasAttribute(key)) input[key] = p[key];
+      }
+      input.addEventListener("input", () => f.api.set(name, input.type === "checkbox" ? input.checked : input.type === "range" || input.type === "number" ? Number(input.value) : input.value));
+    });
+    document.querySelectorAll("input[data-fs-seek]:not([data-fs-bound])").forEach((input) => {
+      const f = figures.get(input.dataset.fsSeek);
+      if (!f || !Number.isFinite(f.duration)) return;
+      input.dataset.fsBound = "";
+      input.min = 0; input.max = f.duration; input.step = "any";
+      input.addEventListener("input", () => { f.api.pause(); f.api.seek(Number(input.value)); });
+    });
+    document.querySelectorAll("[data-fs-scrub]:not([data-fs-bound])").forEach((span) => {
+      const { f, rest: name } = parse(span.dataset.fsScrub);
+      const p = f?.spec.params?.[name];
+      if (!p) return;
+      span.dataset.fsBound = "";
+      span.classList.add("fs-scrub");
+      span.tabIndex = 0;
+      span.setAttribute("role", "slider");
+      span.setAttribute("aria-label", p.label || name);
+      const range = (p.max ?? 1) - (p.min ?? 0);
+      const stepSize = p.step || range / 100;
+      let start = null;
+      span.addEventListener("pointerdown", (e) => { start = { x: e.clientX, v: f.params[name] }; span.setPointerCapture(e.pointerId); span.dataset.active = ""; });
+      span.addEventListener("pointermove", (e) => {
+        if (!start) return;
+        const raw = start.v + ((e.clientX - start.x) / 200) * range;
+        f.api.set(name, Math.round(raw / stepSize) * stepSize);
+      });
+      const end = () => { start = null; delete span.dataset.active; };
+      span.addEventListener("pointerup", end);
+      span.addEventListener("pointercancel", end);
+      span.addEventListener("keydown", (e) => {
+        const d = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 }[e.key];
+        if (d) { e.preventDefault(); f.api.set(name, f.params[name] + d * stepSize * (e.shiftKey ? 10 : 1)); }
+      });
+    });
+    document.querySelectorAll("[data-fs-ref]:not([data-fs-bound])").forEach((word) => {
+      const { f, rest: key } = parse(word.dataset.fsRef);
+      if (!f) return;
+      word.dataset.fsBound = "";
+      if (!word.hasAttribute("tabindex")) word.tabIndex = 0;
+      const on = () => setHover(f, key);
+      const off = () => setHover(f, null);
+      word.addEventListener("pointerenter", on);
+      word.addEventListener("pointerleave", off);
+      word.addEventListener("focus", on);
+      word.addEventListener("blur", off);
+    });
+    document.querySelectorAll("[data-fs-tip]:not([data-fs-tip-bound])").forEach((node) => {
+      bindTipElement(node, () => ({ title: node.dataset.fsTipTitle, body: node.dataset.fsTip }));
+    });
+    document.querySelectorAll("[data-fs-dots]").forEach((dots) => {
+      const f = figures.get(dots.dataset.fsDots);
+      if (f && !dots.children.length) dots.innerHTML = (f.spec.steps || []).map(() => "<i></i>").join("");
+    });
+    figures.forEach(sync);
+  }
+
+  function setHover(f, key) {
+    if (f.hover === key) return;
+    f.hover = key;
+    document.querySelectorAll(`[data-fs-ref^="${f.id}:"]`).forEach((word) => {
+      word.toggleAttribute("data-active", key !== null && word.dataset.fsRef === `${f.id}:${key}`);
+    });
+    f.emit("hover", key);
+    f.dirty = true;
+    wake();
+  }
+
+  function format(f, name) {
+    const p = f.spec.params?.[name];
+    if (!p) return "";
+    const v = f.params[name];
+    return p.format ? p.format(v) : typeof v === "number" ? String(+v.toFixed(3)) : String(v);
+  }
+  function writeOutputs(f) {
+    const steps = f.spec.steps || [];
+    document.querySelectorAll(`[data-fs-out^="${f.id}:"]`).forEach((out) => {
+      const name = out.dataset.fsOut.slice(f.id.length + 1);
+      let text;
+      if (name === "t") text = f.spec.formatTime ? f.spec.formatTime(f.t) : `${f.t.toFixed(1)} s`;
+      else if (name === "step") text = steps.length ? `${f.step + 1} / ${steps.length}` : "";
+      else if (name === "caption") { stackCaptions(f, out); return; }
+      else if (name in f.outputs) text = f.outputs[name];
+      else text = format(f, name);
+      if (out.textContent !== text) out.textContent = text;
+    });
+  }
+  function sync(f) {
+    const steps = f.spec.steps || [];
+    document.querySelectorAll(`[data-fs^="${f.id} "]`).forEach((b) => {
+      const action = b.dataset.fs.split(" ")[1];
+      if (action === "play") {
+        const state = f.playing ? "pause" : finiteDone(f) ? "replay" : "play";
+        if (b.dataset.state !== state) {
+          b.dataset.state = state;
+          b.setAttribute("aria-label", { pause: "Pause", replay: "Replay", play: "Play" }[state]);
+        }
+      }
+      if (action === "prev") b.disabled = f.step <= 0;
+      if (action === "next") b.disabled = f.step >= steps.length - 1;
+    });
+    for (const slider of f.sliders) slider.sync();
+    document.querySelectorAll(`input[data-fs-param^="${f.id}:"], select[data-fs-param^="${f.id}:"]`).forEach((input) => {
+      const name = input.dataset.fsParam.slice(f.id.length + 1);
+      if (input.type === "checkbox") input.checked = !!f.params[name];
+      else if (document.activeElement !== input) input.value = f.params[name];
+    });
+    document.querySelectorAll(`[data-fs-scrub^="${f.id}:"]`).forEach((span) => {
+      const name = span.dataset.fsScrub.slice(f.id.length + 1);
+      span.textContent = format(f, name);
+      span.setAttribute("aria-valuenow", f.params[name]);
+    });
+    document.querySelectorAll(`[data-fs-dots="${f.id}"] i`).forEach((dot, i) => { dot.toggleAttribute("data-on", i === f.step); });
+    writeOutputs(f);
+  }
+  const finiteDone = (f) => Number.isFinite(f.duration) && f.t >= f.duration - 1e-6;
+
+  // ---------- one loop for every figure; it sleeps when nothing visible is changing ----------
+  function wake() {
+    if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
+  }
+  function tick(now) {
+    raf = 0;
+    const dt = Math.min(0.1, (now - last) / 1000);
+    last = now;
+    let busy = false;
+    for (const fn of animations) if (fn(dt)) animations.delete(fn);
+    if (animations.size) busy = true;
+    for (const f of figures.values()) {
+      if (!f.w || !f.visible || document.hidden) continue;
+      if (f.playing) {
+        const step = dt * f.rate;
+        f.spec.update?.(f, step);
+        f.t += step;
+        if (Number.isFinite(f.duration) && f.t >= f.duration) {
+          if (f.spec.loop) f.t %= f.duration;
+          else { f.t = f.duration; f.playing = false; f.emit("end"); sync(f); }
+        }
+        f.dirty = true;
+        busy = busy || f.playing;
+        document.querySelectorAll(`input[data-fs-seek="${f.id}"]`).forEach((s) => { s.value = f.t; });
+        for (const slider of f.seekSliders || []) slider.sync(true);
+        writeOutputs(f);
+      }
+      if (f.tTarget !== null && !f.playing) {
+        // Target-based clock: a critically damped glide that keeps its velocity when the target moves.
+        spring(f.tState, f.tTarget, f.tSmooth, dt);
+        f.t = Number.isFinite(f.duration) ? clamp(f.tState.value, 0, f.duration) : f.tState.value;
+        if (Math.abs(f.t - f.tTarget) < 1e-3 * (1 + Math.abs(f.tTarget)) && Math.abs(f.tState.velocity) < 1e-2) {
+          f.t = f.tTarget;
+          f.tTarget = null;
+          sync(f);
+        }
+        f.dirty = busy = true;
+        for (const slider of f.seekSliders || []) slider.sync(true);
+        writeOutputs(f);
+      }
+      for (const name in f.params) {
+        const target = f.params[name];
+        if (typeof target !== "number") continue;
+        if (Math.abs(f.v[name] - target) > 1e-4 * (1 + Math.abs(target))) {
+          f.v[name] = damp(f.v[name], target, 12, dt);
+          f.dirty = busy = true;
+        } else f.v[name] = target;
+      }
+      if (f.stepT < 1) {
+        f.stepT = Math.min(1, f.stepT + dt / (f.spec.stepDuration || 0.48));
+        f.dirty = busy = true;
+      }
+      if (f.dirty) draw(f);
+    }
+    if (busy && !raf) raf = requestAnimationFrame(tick);
+  }
+  function draw(f) {
+    if (!f.w) return;
+    f.dirty = false; // cleared first so render may request another frame via fig.redraw()
+    if (f.ctx) {
+      f.ctx.setTransform(f.dpr, 0, 0, f.dpr, 0, 0);
+      f.ctx.clearRect(0, 0, f.w, f.h);
+      f.ctx.globalAlpha = 1;
+      f.ctx.setLineDash([]);
+    }
+    try { f.spec.render(f, f.ctx); } catch (error) { console.error(`FS #${f.id}`, error); f.playing = false; sync(f); }
+    positionHandles(f);
+  }
+
+  // ---------- themes ----------
+  function setTheme(name, scope = document.documentElement) {
+    if (!name || name === "zef") delete scope.dataset.fsTheme;
+    else scope.dataset.fsTheme = name;
+  }
+  function setMode(mode, scope = document.documentElement) {
+    if (mode) scope.dataset.fsMode = mode;
+    else delete scope.dataset.fsMode;
+  }
+  const rethemeAll = () => { figures.forEach((f) => { readTheme(f); reserveOutputs(f); }); wake(); };
+  // A host page may tween its palette on <html> (the site animates every color token at once). While that runs,
+  // read the colors again every frame so canvases change with the page instead of snapping at the end.
+  let following = 0;
+  const followTheme = () => {
+    rethemeAll();
+    if (following) return;
+    const step = () => {
+      // Paint in this frame, with the colors the page paints in this frame; waiting for the next tick lags by one.
+      figures.forEach((f) => { readTheme(f); draw(f); });
+      following = document.documentElement.getAnimations().some((a) => a.playState === "running") ? requestAnimationFrame(step) : 0;
+    };
+    following = requestAnimationFrame(step);
+  };
+  // Root-level theme switches (including a host site's .dark/.light class); plates are watched per figure.
+  new MutationObserver(followTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-fs-theme", "data-fs-mode", "class", "data-style-palette"] });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rethemeAll);
+  reducedQuery.addEventListener("change", () => { figures.forEach((f) => { applyReduced(f); sync(f); }); wake(); });
+  document.addEventListener("visibilitychange", wake);
+  document.fonts?.ready.then(rethemeAll);
+
+  global.FS = {
+    figure,
+    get: (id) => figures.get(id)?.api,
+    list: () => [...figures.keys()],
+    setTheme,
+    setMode,
+    wake,
+    k,
+    ease,
+    window: window_,
+    damp,
+    spring,
+    clamp,
+    lerp,
+    remap,
+    rng,
+    gauss,
+    reduced: () => reducedQuery.matches,
+    rubber,
+    springTo,
+    animate,
+    slider: buildSlider,
+    tabs: buildTabs,
+    reserve,
+    tip: (content, anchor) => (content ? showTip(content, anchor, null) : hideTip()),
+  };
+})(typeof window !== "undefined" ? window : globalThis);
+/* ---- end assets/runtime/fs-runtime.js ---- */
+</script>
+<script>
+/* Theme picker: the Omarchy list mirrors themes/omarchy.json. */
+(() => {
+  const omarchy = { "catppuccin": "Catppuccin", "catppuccin-latte": "Catppuccin Latte", "ethereal": "Ethereal", "everforest": "Everforest", "flexoki-light": "Flexoki Light", "gruvbox": "Gruvbox", "hackerman": "Hackerman", "kanagawa": "Kanagawa", "last-horizon": "Last Horizon", "lumon": "Lumon", "lupine": "Lupine", "matte-black": "Matte Black", "miasma": "Miasma", "nord": "Nord", "osaka-jade": "Osaka Jade", "retro-82": "Retro 82", "ristretto": "Ristretto", "rose-pine": "Rosé Pine Dawn", "solitude": "Solitude", "starship": "Starship", "tokyo-night": "Tokyo Night", "vantablack": "Vantablack", "white": "White" };
+  const group = document.getElementById("omarchy-themes");
+  for (const [id, name] of Object.entries(omarchy)) group.append(new Option(name, id));
+  const select = document.getElementById("theme");
+  select.addEventListener("change", () => {
+    const value = select.value;
+    if (value === "zef-light") { FS.setTheme(null); FS.setMode("light"); }
+    else { FS.setMode(value === "zef" ? "dark" : null); FS.setTheme(value); }
+  });
+})();
+
+/* ================= Fig 1: stepped flow (SVG) ================= */
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.getElementById("fig-flow");
+  const el = (tag, attrs, parent = svg) => { const n = document.createElementNS(NS, tag); for (const a in attrs) n.setAttribute(a, attrs[a]); parent.append(n); return n; };
+  const H = 46;
+  const meta = {
+    input: { label: "Input", sub: "event stream" },
+    router: { label: "Router", sub: "gate · 4 ms" },
+    model: { label: "Model", sub: "slow path · 900 ms" },
+    memory: { label: "Memory", sub: "fast lookup · 20 ms" },
+    output: { label: "Output", sub: "response" },
+  };
+  // Two layouts instead of shrinking: text stays ≥ 11px on phones.
+  const layouts = {
+    wide: { box: [960, 300], dir: "x", at: { input: [40, 125, 130], router: [260, 125, 140], model: [500, 50, 150], memory: [500, 200, 150], output: [770, 125, 140] } },
+    narrow: { box: [360, 470], dir: "y", at: { input: [100, 10, 160], router: [100, 110, 160], model: [12, 230, 160], memory: [188, 230, 160], output: [100, 380, 160] } },
+  };
+  const edges = [["input", "router"], ["router", "model"], ["router", "memory"], ["model", "output"], ["memory", "output"]];
+  const steps = [
+    { on: Object.keys(meta), caption: "The whole path. Packets flow from input to output." },
+    { on: ["input", "router"], caption: "Every event reaches the router first; it costs a few milliseconds." },
+    { on: ["router", "memory", "output"], caption: "Most requests are answered from memory without the model." },
+    { on: ["router", "model", "output"], caption: "Only novel requests take the slow path through the model." },
+  ];
+  const paths = edges.map(([a, b]) => ({ a, b, path: el("path", { fill: "none" }), length: 1, dots: [0, 1, 2].map(() => el("circle", { r: 3 })), alpha: 1 }));
+  const nodes = {};
+  for (const key in meta) {
+    const n = (nodes[key] = { ...meta[key], alpha: 1 });
+    n.g = el("g", { "data-key": key });
+    n.rect = el("rect", { height: H, rx: 6 }, n.g);
+    n.t1 = el("text", { "font-size": 13, "font-weight": 600 }, n.g); n.t1.textContent = n.label;
+    n.t2 = el("text", { "font-size": 10.5 }, n.g); n.t2.textContent = n.sub;
+    // Figure → prose: hovering a node lights the matching words.
+    n.g.addEventListener("pointerenter", () => FS.get("fig-flow").hover(key));
+    n.g.addEventListener("pointerleave", () => FS.get("fig-flow").hover(null));
+  }
+  function layout(name) {
+    const L = layouts[name];
+    svg.setAttribute("viewBox", `0 0 ${L.box[0]} ${L.box[1]}`);
+    for (const key in nodes) {
+      const [x, y, w] = L.at[key], n = nodes[key];
+      Object.assign(n, { x, y, w });
+      n.rect.setAttribute("x", x); n.rect.setAttribute("y", y); n.rect.setAttribute("width", w);
+      n.t1.setAttribute("x", x + 14); n.t1.setAttribute("y", y + 20);
+      n.t2.setAttribute("x", x + 14); n.t2.setAttribute("y", y + 35);
+    }
+    for (const p of paths) {
+      const A = nodes[p.a], B = nodes[p.b];
+      let d;
+      if (L.dir === "x") { const p0 = [A.x + A.w, A.y + H / 2], p1 = [B.x, B.y + H / 2], m = (p0[0] + p1[0]) / 2; d = `M${p0} C${m},${p0[1]} ${m},${p1[1]} ${p1}`; }
+      else { const p0 = [A.x + A.w / 2, A.y + H], p1 = [B.x + B.w / 2, B.y], m = (p0[1] + p1[1]) / 2; d = `M${p0} C${p0[0]},${m} ${p1[0]},${m} ${p1}`; }
+      p.path.setAttribute("d", d);
+      p.length = p.path.getTotalLength();
+    }
+  }
+  let phase = 0, current = "";
+  FS.figure("fig-flow", {
+    height: (w) => (w < 560 ? (w * 470) / 360 : (w * 300) / 960),
+    steps,
+    resize(f) { const name = f.w < 560 ? "narrow" : "wide"; if (name !== current) { current = name; layout(name); } },
+    update(f, dt) { phase = (phase + dt * 0.3) % 1; },
+    render(f) {
+      const C = f.C, on = new Set(steps[f.step].on), e = FS.ease.out(f.stepT);
+      for (const key in nodes) {
+        const n = nodes[key], hovered = f.hover === key;
+        const target = on.has(key) ? 1 : C.dim;
+        n.alpha = f.stepT < 1 ? FS.lerp(n.alpha, target, e) : target;
+        n.g.setAttribute("opacity", hovered ? 1 : n.alpha.toFixed(3));
+        n.rect.setAttribute("fill", C.surface);
+        n.rect.setAttribute("stroke", hovered ? C.accent : on.has(key) && f.step ? C.fg : C.lineStrong);
+        n.rect.setAttribute("stroke-width", hovered ? 1.5 : 1);
+        n.t1.setAttribute("fill", C.fg); n.t2.setAttribute("fill", C.muted);
+      }
+      paths.forEach((p, i) => {
+        const active = on.has(p.a) && on.has(p.b);
+        p.alpha = f.stepT < 1 ? FS.lerp(p.alpha, active ? 1 : 0.18, e) : active ? 1 : 0.18;
+        p.path.setAttribute("stroke", C.muted); p.path.setAttribute("stroke-width", C.edge); p.path.setAttribute("opacity", p.alpha.toFixed(3));
+        p.dots.forEach((dot, j) => {
+          const u = (phase + j / 3 + i * 0.13) % 1, pt = p.path.getPointAtLength(u * p.length);
+          dot.setAttribute("cx", pt.x.toFixed(1)); dot.setAttribute("cy", pt.y.toFixed(1));
+          dot.setAttribute("fill", active && f.step ? C.accent : C.fg);
+          dot.setAttribute("opacity", (p.alpha * Math.sin(Math.PI * u)).toFixed(3));
+        });
+      });
+    },
+  });
+})();
+
+/* ================= Fig 2: one-clock timeline with a counterfactual lane ================= */
+(() => {
+  const lanes = [
+    { name: "Sequential", segs: [["think", 0, 1.6], ["search", 1.6, 4.2], ["think", 4.2, 5.4], ["fetch", 5.4, 8.6], ["answer", 8.6, 9.8]] },
+    { name: "Overlapped", segs: [["think", 0, 1.6], ["search", 1.6, 4.2], ["fetch", 2.0, 4.8], ["think", 4.8, 5.6], ["answer", 5.6, 6.8]] },
+  ];
+  const end = (lane) => Math.max(...lane.segs.map((s) => s[2]));
+  const seqEnd = end(lanes[0]), overlapEnd = end(lanes[1]), T = 10.6;
+  const fig = FS.figure("fig-time", {
+    height: (w) => (w < 560 ? 220 : 210),
+    duration: T,
+    chapters: [{ t: 1.6, label: "first tool call" }, { t: overlapEnd, label: "overlapped answers" }, { t: seqEnd, label: "sequential answers" }],
+    formatTime: (t) => `t = ${Math.min(t, seqEnd).toFixed(1)} s`,
+    // The drawing is the scrubber: time 0 at the plot's left edge, the sequential answer at its right.
+    timeAxis: (f) => ({ x0: f.w < 560 ? 76 : 96, x1: f.w - 16, t1: seqEnd }),
+    reserve: { phase: ["search + fetch", "answered", "think", "idle"] },
+    tips: {
+      think: { title: "Think", body: "The model reads what it has and picks the next step. Nothing else runs." },
+      search: { title: "Search", body: "A tool call. The run waits for its result unless something else can start." },
+      fetch: { title: "Fetch", body: "A second tool call. Overlapped, it starts before the search returns." },
+      answer: { title: "Answer", body: "The reply is written. This is the moment the reader cares about." },
+    },
+    tipAt: (f, x, y) => f.state.hits?.find((h) => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h)?.kind ?? null,
+    init(f) { f.rate = 1.35; },
+    render(f, c) {
+      const C = f.C, t = f.t, L = f.w < 560 ? 76 : 96, R = f.w - 16, X = (s) => L + (R - L) * (s / seqEnd);
+      const hits = (f.state.hits = []);
+      const laneY = [28, 92], lh = 38;
+      // Time axis, drawn to the data.
+      c.strokeStyle = C.line; c.lineWidth = 1;
+      for (let s = 0; s <= seqEnd; s += 2) { FS.k.line(c, X(s), 18, X(s), 152); FS.k.text(f, c, `${s}s`, X(s), 170, { align: "center", size: 11 }); }
+      lanes.forEach((lane, li) => {
+        FS.k.text(f, c, lane.name, 0, laneY[li] + lh / 2 + 4, { color: C.fg, size: 12, weight: 600 });
+        // Overlapping segments in the second lane split the lane height.
+        const rows = li === 1 ? [[0, 1], [1, 2], [2, 2], [3, 1], [4, 1]] : null;
+        lane.segs.forEach(([kind, t0, t1], si) => {
+          const grow = FS.clamp((t - t0) / (t1 - t0));
+          if (grow <= 0) return;
+          let y = laneY[li], h = lh;
+          if (rows && (si === 1 || si === 2)) { h = lh / 2 - 1; y += si === 2 ? lh / 2 + 1 : 0; }
+          const x0 = X(t0), w = (X(t1) - x0) * grow;
+          hits.push({ kind, x: x0, y, w, h });
+          FS.k.rrect(c, x0, y, Math.max(1, w - 2), h, 4);
+          if (kind === "answer") c.fillStyle = C.accent;
+          else if (kind === "think") c.fillStyle = C.lineStrong;
+          else { c.fillStyle = C.surface2; c.fill(); FS.k.rrect(c, x0, y, Math.max(1, w - 2), h, 4); c.fillStyle = FS.k.hatch(f, c, C.muted, 5); }
+          c.fill();
+          const live = t > t0 && t < t1, hot = live || f.hover === kind;
+          c.strokeStyle = hot ? C.fg : C.line; c.lineWidth = hot ? 1.5 : 1; c.stroke();
+          if (w > 44 && grow === 1) {
+            if (kind === "answer") FS.k.text(f, c, kind, x0 + 7, y + h / 2 + 4, { size: 11, color: C.surface });
+            else FS.k.label(f, c, kind, x0 + 7, y + h / 2, { size: 11, weight: 500, halo: kind === "think" ? C.lineStrong : C.surface2 });
+          }
+        });
+      });
+      // Playhead, and where a click would land while hovering.
+      FS.k.hoverTime(f, c, 16, 154, X, (s) => `${Math.min(s, seqEnd).toFixed(1)} s`);
+      FS.k.playhead(f, c, X(Math.min(t, seqEnd)), 16, 154);
+      // The saving, computed from the same numbers, once the slower lane finishes.
+      const reveal = FS.window(t, seqEnd, seqEnd + 0.5, FS.ease.out);
+      if (reveal > 0) FS.k.bracket(f, c, X(overlapEnd), X(seqEnd), 146, `${(seqEnd / overlapEnd).toFixed(2)}× sooner`, { alpha: reveal });
+      // Phase chip: what the overlapped run is doing now.
+      const now = lanes[1].segs.filter(([, t0, t1]) => t >= t0 && t < t1).map((s) => s[0]);
+      const chip = document.getElementById("fig-time-chip");
+      const label = t >= overlapEnd ? "answered" : now.length ? now.join(" + ") : "idle";
+      f.api.out("phase", label);
+      chip.dataset.pulse = t >= overlapEnd ? "" : now.length > 1 ? "fast" : "slow";
+    },
+  });
+  fig.out("seqEnd", `${seqEnd.toFixed(1)} s`);
+  fig.out("overlapEnd", `${overlapEnd.toFixed(1)} s`);
+})();
+
+/* ================= Fig 3: explorable chart ================= */
+(() => {
+  const r = FS.rng(42), N = 300, PEAK = 0.62;
+  const base = (x) => 0.24 + 0.95 * Math.exp(-6 * x);
+  const bump = (x) => 0.09 * Math.exp(-((x - PEAK) ** 2) / 0.0018);
+  const xs = Array.from({ length: N }, (_, i) => i / (N - 1));
+  const clean = xs.map((x) => base(x) + bump(x));
+  const raw = clean.map((v) => v + 0.03 * FS.gauss(r));
+  const ema = (arr, a) => { const out = []; let s = arr[0]; for (const v of arr) { s = a * s + (1 - a) * v; out.push(s); } return out; };
+  const argmax = (arr) => arr.reduce((best, v, i) => (v > arr[best] ? i : best), 0);
+  const rawPeak = argmax(clean.map((v, i) => v - base(xs[i])));
+  // The claim is measured on the noiseless signal, so it does not depend on the noise draw.
+  function measure(a) {
+    const smoothedBase = ema(xs.map(base), a);
+    const diff = ema(clean, a).map((v, i) => v - smoothedBase[i]);
+    const at = argmax(diff);
+    return { height: diff[at], lag: at - rawPeak };
+  }
+  let hoverX = null;
+  const fig = FS.figure("fig-curve", {
+    height: (w) => (w < 560 ? 240 : 300),
+    autoplay: false,
+    params: {
+      smooth: { value: 0.9, min: 0, max: 0.98, step: 0.01, label: "Smoothing", format: (v) => v.toFixed(2) },
+      showRaw: { value: true, label: "Show raw series" },
+    },
+    onParam(f) { const m = measure(f.params.smooth); f.api.out("bump", m.height.toFixed(3)); f.api.out("lag", String(m.lag)); },
+    resize(f) {
+      f.el.onpointermove = (e) => { const b = f.el.getBoundingClientRect(); hoverX = (e.clientX - b.left) / b.width; f.api.redraw(); };
+      f.el.onpointerleave = () => { hoverX = null; f.api.redraw(); };
+    },
+    render(f, c) {
+      const C = f.C, L = 40, Rm = f.w - 96, T = 14, B = f.h - 26;
+      const X = (i) => L + (Rm - L) * (i / (N - 1)), Y = (v) => B - (B - T) * (v / 1.3);
+      c.strokeStyle = C.line; c.lineWidth = 1;
+      for (const v of [0, 0.4, 0.8, 1.2]) { FS.k.line(c, L, Y(v), Rm, Y(v)); FS.k.text(f, c, v.toFixed(1), L - 8, Y(v) + 4, { align: "right", size: 11 }); }
+      FS.k.text(f, c, "step →", Rm, f.h - 6, { align: "right", size: 11 });
+      // Name the feature the claim is about.
+      c.fillStyle = C.surface2; c.fillRect(X(rawPeak - 22), T, X(rawPeak + 22) - X(rawPeak - 22), B - T);
+      FS.k.text(f, c, "plateau", X(rawPeak), f.h - 6, { align: "center", size: 11 });
+      const s = ema(raw, f.v.smooth);
+      c.lineJoin = "round";
+      if (f.params.showRaw) { c.strokeStyle = C.muted; c.globalAlpha = 0.5; c.lineWidth = 1; c.beginPath(); raw.forEach((v, i) => (i ? c.lineTo(X(i), Y(v)) : c.moveTo(X(i), Y(v)))); c.stroke(); c.globalAlpha = 1; }
+      c.strokeStyle = C.fg; c.lineWidth = C.series; c.beginPath(); s.forEach((v, i) => (i ? c.lineTo(X(i), Y(v)) : c.moveTo(X(i), Y(v)))); c.stroke();
+      const m = measure(f.v.smooth), at = rawPeak + m.lag;
+      c.fillStyle = C.muted; c.beginPath(); c.arc(X(rawPeak), Y(clean[rawPeak]), 3, 0, 7); c.fill();
+      c.fillStyle = C.accent; c.beginPath(); c.arc(X(at), Y(s[at]), 3.5, 0, 7); c.fill();
+      const ends = [{ text: `smoothed ${s[N - 1].toFixed(2)}`, y: Y(s[N - 1]), color: C.fg }, { text: "raw", y: Y(raw[N - 1]), color: C.muted }].sort((a, b) => a.y - b.y);
+      if (ends[1].y - ends[0].y < 14) ends[1].y = ends[0].y + 14;
+      for (const e of ends) FS.k.label(f, c, e.text, Rm + 8, e.y, { size: 11, color: e.color });
+      if (hoverX !== null) {
+        const i = Math.round(FS.clamp((hoverX * f.w - L) / (Rm - L)) * (N - 1));
+        c.strokeStyle = C.lineStrong; c.setLineDash([3, 3]); FS.k.line(c, X(i), T, X(i), B); c.setLineDash([]);
+        c.fillStyle = C.fg; c.beginPath(); c.arc(X(i), Y(s[i]), 3.5, 0, 7); c.fill();
+        FS.k.label(f, c, `step ${i} · raw ${raw[i].toFixed(3)} · smoothed ${s[i].toFixed(3)}`, Math.min(X(i) + 8, Rm - 230), T + 8, { size: 11 });
+      }
+    },
+  });
+  fig.out("rawBump", (clean[rawPeak] - base(xs[rawPeak])).toFixed(3));
+  fig.set("smooth", 0.9, { instant: true });
+})();
+
+/* ================= Fig 4: process with a draggable focus ================= */
+(() => {
+  const r = FS.rng(7), COUNT = 900;
+  const psi = (x, y, t, k) => Math.sin(x * 2.1 * k + t * 0.21) * Math.cos(y * 1.7 * k - t * 0.17) + 0.5 * Math.sin((x + y) * 3.3 * k + t * 0.29);
+  const curl = (x, y, t, k, e = 0.002) => [(psi(x, y + e, t, k) - psi(x, y - e, t, k)) / (2 * e), -(psi(x + e, y, t, k) - psi(x - e, y, t, k)) / (2 * e)];
+  const P = Array.from({ length: COUNT }, () => { const x = r() * 2, y = r(); return { x, y, px: x, py: y, age: r() * 6 }; });
+  // The focus lives in field units (x 0..2, y 0..1); handles convert to figure pixels.
+  const focus = { x: 1.35, y: 0.5, r: 0.3 };
+  const R_MIN = 0.1, R_MAX = 0.45, DIAG = Math.SQRT1_2;
+  const unit = (f) => f.w / 2;
+  let inside = 0;
+  FS.figure("fig-field", {
+    height: (w) => Math.round(w / 2),
+    settle: 3,
+    params: {
+      strength: { value: 1, min: 0, max: 2, step: 0.05, label: "Strength", format: (v) => `${v.toFixed(2)}×` },
+      scale: { value: 1, min: 0.5, max: 2.5, step: 0.05, label: "Field scale", format: (v) => `${v.toFixed(2)}×` },
+    },
+    handles: {
+      // The whole disc is the grab area: move the focus anywhere in the field.
+      center: {
+        label: "Focus: drag or use arrow keys to move it",
+        radius: (f) => focus.r * unit(f),
+        get: (f) => ({ x: focus.x * unit(f), y: focus.y * unit(f) }),
+        set: (f, x, y) => { focus.x = x / unit(f); focus.y = y / unit(f); },
+        bounds: (f) => ({ x0: 0, y0: 0, x1: f.w, y1: f.h }),
+        step: 12,
+      },
+      // A knob on the ring resizes it; the radius rubber-bands past its limits and springs back.
+      edge: {
+        label: "Focus radius: drag or use arrow keys to resize",
+        radius: 12,
+        get: (f) => ({ x: (focus.x + focus.r * DIAG) * unit(f), y: (focus.y - focus.r * DIAG) * unit(f) }),
+        set: (f, x, y) => {
+          const d = Math.hypot(x / unit(f) - focus.x, y / unit(f) - focus.y);
+          focus.r = FS.rubber(d, R_MIN, R_MAX, 0.08);
+        },
+        bounds: () => null,
+        release: (f) => { const rr = FS.clamp(focus.r, R_MIN, R_MAX); return { x: (focus.x + rr * DIAG) * unit(f), y: (focus.y - rr * DIAG) * unit(f) }; },
+        step: 6,
+      },
+    },
+    update(f, dt) {
+      const strength = f.v.strength, k = f.v.scale, r2 = focus.r * focus.r;
+      inside = 0;
+      for (const p of P) {
+        const [vx, vy] = curl(p.x, p.y, f.t, k);
+        const dx = focus.x - p.x, dy = focus.y - p.y, d2 = dx * dx + dy * dy;
+        const pull = d2 < r2 ? strength * (1 - d2 / r2) * 1.6 : 0;
+        if (d2 < r2) inside++;
+        p.px = p.x; p.py = p.y;
+        p.x += (vx * 0.09 / k + dx * pull * 0.6) * dt; p.y += (vy * 0.09 / k + dy * pull * 0.6) * dt; p.age += dt;
+        if (p.x < 0 || p.x > 2 || p.y < 0 || p.y > 1 || p.age > 7) { p.x = p.px = r() * 2; p.y = p.py = r(); p.age = 0; }
+      }
+      f.api.out("recruited", `${inside} of ${COUNT} particles inside the focus`);
+    },
+    render(f, c) {
+      const C = f.C, s = unit(f), r2 = focus.r * focus.r;
+      const active = f.drag !== null || f.handleHover !== null;
+      c.lineCap = "round"; c.strokeStyle = C.fg;
+      for (const pass of [0, 1]) {
+        c.beginPath();
+        for (const p of P) {
+          const near = (p.x - focus.x) ** 2 + (p.y - focus.y) ** 2 < r2;
+          if ((pass === 1) !== near) continue;
+          if (Math.min(p.age * 2, (7 - p.age) * 2) <= 0.05) continue;
+          c.moveTo((p.x - (p.x - p.px) * 6) * s, (p.y - (p.y - p.py) * 6) * s); c.lineTo(p.x * s, p.y * s);
+        }
+        c.globalAlpha = pass ? 0.95 : 0.4; c.lineWidth = pass ? 1.6 : 1.1; c.stroke();
+      }
+      c.globalAlpha = 1;
+      // Ring: thicker while held or hovered; the edge knob grows under the pointer.
+      const cx = focus.x * s, cy = focus.y * s, rr = focus.r * s;
+      c.strokeStyle = C.accent; c.lineWidth = f.drag === "center" ? 2.25 : active ? 1.75 : 1.25;
+      c.beginPath(); c.arc(cx, cy, rr, 0, Math.PI * 2); c.stroke();
+      if (f.drag === "edge") { c.setLineDash([3, 3]); c.globalAlpha = 0.6; FS.k.line(c, cx, cy, cx + rr * DIAG, cy - rr * DIAG); c.setLineDash([]); c.globalAlpha = 1; }
+      const knob = f.drag === "edge" ? 7 : f.handleHover === "edge" ? 6 : 4.5;
+      c.fillStyle = C.surface; c.beginPath(); c.arc(cx + rr * DIAG, cy - rr * DIAG, knob + 2, 0, 7); c.fill();
+      c.fillStyle = C.accent; c.beginPath(); c.arc(cx + rr * DIAG, cy - rr * DIAG, knob, 0, 7); c.fill();
+      FS.k.label(f, c, f.drag === "edge" ? `r ${focus.r.toFixed(2)}` : "focus", cx, cy - rr - 12, { align: "center", color: C.accent });
+    },
+  });
+})();
+</script>
+</body>
+</html>

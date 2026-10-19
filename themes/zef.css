@@ -1,0 +1,108 @@
+/* Default theme: matches zef-builder-site (Juan Bermudez's site). Monochrome; the accent is ink.
+   Dark is the published default. Light applies with data-fs-mode="light", or by system preference
+   when no mode or theme is forced. Values mirror styles/site/palette.css and tokens.css. */
+
+:root,
+[data-fs-theme="zef"] {
+  color-scheme: dark;
+  --fs-bg: #191919;
+  --fs-surface: #191919;
+  --fs-surface-2: #1f1f1f;
+  --fs-line: #2d2d2d;
+  --fs-line-strong: #3a3a3a;
+  --fs-faint: #555555;
+  --fs-muted: #8a8a8a;
+  --fs-fg: #ededed;
+  --fs-strong: #ffffff;
+  --fs-accent: #fafafa;
+  /* Achromatic categories: tell them apart by texture and labels too. */
+  --fs-c1: #ededed;
+  --fs-c2: #b0b0b0;
+  --fs-c3: #8f8f8f;
+  --fs-c4: #d0d0d0;
+  --fs-c5: #9a9a9a;
+  --fs-c6: #6e6e6e;
+  --fs-good: #ededed;
+  --fs-bad: #8a8a8a;
+}
+
+:root[data-fs-mode="light"],
+[data-fs-theme="zef"][data-fs-mode="light"],
+[data-fs-theme="zef-light"] {
+  color-scheme: light;
+  --fs-bg: #f2f2f2;
+  --fs-surface: #ffffff;
+  --fs-surface-2: #eeeeee;
+  --fs-line: #e2e2e2;
+  --fs-line-strong: #c9c9c9;
+  --fs-faint: #b3b3b3;
+  --fs-muted: #6c6c6c;
+  --fs-fg: #111111;
+  --fs-strong: #000000;
+  --fs-accent: #111111;
+  --fs-c1: #111111;
+  --fs-c2: #4a4a4a;
+  --fs-c3: #7a7a7a;
+  --fs-c4: #3d3d3d;
+  --fs-c5: #5c5c5c;
+  --fs-c6: #8f8f8f;
+  --fs-good: #111111;
+  --fs-bad: #6c6c6c;
+  --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-fs-mode]):not([data-fs-theme]) {
+    color-scheme: light;
+    --fs-bg: #f2f2f2;
+    --fs-surface: #ffffff;
+    --fs-surface-2: #eeeeee;
+    --fs-line: #e2e2e2;
+    --fs-line-strong: #c9c9c9;
+    --fs-faint: #b3b3b3;
+    --fs-muted: #6c6c6c;
+    --fs-fg: #111111;
+    --fs-strong: #000000;
+    --fs-accent: #111111;
+    --fs-c1: #111111;
+    --fs-c2: #4a4a4a;
+    --fs-c3: #7a7a7a;
+    --fs-c4: #3d3d3d;
+    --fs-c5: #5c5c5c;
+    --fs-c6: #8f8f8f;
+    --fs-good: #111111;
+    --fs-bad: #6c6c6c;
+    --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+  }
+}
+
+/* Type, shape and motion: the site's figure grammar. Themes override color only unless they say otherwise. */
+:root {
+  --fs-font-body: "Manrope", system-ui, sans-serif;
+  --fs-font-display: "Manrope", system-ui, sans-serif;
+  --fs-font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  /* Text inside figures (labels, ticks, captions). The notebook register switches this to mono. */
+  --fs-font-figure: var(--fs-font-body);
+  --fs-size-title: 14px;
+  --fs-weight-title: 600;
+  --fs-size-status: 11px;
+  --fs-size-label: 11px;
+  --fs-size-tick: 11px;
+  --fs-size-caption: 12px;
+  --fs-head-case: none;
+  --fs-head-tracking: -0.01em;
+  --fs-radius: 12px;
+  --fs-radius-inner: 6px;
+  --fs-radius-control: 4px;
+  --fs-border: 1px;
+  --fs-control-size: 44px;
+  --fs-stroke-hair: 1;
+  --fs-stroke-edge: 1.1;
+  --fs-stroke-series: 1.75;
+  --fs-dim: 0.28;
+  --fs-dur: 240ms;
+  --fs-dur-step: 480ms;
+  --fs-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --fs-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --fs-shadow: 0 2px 8px rgb(0 0 0 / 24%), 0 14px 32px -6px rgb(0 0 0 / 44%);
+}

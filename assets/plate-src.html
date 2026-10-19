@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animated Visual Plates</title>
+<meta name="description" content="Starter: themed figure plates with a one-clock runtime, programmable controls, linked prose and four working demos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* @inline themes/zef.css */
+/* @inline themes/notebook.css */
+/* @inline themes/omarchy.css */
+/* @inline themes/base.css */
+
+/* ---- page (replace freely; figures only depend on the theme and base layers above) ---- */
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--fs-bg); }
+body { margin: 0; color: var(--fs-fg); background: var(--fs-bg); font: 400 16px/1.625 var(--fs-font-body); letter-spacing: 0.002em; -webkit-font-smoothing: antialiased; }
+main { width: min(46rem, 100% - 48px); margin: 0 auto; padding: 72px 0 120px; }
+h1 { margin: 0 0 12px; font: 500 1.75rem/1.3 var(--fs-font-display); letter-spacing: 0.008em; }
+h2 { margin: 3.5rem 0 0.75rem; font: 500 1.25rem/1.3 var(--fs-font-display); }
+p { margin: 0 0 1rem; }
+.lede { color: var(--fs-muted); font-size: 1.1875rem; }
+.wide { width: min(58rem, 100vw - 32px); margin-inline: calc((min(46rem, 100vw - 48px) - min(58rem, 100vw - 32px)) / 2); }
+.themebar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 28px 0 0; color: var(--fs-muted); font-size: 12px; }
+.themebar select { padding: 6px 8px; color: var(--fs-fg); font: inherit; background: var(--fs-surface); border: 1px solid var(--fs-line); border-radius: 6px; }
+.themebar select:focus-visible { outline: 2px solid var(--fs-accent); outline-offset: 2px; }
+code { font: 0.875em var(--fs-font-mono); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Figures that explain by being played with.</h1>
+  <p class="lede">Four starter plates on one runtime. Each figure is a function of a clock, a step and a few parameters, so buttons, sliders, words in the text and code all drive it the same way.</p>
+  <div class="themebar">
+    <label for="theme">Theme</label>
+    <select id="theme">
+      <optgroup label="Site"><option value="zef">Zef (default)</option><option value="zef-light">Zef light</option></optgroup>
+      <optgroup label="Registers"><option value="notebook">Lab notebook</option><option value="notebook-light">Lab notebook light</option></optgroup>
+      <optgroup label="Omarchy" id="omarchy-themes"></optgroup>
+    </select>
+    <span>Try <code>FS.get('fig-time').seek(4.8)</code> in the console.</span>
+  </div>
+
+  <!-- Fig 1: stepped architecture flow in SVG, linked to words in the prose. -->
+  <h2>A request moves through the system</h2>
+  <p>Every event reaches the <span data-fs-ref="fig-flow:router">router</span> first. Most are answered from <span data-fs-ref="fig-flow:memory">memory</span>; only novel ones pay for the <span data-fs-ref="fig-flow:model">model</span>.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-flow-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-flow-title">Where a request spends its time</h3><span class="fs-status">Fig. 1 · illustrative</span></header>
+    <div class="fs-stage"><svg id="fig-flow" viewBox="0 0 960 300" role="img" aria-label="Diagram: input, router, model and memory, output"></svg></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-flow:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-flow" aria-hidden="true"></span><button type="button" data-fs="fig-flow prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-flow next" aria-label="Next step">Next</button><button type="button" data-fs="fig-flow play">Pause</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-flow:caption" aria-live="polite"></p>
+  </figure>
+
+  <!-- Fig 2: a one-clock timeline with a counterfactual lane, chapters and a computed bracket. -->
+  <h2>Overlapping tool calls finishes sooner</h2>
+  <p>Both runs do the same work. The second starts the fetch while the search is still running, so it answers at <span data-fs-out="fig-time:overlapEnd"></span> instead of <span data-fs-out="fig-time:seqEnd"></span>.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-time-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-time-title">Sequential vs overlapped tool calls</h3><span class="fs-chip" id="fig-time-chip" data-fs-out="fig-time:phase" aria-live="polite"></span></header>
+    <div class="fs-stage"><canvas id="fig-time" role="img" aria-label="Two lanes on one time axis; the overlapped run answers earlier"></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-time:t"></span>
+      <div class="fs-controls">
+        <button type="button" data-fs="fig-time chapter-prev" aria-label="Previous event">←</button>
+        <div data-fs-seek="fig-time" data-label="Time"></div>
+        <button type="button" data-fs="fig-time chapter-next" aria-label="Next event">→</button>
+        <button type="button" data-fs="fig-time play">Play</button>
+      </div>
+    </div>
+    <p class="fs-caption">Illustrative timings. Drag across the lanes to move through time, click a moment to jump there, hover a block to see what it is.</p>
+  </figure>
+
+  <!-- Fig 3: an explorable chart; the parameter lives in the prose and in the toolbar. -->
+  <h2>Smoothing hides the plateau</h2>
+  <p>The run stalls briefly mid-training. At a smoothing of <span data-fs-scrub="fig-curve:smooth"></span>, that plateau shows up <span data-fs-out="fig-curve:bump"></span> tall instead of <span data-fs-out="fig-curve:rawBump"></span>, and peaks <span data-fs-out="fig-curve:lag"></span> steps late. Drag the number.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-curve-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-curve-title">Validation loss, raw and smoothed</h3><span class="fs-status">Fig. 3 · simulated, seeded</span></header>
+    <div class="fs-stage"><canvas id="fig-curve" role="img" aria-label="Noisy loss curve with an exponentially smoothed line"></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position">Hover for values · drag the number in the text</span>
+    </div>
+    <div class="fs-readouts">
+      <div class="fs-readout"><b data-fs-out="fig-curve:bump"></b><span>plateau height after smoothing (raw <span data-fs-out="fig-curve:rawBump"></span>)</span></div>
+      <div class="fs-readout"><b data-fs-out="fig-curve:lag"></b><span>steps the smoothed peak lags</span></div>
+    </div>
+  </figure>
+
+  <!-- Fig 4: a running process with a focus. -->
+  <h2>Attention bends the flow</h2>
+  <figure class="fs-plate wide" aria-labelledby="fig-field-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-field-title">Attention recruits only what is near it</h3><span class="fs-status">Fig. 4</span></header>
+    <div class="fs-stage"><canvas id="fig-field" role="img" aria-label="Particles drifting along a smooth flow; a focus gathers nearby particles"></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-field:recruited"></span>
+      <div class="fs-controls"><button type="button" data-fs="fig-field play">Pause</button></div>
+    </div>
+    <p class="fs-caption">Particles follow the curl of a smooth potential, so the flow never piles up or empties. Try: drag the ring, then its edge knob. Notice: only particles inside the ring are recruited; the rest keep their course. Strength and field scale are in settings.</p>
+  </figure>
+</main>
+
+<script>
+// @inline assets/runtime/fs-runtime.js
+</script>
+<script>
+/* Theme picker: the Omarchy list mirrors themes/omarchy.json. */
+(() => {
+  const omarchy = { "catppuccin": "Catppuccin", "catppuccin-latte": "Catppuccin Latte", "ethereal": "Ethereal", "everforest": "Everforest", "flexoki-light": "Flexoki Light", "gruvbox": "Gruvbox", "hackerman": "Hackerman", "kanagawa": "Kanagawa", "last-horizon": "Last Horizon", "lumon": "Lumon", "lupine": "Lupine", "matte-black": "Matte Black", "miasma": "Miasma", "nord": "Nord", "osaka-jade": "Osaka Jade", "retro-82": "Retro 82", "ristretto": "Ristretto", "rose-pine": "Rosé Pine Dawn", "solitude": "Solitude", "starship": "Starship", "tokyo-night": "Tokyo Night", "vantablack": "Vantablack", "white": "White" };
+  const group = document.getElementById("omarchy-themes");
+  for (const [id, name] of Object.entries(omarchy)) group.append(new Option(name, id));
+  const select = document.getElementById("theme");
+  select.addEventListener("change", () => {
+    const value = select.value;
+    if (value === "zef-light") { FS.setTheme(null); FS.setMode("light"); }
+    else { FS.setMode(value === "zef" ? "dark" : null); FS.setTheme(value); }
+  });
+})();
+
+/* ================= Fig 1: stepped flow (SVG) ================= */
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.getElementById("fig-flow");
+  const el = (tag, attrs, parent = svg) => { const n = document.createElementNS(NS, tag); for (const a in attrs) n.setAttribute(a, attrs[a]); parent.append(n); return n; };
+  const H = 46;
+  const meta = {
+    input: { label: "Input", sub: "event stream" },
+    router: { label: "Router", sub: "gate · 4 ms" },
+    model: { label: "Model", sub: "slow path · 900 ms" },
+    memory: { label: "Memory", sub: "fast lookup · 20 ms" },
+    output: { label: "Output", sub: "response" },
+  };
+  // Two layouts instead of shrinking: text stays ≥ 11px on phones.
+  const layouts = {
+    wide: { box: [960, 300], dir: "x", at: { input: [40, 125, 130], router: [260, 125, 140], model: [500, 50, 150], memory: [500, 200, 150], output: [770, 125, 140] } },
+    narrow: { box: [360, 470], dir: "y", at: { input: [100, 10, 160], router: [100, 110, 160], model: [12, 230, 160], memory: [188, 230, 160], output: [100, 380, 160] } },
+  };
+  const edges = [["input", "router"], ["router", "model"], ["router", "memory"], ["model", "output"], ["memory", "output"]];
+  const steps = [
+    { on: Object.keys(meta), caption: "The whole path. Packets flow from input to output." },
+    { on: ["input", "router"], caption: "Every event reaches the router first; it costs a few milliseconds." },
+    { on: ["router", "memory", "output"], caption: "Most requests are answered from memory without the model." },
+    { on: ["router", "model", "output"], caption: "Only novel requests take the slow path through the model." },
+  ];
+  const paths = edges.map(([a, b]) => ({ a, b, path: el("path", { fill: "none" }), length: 1, dots: [0, 1, 2].map(() => el("circle", { r: 3 })), alpha: 1 }));
+  const nodes = {};
+  for (const key in meta) {
+    const n = (nodes[key] = { ...meta[key], alpha: 1 });
+    n.g = el("g", { "data-key": key });
+    n.rect = el("rect", { height: H, rx: 6 }, n.g);
+    n.t1 = el("text", { "font-size": 13, "font-weight": 600 }, n.g); n.t1.textContent = n.label;
+    n.t2 = el("text", { "font-size": 10.5 }, n.g); n.t2.textContent = n.sub;
+    // Figure → prose: hovering a node lights the matching words.
+    n.g.addEventListener("pointerenter", () => FS.get("fig-flow").hover(key));
+    n.g.addEventListener("pointerleave", () => FS.get("fig-flow").hover(null));
+  }
+  function layout(name) {
+    const L = layouts[name];
+    svg.setAttribute("viewBox", `0 0 ${L.box[0]} ${L.box[1]}`);
+    for (const key in nodes) {
+      const [x, y, w] = L.at[key], n = nodes[key];
+      Object.assign(n, { x, y, w });
+      n.rect.setAttribute("x", x); n.rect.setAttribute("y", y); n.rect.setAttribute("width", w);
+      n.t1.setAttribute("x", x + 14); n.t1.setAttribute("y", y + 20);
+      n.t2.setAttribute("x", x + 14); n.t2.setAttribute("y", y + 35);
+    }
+    for (const p of paths) {
+      const A = nodes[p.a], B = nodes[p.b];
+      let d;
+      if (L.dir === "x") { const p0 = [A.x + A.w, A.y + H / 2], p1 = [B.x, B.y + H / 2], m = (p0[0] + p1[0]) / 2; d = `M${p0} C${m},${p0[1]} ${m},${p1[1]} ${p1}`; }
+      else { const p0 = [A.x + A.w / 2, A.y + H], p1 = [B.x + B.w / 2, B.y], m = (p0[1] + p1[1]) / 2; d = `M${p0} C${p0[0]},${m} ${p1[0]},${m} ${p1}`; }
+      p.path.setAttribute("d", d);
+      p.length = p.path.getTotalLength();
+    }
+  }
+  let phase = 0, current = "";
+  FS.figure("fig-flow", {
+    height: (w) => (w < 560 ? (w * 470) / 360 : (w * 300) / 960),
+    steps,
+    resize(f) { const name = f.w < 560 ? "narrow" : "wide"; if (name !== current) { current = name; layout(name); } },
+    update(f, dt) { phase = (phase + dt * 0.3) % 1; },
+    render(f) {
+      const C = f.C, on = new Set(steps[f.step].on), e = FS.ease.out(f.stepT);
+      for (const key in nodes) {
+        const n = nodes[key], hovered = f.hover === key;
+        const target = on.has(key) ? 1 : C.dim;
+        n.alpha = f.stepT < 1 ? FS.lerp(n.alpha, target, e) : target;
+        n.g.setAttribute("opacity", hovered ? 1 : n.alpha.toFixed(3));
+        n.rect.setAttribute("fill", C.surface);
+        n.rect.setAttribute("stroke", hovered ? C.accent : on.has(key) && f.step ? C.fg : C.lineStrong);
+        n.rect.setAttribute("stroke-width", hovered ? 1.5 : 1);
+        n.t1.setAttribute("fill", C.fg); n.t2.setAttribute("fill", C.muted);
+      }
+      paths.forEach((p, i) => {
+        const active = on.has(p.a) && on.has(p.b);
+        p.alpha = f.stepT < 1 ? FS.lerp(p.alpha, active ? 1 : 0.18, e) : active ? 1 : 0.18;
+        p.path.setAttribute("stroke", C.muted); p.path.setAttribute("stroke-width", C.edge); p.path.setAttribute("opacity", p.alpha.toFixed(3));
+        p.dots.forEach((dot, j) => {
+          const u = (phase + j / 3 + i * 0.13) % 1, pt = p.path.getPointAtLength(u * p.length);
+          dot.setAttribute("cx", pt.x.toFixed(1)); dot.setAttribute("cy", pt.y.toFixed(1));
+          dot.setAttribute("fill", active && f.step ? C.accent : C.fg);
+          dot.setAttribute("opacity", (p.alpha * Math.sin(Math.PI * u)).toFixed(3));
+        });
+      });
+    },
+  });
+})();
+
+/* ================= Fig 2: one-clock timeline with a counterfactual lane ================= */
+(() => {
+  const lanes = [
+    { name: "Sequential", segs: [["think", 0, 1.6], ["search", 1.6, 4.2], ["think", 4.2, 5.4], ["fetch", 5.4, 8.6], ["answer", 8.6, 9.8]] },
+    { name: "Overlapped", segs: [["think", 0, 1.6], ["search", 1.6, 4.2], ["fetch", 2.0, 4.8], ["think", 4.8, 5.6], ["answer", 5.6, 6.8]] },
+  ];
+  const end = (lane) => Math.max(...lane.segs.map((s) => s[2]));
+  const seqEnd = end(lanes[0]), overlapEnd = end(lanes[1]), T = 10.6;
+  const fig = FS.figure("fig-time", {
+    height: (w) => (w < 560 ? 220 : 210),
+    duration: T,
+    chapters: [{ t: 1.6, label: "first tool call" }, { t: overlapEnd, label: "overlapped answers" }, { t: seqEnd, label: "sequential answers" }],
+    formatTime: (t) => `t = ${Math.min(t, seqEnd).toFixed(1)} s`,
+    // The drawing is the scrubber: time 0 at the plot's left edge, the sequential answer at its right.
+    timeAxis: (f) => ({ x0: f.w < 560 ? 76 : 96, x1: f.w - 16, t1: seqEnd }),
+    reserve: { phase: ["search + fetch", "answered", "think", "idle"] },
+    tips: {
+      think: { title: "Think", body: "The model reads what it has and picks the next step. Nothing else runs." },
+      search: { title: "Search", body: "A tool call. The run waits for its result unless something else can start." },
+      fetch: { title: "Fetch", body: "A second tool call. Overlapped, it starts before the search returns." },
+      answer: { title: "Answer", body: "The reply is written. This is the moment the reader cares about." },
+    },
+    tipAt: (f, x, y) => f.state.hits?.find((h) => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h)?.kind ?? null,
+    init(f) { f.rate = 1.35; },
+    render(f, c) {
+      const C = f.C, t = f.t, L = f.w < 560 ? 76 : 96, R = f.w - 16, X = (s) => L + (R - L) * (s / seqEnd);
+      const hits = (f.state.hits = []);
+      const laneY = [28, 92], lh = 38;
+      // Time axis, drawn to the data.
+      c.strokeStyle = C.line; c.lineWidth = 1;
+      for (let s = 0; s <= seqEnd; s += 2) { FS.k.line(c, X(s), 18, X(s), 152); FS.k.text(f, c, `${s}s`, X(s), 170, { align: "center", size: 11 }); }
+      lanes.forEach((lane, li) => {
+        FS.k.text(f, c, lane.name, 0, laneY[li] + lh / 2 + 4, { color: C.fg, size: 12, weight: 600 });
+        // Overlapping segments in the second lane split the lane height.
+        const rows = li === 1 ? [[0, 1], [1, 2], [2, 2], [3, 1], [4, 1]] : null;
+        lane.segs.forEach(([kind, t0, t1], si) => {
+          const grow = FS.clamp((t - t0) / (t1 - t0));
+          if (grow <= 0) return;
+          let y = laneY[li], h = lh;
+          if (rows && (si === 1 || si === 2)) { h = lh / 2 - 1; y += si === 2 ? lh / 2 + 1 : 0; }
+          const x0 = X(t0), w = (X(t1) - x0) * grow;
+          hits.push({ kind, x: x0, y, w, h });
+          FS.k.rrect(c, x0, y, Math.max(1, w - 2), h, 4);
+          if (kind === "answer") c.fillStyle = C.accent;
+          else if (kind === "think") c.fillStyle = C.lineStrong;
+          else { c.fillStyle = C.surface2; c.fill(); FS.k.rrect(c, x0, y, Math.max(1, w - 2), h, 4); c.fillStyle = FS.k.hatch(f, c, C.muted, 5); }
+          c.fill();
+          const live = t > t0 && t < t1, hot = live || f.hover === kind;
+          c.strokeStyle = hot ? C.fg : C.line; c.lineWidth = hot ? 1.5 : 1; c.stroke();
+          if (w > 44 && grow === 1) {
+            if (kind === "answer") FS.k.text(f, c, kind, x0 + 7, y + h / 2 + 4, { size: 11, color: C.surface });
+            else FS.k.label(f, c, kind, x0 + 7, y + h / 2, { size: 11, weight: 500, halo: kind === "think" ? C.lineStrong : C.surface2 });
+          }
+        });
+      });
+      // Playhead, and where a click would land while hovering.
+      FS.k.hoverTime(f, c, 16, 154, X, (s) => `${Math.min(s, seqEnd).toFixed(1)} s`);
+      FS.k.playhead(f, c, X(Math.min(t, seqEnd)), 16, 154);
+      // The saving, computed from the same numbers, once the slower lane finishes.
+      const reveal = FS.window(t, seqEnd, seqEnd + 0.5, FS.ease.out);
+      if (reveal > 0) FS.k.bracket(f, c, X(overlapEnd), X(seqEnd), 146, `${(seqEnd / overlapEnd).toFixed(2)}× sooner`, { alpha: reveal });
+      // Phase chip: what the overlapped run is doing now.
+      const now = lanes[1].segs.filter(([, t0, t1]) => t >= t0 && t < t1).map((s) => s[0]);
+      const chip = document.getElementById("fig-time-chip");
+      const label = t >= overlapEnd ? "answered" : now.length ? now.join(" + ") : "idle";
+      f.api.out("phase", label);
+      chip.dataset.pulse = t >= overlapEnd ? "" : now.length > 1 ? "fast" : "slow";
+    },
+  });
+  fig.out("seqEnd", `${seqEnd.toFixed(1)} s`);
+  fig.out("overlapEnd", `${overlapEnd.toFixed(1)} s`);
+})();
+
+/* ================= Fig 3: explorable chart ================= */
+(() => {
+  const r = FS.rng(42), N = 300, PEAK = 0.62;
+  const base = (x) => 0.24 + 0.95 * Math.exp(-6 * x);
+  const bump = (x) => 0.09 * Math.exp(-((x - PEAK) ** 2) / 0.0018);
+  const xs = Array.from({ length: N }, (_, i) => i / (N - 1));
+  const clean = xs.map((x) => base(x) + bump(x));
+  const raw = clean.map((v) => v + 0.03 * FS.gauss(r));
+  const ema = (arr, a) => { const out = []; let s = arr[0]; for (const v of arr) { s = a * s + (1 - a) * v; out.push(s); } return out; };
+  const argmax = (arr) => arr.reduce((best, v, i) => (v > arr[best] ? i : best), 0);
+  const rawPeak = argmax(clean.map((v, i) => v - base(xs[i])));
+  // The claim is measured on the noiseless signal, so it does not depend on the noise draw.
+  function measure(a) {
+    const smoothedBase = ema(xs.map(base), a);
+    const diff = ema(clean, a).map((v, i) => v - smoothedBase[i]);
+    const at = argmax(diff);
+    return { height: diff[at], lag: at - rawPeak };
+  }
+  let hoverX = null;
+  const fig = FS.figure("fig-curve", {
+    height: (w) => (w < 560 ? 240 : 300),
+    autoplay: false,
+    params: {
+      smooth: { value: 0.9, min: 0, max: 0.98, step: 0.01, label: "Smoothing", format: (v) => v.toFixed(2) },
+      showRaw: { value: true, label: "Show raw series" },
+    },
+    onParam(f) { const m = measure(f.params.smooth); f.api.out("bump", m.height.toFixed(3)); f.api.out("lag", String(m.lag)); },
+    resize(f) {
+      f.el.onpointermove = (e) => { const b = f.el.getBoundingClientRect(); hoverX = (e.clientX - b.left) / b.width; f.api.redraw(); };
+      f.el.onpointerleave = () => { hoverX = null; f.api.redraw(); };
+    },
+    render(f, c) {
+      const C = f.C, L = 40, Rm = f.w - 96, T = 14, B = f.h - 26;
+      const X = (i) => L + (Rm - L) * (i / (N - 1)), Y = (v) => B - (B - T) * (v / 1.3);
+      c.strokeStyle = C.line; c.lineWidth = 1;
+      for (const v of [0, 0.4, 0.8, 1.2]) { FS.k.line(c, L, Y(v), Rm, Y(v)); FS.k.text(f, c, v.toFixed(1), L - 8, Y(v) + 4, { align: "right", size: 11 }); }
+      FS.k.text(f, c, "step →", Rm, f.h - 6, { align: "right", size: 11 });
+      // Name the feature the claim is about.
+      c.fillStyle = C.surface2; c.fillRect(X(rawPeak - 22), T, X(rawPeak + 22) - X(rawPeak - 22), B - T);
+      FS.k.text(f, c, "plateau", X(rawPeak), f.h - 6, { align: "center", size: 11 });
+      const s = ema(raw, f.v.smooth);
+      c.lineJoin = "round";
+      if (f.params.showRaw) { c.strokeStyle = C.muted; c.globalAlpha = 0.5; c.lineWidth = 1; c.beginPath(); raw.forEach((v, i) => (i ? c.lineTo(X(i), Y(v)) : c.moveTo(X(i), Y(v)))); c.stroke(); c.globalAlpha = 1; }
+      c.strokeStyle = C.fg; c.lineWidth = C.series; c.beginPath(); s.forEach((v, i) => (i ? c.lineTo(X(i), Y(v)) : c.moveTo(X(i), Y(v)))); c.stroke();
+      const m = measure(f.v.smooth), at = rawPeak + m.lag;
+      c.fillStyle = C.muted; c.beginPath(); c.arc(X(rawPeak), Y(clean[rawPeak]), 3, 0, 7); c.fill();
+      c.fillStyle = C.accent; c.beginPath(); c.arc(X(at), Y(s[at]), 3.5, 0, 7); c.fill();
+      const ends = [{ text: `smoothed ${s[N - 1].toFixed(2)}`, y: Y(s[N - 1]), color: C.fg }, { text: "raw", y: Y(raw[N - 1]), color: C.muted }].sort((a, b) => a.y - b.y);
+      if (ends[1].y - ends[0].y < 14) ends[1].y = ends[0].y + 14;
+      for (const e of ends) FS.k.label(f, c, e.text, Rm + 8, e.y, { size: 11, color: e.color });
+      if (hoverX !== null) {
+        const i = Math.round(FS.clamp((hoverX * f.w - L) / (Rm - L)) * (N - 1));
+        c.strokeStyle = C.lineStrong; c.setLineDash([3, 3]); FS.k.line(c, X(i), T, X(i), B); c.setLineDash([]);
+        c.fillStyle = C.fg; c.beginPath(); c.arc(X(i), Y(s[i]), 3.5, 0, 7); c.fill();
+        FS.k.label(f, c, `step ${i} · raw ${raw[i].toFixed(3)} · smoothed ${s[i].toFixed(3)}`, Math.min(X(i) + 8, Rm - 230), T + 8, { size: 11 });
+      }
+    },
+  });
+  fig.out("rawBump", (clean[rawPeak] - base(xs[rawPeak])).toFixed(3));
+  fig.set("smooth", 0.9, { instant: true });
+})();
+
+/* ================= Fig 4: process with a draggable focus ================= */
+(() => {
+  const r = FS.rng(7), COUNT = 900;
+  const psi = (x, y, t, k) => Math.sin(x * 2.1 * k + t * 0.21) * Math.cos(y * 1.7 * k - t * 0.17) + 0.5 * Math.sin((x + y) * 3.3 * k + t * 0.29);
+  const curl = (x, y, t, k, e = 0.002) => [(psi(x, y + e, t, k) - psi(x, y - e, t, k)) / (2 * e), -(psi(x + e, y, t, k) - psi(x - e, y, t, k)) / (2 * e)];
+  const P = Array.from({ length: COUNT }, () => { const x = r() * 2, y = r(); return { x, y, px: x, py: y, age: r() * 6 }; });
+  // The focus lives in field units (x 0..2, y 0..1); handles convert to figure pixels.
+  const focus = { x: 1.35, y: 0.5, r: 0.3 };
+  const R_MIN = 0.1, R_MAX = 0.45, DIAG = Math.SQRT1_2;
+  const unit = (f) => f.w / 2;
+  let inside = 0;
+  FS.figure("fig-field", {
+    height: (w) => Math.round(w / 2),
+    settle: 3,
+    params: {
+      strength: { value: 1, min: 0, max: 2, step: 0.05, label: "Strength", format: (v) => `${v.toFixed(2)}×` },
+      scale: { value: 1, min: 0.5, max: 2.5, step: 0.05, label: "Field scale", format: (v) => `${v.toFixed(2)}×` },
+    },
+    handles: {
+      // The whole disc is the grab area: move the focus anywhere in the field.
+      center: {
+        label: "Focus: drag or use arrow keys to move it",
+        radius: (f) => focus.r * unit(f),
+        get: (f) => ({ x: focus.x * unit(f), y: focus.y * unit(f) }),
+        set: (f, x, y) => { focus.x = x / unit(f); focus.y = y / unit(f); },
+        bounds: (f) => ({ x0: 0, y0: 0, x1: f.w, y1: f.h }),
+        step: 12,
+      },
+      // A knob on the ring resizes it; the radius rubber-bands past its limits and springs back.
+      edge: {
+        label: "Focus radius: drag or use arrow keys to resize",
+        radius: 12,
+        get: (f) => ({ x: (focus.x + focus.r * DIAG) * unit(f), y: (focus.y - focus.r * DIAG) * unit(f) }),
+        set: (f, x, y) => {
+          const d = Math.hypot(x / unit(f) - focus.x, y / unit(f) - focus.y);
+          focus.r = FS.rubber(d, R_MIN, R_MAX, 0.08);
+        },
+        bounds: () => null,
+        release: (f) => { const rr = FS.clamp(focus.r, R_MIN, R_MAX); return { x: (focus.x + rr * DIAG) * unit(f), y: (focus.y - rr * DIAG) * unit(f) }; },
+        step: 6,
+      },
+    },
+    update(f, dt) {
+      const strength = f.v.strength, k = f.v.scale, r2 = focus.r * focus.r;
+      inside = 0;
+      for (const p of P) {
+        const [vx, vy] = curl(p.x, p.y, f.t, k);
+        const dx = focus.x - p.x, dy = focus.y - p.y, d2 = dx * dx + dy * dy;
+        const pull = d2 < r2 ? strength * (1 - d2 / r2) * 1.6 : 0;
+        if (d2 < r2) inside++;
+        p.px = p.x; p.py = p.y;
+        p.x += (vx * 0.09 / k + dx * pull * 0.6) * dt; p.y += (vy * 0.09 / k + dy * pull * 0.6) * dt; p.age += dt;
+        if (p.x < 0 || p.x > 2 || p.y < 0 || p.y > 1 || p.age > 7) { p.x = p.px = r() * 2; p.y = p.py = r(); p.age = 0; }
+      }
+      f.api.out("recruited", `${inside} of ${COUNT} particles inside the focus`);
+    },
+    render(f, c) {
+      const C = f.C, s = unit(f), r2 = focus.r * focus.r;
+      const active = f.drag !== null || f.handleHover !== null;
+      c.lineCap = "round"; c.strokeStyle = C.fg;
+      for (const pass of [0, 1]) {
+        c.beginPath();
+        for (const p of P) {
+          const near = (p.x - focus.x) ** 2 + (p.y - focus.y) ** 2 < r2;
+          if ((pass === 1) !== near) continue;
+          if (Math.min(p.age * 2, (7 - p.age) * 2) <= 0.05) continue;
+          c.moveTo((p.x - (p.x - p.px) * 6) * s, (p.y - (p.y - p.py) * 6) * s); c.lineTo(p.x * s, p.y * s);
+        }
+        c.globalAlpha = pass ? 0.95 : 0.4; c.lineWidth = pass ? 1.6 : 1.1; c.stroke();
+      }
+      c.globalAlpha = 1;
+      // Ring: thicker while held or hovered; the edge knob grows under the pointer.
+      const cx = focus.x * s, cy = focus.y * s, rr = focus.r * s;
+      c.strokeStyle = C.accent; c.lineWidth = f.drag === "center" ? 2.25 : active ? 1.75 : 1.25;
+      c.beginPath(); c.arc(cx, cy, rr, 0, Math.PI * 2); c.stroke();
+      if (f.drag === "edge") { c.setLineDash([3, 3]); c.globalAlpha = 0.6; FS.k.line(c, cx, cy, cx + rr * DIAG, cy - rr * DIAG); c.setLineDash([]); c.globalAlpha = 1; }
+      const knob = f.drag === "edge" ? 7 : f.handleHover === "edge" ? 6 : 4.5;
+      c.fillStyle = C.surface; c.beginPath(); c.arc(cx + rr * DIAG, cy - rr * DIAG, knob + 2, 0, 7); c.fill();
+      c.fillStyle = C.accent; c.beginPath(); c.arc(cx + rr * DIAG, cy - rr * DIAG, knob, 0, 7); c.fill();
+      FS.k.label(f, c, f.drag === "edge" ? `r ${focus.r.toFixed(2)}` : "focus", cx, cy - rr - 12, { align: "center", color: C.accent });
+    },
+  });
+})();
+</script>
+</body>
+</html>
