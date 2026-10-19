@@ -22,7 +22,7 @@
   padding: 14px 20px 0;
 }
 
-.fs-head > :not(.fs-title, .fs-head-actions) {
+.fs-head > :not(.fs-title, .fs-head-actions, .fs-head-tabs) {
   grid-row: 1;
   grid-column: 2;
   justify-self: end;
@@ -33,7 +33,7 @@
     grid-template-columns: minmax(0, 1fr) auto;
   }
 
-  .fs-head > :not(.fs-title, .fs-head-actions) {
+  .fs-head > :not(.fs-title, .fs-head-actions, .fs-head-tabs) {
     grid-row: 2;
     grid-column: 1 / -1;
     justify-self: start;
@@ -638,6 +638,26 @@ button.fs-button {
   transition:
     transform 420ms var(--fs-ease-spring),
     width 320ms var(--fs-ease);
+}
+
+/* Tabs in the head: when the examples are the figure's main choice, the tabs take the title's place (the title stays
+   for screen readers with .fs-sr), stretch to the width of the column they control (--fs-tabs-width, set by the
+   figure) and line up with the status and actions. */
+.fs-head:has(> .fs-head-tabs) {
+  align-items: center;
+}
+
+.fs-head > .fs-head-tabs {
+  display: flex;
+  grid-row: 1;
+  grid-column: 1;
+  justify-self: start;
+  width: var(--fs-tabs-width, auto);
+  max-width: 100%;
+}
+
+.fs-head-tabs > button {
+  flex: 1 1 0;
 }
 
 /* ---- Head actions: settings and expand, 32px icons with 40px targets. ---- */
