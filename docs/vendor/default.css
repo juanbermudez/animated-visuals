@@ -5,74 +5,74 @@
 :root,
 [data-fs-theme="default"] {
   color-scheme: dark;
-  --fs-bg: #191919;
-  --fs-surface: #191919;
-  --fs-surface-2: #1f1f1f;
-  --fs-line: #2d2d2d;
-  --fs-line-strong: #3a3a3a;
-  --fs-faint: #555555;
-  --fs-muted: #8a8a8a;
-  --fs-fg: #ededed;
-  --fs-strong: #ffffff;
-  --fs-accent: #fafafa;
+  --fs-bg: oklch(0.21342 0 0);
+  --fs-surface: oklch(0.21342 0 0);
+  --fs-surface-2: oklch(0.23929 0 0);
+  --fs-line: oklch(0.29716 0 0);
+  --fs-line-strong: oklch(0.34846 0 0);
+  --fs-faint: oklch(0.44953 0 0);
+  --fs-muted: oklch(0.63343 0 0);
+  --fs-fg: oklch(0.94611 0 0);
+  --fs-strong: oklch(1 0 0);
+  --fs-accent: oklch(0.9851 0 0);
   /* Achromatic categories: tell them apart by texture and labels too. */
-  --fs-c1: #ededed;
-  --fs-c2: #b0b0b0;
-  --fs-c3: #8f8f8f;
-  --fs-c4: #d0d0d0;
-  --fs-c5: #9a9a9a;
-  --fs-c6: #6e6e6e;
-  --fs-good: #ededed;
-  --fs-bad: #8a8a8a;
+  --fs-c1: oklch(0.94611 0 0);
+  --fs-c2: oklch(0.75721 0 0);
+  --fs-c3: oklch(0.65004 0 0);
+  --fs-c4: oklch(0.85761 0 0);
+  --fs-c5: oklch(0.68622 0 0);
+  --fs-c6: oklch(0.53824 0 0);
+  --fs-good: oklch(0.94611 0 0);
+  --fs-bad: oklch(0.63343 0 0);
 }
 
 :root[data-fs-mode="light"],
 [data-fs-theme="default"][data-fs-mode="light"],
 [data-fs-theme="default-light"] {
   color-scheme: light;
-  --fs-bg: #f2f2f2;
-  --fs-surface: #ffffff;
-  --fs-surface-2: #eeeeee;
-  --fs-line: #e2e2e2;
-  --fs-line-strong: #c9c9c9;
-  --fs-faint: #b3b3b3;
-  --fs-muted: #6c6c6c;
-  --fs-fg: #111111;
-  --fs-strong: #000000;
-  --fs-accent: #111111;
-  --fs-c1: #111111;
-  --fs-c2: #4a4a4a;
-  --fs-c3: #7a7a7a;
-  --fs-c4: #3d3d3d;
-  --fs-c5: #5c5c5c;
-  --fs-c6: #8f8f8f;
-  --fs-good: #111111;
-  --fs-bad: #6c6c6c;
-  --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+  --fs-bg: oklch(0.96115 0 0);
+  --fs-surface: oklch(1 0 0);
+  --fs-surface-2: oklch(0.94912 0 0);
+  --fs-line: oklch(0.91279 0 0);
+  --fs-line-strong: oklch(0.83591 0 0);
+  --fs-faint: oklch(0.76676 0 0);
+  --fs-muted: oklch(0.53128 0 0);
+  --fs-fg: oklch(0.17764 0 0);
+  --fs-strong: oklch(0 0 0);
+  --fs-accent: oklch(0.17764 0 0);
+  --fs-c1: oklch(0.17764 0 0);
+  --fs-c2: oklch(0.40912 0 0);
+  --fs-c3: oklch(0.57951 0 0);
+  --fs-c4: oklch(0.36002 0 0);
+  --fs-c5: oklch(0.47478 0 0);
+  --fs-c6: oklch(0.65004 0 0);
+  --fs-good: oklch(0.17764 0 0);
+  --fs-bad: oklch(0.53128 0 0);
+  --fs-shadow: 0 2px 6px oklch(0 0 0 / 8%), 0 12px 28px -6px oklch(0 0 0 / 16%);
 }
 
 @media (prefers-color-scheme: light) {
   :root:not([data-fs-mode]):not([data-fs-theme]) {
     color-scheme: light;
-    --fs-bg: #f2f2f2;
-    --fs-surface: #ffffff;
-    --fs-surface-2: #eeeeee;
-    --fs-line: #e2e2e2;
-    --fs-line-strong: #c9c9c9;
-    --fs-faint: #b3b3b3;
-    --fs-muted: #6c6c6c;
-    --fs-fg: #111111;
-    --fs-strong: #000000;
-    --fs-accent: #111111;
-    --fs-c1: #111111;
-    --fs-c2: #4a4a4a;
-    --fs-c3: #7a7a7a;
-    --fs-c4: #3d3d3d;
-    --fs-c5: #5c5c5c;
-    --fs-c6: #8f8f8f;
-    --fs-good: #111111;
-    --fs-bad: #6c6c6c;
-    --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+    --fs-bg: oklch(0.96115 0 0);
+    --fs-surface: oklch(1 0 0);
+    --fs-surface-2: oklch(0.94912 0 0);
+    --fs-line: oklch(0.91279 0 0);
+    --fs-line-strong: oklch(0.83591 0 0);
+    --fs-faint: oklch(0.76676 0 0);
+    --fs-muted: oklch(0.53128 0 0);
+    --fs-fg: oklch(0.17764 0 0);
+    --fs-strong: oklch(0 0 0);
+    --fs-accent: oklch(0.17764 0 0);
+    --fs-c1: oklch(0.17764 0 0);
+    --fs-c2: oklch(0.40912 0 0);
+    --fs-c3: oklch(0.57951 0 0);
+    --fs-c4: oklch(0.36002 0 0);
+    --fs-c5: oklch(0.47478 0 0);
+    --fs-c6: oklch(0.65004 0 0);
+    --fs-good: oklch(0.17764 0 0);
+    --fs-bad: oklch(0.53128 0 0);
+    --fs-shadow: 0 2px 6px oklch(0 0 0 / 8%), 0 12px 28px -6px oklch(0 0 0 / 16%);
   }
 }
 
@@ -104,5 +104,5 @@
   --fs-dur-step: 480ms;
   --fs-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --fs-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --fs-shadow: 0 2px 8px rgb(0 0 0 / 24%), 0 14px 32px -6px rgb(0 0 0 / 44%);
+  --fs-shadow: 0 2px 8px oklch(0 0 0 / 24%), 0 14px 32px -6px oklch(0 0 0 / 44%);
 }

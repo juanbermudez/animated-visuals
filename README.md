@@ -57,7 +57,7 @@ Markup can drive figures with no glue code: `data-fs="id play"`, `data-fs-param=
 ## Themes and customization
 
 - **Built in**: Default (light and dark), Notebook (light and dark), and 23 Omarchy palettes (Tokyo Night, Catppuccin, Gruvbox, Nord, Kanagawa, Rosé Pine, Everforest, Flexoki and more). Set one with `FS.setTheme("tokyo-night")` or `data-fs-theme` on any ancestor.
-- **Your own theme**: define the `--fs-*` tokens (colors, fonts, radii, frame, stroke widths) in a CSS file. `references/theming.md` lists every token.
+- **Your own theme**: define the `--fs-*` tokens (colors, fonts, radii, frame, stroke widths) in a CSS file. Every built-in color is written in OKLCH, converted exactly from the original sRGB values; `scripts/hex-to-oklch.mjs` converts a hex theme the same way. `references/theming.md` lists every token.
 - **Your site's theme**: map `--fs-*` to your site's tokens, as `themes/site-bridge.css` does, and figures follow your light/dark mode and palette. If the site animates a theme change, the figures repaint every frame with it.
 - **Writing style**: captions, tips and labels follow a style in `references/writing/` (practical by default, academic on request). Add a style by adding a file there.
 - **Frames**: every figure sits in a 4px frame band, like the images and diagrams around it.
@@ -80,7 +80,7 @@ assets/react/            React and Next.js wrappers and types
 assets/plate-src.html    four working demos; plate-template.html is the built single file
 themes/                  base structure and theme token layers
 konsistent/              the optional convention pack
-scripts/                 build-template.mjs, build-themes.mjs
+scripts/                 build-template.mjs, build-themes.mjs, OKLCH conversion and checks
 docs/                    the docs site (GitHub Pages)
 ```
 

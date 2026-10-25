@@ -48,5 +48,5 @@
   --fs-dur-step: 480ms;
   --fs-ease: var(--site-transition-ease, cubic-bezier(0.16, 1, 0.3, 1));
   --fs-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --fs-shadow: var(--site-shadow, 0 2px 8px rgb(0 0 0 / 24%), 0 14px 32px -6px rgb(0 0 0 / 44%));
+  --fs-shadow: var(--site-shadow, 0 2px 8px oklch(0 0 0 / 24%), 0 14px 32px -6px oklch(0 0 0 / 44%));
 }

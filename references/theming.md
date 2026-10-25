@@ -24,13 +24,22 @@ Shape and motion: `--fs-radius`, `--fs-radius-inner`, `--fs-radius-control`, `--
 
 In canvas, use `f.C` (`f.C.fg`, `f.C.accent`, `f.C.c[0]`, `f.C.font`, `f.C.dim`, `f.C.edge`, `f.C.series`); in SVG, set attributes from `f.C` in `render` or use `var(--fs-…)` in CSS.
 
+## Colors are OKLCH
+
+Every theme color is written as `oklch(L C H)`: lightness from 0 to 1, chroma (0 is gray), hue in degrees (0 for grays); translucent shadows are `oklch(0 0 0 / 8%)`. Equal steps in L look like equal steps in lightness, which is why ramps and contrast fixes are easier to reason about than in hex.
+
+- The values are exact: each one converts to precisely the 8-bit sRGB color it came from, so the themes look as they did in hex. `scripts/oklch.mjs` does the conversion (sRGB -> linear -> LMS -> OKLab -> OKLCH with the CSS Color 4 matrices; L and C printed to 5 decimals, H to 3, which round-trips all 16,777,216 8-bit colors).
+- `node scripts/verify-oklch.mjs` checks every color in `themes/*.css`: OKLCH only, and every value an exact sRGB color.
+- `node scripts/hex-to-oklch.mjs <file>` rewrites a hand-written hex theme in place.
+- The runtime needs nothing special: canvases receive the computed color string and accept `oklch()` in every current browser.
+
 ## Switching and overriding
 
 - Page: `FS.setTheme("tokyo-night")`, `FS.setTheme(null)` for the default; `FS.setMode("light" | "dark" | null)` for the default light-dark pair. Omarchy themes carry their own mode.
 - Reader-facing picker: theme picker = icon button top-right opening a shadcn-style dropdown; never a select in the hero. Default light is `FS.setTheme(null)` + `FS.setMode("light")`; Default is `FS.setMode("dark")` + `FS.setTheme("default")`; every other theme is `FS.setMode(null)` + `FS.setTheme(id)`. Anatomy, keyboard and persistence: `interaction.md` §4 "Theme picker"; working code in `assets/plate-src.html`.
 - One figure: put `data-fs-theme="nord"` on its `.fs-plate`.
-- Overrides: declare any token after the theme layer, globally or on a plate: `.fs-plate { --fs-radius: 4px; --fs-accent: #ff6a3d; }`.
-- New theme: copy a block from `omarchy.css`, change values, check contrast (muted 4.5:1, accent and categories 3:1).
+- Overrides: declare any token after the theme layer, globally or on a plate: `.fs-plate { --fs-radius: 4px; --fs-accent: oklch(0.70393 0.19154 37.126); }`.
+- New theme: copy a block from `omarchy.css`, change values, check contrast (muted 4.5:1, accent and categories 3:1). Write colors in OKLCH; to start from hex, write hex and run `node scripts/hex-to-oklch.mjs <file>`.
 - Inside a host site: map tokens to the site's variables once (`themes/site-bridge.css` is a worked example with placeholder `--site-*` names: `--fs-bg: var(--site-bg)`, `--fs-surface: var(--site-panel)`, `--fs-fg: var(--site-text)`, `--fs-accent: var(--site-accent)`, `--fs-font-body: var(--site-font-body)`, `--fs-radius: var(--site-radius-large)`). The runtime resolves `var()` chains and `color-mix()` through a probe element, so canvas figures follow the site's palettes too.
 
 ## Omarchy palettes
@@ -39,7 +48,7 @@ Source: `themes/omarchy.json`, copied from `github.com/basecamp/omarchy` themes 
 
 `scripts/build-themes.mjs` derives every ladder from the theme's background and foreground with the same 12-step structure as the default theme's grays, then enforces contrast: muted text is raised until it reaches 4.5:1 (17 themes needed it), the steps above it stay monotonic, and the accent and hues move toward the foreground until they reach 3:1 on the surface. Adjustments are written as comments in the generated CSS.
 
-To refresh from upstream: download each theme's `colors.toml`, update `themes/omarchy.json` (keep `commit`), run `node scripts/build-themes.mjs`, then `node scripts/build-template.mjs`. For a site: `node scripts/build-themes.mjs --site-css <path>/palettes.css --site-json <path>/palette-data.json`.
+`themes/omarchy.json` keeps the upstream hex values; the build derives in sRGB and writes OKLCH, and stops if any written value does not convert back to its hex. To refresh from upstream: download each theme's `colors.toml`, update `themes/omarchy.json` (keep `commit`), run `node scripts/build-themes.mjs`, then `node scripts/build-template.mjs` and `node docs/sync.mjs`. For a site: `node scripts/build-themes.mjs --site-css <path>/palettes.css --site-json <path>/palette-data.json`.
 
 ## Theme parity rules
 

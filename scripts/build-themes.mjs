@@ -5,9 +5,12 @@
 //                                                      -> also a site palette stylesheet + registry
 // Every ladder is derived from the theme's background and foreground with the same 12-step
 // structure, so all themes behave alike; contrast is checked and corrected, never assumed.
+// The derivation works in 8-bit sRGB hex (the upstream format); every color is written out as OKLCH,
+// and each written value is checked to convert back to the same hex (scripts/oklch.mjs).
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { hexToOklch } from "./oklch.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const source = JSON.parse(readFileSync(join(root, "themes/omarchy.json"), "utf8"));
@@ -17,7 +20,7 @@ const option = (name) => {
   return i > -1 ? args[i + 1] : undefined;
 };
 
-// ---------- color math (sRGB <-> OKLab) ----------
+// ---------- color math for the derivation (sRGB <-> OKLab, mixing and contrast) ----------
 const hexToRgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
 const toLinear = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 const toGamma = (c) => (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055);
@@ -122,22 +125,23 @@ const header = (what) =>
 const figureCss = themes
   .map((t) => {
     const g = t.gray;
+    const ok = hexToOklch;
     const lines = [
       `color-scheme: ${t.mode};\n`,
-      `--fs-bg: ${t.bg};`,
-      `--fs-surface: ${t.surface};`,
-      `--fs-surface-2: ${t.mode === "light" ? g[2] : g[1]};`,
-      `--fs-line: ${t.mode === "light" ? g[3] : g[4]};`,
-      `--fs-line-strong: ${g[6]};`,
-      `--fs-faint: ${g[7]};`,
-      `--fs-muted: ${t.mode === "light" ? g[8] : g[9]};`,
-      `--fs-fg: ${t.fg};`,
-      `--fs-strong: ${t.strong};`,
-      `--fs-accent: ${t.accent};`,
-      ...t.categorical.map((c, i) => `--fs-c${i + 1}: ${c};`),
-      `--fs-good: ${t.good};`,
-      `--fs-bad: ${t.bad};`,
-      `--fs-shadow: ${t.mode === "light" ? "0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%)" : "0 2px 8px rgb(0 0 0 / 30%), 0 14px 32px -6px rgb(0 0 0 / 50%)"};`,
+      `--fs-bg: ${ok(t.bg)};`,
+      `--fs-surface: ${ok(t.surface)};`,
+      `--fs-surface-2: ${ok(t.mode === "light" ? g[2] : g[1])};`,
+      `--fs-line: ${ok(t.mode === "light" ? g[3] : g[4])};`,
+      `--fs-line-strong: ${ok(g[6])};`,
+      `--fs-faint: ${ok(g[7])};`,
+      `--fs-muted: ${ok(t.mode === "light" ? g[8] : g[9])};`,
+      `--fs-fg: ${ok(t.fg)};`,
+      `--fs-strong: ${ok(t.strong)};`,
+      `--fs-accent: ${ok(t.accent)};`,
+      ...t.categorical.map((c, i) => `--fs-c${i + 1}: ${ok(c)};`),
+      `--fs-good: ${ok(t.good)};`,
+      `--fs-bad: ${ok(t.bad)};`,
+      `--fs-shadow: ${t.mode === "light" ? "0 2px 6px oklch(0 0 0 / 8%), 0 12px 28px -6px oklch(0 0 0 / 16%)" : "0 2px 8px oklch(0 0 0 / 30%), 0 14px 32px -6px oklch(0 0 0 / 50%)"};`,
     ];
     const note = t.notes.length ? ` /* ${t.notes.join("; ")} */` : "";
     return `[data-fs-theme="${t.id}"] {${note}\n  ${lines.join("\n  ")}\n}`;
@@ -154,22 +158,23 @@ if (siteCss) {
     const selector =
       t.mode === "dark" ? `:root.dark[data-style-palette="${t.id}"]` : `:root:not(.dark)[data-style-palette="${t.id}"]`;
     const [blue, green, yellow, magenta, cyan] = t.categorical;
+    const ok = hexToOklch;
     const lines = [
       `color-scheme: ${t.mode};\n`,
-      ...g.map((value, i) => `--gray-${i + 1}: ${value};`),
-      `--rose-quartz: ${t.accent};`,
+      ...g.map((value, i) => `--gray-${i + 1}: ${ok(value)};`),
+      `--rose-quartz: ${ok(t.accent)};`,
       `--rose-quartz-rgb: ${rgbTriplet(t.accent)};`,
       `--muted: ${t.mode === "light" ? "var(--gray-9)" : "var(--gray-10)"};`,
-      `--default-surface-panel: ${t.surface};`,
-      `--default-surface-panel-strong: ${t.mode === "light" ? t.surface : g[1]};`,
-      `--amethyst: ${magenta};`,
-      `--jade: ${green};`,
-      `--citrine: ${yellow};`,
-      `--violet-topaz: ${blue};`,
-      `--minsk: ${cyan};`,
-      `--cement: ${g[7]};`,
-      `--fs-accent: ${t.accent};`,
-      ...t.categorical.map((c, i) => `--fs-c${i + 1}: ${c};`),
+      `--default-surface-panel: ${ok(t.surface)};`,
+      `--default-surface-panel-strong: ${ok(t.mode === "light" ? t.surface : g[1])};`,
+      `--amethyst: ${ok(magenta)};`,
+      `--jade: ${ok(green)};`,
+      `--citrine: ${ok(yellow)};`,
+      `--violet-topaz: ${ok(blue)};`,
+      `--minsk: ${ok(cyan)};`,
+      `--cement: ${ok(g[7])};`,
+      `--fs-accent: ${ok(t.accent)};`,
+      ...t.categorical.map((c, i) => `--fs-c${i + 1}: ${ok(c)};`),
     ];
     return `${selector} {\n  ${lines.join("\n  ")}\n}`;
   });

@@ -19,24 +19,24 @@
 /* themes/harbor.css: an example theme, written for this page. */
 [data-fs-theme="harbor"] {
   color-scheme: dark;
-  --fs-bg: #0e1620;
-  --fs-surface: #111b26;
-  --fs-surface-2: #172331;
-  --fs-line: #223142;
-  --fs-line-strong: #2e4156;
-  --fs-faint: #4a5f75;
-  --fs-muted: #8ea3b8;
-  --fs-fg: #dde7f0;
-  --fs-strong: #ffffff;
-  --fs-accent: #ffb454;
-  --fs-c1: #6cb6ff;
-  --fs-c2: #ffb454;
-  --fs-c3: #7ee0b5;
-  --fs-c4: #f28fad;
-  --fs-c5: #b49cff;
-  --fs-c6: #9fb3c8;
-  --fs-good: #7ee0b5;
-  --fs-bad: #f28fad;
+  --fs-bg: oklch(0.1974 0.0236 254.363);
+  --fs-surface: oklch(0.2181 0.02618 251.403);
+  --fs-surface-2: oklch(0.25195 0.0316 252.824);
+  --fs-line: oklch(0.3078 0.03682 252.104);
+  --fs-line-strong: oklch(0.36857 0.04379 251.505);
+  --fs-faint: oklch(0.4771 0.04393 249.944);
+  --fs-muted: oklch(0.70631 0.03883 248.376);
+  --fs-fg: oklch(0.92306 0.01629 245.095);
+  --fs-strong: oklch(1 0 0);
+  --fs-accent: oklch(0.82384 0.1408 70.171);
+  --fs-c1: oklch(0.7581 0.12923 249.583);
+  --fs-c2: oklch(0.82384 0.1408 70.171);
+  --fs-c3: oklch(0.83464 0.11209 163.803);
+  --fs-c4: oklch(0.76212 0.12404 0.965);
+  --fs-c5: oklch(0.75282 0.14095 293.889);
+  --fs-c6: oklch(0.75832 0.03752 249.613);
+  --fs-good: oklch(0.83464 0.11209 163.803);
+  --fs-bad: oklch(0.76212 0.12404 0.965);
 }
 </style>
 <script src="vendor/themes.js"></script>
@@ -122,7 +122,7 @@
   </div>
 
   <h2 id="write">Write a theme</h2>
-  <p>Copy a block, rename it and change the values. Keep muted text at 4.5:1 on the page and the accent and categories at 3:1 on the plate. This one is defined in this page's own CSS, and the figure under it uses it:</p>
+  <p>Copy a block, rename it and change the values. Colors are written in OKLCH (lightness 0 to 1, chroma, hue in degrees); <code>scripts/hex-to-oklch.mjs</code> converts a theme written in hex. Keep muted text at 4.5:1 on the page and the accent and categories at 3:1 on the plate. This one is defined in this page's own CSS, and the figure under it uses it:</p>
 <pre data-source="harbor"></pre>
   <figure class="fs-plate wide specimen" data-fs-theme="harbor" data-name="Harbor" aria-labelledby="spec-harbor-title">
     <header class="fs-head"><h3 class="fs-title" id="spec-harbor-title">Harbor, an example theme</h3><span class="fs-status">Illustration</span></header>
@@ -138,11 +138,11 @@ FS.setMode("light");        // Default and Notebook come in light and dark</code
 <pre><code class="language-html">&lt;!-- one figure only --&gt;
 &lt;figure class="fs-plate" data-fs-theme="nord"&gt; … &lt;/figure&gt;</code></pre>
 <pre><code class="language-css">/* or override single tokens after the theme layer, for the page or one plate */
-.fs-plate { --fs-radius: 4px; --fs-accent: #ff6a3d; }</code></pre>
+.fs-plate { --fs-radius: 4px; --fs-accent: oklch(0.70393 0.19154 37.126); }</code></pre>
 
   <h3>Animate the switch</h3>
   <p>This site tweens every theme change. The color tokens are registered with <code>@property</code> so they can transition, and the transition runs on <code>&lt;html&gt;</code>. While <code>&lt;html&gt;</code> has a running animation, the runtime re-reads the tokens every frame and redraws, so canvases change with the page instead of snapping at the end.</p>
-<pre><code class="language-css">@property --fs-bg { syntax: "&lt;color&gt;"; inherits: true; initial-value: #191919; }
+<pre><code class="language-css">@property --fs-bg { syntax: "&lt;color&gt;"; inherits: true; initial-value: oklch(0.21342 0 0); }
 /* … one per color token … */
 :root { transition: --fs-bg 520ms cubic-bezier(0.16, 1, 0.3, 1) /* , … */; }</code></pre>
 
@@ -199,7 +199,7 @@ FS.setMode("light");        // Default and Notebook come in light and dark</code
   --fs-dur-step: 480ms;
   --fs-ease: var(--site-transition-ease, cubic-bezier(0.16, 1, 0.3, 1));
   --fs-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --fs-shadow: var(--site-shadow, 0 2px 8px rgb(0 0 0 / 24%), 0 14px 32px -6px rgb(0 0 0 / 44%));
+  --fs-shadow: var(--site-shadow, 0 2px 8px oklch(0 0 0 / 24%), 0 14px 32px -6px oklch(0 0 0 / 44%));
 }</code></pre>
 <!-- bridge:end -->
   <p>More in <a href="https://github.com/juanbermudez/animated-visuals/blob/main/references/theming.md"><code>references/theming.md</code></a>. To regenerate the Omarchy palettes from upstream, see <code>scripts/build-themes.mjs</code>.</p>

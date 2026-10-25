@@ -71,7 +71,8 @@ Every figure proves one claim, is minimal and on-brand, moves only to show a pro
 | `assets/react/` | React components and hook |
 | `themes/default.css`, `themes/notebook.css`, `themes/omarchy.css`, `themes/base.css`, `themes/site-bridge.css` | token layers and structure |
 | `themes/omarchy.json` | palette source (Omarchy, MIT, pinned commit) |
-| `scripts/build-themes.mjs` | regenerate Omarchy CSS (and a site's palette CSS/registry with `--site-css/--site-json`) |
+| `scripts/build-themes.mjs` | regenerate Omarchy CSS as OKLCH (and a site's palette CSS/registry with `--site-css/--site-json`) |
+| `scripts/oklch.mjs`, `scripts/hex-to-oklch.mjs`, `scripts/verify-oklch.mjs` | exact sRGB <-> OKLCH conversion, converting a hex theme, checking every theme color |
 | `scripts/build-template.mjs` | inline themes and runtime into the template |
 | `NOTICE.md` | credits and licenses |
 

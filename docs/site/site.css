@@ -3,24 +3,24 @@
 
 /* Registered color tokens can transition. The tween runs on <html>, which is what the runtime watches:
    while <html> has a running animation it re-reads tokens every frame, so canvases follow the page. */
-@property --fs-bg { syntax: "<color>"; inherits: true; initial-value: #191919; }
-@property --fs-surface { syntax: "<color>"; inherits: true; initial-value: #191919; }
-@property --fs-surface-2 { syntax: "<color>"; inherits: true; initial-value: #1f1f1f; }
-@property --fs-line { syntax: "<color>"; inherits: true; initial-value: #2d2d2d; }
-@property --fs-line-strong { syntax: "<color>"; inherits: true; initial-value: #3a3a3a; }
-@property --fs-faint { syntax: "<color>"; inherits: true; initial-value: #555555; }
-@property --fs-muted { syntax: "<color>"; inherits: true; initial-value: #8a8a8a; }
-@property --fs-fg { syntax: "<color>"; inherits: true; initial-value: #ededed; }
-@property --fs-strong { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
-@property --fs-accent { syntax: "<color>"; inherits: true; initial-value: #fafafa; }
-@property --fs-good { syntax: "<color>"; inherits: true; initial-value: #ededed; }
-@property --fs-bad { syntax: "<color>"; inherits: true; initial-value: #8a8a8a; }
-@property --fs-c1 { syntax: "<color>"; inherits: true; initial-value: #ededed; }
-@property --fs-c2 { syntax: "<color>"; inherits: true; initial-value: #b0b0b0; }
-@property --fs-c3 { syntax: "<color>"; inherits: true; initial-value: #8f8f8f; }
-@property --fs-c4 { syntax: "<color>"; inherits: true; initial-value: #d0d0d0; }
-@property --fs-c5 { syntax: "<color>"; inherits: true; initial-value: #9a9a9a; }
-@property --fs-c6 { syntax: "<color>"; inherits: true; initial-value: #6e6e6e; }
+@property --fs-bg { syntax: "<color>"; inherits: true; initial-value: oklch(0.21342 0 0); }
+@property --fs-surface { syntax: "<color>"; inherits: true; initial-value: oklch(0.21342 0 0); }
+@property --fs-surface-2 { syntax: "<color>"; inherits: true; initial-value: oklch(0.23929 0 0); }
+@property --fs-line { syntax: "<color>"; inherits: true; initial-value: oklch(0.29716 0 0); }
+@property --fs-line-strong { syntax: "<color>"; inherits: true; initial-value: oklch(0.34846 0 0); }
+@property --fs-faint { syntax: "<color>"; inherits: true; initial-value: oklch(0.44953 0 0); }
+@property --fs-muted { syntax: "<color>"; inherits: true; initial-value: oklch(0.63343 0 0); }
+@property --fs-fg { syntax: "<color>"; inherits: true; initial-value: oklch(0.94611 0 0); }
+@property --fs-strong { syntax: "<color>"; inherits: true; initial-value: oklch(1 0 0); }
+@property --fs-accent { syntax: "<color>"; inherits: true; initial-value: oklch(0.9851 0 0); }
+@property --fs-good { syntax: "<color>"; inherits: true; initial-value: oklch(0.94611 0 0); }
+@property --fs-bad { syntax: "<color>"; inherits: true; initial-value: oklch(0.63343 0 0); }
+@property --fs-c1 { syntax: "<color>"; inherits: true; initial-value: oklch(0.94611 0 0); }
+@property --fs-c2 { syntax: "<color>"; inherits: true; initial-value: oklch(0.75721 0 0); }
+@property --fs-c3 { syntax: "<color>"; inherits: true; initial-value: oklch(0.65004 0 0); }
+@property --fs-c4 { syntax: "<color>"; inherits: true; initial-value: oklch(0.85761 0 0); }
+@property --fs-c5 { syntax: "<color>"; inherits: true; initial-value: oklch(0.68622 0 0); }
+@property --fs-c6 { syntax: "<color>"; inherits: true; initial-value: oklch(0.53824 0 0); }
 
 :root {
   --doc-font: "Manrope", system-ui, sans-serif;

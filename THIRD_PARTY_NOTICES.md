@@ -9,6 +9,7 @@ Animated Visuals is MIT-licensed (see `LICENSE`). It builds on other people's wo
 - **pmndrs `gpgpu-curl-noise-dof`** example (MIT, Poimandres): the per-point depth-of-field idea; `assets/react/FocusField.tsx` is an independent implementation.
 - **Alex Zhang's blog figures** (alexzhang13.github.io): patterns studied, not copied; see `references/alex-zhang-notes.md`. No code from those posts is included.
 - **interface-design** guidance (adapted from jakubkrehel/skills, MIT, and Vercel's Web Interface Guidelines, MIT) informed the interaction, motion and accessibility rules.
+- **OKLab** by Björn Ottosson ([bottosson.github.io/posts/oklab](https://bottosson.github.io/posts/oklab/)) and the sRGB, XYZ and OKLab matrices published in W3C's [CSS Color Module Level 4](https://www.w3.org/TR/css-color-4/): `scripts/oklch.mjs` implements the conversion every theme color goes through.
 - **Konsistent** by Vercel Labs ([github.com/vercel-labs/konsistent](https://github.com/vercel-labs/konsistent), Apache-2.0): optional structural linting, see `references/konsistent.md` and `konsistent/`. Not bundled.
 
 - **SapiMouse** (Margit Antal, Norbert Fejér and Krisztián Buza, Sapientia University; [dataset](https://www.ms.sapientia.ro/~manyi/sapimouse/sapimouse.html); paper: "SapiMouse: Mouse Dynamics-based User Authentication Using Deep Feature Learning", 2021): the pointer-movement numbers in `references/interaction.md` are summary statistics computed from it. No recorded data is included in this repository.
