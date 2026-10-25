@@ -1,0 +1,6 @@
+{
+  "title": "The title of the guide",
+  "summary": "One sentence for the examples index: what it explains and how.",
+  "source": { "label": "Authors, Title, venue, year", "url": "https://..." },
+  "order": 99
+}
