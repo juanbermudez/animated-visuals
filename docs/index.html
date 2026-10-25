@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Animated Visuals</title>
 <meta name="description" content="An agent skill for Claude Code and Codex that builds polished, interactive and animated figures on a small dependency-free runtime, with swappable themes.">
-<script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="zef-light"||t==="zef-dark")r.dataset.fsMode=t.slice(4);else if(t)r.dataset.fsTheme=t}catch(e){}</script>
+<script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&display=swap">
-<link rel="stylesheet" href="vendor/zef.css">
+<link rel="stylesheet" href="vendor/default.css">
 <link rel="stylesheet" href="vendor/notebook.css">
 <link rel="stylesheet" href="vendor/omarchy.css">
 <link rel="stylesheet" href="vendor/base.css">
@@ -64,7 +64,7 @@
   <h2>What you get</h2>
   <div class="cards">
     <a class="card" href="gallery.html"><b>Working figure types</b><span>Flows with packets, stepped mechanisms, scrubbable timelines, threshold charts, state machines, sequences, particle fields.</span></a>
-    <a class="card" href="themes.html"><b>27 themes</b><span>The Zef default, a lab-notebook register and 23 Omarchy palettes. One attribute switches them.</span></a>
+    <a class="card" href="themes.html"><b>27 themes</b><span>Default, Notebook and 23 Omarchy palettes, each in its own mode. One attribute switches them.</span></a>
     <a class="card" href="customize.html"><b>A programmable runtime</b><span>One spec per figure: params, handles, steps, chapters, tips. Play, seek and set it from code.</span></a>
     <a class="card" href="https://github.com/juanbermudez/animated-visuals/tree/main/references"><b>Design references</b><span>Guides the agent reads: picking the form, interaction, motion, theming, writing and browser checks.</span></a>
   </div>

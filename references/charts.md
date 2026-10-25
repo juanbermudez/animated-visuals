@@ -23,7 +23,7 @@ Charts carry quantitative claims. Make the claim visible (annotate it), make the
 - **Bars start at zero; dot plots when the range matters more than magnitude.**
 - **Encoding without hue first**: solid vs hatched for two states (hatch on the treatment), dashed for references; hue only for named categories (`--fs-c1..c6`), consistent across the page.
 - **Numbers**: tabular figures, units always, the same rounding in labels, readouts and prose.
-- **Ordered segments** (stacked parts, pipeline stages) use a lightness ramp `--fs-line-strong` → `--fs-muted` → `--fs-fg`, never fg plus accent: in monochrome themes such as zef the accent is ink and two segments become identical.
+- **Ordered segments** (stacked parts, pipeline stages) use a lightness ramp `--fs-line-strong` → `--fs-muted` → `--fs-fg`, never fg plus accent: in monochrome themes such as the default the accent is ink and two segments become identical.
 - **Labels never clip**: near an edge, measure (`c.measureText`) and flip the label to the other side of its mark, or break it into two lines.
 - **Counterfactual rows** ("one at a time", "without X") repeat the real marks faint and end to end, appear once the real run reaches its payoff, carry the computed ratio, and the caption says they are arithmetic, not a run.
 

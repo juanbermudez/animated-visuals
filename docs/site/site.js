@@ -13,18 +13,18 @@
   };
   const systemLight = matchMedia("(prefers-color-scheme: light)");
 
-  /** The theme in effect: the stored choice, or Zef in the system's mode. */
+  /** The theme in effect: the stored choice, or Default in the system's mode. */
   function currentId() {
     const id = store.get();
     if (id && byId.has(id)) return id;
-    return systemLight.matches ? "zef-light" : "zef-dark";
+    return systemLight.matches ? "default-light" : "default";
   }
 
   function apply(id) {
     // Mode and palette change in the same task, so one tween carries both.
-    if (id === "zef-dark" || id === "zef-light") {
+    if (id === "default" || id === "default-light") {
       delete root.dataset.fsTheme;
-      root.dataset.fsMode = id === "zef-light" ? "light" : "dark";
+      root.dataset.fsMode = id === "default-light" ? "light" : "dark";
     } else {
       delete root.dataset.fsMode;
       root.dataset.fsTheme = id;
@@ -52,7 +52,7 @@
     const id = currentId();
     const mode = modeOf(id);
     button.dataset.mode = mode;
-    const name = byId.get(id)?.name || "Zef";
+    const name = byId.get(id)?.name || "Default";
     button.setAttribute("aria-label", `Theme: ${name}, ${mode}. Change theme`);
     button.title = `Theme: ${name}`;
   }
@@ -77,9 +77,9 @@
     input = panel.querySelector("input");
     list = panel.querySelector(".tp-list");
     const groups = [
-      ["Zef", THEMES.filter((t) => t.family === "zef")],
-      ["Light themes", THEMES.filter((t) => t.family !== "zef" && t.mode === "light")],
-      ["Dark themes", THEMES.filter((t) => t.family !== "zef" && t.mode === "dark")],
+      ["Default", THEMES.filter((t) => t.family === "default")],
+      ["Light themes", THEMES.filter((t) => t.family !== "default" && t.mode === "light")],
+      ["Dark themes", THEMES.filter((t) => t.family !== "default" && t.mode === "dark")],
     ];
     for (const [label, items] of groups) {
       const group = document.createElement("div");

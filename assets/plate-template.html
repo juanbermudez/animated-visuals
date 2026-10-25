@@ -9,13 +9,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* ---- themes/zef.css ---- */
-/* Default theme: matches zef-builder-site (Juan Bermudez's site). Monochrome; the accent is ink.
+/* ---- themes/default.css ---- */
+/* Default theme. Monochrome; the accent is ink.
    Dark is the published default. Light applies with data-fs-mode="light", or by system preference
    when no mode or theme is forced. Values mirror styles/site/palette.css and tokens.css. */
 
 :root,
-[data-fs-theme="zef"] {
+[data-fs-theme="default"] {
   color-scheme: dark;
   --fs-bg: #191919;
   --fs-surface: #191919;
@@ -39,8 +39,8 @@
 }
 
 :root[data-fs-mode="light"],
-[data-fs-theme="zef"][data-fs-mode="light"],
-[data-fs-theme="zef-light"] {
+[data-fs-theme="default"][data-fs-mode="light"],
+[data-fs-theme="default-light"] {
   color-scheme: light;
   --fs-bg: #f2f2f2;
   --fs-surface: #ffffff;
@@ -118,7 +118,7 @@
   --fs-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --fs-shadow: 0 2px 8px rgb(0 0 0 / 24%), 0 14px 32px -6px rgb(0 0 0 / 44%);
 }
-/* ---- end themes/zef.css ---- */
+/* ---- end themes/default.css ---- */
 /* ---- themes/notebook.css ---- */
 /* Alternate register: the lab notebook (from the "Conscious Micro-Epochs" paper guide).
    Monochrome with an amber focus signal, mono type inside figures, uppercase plate heads,
@@ -745,7 +745,7 @@
 /* ---- end themes/omarchy.css ---- */
 /* ---- themes/base.css ---- */
 /* Animated Visuals plate structure. Uses only --fs-* tokens (see themes/README.md), so any theme file
-   restyles it. Mirrors the zef site's figure grammar: header / stage / toolbar / caption. */
+   restyles it. One figure grammar: header / stage / toolbar / caption. */
 
 .fs-plate {
   container-type: inline-size;
@@ -3458,7 +3458,7 @@ code { font: 0.875em var(--fs-font-mono); }
 
   // ---------- themes ----------
   function setTheme(name, scope = document.documentElement) {
-    if (!name || name === "zef") delete scope.dataset.fsTheme;
+    if (!name || name === "default") delete scope.dataset.fsTheme;
     else scope.dataset.fsTheme = name;
   }
   function setMode(mode, scope = document.documentElement) {
@@ -3520,7 +3520,7 @@ code { font: 0.875em var(--fs-font-mono); }
 (() => {
   const omarchy = { "catppuccin": "Catppuccin", "catppuccin-latte": "Catppuccin Latte", "ethereal": "Ethereal", "everforest": "Everforest", "flexoki-light": "Flexoki Light", "gruvbox": "Gruvbox", "hackerman": "Hackerman", "kanagawa": "Kanagawa", "last-horizon": "Last Horizon", "lumon": "Lumon", "lupine": "Lupine", "matte-black": "Matte Black", "miasma": "Miasma", "nord": "Nord", "osaka-jade": "Osaka Jade", "retro-82": "Retro 82", "ristretto": "Ristretto", "rose-pine": "Rosé Pine Dawn", "solitude": "Solitude", "starship": "Starship", "tokyo-night": "Tokyo Night", "vantablack": "Vantablack", "white": "White" };
   const groups = [
-    ["Site", { "zef": "Zef (default)", "zef-light": "Zef light" }],
+    ["Site", { "default": "Default", "default-light": "Default light" }],
     ["Registers", { "notebook": "Lab notebook", "notebook-light": "Lab notebook light" }],
     ["Omarchy", omarchy],
   ];
@@ -3530,8 +3530,8 @@ code { font: 0.875em var(--fs-font-mono); }
     set(value) { try { localStorage.setItem(KEY, value); } catch { /* private mode: the choice lasts this page only */ } },
   };
   function apply(value) {
-    if (value === "zef-light") { FS.setTheme(null); FS.setMode("light"); }
-    else { FS.setMode(value === "zef" ? "dark" : null); FS.setTheme(value); }
+    if (value === "default-light") { FS.setTheme(null); FS.setMode("light"); }
+    else { FS.setMode(value === "default" ? "dark" : null); FS.setTheme(value); }
   }
   const trigger = document.getElementById("theme-trigger");
   const menu = document.getElementById("theme-list");
@@ -3556,7 +3556,7 @@ code { font: 0.875em var(--fs-font-mono); }
   });
   const items = [...menu.querySelectorAll(".theme-item")];
   const stored = store.get();
-  let current = items.some((item) => item.dataset.theme === stored) ? stored : matchMedia("(prefers-color-scheme: light)").matches ? "zef-light" : "zef";
+  let current = items.some((item) => item.dataset.theme === stored) ? stored : matchMedia("(prefers-color-scheme: light)").matches ? "default-light" : "default";
   if (current === stored) apply(current);
   const sync = () => items.forEach((item) => item.setAttribute("aria-checked", String(item.dataset.theme === current)));
   sync();

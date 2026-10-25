@@ -1,6 +1,6 @@
 ---
 name: animated-visuals
-description: Design and build polished, minimal, interactive and animated visualizations and diagrams for papers, articles, explainers and sites — explorable charts (hand-built or nivo), stepped mechanism diagrams, animated system/agent architecture flows, one-clock timelines, particle and flow fields, and WebGL / react-three-fiber scenes with depth-of-field focus. Styles are swappable theme layers (default matches Juan Bermudez's site; lab-notebook register; 23 Omarchy palettes such as Tokyo Night, Catppuccin, Gruvbox, Nord). Every figure is programmable (play, seek, step, set parameters, link prose). Use when asked to visualize data or a paper's findings, explain a mechanism or architecture visually, make a figure interactive or animated, build charts for a React/Next.js site, theme figures, or polish figures that look generic. Not for full lessons (use teach-me) or static branded diagrams with no interaction (diagram-design is faster).
+description: Design and build polished, minimal, interactive and animated visualizations and diagrams for papers, articles, explainers and sites — explorable charts (hand-built or nivo), stepped mechanism diagrams, animated system/agent architecture flows, one-clock timelines, particle and flow fields, and WebGL / react-three-fiber scenes with depth-of-field focus. Styles are swappable theme layers (a calm monochrome default, a lab notebook and 23 Omarchy palettes such as Tokyo Night, Catppuccin, Gruvbox, Nord). Every figure is programmable (play, seek, step, set parameters, link prose). Use when asked to visualize data or a paper's findings, explain a mechanism or architecture visually, make a figure interactive or animated, build charts for a React/Next.js site, theme figures, or polish figures that look generic. Not for full lessons (use teach-me) or static branded diagrams with no interaction (diagram-design is faster).
 ---
 
 # Animated Visuals
@@ -13,7 +13,7 @@ Every figure proves one claim, is minimal and on-brand, moves only to show a pro
 2. **Pick the writing style.** Practical by default (`references/writing/practical.md`); academic only when asked or when the host is a paper (`references/writing/academic.md`). Styles are modular (`references/writing/README.md`). Keep every label, caption and tip within the copy budget.
 3. **Find the interaction.** For each claim, decide what the reader should be able to do to understand it faster (scrub time, step a mechanism, drag the parameter the claim depends on, point at a part, compare on one axis). Pick the lowest rung of the interaction ladder that answers it: `references/interaction.md`.
 4. **Form and medium.** `references/choosing-form.md` (SVG, canvas, WebGL, nivo).
-5. **Theme.** Inside a host site, map `--fs-*` tokens to its variables (for zef-builder-site use `themes/zef-site-bridge.css`). Otherwise the default `zef` theme matches Juan's site; registers and Omarchy palettes are one attribute away. Never hard-code colors: `references/theming.md`, `references/art-direction.md`.
+5. **Theme.** Inside a host site, map `--fs-*` tokens to its variables (`themes/site-bridge.css` is a worked example). Otherwise the `default` theme applies: calm, monochrome, ink as the accent; the notebook and Omarchy themes are one attribute away. Never hard-code colors: `references/theming.md`, `references/art-direction.md`.
 6. **Build.**
    - Standalone page or Artifact: copy `assets/plate-template.html` (themes + `FS` runtime inlined, four working demos: stepped SVG flow with linked prose, one-clock timeline with a physics time scrubber and a computed counterfactual bracket, explorable chart with a scrubbable number and a settings popover, curl-noise field with a draggable, resizable focus; theme menu top right). To change shared layers, edit `assets/plate-src.html`, `themes/*` or `assets/runtime/fs-runtime.js` and run `node scripts/build-template.mjs`.
    - React / Next.js: `assets/react/` (see its README): `useFigure`, `FigurePlate`, `FlowDiagram`, `ExplorableLine` (nivo), `FocusField` (R3F).
@@ -51,7 +51,7 @@ Every figure proves one claim, is minimal and on-brand, moves only to show a pro
 | `references/writing/` | writing styles (practical default, academic on request) and how to add one |
 | `references/interaction.md` | finding the interaction, the ladder, patterns, controls (handles, sliders, settings, timeline surface, tips, expand, stable layout, buttons), feel, the `FS` API, input parity, anti-patterns |
 | `references/theming.md` | layers, token contract, switching/overriding, Omarchy palettes and contrast, host-site bridges |
-| `references/art-direction.md` | the zef register, plate anatomy, type, encoding, strokes, density, data honesty, other registers |
+| `references/art-direction.md` | the default register, plate anatomy, type, encoding, strokes, density, data honesty, other registers |
 | `references/choosing-form.md` | claim → form, medium, delivery target |
 | `references/diagram-types.md` | the 27 diagram types and 7 semantic patterns (after diagram-design), each with what moves, what the reader can do, and the trap |
 | `references/diagrams.md` | layout, nodes, connectors, packets, stepping, state machines, responsive re-layout |
@@ -69,7 +69,7 @@ Every figure proves one claim, is minimal and on-brand, moves only to show a pro
 | `assets/plate-template.html` | self-contained starter (built) |
 | `assets/plate-src.html`, `assets/runtime/fs-runtime.js` | sources for the template; the runtime is also used by the React assets |
 | `assets/react/` | React components and hook |
-| `themes/zef.css`, `themes/notebook.css`, `themes/omarchy.css`, `themes/base.css`, `themes/zef-site-bridge.css` | token layers and structure |
+| `themes/default.css`, `themes/notebook.css`, `themes/omarchy.css`, `themes/base.css`, `themes/site-bridge.css` | token layers and structure |
 | `themes/omarchy.json` | palette source (Omarchy, MIT, pinned commit) |
 | `scripts/build-themes.mjs` | regenerate Omarchy CSS (and a site's palette CSS/registry with `--site-css/--site-json`) |
 | `scripts/build-template.mjs` | inline themes and runtime into the template |

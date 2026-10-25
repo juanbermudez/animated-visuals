@@ -1,5 +1,5 @@
 /* Docs site chrome. Colors come only from the --fs-* tokens in vendor/*.css, so the page and every
-   figure change theme together. Type stays Zef (Manrope) whatever the theme. */
+   figure change theme together. Type stays Manrope whatever the theme. */
 
 /* Registered color tokens can transition. The tween runs on <html>, which is what the runtime watches:
    while <html> has a running animation it re-reads tokens every frame, so canvases follow the page. */

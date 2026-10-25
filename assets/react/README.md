@@ -15,7 +15,7 @@ Thin React wrappers over the same `FS` runtime the standalone template uses, so 
 ## Install into a site
 
 1. Copy this folder and `../runtime/fs-runtime.js` into one directory (for example `components/figures/`). `useFigure` imports `./fs-runtime.js`.
-2. Import `themes/base.css` once, globally, plus one token layer: `themes/zef-site-bridge.css` inside zef-builder-site (follows the site's modes and palettes), or `themes/zef.css` (+ `themes/omarchy.css` for palettes) elsewhere.
+2. Import `themes/base.css` once, globally, plus one token layer: `themes/site-bridge.css` adapted to your site's variables (follows the site's modes and palettes), or `themes/default.css` (+ `themes/omarchy.css` for palettes) elsewhere.
 3. Install only what you use, pinned: `@nivo/core@0.99.0 @nivo/line@0.99.0` for charts; `three@0.186.1 @react-three/fiber@9.8.2` (+ `@react-three/drei@10.7.9` if used) for 3D.
 4. Load heavy figures lazily from a client component, in a box with reserved height:
 
@@ -27,7 +27,7 @@ const FocusField = dynamic(() => import("@/components/figures/FocusField"), { ss
 
 ## Theme picker
 
-Theme picker = icon button top-right opening a shadcn-style dropdown; never a select in the hero. In React use the real shadcn `DropdownMenu` (`npx shadcn@latest add dropdown-menu`): it already gives the keyboard, type-ahead, outside-click, focus return and ARIA. Persist the choice yourself and keep the zef / zef-light cases:
+Theme picker = icon button top-right opening a shadcn-style dropdown; never a select in the hero. In React use the real shadcn `DropdownMenu` (`npx shadcn@latest add dropdown-menu`): it already gives the keyboard, type-ahead, outside-click, focus return and ARIA. Persist the choice yourself and keep the `default` / `default-light` cases:
 
 ```tsx
 "use client";
@@ -41,19 +41,19 @@ import {
 import { loadFigureRuntime } from "@/components/figures/useFigure";
 
 const GROUPS: [string, [string, string][]][] = [
-  ["Site", [["zef", "Zef (default)"], ["zef-light", "Zef light"]]],
+  ["Site", [["default", "Default"], ["default-light", "Default light"]]],
   ["Registers", [["notebook", "Lab notebook"], ["notebook-light", "Lab notebook light"]]],
   ["Omarchy", [["tokyo-night", "Tokyo Night"], ["catppuccin", "Catppuccin"], ["nord", "Nord"]]],
 ];
 
 async function apply(id: string) {
   const FS = await loadFigureRuntime();
-  if (id === "zef-light") { FS.setTheme(null); FS.setMode("light"); }
-  else { FS.setMode(id === "zef" ? "dark" : null); FS.setTheme(id); }
+  if (id === "default-light") { FS.setTheme(null); FS.setMode("light"); }
+  else { FS.setMode(id === "default" ? "dark" : null); FS.setTheme(id); }
 }
 
 export function ThemeMenu() {
-  const [theme, setTheme] = useState("zef");
+  const [theme, setTheme] = useState("default");
   useEffect(() => { const saved = localStorage.getItem("fs-theme"); if (saved) { setTheme(saved); void apply(saved); } }, []);
   const choose = (id: string) => { setTheme(id); void apply(id); localStorage.setItem("fs-theme", id); };
   return (

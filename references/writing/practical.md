@@ -1,6 +1,6 @@
 # Practical style (default)
 
-Written the way Juan writes the opening of "Fluid Human-Agent Interactions": a person talking straight to you about something they built and care about. Plain, concrete, a little funny, never stiff. No profanity. Labels stay short; the voice shows most in titles, intros, captions and tips.
+The voice of a person talking straight to you about something they built and care about. Plain, concrete, a little funny, never stiff. No profanity. Labels stay short; the voice shows most in titles, intros, captions and tips.
 
 ## Voice
 - **Open with a stance, in one short sentence.** "I know the model is going to devour the harness." Then the turn: concede the other side, then push back. "Sure, with enough compute you can brute-force it. But is that the most efficient way?"
@@ -66,5 +66,5 @@ Explain a mechanism as what happens to one concrete thing, in order:
 - [ ] The intro opens with a stance or a lived moment, not a definition.
 - [ ] A stranger understands every label without the prose.
 - [ ] No system word stands alone (goal, focus, evidence, attention, not objective, candidate, CUSUM, packet).
-- [ ] Copy within the budget in `content-design.md` §5; no profanity; no em dashes on zef-builder-site.
+- [ ] Copy within the budget in `content-design.md` §5; no profanity.
 - [ ] Units everywhere; rounding consistent with the prose.

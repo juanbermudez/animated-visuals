@@ -1,11 +1,14 @@
 /* Animated Visuals plate structure. Uses only --fs-* tokens (see themes/README.md), so any theme file
-   restyles it. Mirrors the zef site's figure grammar: header / stage / toolbar / caption. */
+   restyles it. One figure grammar: header / stage / toolbar / caption. */
 
 .fs-plate {
   container-type: inline-size;
   margin: 1.75rem 0;
   overflow: hidden;
   color: var(--fs-fg);
+  /* Its own base size, so a host's prose sizes never reach unsized text inside. */
+  font-size: 16px;
+  line-height: 1.625;
   font-family: var(--fs-font-figure);
   background: var(--fs-surface);
   /* A 4px frame band, the same treatment as the host's framed images, diagrams and embeds. */

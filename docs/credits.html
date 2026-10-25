@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Credits · Animated Visuals</title>
 <meta name="description" content="Credits and third-party notices for Animated Visuals: the projects, palettes and fonts it builds on.">
-<script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="zef-light"||t==="zef-dark")r.dataset.fsMode=t.slice(4);else if(t)r.dataset.fsTheme=t}catch(e){}</script>
+<script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="vendor/zef.css">
+<link rel="stylesheet" href="vendor/default.css">
 <link rel="stylesheet" href="vendor/notebook.css">
 <link rel="stylesheet" href="vendor/omarchy.css">
 <link rel="stylesheet" href="vendor/base.css">
@@ -61,7 +61,7 @@
 <ul>
   <li><strong>Omarchy theme palettes</strong> (<code>themes/omarchy.json</code>, generated <code>themes/omarchy.css</code>): color values from <a href="https://github.com/basecamp/omarchy">basecamp/omarchy</a> at commit 81fd2d23ca6e3462183a4dc8360de3113fa8d80c, MIT License, © Basecamp/37signals and Omarchy contributors (Ethereal, Hackerman, Last Horizon, Lumon, Lupine, Matte Black, Miasma, Osaka Jade, Retro 82, Ristretto, Solitude, Starship, Vantablack, White).</li>
   <li>Upstream palettes, credited to their authors (all MIT): <strong>Catppuccin</strong> (Catppuccin org), <strong>Everforest</strong> (sainnhe), <strong>Flexoki</strong> (Steph Ango), <strong>Gruvbox</strong> (morhetz, Pavel Pertsev), <strong>Kanagawa</strong> (rebelot), <strong>Nord</strong> (Arctic Ice Studio, Sven Greb), <strong>Rosé Pine</strong> (Rosé Pine), <strong>Tokyo Night</strong> (enkia). Derived ladders and contrast adjustments are computed by <code>scripts/build-themes.mjs</code>.</li>
-  <li><strong>Zef</strong> (<code>themes/zef.css</code>, <code>themes/zef-site-bridge.css</code>) and the <strong>lab-notebook</strong> register (<code>themes/notebook.css</code>): Juan Bermudez's own site and notebook styles.</li>
+  <li><strong>Default</strong> and <strong>Notebook</strong> themes (<code>themes/default.css</code>, <code>themes/notebook.css</code>) and the example bridge <code>themes/site-bridge.css</code>: original to this project (MIT).</li>
 </ul>
 <h2>Fonts</h2>
 <p>Manrope, JetBrains Mono, IBM Plex Mono, Newsreader and Bricolage Grotesque load from Google Fonts under the SIL Open Font License 1.1.</p>

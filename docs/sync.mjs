@@ -15,7 +15,7 @@ mkdirSync(vendor, { recursive: true });
 const copies = [
   ["assets/runtime/fs-runtime.js", "fs-runtime.js"],
   ["themes/base.css", "base.css"],
-  ["themes/zef.css", "zef.css"],
+  ["themes/default.css", "default.css"],
   ["themes/notebook.css", "notebook.css"],
   ["themes/omarchy.css", "omarchy.css"],
 ];
@@ -25,11 +25,11 @@ for (const [from, to] of copies) {
 }
 
 // Theme list for the picker and the themes page. `attr` is the data-fs-theme value that shows the theme on
-// one element (swatches, plates); the picker applies Zef through data-fs-mode instead.
+// one element (swatches, plates); the picker applies Default through data-fs-mode instead.
 const omarchy = JSON.parse(readFileSync(join(root, "themes/omarchy.json"), "utf8"));
 const themes = [
-  { id: "zef-light", attr: "zef-light", name: "Zef Light", mode: "light", family: "zef" },
-  { id: "zef-dark", attr: "zef", name: "Zef Dark", mode: "dark", family: "zef" },
+  { id: "default-light", attr: "default-light", name: "Default Light", mode: "light", family: "default" },
+  { id: "default", attr: "default", name: "Default", mode: "dark", family: "default" },
   { id: "notebook-light", attr: "notebook-light", name: "Notebook Light", mode: "light", family: "register" },
   { id: "notebook", attr: "notebook", name: "Notebook", mode: "dark", family: "register" },
   ...Object.entries(omarchy.themes).map(([id, t]) => ({ id, attr: id, name: t.name, mode: t.mode, family: "omarchy" })),
@@ -95,7 +95,7 @@ function markdown(md) {
 const notices = readFileSync(join(root, "THIRD_PARTY_NOTICES.md"), "utf8").replace(/^# .*\n/, "");
 inject("credits.html", "notices", markdown(notices));
 
-const bridge = readFileSync(join(root, "themes/zef-site-bridge.css"), "utf8").trim();
+const bridge = readFileSync(join(root, "themes/site-bridge.css"), "utf8").trim();
 inject("themes.html", "bridge", `<pre><code class="language-css">${escape(bridge)}</code></pre>`);
 
 console.log(`done    ${relative(process.cwd(), docs) || "."}`);

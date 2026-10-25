@@ -1,0 +1,52 @@
+/* Example bridge: load this instead of default.css inside a site that already has design tokens, so the
+   figure tokens follow the site's own variables and its light/dark modes and palettes flow into every figure.
+   The --site-* names on the right are placeholders: replace them with your site's variables.
+   The runtime resolves var() chains and color-mix() through a probe, so canvas figures follow too. */
+:root {
+  --fs-bg: var(--site-bg);
+  --fs-surface: var(--site-panel);
+  --fs-surface-2: var(--site-panel-raised);
+  --fs-line: var(--site-border);
+  --fs-line-strong: var(--site-border-strong);
+  --fs-faint: var(--site-text-faint);
+  --fs-muted: var(--site-text-muted);
+  --fs-fg: var(--site-text);
+  --fs-strong: var(--site-text-strong);
+  --fs-accent: var(--site-accent);
+  --fs-c1: var(--site-blue);
+  --fs-c2: var(--site-green);
+  --fs-c3: var(--site-yellow);
+  --fs-c4: var(--site-purple);
+  --fs-c5: var(--site-teal);
+  --fs-c6: var(--site-gray);
+  --fs-good: var(--site-green);
+  --fs-bad: var(--site-text-muted);
+  --fs-font-body: var(--site-font-body), system-ui, sans-serif;
+  --fs-font-display: var(--site-font-heading), system-ui, sans-serif;
+  --fs-font-mono: var(--site-font-mono), ui-monospace, monospace;
+  --fs-font-figure: var(--fs-font-body);
+  --fs-size-title: 14px;
+  --fs-weight-title: 600;
+  --fs-size-status: 11px;
+  --fs-size-label: 11px;
+  --fs-size-tick: 11px;
+  --fs-size-caption: 12px;
+  --fs-head-case: none;
+  --fs-head-tracking: -0.01em;
+  --fs-radius: var(--site-radius-large, 12px);
+  --fs-radius-inner: var(--site-radius, 6px);
+  --fs-radius-control: 4px;
+  --fs-border: 1px;
+  --fs-frame-width: var(--site-frame-width, 4px);
+  --fs-frame: var(--site-frame-color, var(--fs-surface-2));
+  --fs-control-size: 44px;
+  --fs-stroke-hair: 1;
+  --fs-stroke-edge: 1.1;
+  --fs-stroke-series: 1.75;
+  --fs-dim: 0.28;
+  --fs-dur: var(--site-transition-duration, 240ms);
+  --fs-dur-step: 480ms;
+  --fs-ease: var(--site-transition-ease, cubic-bezier(0.16, 1, 0.3, 1));
+  --fs-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --fs-shadow: var(--site-shadow, 0 2px 8px rgb(0 0 0 / 24%), 0 14px 32px -6px rgb(0 0 0 / 44%));
+}

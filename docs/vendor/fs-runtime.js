@@ -1618,7 +1618,7 @@
 
   // ---------- themes ----------
   function setTheme(name, scope = document.documentElement) {
-    if (!name || name === "zef") delete scope.dataset.fsTheme;
+    if (!name || name === "default") delete scope.dataset.fsTheme;
     else scope.dataset.fsTheme = name;
   }
   function setMode(mode, scope = document.documentElement) {

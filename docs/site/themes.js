@@ -3,7 +3,7 @@
 (() => {
   const THEMES = window.AV_THEMES || [];
   const TOKENS = ["bg", "surface", "surface-2", "line", "line-strong", "faint", "muted", "fg", "strong", "accent", "c1", "c2", "c3", "c4", "c5", "c6", "good", "bad"];
-  const FAMILY = { zef: "Zef", register: "Register", omarchy: "Omarchy" };
+  const FAMILY = { default: "Default", notebook: "Notebook", omarchy: "Omarchy" };
 
   const r = FS.rng(5);
   const N = 36;

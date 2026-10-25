@@ -1,9 +1,9 @@
 # Art direction
 
-The look, and the rules that keep it honest. The default register is Juan Bermudez's site (zef-builder-site): calm, monochrome, ink as the accent, figures framed like the site's own diagrams. Colors, type and shape come from theme tokens (`theming.md`), so the same figure can be re-themed (notebook, Omarchy palettes) without touching its code. One register per page.
+The look, and the rules that keep it honest. The default register is calm and monochrome, with ink as the accent and every figure framed like the diagrams around it. Colors, type and shape come from theme tokens (`theming.md`), so the same figure can be re-themed (notebook, Omarchy palettes) without touching its code. One register per page.
 
 ## Contents
-1. The default register (zef)
+1. The default register
 2. The plate
 3. Type inside figures
 4. Encoding without color
@@ -14,9 +14,9 @@ The look, and the rules that keep it honest. The default register is Juan Bermud
 
 ---
 
-## 1. The default register (zef)
+## 1. The default register
 
-- Dark first (`#191919` page and plate, `#ededed` ink, Radix-style gray ramp); light is `#f2f2f2` page with white plates and `#111` ink. Values in `themes/zef.css` mirror the site's `styles/site/palette.css`.
+- Dark first (`#191919` page and plate, `#ededed` ink, Radix-style gray ramp); light is `#f2f2f2` page with white plates and `#111` ink. Values live in `themes/default.css`.
 - The accent is ink, not color. Emphasis comes from contrast and dimming: the subject is full-strength `--fs-fg`/`--fs-strong`, context drops to `--fs-dim` (0.28). Under an Omarchy theme the same token becomes the theme's accent hue.
 - Manrope for everything, including text inside figures; JetBrains Mono for code and data identifiers only.
 - Soft frames: 1px `--fs-line` border, 12px outer radius, 6px inner radius, no shadows.
@@ -37,7 +37,7 @@ Figures break out of the 46rem reading column to ~58rem on wide screens; on phon
 
 ## 3. Type inside figures
 
-- Figure text uses `--fs-font-figure` (Manrope in zef; mono in the notebook register).
+- Figure text uses `--fs-font-figure` (Manrope in the default theme; mono in the notebook theme).
 - Node titles 13px/600, sublines 10.5px muted; axis ticks 10.5px; mark labels 11px/500 with a halo; captions 12px.
 - Nothing under 10px at the rendered width; 11px minimum for anything the reader must read on a phone. If a `viewBox` would scale text below that, switch layouts.
 - Never stretch text: no `preserveAspectRatio="none"` on SVG with text.
@@ -51,7 +51,7 @@ States are encoded so figures survive grayscale, print, color-blindness and the 
 - Membership vs context: solid vs dashed stroke.
 - Magnitude: opacity, size or length; never hue alone. Sign: two textures or two stroke styles, labeled.
 - Active vs inactive: full strength vs `--fs-dim`.
-- Categories (`--fs-c1..c6`) only when a figure must tell more than two kinds apart; in zef they are grays, so pair them with labels or textures. A hue keeps one meaning across the page.
+- Categories (`--fs-c1..c6`) only when a figure must tell more than two kinds apart; in the default theme they are grays, so pair them with labels or textures. A hue keeps one meaning across the page.
 
 ## 5. Strokes, marks, labels
 
@@ -80,7 +80,7 @@ States are encoded so figures survive grayscale, print, color-blindness and the 
 
 | Register | Theme | When |
 |---|---|---|
-| Zef (default) | `zef`, light via `FS.setMode("light")` | Juan's site and anything that should look like it |
+| Default | `default`, `default-light` | anything that should read calm and monochrome |
 | Lab notebook | `notebook`, `notebook-light` | paper explainers: mono figure text, uppercase heads, square plates, amber focus (from the "Conscious Micro-Epochs" guide) |
 | Omarchy palettes | `tokyo-night`, `catppuccin`, `gruvbox`, `nord`, `rose-pine`, … (23) | reader-selected themes, terminal-flavored pages, matching a product's palette |
 | Specimen (3D) | any theme + `webgl.md` | point clouds and fields: black stage, rim-lit sprites, depth of field to direct focus |

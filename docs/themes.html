@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Themes · Animated Visuals</title>
 <meta name="description" content="Every Animated Visuals theme with live swatches and a live figure, the --fs-* token contract, how to write a theme and how to bridge to a site's own tokens.">
-<script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="zef-light"||t==="zef-dark")r.dataset.fsMode=t.slice(4);else if(t)r.dataset.fsTheme=t}catch(e){}</script>
+<script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&display=swap">
-<link rel="stylesheet" href="vendor/zef.css">
+<link rel="stylesheet" href="vendor/default.css">
 <link rel="stylesheet" href="vendor/notebook.css">
 <link rel="stylesheet" href="vendor/omarchy.css">
 <link rel="stylesheet" href="vendor/base.css">
@@ -62,9 +62,9 @@
   <p class="lede">Figures read only <code>--fs-*</code> tokens, so a theme is one block of CSS variables. Pick a theme from the sun or moon button and the page and every figure change together. Each card below is pinned to its own theme, so you can compare them side by side.</p>
   <noscript><p>The theme cards and figures need JavaScript.</p></noscript>
 
-  <h2 id="zef">Zef and the notebook</h2>
-  <p>Zef is the default: monochrome, with ink as the accent, matching Juan Bermudez's own site. The notebook register swaps in mono figure text, uppercase heads, square corners and an amber focus, for paper explainers.</p>
-  <div class="theme-grid wide" data-family="zef register"></div>
+  <h2 id="default">Default and Notebook</h2>
+  <p>Default is monochrome, with ink as the accent. The notebook register swaps in mono figure text, uppercase heads, square corners and an amber focus, for paper explainers.</p>
+  <div class="theme-grid wide" data-family="default notebook"></div>
 
   <h2 id="omarchy-light">Omarchy, light</h2>
   <p>Palettes from <a href="https://github.com/basecamp/omarchy">Omarchy</a>'s themes, with contrast fixed where needed: muted text reaches 4.5:1, the accent and categories 3:1.</p>
@@ -89,7 +89,7 @@
         <tr><td><code>--fs-fg</code></td><td><span class="token-swatch" style="background:var(--fs-fg)"></span></td><td>Text and the main marks.</td></tr>
         <tr><td><code>--fs-strong</code></td><td><span class="token-swatch" style="background:var(--fs-strong)"></span></td><td>The strongest ink: playheads and emphasis.</td></tr>
         <tr><td><code>--fs-accent</code></td><td><span class="token-swatch" style="background:var(--fs-accent)"></span></td><td>Focus: the one or two things that matter now, handles, focus rings. At least 3:1 on the plate.</td></tr>
-        <tr><td><code>--fs-c1</code> to <code>--fs-c6</code></td><td><span class="token-swatch" style="background:var(--fs-c1)"></span> <span class="token-swatch" style="background:var(--fs-c2)"></span> <span class="token-swatch" style="background:var(--fs-c3)"></span></td><td>Categories, each at least 3:1. Grays in Zef, so pair them with labels or textures.</td></tr>
+        <tr><td><code>--fs-c1</code> to <code>--fs-c6</code></td><td><span class="token-swatch" style="background:var(--fs-c1)"></span> <span class="token-swatch" style="background:var(--fs-c2)"></span> <span class="token-swatch" style="background:var(--fs-c3)"></span></td><td>Categories, each at least 3:1. Grays in Default, so pair them with labels or textures.</td></tr>
         <tr><td><code>--fs-good</code>, <code>--fs-bad</code></td><td><span class="token-swatch" style="background:var(--fs-good)"></span> <span class="token-swatch" style="background:var(--fs-bad)"></span></td><td>Outcomes, when a figure needs them.</td></tr>
         <tr><td><code>--fs-font-figure</code></td><td></td><td>Text inside figures. Also <code>--fs-font-body</code>, <code>--fs-font-display</code>, <code>--fs-font-mono</code>.</td></tr>
         <tr><td><code>--fs-size-*</code></td><td></td><td><code>title</code>, <code>status</code>, <code>label</code>, <code>tick</code>, <code>caption</code>; plus <code>--fs-weight-title</code>, <code>--fs-head-case</code>, <code>--fs-head-tracking</code>.</td></tr>
@@ -114,8 +114,8 @@
 
   <h3>Apply it</h3>
 <pre><code class="language-js">FS.setTheme("harbor");      // the whole page: sets data-fs-theme on &lt;html&gt;
-FS.setTheme(null);          // back to Zef
-FS.setMode("light");        // Zef and the notebook come in light and dark</code></pre>
+FS.setTheme(null);          // back to Default
+FS.setMode("light");        // Default and Notebook come in light and dark</code></pre>
 <pre><code class="language-html">&lt;!-- one figure only --&gt;
 &lt;figure class="fs-plate" data-fs-theme="nord"&gt; … &lt;/figure&gt;</code></pre>
 <pre><code class="language-css">/* or override single tokens after the theme layer, for the page or one plate */
@@ -128,33 +128,34 @@ FS.setMode("light");        // Zef and the notebook come in light and dark</code
 :root { transition: --fs-bg 520ms cubic-bezier(0.16, 1, 0.3, 1) /* , … */; }</code></pre>
 
   <h2 id="bridge">Bridge to your site's tokens</h2>
-  <p>Inside a site that already has a palette, don't pick a theme: map the figure tokens to the site's own variables once, instead of loading <code>zef.css</code>. Then the site's light and dark modes and its palettes flow into every figure. The runtime resolves <code>var()</code> chains and <code>color-mix()</code> through a probe element, so canvas figures follow too, and it re-reads tokens when <code>&lt;html&gt;</code> changes its <code>class</code>, <code>data-fs-theme</code>, <code>data-fs-mode</code> or <code>data-style-palette</code>. This is the bridge for Juan's site, <code>themes/zef-site-bridge.css</code>:</p>
+  <p>Inside a site that already has a palette, don't pick a theme: map the figure tokens to the site's own variables once, instead of loading <code>default.css</code>. Then the site's light and dark modes and its palettes flow into every figure. The runtime resolves <code>var()</code> chains and <code>color-mix()</code> through a probe element, so canvas figures follow too, and it re-reads tokens when <code>&lt;html&gt;</code> changes its <code>class</code>, <code>data-fs-theme</code>, <code>data-fs-mode</code> or <code>data-style-palette</code>. This is the example bridge, <code>themes/site-bridge.css</code>; replace the <code>--site-*</code> names with your site's variables:</p>
 <!-- bridge:start -->
-<pre><code class="language-css">/* Use inside zef-builder-site (instead of zef.css): figure tokens follow the site's own tokens,
-   so its dark/light modes and Omarchy palettes (data-style-palette) flow into every figure.
+<pre><code class="language-css">/* Example bridge: load this instead of default.css inside a site that already has design tokens, so the
+   figure tokens follow the site's own variables and its light/dark modes and palettes flow into every figure.
+   The --site-* names on the right are placeholders: replace them with your site's variables.
    The runtime resolves var() chains and color-mix() through a probe, so canvas figures follow too. */
 :root {
-  --fs-bg: var(--bg);
-  --fs-surface: var(--zef-diagram-bg);
-  --fs-surface-2: var(--zef-diagram-surface);
-  --fs-line: var(--zef-diagram-border);
-  --fs-line-strong: var(--gray-7);
-  --fs-faint: var(--gray-8);
-  --fs-muted: var(--muted);
-  --fs-fg: var(--fg);
-  --fs-strong: var(--gray-12);
-  --fs-accent: var(--zef-diagram-accent);
-  --fs-c1: var(--violet-topaz);
-  --fs-c2: var(--jade);
-  --fs-c3: var(--citrine);
-  --fs-c4: var(--amethyst);
-  --fs-c5: var(--gray-11);
-  --fs-c6: var(--cement);
-  --fs-good: var(--jade);
-  --fs-bad: var(--muted);
-  --fs-font-body: var(--font-body), system-ui, sans-serif;
-  --fs-font-display: var(--font-heading), system-ui, sans-serif;
-  --fs-font-mono: var(--font-mono), ui-monospace, monospace;
+  --fs-bg: var(--site-bg);
+  --fs-surface: var(--site-panel);
+  --fs-surface-2: var(--site-panel-raised);
+  --fs-line: var(--site-border);
+  --fs-line-strong: var(--site-border-strong);
+  --fs-faint: var(--site-text-faint);
+  --fs-muted: var(--site-text-muted);
+  --fs-fg: var(--site-text);
+  --fs-strong: var(--site-text-strong);
+  --fs-accent: var(--site-accent);
+  --fs-c1: var(--site-blue);
+  --fs-c2: var(--site-green);
+  --fs-c3: var(--site-yellow);
+  --fs-c4: var(--site-purple);
+  --fs-c5: var(--site-teal);
+  --fs-c6: var(--site-gray);
+  --fs-good: var(--site-green);
+  --fs-bad: var(--site-text-muted);
+  --fs-font-body: var(--site-font-body), system-ui, sans-serif;
+  --fs-font-display: var(--site-font-heading), system-ui, sans-serif;
+  --fs-font-mono: var(--site-font-mono), ui-monospace, monospace;
   --fs-font-figure: var(--fs-font-body);
   --fs-size-title: 14px;
   --fs-weight-title: 600;
@@ -164,22 +165,22 @@ FS.setMode("light");        // Zef and the notebook come in light and dark</code
   --fs-size-caption: 12px;
   --fs-head-case: none;
   --fs-head-tracking: -0.01em;
-  --fs-radius: var(--radius-large);
-  --fs-radius-inner: var(--radius-base);
+  --fs-radius: var(--site-radius-large, 12px);
+  --fs-radius-inner: var(--site-radius, 6px);
   --fs-radius-control: 4px;
   --fs-border: 1px;
-  --fs-frame-width: var(--zef-frame-width);
-  --fs-frame: var(--zef-frame-color);
+  --fs-frame-width: var(--site-frame-width, 4px);
+  --fs-frame: var(--site-frame-color, var(--fs-surface-2));
   --fs-control-size: 44px;
   --fs-stroke-hair: 1;
   --fs-stroke-edge: 1.1;
   --fs-stroke-series: 1.75;
   --fs-dim: 0.28;
-  --fs-dur: var(--zef-soft-transition-duration, 240ms);
+  --fs-dur: var(--site-transition-duration, 240ms);
   --fs-dur-step: 480ms;
-  --fs-ease: var(--zef-soft-transition-ease, cubic-bezier(0.16, 1, 0.3, 1));
+  --fs-ease: var(--site-transition-ease, cubic-bezier(0.16, 1, 0.3, 1));
   --fs-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --fs-shadow: var(--zef-floating-shadow);
+  --fs-shadow: var(--site-shadow, 0 2px 8px rgb(0 0 0 / 24%), 0 14px 32px -6px rgb(0 0 0 / 44%));
 }</code></pre>
 <!-- bridge:end -->
   <p>More in <a href="https://github.com/juanbermudez/animated-visuals/blob/main/references/theming.md"><code>references/theming.md</code></a>. To regenerate the Omarchy palettes from upstream, see <code>scripts/build-themes.mjs</code>.</p>

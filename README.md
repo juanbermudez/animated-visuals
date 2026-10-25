@@ -56,9 +56,9 @@ Markup can drive figures with no glue code: `data-fs="id play"`, `data-fs-param=
 
 ## Themes and customization
 
-- **Built in**: Zef (light and dark, the default), a lab-notebook register, and 23 Omarchy palettes (Tokyo Night, Catppuccin, Gruvbox, Nord, Kanagawa, Rosé Pine, Everforest, Flexoki and more). Set one with `FS.setTheme("tokyo-night")` or `data-fs-theme` on any ancestor.
+- **Built in**: Default (light and dark), Notebook (light and dark), and 23 Omarchy palettes (Tokyo Night, Catppuccin, Gruvbox, Nord, Kanagawa, Rosé Pine, Everforest, Flexoki and more). Set one with `FS.setTheme("tokyo-night")` or `data-fs-theme` on any ancestor.
 - **Your own theme**: define the `--fs-*` tokens (colors, fonts, radii, frame, stroke widths) in a CSS file. `references/theming.md` lists every token.
-- **Your site's theme**: map `--fs-*` to your site's tokens, as `themes/zef-site-bridge.css` does, and figures follow your light/dark mode and palette. If the site animates a theme change, the figures repaint every frame with it.
+- **Your site's theme**: map `--fs-*` to your site's tokens, as `themes/site-bridge.css` does, and figures follow your light/dark mode and palette. If the site animates a theme change, the figures repaint every frame with it.
 - **Writing style**: captions, tips and labels follow a style in `references/writing/` (practical by default, academic on request). Add a style by adding a file there.
 - **Frames**: every figure sits in a 4px frame band, like the images and diagrams around it.
 

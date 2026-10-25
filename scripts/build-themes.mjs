@@ -145,7 +145,7 @@ const figureCss = themes
   .join("\n\n");
 writeFileSync(join(root, "themes/omarchy.css"), `${header("Figure tokens: apply with data-fs-theme on :root or any figure.")}\n${figureCss}\n`);
 
-// ---------- site palettes (zef-builder-site variables) ----------
+// ---------- site palettes (an example host site's variables: a 12-step gray ramp and named hues) ----------
 const siteCss = option("--site-css");
 const siteJson = option("--site-json");
 if (siteCss) {
@@ -160,8 +160,8 @@ if (siteCss) {
       `--rose-quartz: ${t.accent};`,
       `--rose-quartz-rgb: ${rgbTriplet(t.accent)};`,
       `--muted: ${t.mode === "light" ? "var(--gray-9)" : "var(--gray-10)"};`,
-      `--zef-surface-panel: ${t.surface};`,
-      `--zef-surface-panel-strong: ${t.mode === "light" ? t.surface : g[1]};`,
+      `--default-surface-panel: ${t.surface};`,
+      `--default-surface-panel-strong: ${t.mode === "light" ? t.surface : g[1]};`,
       `--amethyst: ${magenta};`,
       `--jade: ${green};`,
       `--citrine: ${yellow};`,

@@ -25,7 +25,7 @@ Animated Visuals is MIT-licensed (see `LICENSE`). It builds on other people's wo
 
 - **Omarchy theme palettes** (`themes/omarchy.json`, generated `themes/omarchy.css`): color values from [basecamp/omarchy](https://github.com/basecamp/omarchy) at commit 81fd2d23ca6e3462183a4dc8360de3113fa8d80c, MIT License, © Basecamp/37signals and Omarchy contributors (Ethereal, Hackerman, Last Horizon, Lumon, Lupine, Matte Black, Miasma, Osaka Jade, Retro 82, Ristretto, Solitude, Starship, Vantablack, White).
 - Upstream palettes, credited to their authors (all MIT): **Catppuccin** (Catppuccin org), **Everforest** (sainnhe), **Flexoki** (Steph Ango), **Gruvbox** (morhetz, Pavel Pertsev), **Kanagawa** (rebelot), **Nord** (Arctic Ice Studio, Sven Greb), **Rosé Pine** (Rosé Pine), **Tokyo Night** (enkia). Derived ladders and contrast adjustments are computed by `scripts/build-themes.mjs`.
-- **Zef** (`themes/zef.css`, `themes/zef-site-bridge.css`) and the **lab-notebook** register (`themes/notebook.css`): Juan Bermudez's own site and notebook styles.
+- **Default** and **Notebook** themes (`themes/default.css`, `themes/notebook.css`) and the example bridge `themes/site-bridge.css`: original to this project (MIT).
 
 ## Fonts
 

@@ -1,5 +1,5 @@
 /* Animated Visuals plate structure. Uses only --fs-* tokens (see themes/README.md), so any theme file
-   restyles it. Mirrors the zef site's figure grammar: header / stage / toolbar / caption. */
+   restyles it. One figure grammar: header / stage / toolbar / caption. */
 
 .fs-plate {
   container-type: inline-size;

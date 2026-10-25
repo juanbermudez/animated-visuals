@@ -22,9 +22,9 @@ node docs/sync.mjs
 
 It needs Node 18 or newer and nothing else. It:
 
-- copies `assets/runtime/fs-runtime.js` and `themes/base.css`, `zef.css`, `notebook.css`, `omarchy.css` into `docs/vendor/`
+- copies `assets/runtime/fs-runtime.js` and `themes/base.css`, `default.css`, `notebook.css`, `omarchy.css` into `docs/vendor/`
 - writes `docs/vendor/themes.js`, the theme list for the picker and the themes page, from `themes/omarchy.json`
-- renders `THIRD_PARTY_NOTICES.md` into `credits.html` and `themes/zef-site-bridge.css` into `themes.html`, between their `<!-- name:start -->` and `<!-- name:end -->` markers
+- renders `THIRD_PARTY_NOTICES.md` into `credits.html` and `themes/site-bridge.css` into `themes.html`, between their `<!-- name:start -->` and `<!-- name:end -->` markers
 
 Don't edit anything in `vendor/` or between those markers by hand; the next sync overwrites it. Commit the synced files, since Pages serves them as they are.
 
@@ -44,7 +44,7 @@ Don't edit anything in `vendor/` or between those markers by hand; the next sync
 
 ## How theming works here
 
-- The picker sets `data-fs-mode` (Zef light or dark) or `data-fs-theme` (everything else) on `<html>`, exactly like `FS.setMode` and `FS.setTheme`, and saves the choice in `localStorage` under `av-theme`. A small inline script in each page's `<head>` applies it before first paint. With nothing saved, Zef follows the system's light or dark setting.
+- The picker sets `data-fs-mode` (Default light or dark) or `data-fs-theme` (everything else) on `<html>`, exactly like `FS.setMode` and `FS.setTheme`, and saves the choice in `localStorage` under `av-theme`. A small inline script in each page's `<head>` applies it before first paint. With nothing saved, Default follows the system's light or dark setting.
 - The color tokens are registered with `@property` in `site/site.css` and transition on `<html>`. While `<html>` has a running animation, the runtime re-reads tokens every frame, so canvas and SVG figures change color with the page.
 - A plate with its own `data-fs-theme` keeps that theme whatever the page uses; the themes page relies on that.
 

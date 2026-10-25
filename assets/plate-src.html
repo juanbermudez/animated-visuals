@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* @inline themes/zef.css */
+/* @inline themes/default.css */
 /* @inline themes/notebook.css */
 /* @inline themes/omarchy.css */
 /* @inline themes/base.css */
@@ -121,7 +121,7 @@ code { font: 0.875em var(--fs-font-mono); }
 (() => {
   const omarchy = { "catppuccin": "Catppuccin", "catppuccin-latte": "Catppuccin Latte", "ethereal": "Ethereal", "everforest": "Everforest", "flexoki-light": "Flexoki Light", "gruvbox": "Gruvbox", "hackerman": "Hackerman", "kanagawa": "Kanagawa", "last-horizon": "Last Horizon", "lumon": "Lumon", "lupine": "Lupine", "matte-black": "Matte Black", "miasma": "Miasma", "nord": "Nord", "osaka-jade": "Osaka Jade", "retro-82": "Retro 82", "ristretto": "Ristretto", "rose-pine": "Rosé Pine Dawn", "solitude": "Solitude", "starship": "Starship", "tokyo-night": "Tokyo Night", "vantablack": "Vantablack", "white": "White" };
   const groups = [
-    ["Site", { "zef": "Zef (default)", "zef-light": "Zef light" }],
+    ["Site", { "default": "Default", "default-light": "Default light" }],
     ["Registers", { "notebook": "Lab notebook", "notebook-light": "Lab notebook light" }],
     ["Omarchy", omarchy],
   ];
@@ -131,8 +131,8 @@ code { font: 0.875em var(--fs-font-mono); }
     set(value) { try { localStorage.setItem(KEY, value); } catch { /* private mode: the choice lasts this page only */ } },
   };
   function apply(value) {
-    if (value === "zef-light") { FS.setTheme(null); FS.setMode("light"); }
-    else { FS.setMode(value === "zef" ? "dark" : null); FS.setTheme(value); }
+    if (value === "default-light") { FS.setTheme(null); FS.setMode("light"); }
+    else { FS.setMode(value === "default" ? "dark" : null); FS.setTheme(value); }
   }
   const trigger = document.getElementById("theme-trigger");
   const menu = document.getElementById("theme-list");
@@ -157,7 +157,7 @@ code { font: 0.875em var(--fs-font-mono); }
   });
   const items = [...menu.querySelectorAll(".theme-item")];
   const stored = store.get();
-  let current = items.some((item) => item.dataset.theme === stored) ? stored : matchMedia("(prefers-color-scheme: light)").matches ? "zef-light" : "zef";
+  let current = items.some((item) => item.dataset.theme === stored) ? stored : matchMedia("(prefers-color-scheme: light)").matches ? "default-light" : "default";
   if (current === stored) apply(current);
   const sync = () => items.forEach((item) => item.setAttribute("aria-checked", String(item.dataset.theme === current)));
   sync();
