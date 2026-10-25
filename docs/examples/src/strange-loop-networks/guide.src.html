@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strange-loop networks: two models that read each other · Animated Visuals</title>
+<meta name="description" content="A visual guide to Francois Chaubard's self-published draft on Strange-Loop Networks: two language models wired into a loop, a writer and a judge, how the draft proposes to run and train it, and what it has not shown yet.">
+<!--__EARLY_THEME__-->
+<link rel="icon" href="../site/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!--__FONTS__-->
+<style>
+/*__THEMES__*/
+/*__SITE_CSS__*/
+/*__EXAMPLES_CSS__*/
+/*__PAGE_CSS__*/
+</style>
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<!--__SITE_HEAD__-->
+
+<main class="page guide" id="main">
+  <p class="eyebrow">Example · a paper, explained</p>
+  <h1>Two language models that read each other's replies until one is satisfied</h1>
+  <p class="source">A visual guide to Francois Chaubard, “Strange-Loop Networks (SLNs): A novel class of ‘loopy’ Neural Network Architectures that mimic the cerebral cortex to natively encode self-reflection, hemispheric specialization, and an infinite composition of functions”, a self-published draft dated June 7, 2024, not peer-reviewed · <a href="https://fchaubard.github.io/Strange_Loop_Networks__Using_2_LLMs_to_form_a__strange_loop__to_step_toward_AGI%20(9).pdf">the PDF</a>. The claims are the author's; every number says where in the draft it appears.</p>
+  <p class="lede">Ask a language model for 2 + 2 or for 2534 × 5423 and it runs the same fixed stack of layers before the first token of either answer. Chaubard's draft proposes a fix borrowed from the two halves of the brain: seat a second model next to the first, let it read the answer, send its reaction back, and go round until it is satisfied. This guide follows one question, 2534 × 5423, around that loop. Up front: the draft is unfinished. It describes the architecture and six ways to train it, but its results table is empty.</p>
+
+  <h2>What a strange loop is</h2>
+  <p>The name comes from Douglas Hofstadter's <i>Gödel, Escher, Bach</i> (1979), which the draft quotes. In an ordinary hierarchy, levels stack: some text at the bottom, a judgment about the text above it, and nothing flows back down. A strange loop is a hierarchy where climbing up a level lands you back where you started, like Escher's two hands drawing each other. The draft builds that into a network: the <span data-fs-ref="fig-loop:judge">judge's</span> verdict about a draft becomes part of the text the <span data-fs-ref="fig-loop:writer">writer</span> reads next. Switch the wiring and watch the counter: the place repeats, the level keeps climbing.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-loop-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-loop-title">In a strange loop, going up brings you back down</h3><span class="fs-status">Fig. 1 · concept</span></header>
+    <div class="fs-stage"><svg id="fig-loop" viewBox="0 0 960 300" role="img" aria-label="Two boxes, a writer at level one and a judge at level two. In the ordinary wiring a token climbs from the writer to the judge and stops. In the strange loop the judge's verdict is fed back into the writer's input, so the token keeps returning to the writer while a counter of levels keeps climbing."></svg></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-loop:levels"></span>
+      <div class="fs-controls"><div data-fs-param="fig-loop:wiring" data-label="Wiring"></div><button type="button" data-fs="fig-loop play">Pause</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-loop:wire" aria-live="polite"></p>
+    <p class="fs-caption">Hofstadter's idea as the draft uses it. The draft quotes <i>Gödel, Escher, Bach</i> but never defines levels; calling a draft level 1 and a verdict on it level 2 is this guide's reading.</p>
+  </figure>
+
+  <h2>Why two halves, according to the author</h2>
+  <p>The motivation is an analogy with human evolution (Section 1.2, Figure 1). Brains grew for millions of years, then stopped, and the author argues the next gain came from specialization between the two hemispheres and a thicker corpus callosum linking them, not from more size. The draft lines this up with language models: they have been scaled up and up, and the next step should be two specialized models that talk. The sizes it gives:</p>
+  <div class="stats">
+    <div class="stat"><b>450 cm³</b><span>Australopithecines, roughly flat for over 6 million years</span><small>Section 1.2</small></div>
+    <div class="stat"><b>510 cm³</b><span>Homo habilis, 2.1 to 1.5 million years ago</span><small>Section 1.2</small></div>
+    <div class="stat"><b>900 to 1,100 cm³</b><span>Homo erectus, “doubled” from 1.9 million years ago</span><small>Section 1.2</small></div>
+    <div class="stat"><b>1,350 cm³</b><span>Homo sapiens, from 300,000 years ago, unchanged since</span><small>Section 1.2</small></div>
+  </div>
+  <p>The draft gives no source for these sizes, and the analogy is an argument, not evidence about networks. It also lists what it thinks one model can't do alone: second-guess itself before answering (it blames hallucinations on this), spend more thought on harder problems, reuse the same learned step many times, and improve by practising against itself (Section 1.1).</p>
+
+  <h2>Two models, one loop</h2>
+  <p>The definition is short. A strange-loop network is any architecture with at least two distinct models, a left one and a right one, where the left model's input is the right model's output and the other way round. They talk in what the author calls an inner dialogue loop until a stopping rule is met, and only then answer. The left model is the <span data-fs-ref="fig-sln:left">writer</span> (the draft also calls it actor, generator or student); the right one is the <span data-fs-ref="fig-sln:right">judge</span> (critic, reward model, discriminator or teacher). Around them sit an optional <span data-fs-ref="fig-sln:enc">encoder</span> and <span data-fs-ref="fig-sln:dec">decoder</span>, and a <span data-fs-ref="fig-sln:check">check</span> that decides whether to go round again. Step through one question in the version the draft trains, where the judge only returns a score.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-sln-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-sln-title">One question goes round until the judge is satisfied</h3><span class="fs-chip" data-fs-out="fig-sln:round" aria-live="polite"></span></header>
+    <div class="fs-stage"><svg id="fig-sln" viewBox="0 0 960 420" role="img" aria-label="The strange-loop network: a prompt enters an encoder and a stop check in the middle; the check sends the context to the writer on the left and to the judge on the right, each of which sends its output back to the check; when the judge's score clears the bar, the check sends the result through a decoder to the answer. A panel lists what the models read, growing each turn."></svg></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-sln:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-sln" aria-hidden="true"></span><button type="button" data-fs="fig-sln prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-sln next" aria-label="Next step">Next</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-sln:caption" aria-live="polite"></p>
+    <p class="fs-caption">Wiring from the draft's Figures 2 and 5. The writer goes first as in Section 5 and Algorithm 2 (Figure 2's numbered badges put odd turns at the right model). The drafts, the scores and the bar of 0.80 are illustrative.</p>
+  </figure>
+
+  <h2>Three shapes of the same loop</h2>
+  <p>The draft sketches three ways to build it. <b>Tall</b>: copy one pretrained model into both seats and steer each with its own system prompt. <b>Wide</b>: cut a model open, keep its first and last three blocks, and put a router in the middle that keeps choosing between two thin expert layers until it decides to answer. <b>Lateralized</b>: the tall version, but the right model only ever returns a score. The author calls the lateralized shape the most brain-like, citing brain scans that show the left hemisphere busier during logic tasks (no reference given), and it's the one the training sections focus on.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-shapes-title">
+    <header class="fs-head"><h3 class="fs-title fs-sr" id="fig-shapes-title">The same loop in three shapes</h3><div class="fs-head-tabs" data-fs-param="fig-shapes:shape" data-label="Shape"></div><span class="fs-status">Fig. 3 · paper Figs. 3 to 5</span></header>
+    <div class="fs-stage"><svg id="fig-shapes" viewBox="0 0 960 330" role="img" aria-label="Three versions of the loop. Tall: two full copies of one model trade full replies. Wide: the first three blocks of a model feed a router that sends the context to a thin left or right expert layer and back, until it sends it to the last three blocks. Lateralized: two full copies, but the right one returns only a score."></svg></div>
+    <p class="fs-step-text" data-fs-out="fig-shapes:facts" aria-live="polite"></p>
+    <p class="fs-caption">Redrawn from the draft's Figures 3, 4 and 5; the token's speed is illustrative. In the wide shape the expert layers start from random weights (“MOE (random)” in Figure 4).</p>
+  </figure>
+
+  <h2>Hard questions earn more rounds</h2>
+  <p>This is what the loop is for. A normal model has a fixed number of layers between your question and its first token, so 2 + 2 and 2534 × 5423 get the same budget (Section 1.1). In the loop, the stopping rule sets the budget: an easy prompt clears the <span data-fs-ref="fig-rounds:bar">bar</span> in the first round, a hard one goes round until the judge is happy or a round limit is reached. Drag the bar.</p>
+  <p>Each round costs the writer one forward pass per token it writes, and the judge one pass, because in the lateralized shape it only returns a score (Section 5.2). Over several rounds that adds up: rounds × (draft tokens + 1). The draft writes the total for the general case as O(m1·m2·d), with m1 and m2 the two models' reply lengths and d the rounds, calls it expensive next to one model, and says that is “more than offset” by needing fewer layers and a smaller model (Section 5). It doesn't measure either side.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-rounds-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-rounds-title">The bar decides how long each question gets</h3><span class="fs-status">Fig. 4 · illustrative scores</span></header>
+    <div class="fs-stage"><canvas id="fig-rounds" role="img" aria-label="The judge's score by round for two prompts. 2 + 2 scores 0.97 from the first round. 2534 × 5423 scores 0.20 in round one and 0.90 in round two, rising slowly after. A draggable bar at 0.80 decides where each stops; bars on the right count the forward passes each prompt used."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-rounds:cost"></span>
+    </div>
+    <p class="fs-caption">Scores, draft lengths and the bar are illustrative; the cost per round, one pass per draft token plus one for the judge, follows Section 5.2. Drag the bar; set the round limit in settings.</p>
+  </figure>
+
+  <h2>Training: the writer chases the judge's score</h2>
+  <p>Running the loop is the easy part. Most of the draft is about training the two models together, ideally without paying people to rank answers (Section 5). It reviews six recipes and writes three out as algorithms. The one it develops furthest is actor-critic, Algorithm 2: the <span data-fs-ref="fig-train:writer">writer</span> is trained to raise the judge's score, and the <span data-fs-ref="fig-train:judge">judge</span> is trained to tell the true answer from the writer's drafts. That second half has a sharp edge, which the last steps show with numbers.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-train-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-train-title">The writer learns to please the judge; the judge learns to doubt it</h3><span class="fs-status">Fig. 5 · paper Algorithm 2</span></header>
+    <div class="fs-stage"><svg id="fig-train" viewBox="0 0 960 400" role="img" aria-label="One training example, a prompt with its true answer, feeds the writer and the judge. Beside it, the draft's Algorithm 2 in plain words, with the current lines highlighted step by step: write, score, retry, the writer's loss from the score, the judge's score of the true answer, the judge's loss, and the optimizer step."></svg></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-train:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-train" aria-hidden="true"></span><button type="button" data-fs="fig-train prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-train next" aria-label="Next step">Next</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-train:caption" aria-live="polite"></p>
+    <p class="fs-caption">Algorithm 2 (p. 17) in plain words, with its line numbers; the judge's loss is Equation 7. The scores are illustrative and the losses are computed from them. Hover a line for the draft's notation.</p>
+  </figure>
+
+  <p>The six recipes, and the catch the author names for each:</p>
+  <div class="tablewrap"><table class="plain">
+    <thead><tr><th>Recipe</th><th>How the two models learn</th><th>The catch the draft names</th></tr></thead>
+    <tbody>
+      <tr><td>Fine-tuning, then RLHF (5.1)</td><td>Separately: the judge on human preference pairs, then the writer with PPO against it</td><td>They never learn to collaborate, preference data is expensive, and the judge isn't used when answering</td></tr>
+      <tr><td>Straight through the loop (5.1)</td><td>As one network, backpropagating through every round with “soft tokens”</td><td>Memory: 3.9 GB for a 70-million-weight model (Fig. 7 below)</td></tr>
+      <tr><td>GAN (5.2, Algorithm 1)</td><td>The writer generates; the judge tells real answers from generated ones</td><td>Still needs backpropagation through sampling, so “no better off” unless truncated</td></tr>
+      <tr><td>Actor-critic (5.3, Algorithm 2)</td><td>The writer is rewarded by the judge's score; the judge trains on true answers against drafts</td><td>The one developed furthest (Fig. 5); no results</td></tr>
+      <tr><td>Self-play (5.4)</td><td>The writer keeps practising against the judge until the judge is happy</td><td>The writer may overfit each batch; remedies listed: a bigger model, bigger batches, weight regularization, gradient clipping</td></tr>
+      <tr><td>Pavlovian gradient decay (5.5)</td><td>Self-play, with every draft and every partial true answer used as an example</td><td>Built to fix having one true answer per prompt (Fig. 6 below)</td></tr>
+      <tr><td>Self-play fine-tuning, SPIN (5.6, Algorithm 3)</td><td>A DPO-like update with no reward model and no preference data</td><td>Written out as an algorithm only</td></tr>
+    </tbody>
+  </table></div>
+  <p>That's seven rows for six recipes because Section 5.1 holds two: the usual separate training, and the end-to-end version it tries and drops.</p>
+
+  <h2>Pavlovian gradient decay: go easy on early drafts</h2>
+  <p>Training the judge is lopsided: each prompt has one true answer and as many wrong drafts as you care to sample. The author's fix, named Pavlovian gradient decay (Section 5.5), turns one example into many. Every prefix of the true answer becomes a positive and the writer's draft from every round becomes a negative, each with a value from the curve Pavlovian conditioning uses for how learning fades with delay, C(ΔT) = C₀ · e<sup>−λΔT</sup> (Equation 9). Here ΔT counts rounds back from the end instead of seconds. The full true answer gets all of C₀ and the last draft gets nothing; the rest fall in between. The intent is to be lenient with early drafts, because the writer is supposed to need a few rounds of thinking. Drag <span data-fs-ref="fig-decay:lambda">λ</span>.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-decay-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-decay-title">The last draft counts as fully wrong, early ones barely</h3><span class="fs-status">Fig. 6 · paper Section 5.5</span></header>
+    <div class="fs-stage"><canvas id="fig-decay" role="img" aria-label="Paired bars for each step back from the end of the loop. Solid bars: the true answer cut short, valued C0 times e to the minus lambda delta T, so the full answer gets 1 and short prefixes little. Hatched bars: the writer's draft from each round, valued one minus that, so the last draft gets 0 and early drafts nearly 1."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-decay:readout"></span>
+      <div class="fs-controls"><div data-fs-param="fig-decay:lambda"></div></div>
+    </div>
+    <p class="fs-caption">Values exactly as Section 5.5 writes them, with C₀ = 1 (its example is 100%); the draft calls them each example's “reward” and says they weight the judge's gradient, without writing the loss. Set the number of rounds in settings.</p>
+  </figure>
+  <p>Where the curve comes from: in conditioning, the draft says, typical λ in humans is 0.1 to 0.5, with the best learning at 1 to 4 seconds between stimulus and reward (Section 5.5, no source given). Those two values are marked on the slider. Nothing in the draft says what λ should be for a network.</p>
+
+  <h2>Why not train straight through the loop</h2>
+  <p>The obvious move is to treat the loop as one big network and backpropagate through every round. Sampling a token isn't differentiable, so the author replaces each sampled token with a “soft token”, a mix of word embeddings at a temperature of 0.001, close enough to one word that the judge can read it (Equations 3 and 4). The draft says this converges. The catch is memory: the backward pass needs every activation from every token of every round. On Pythia-70M at a batch size of 1 the author measured <b>3.9 GB</b> of GPU memory, which the draft calls a 30× increase over the model's size, and projects <b>240 GB</b> for an 8-billion-weight model (Section 5.1). Keeping only the last round, truncated backpropagation, would fit, but the author rejects it because only the last round would learn.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-memory-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-memory-title">Backpropagating through the loop keeps every round in memory</h3><span class="fs-status">Fig. 7 · paper Section 5.1</span></header>
+    <div class="fs-stage"><canvas id="fig-memory" role="img" aria-label="Left: the loop unrolled into rounds, each a row of writer token steps and one judge step; with full backpropagation every step is kept, with truncation only the last round. Right: the draft's two memory numbers, 3.9 GB measured on Pythia-70M at batch size 1 and 240 GB projected for an 8-billion-weight model."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-memory:kept"></span>
+      <div class="fs-controls"><div data-fs-param="fig-memory:keep" data-label="Keep"></div></div>
+    </div>
+    <p class="fs-caption">The two memory numbers are the draft's (Section 5.1); the grid of steps is illustrative, 12 writer tokens a round. The draft gives no number for the truncated version. Set the rounds in settings.</p>
+  </figure>
+
+  <h2>What the draft has not shown yet</h2>
+  <p>Here's the uncomfortable part. The abstract promises “remarkable improvements on many common benchmarks of XX%”, and the list of contributions ends with “achieves state-of-the-art results on many benchmarks. [NEED TO GO PROVE!]”. Section 6, Results, reads “TODO :)”. The comparison it plans, seven setups labelled A to G from a single model up to the lateralized wide loop (Section 1.5), isn't run. The only evidence it cites for loops of models is other people's: prompting methods where one model reflects on its own output, Reflexion and Self-Refine, which it says gained 10 to 15% on HumanEval and MBPP (Section 1.3, no reference given). The draft says code, demos and datasets are released at github.com/fchaubard/; this guide didn't check.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-draft-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-draft-title">Twenty-two pages of method, no results</h3><span class="fs-chip" data-fs-out="fig-draft:count" aria-live="polite"></span></header>
+    <div class="fs-stage"><svg id="fig-draft" viewBox="0 0 960 300" role="img" aria-label="The draft's 22 pages as tiles, shaded by what they hold: argument on pages 1 to 7, architecture figures on 8, 9, 10 and 12, training recipes on 11 and 13 to 20, results and end matter on 21 and 22. Marked tiles hold placeholders; page 15 holds the only measurement."></svg></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-draft:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-draft" aria-hidden="true"></span><button type="button" data-fs="fig-draft prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-draft next" aria-label="Next step">Next</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-draft:caption" aria-live="polite"></p>
+    <p class="fs-caption">Every page of the June 7, 2024 PDF, sorted by what it mostly holds (this guide's sorting); the quotes are verbatim. Hover a page for what's on it.</p>
+  </figure>
+  <p>Table 1, as published on page 21. Every cell is blank apart from two stray dashes, and the third row repeats the first:</p>
+  <div class="tablewrap"><table class="plain">
+    <thead><tr><th></th><th>MBPP</th><th>HumanEval</th><th>GSM8K</th><th>Math</th></tr></thead>
+    <tbody>
+      <tr><td>Single LLM (Llama3 8B)</td><td>—</td><td></td><td></td><td></td></tr>
+      <tr><td>Single LLM (Llama3 8B) with Reflection</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Single LLM (Llama3 8B)</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>SLN</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td></td><td>—</td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>What to take from it</h2>
+  <p>As a definition, the draft is clear: two models, each reading the other's last reply, with a rule for when to stop. As a design space it's generous: three shapes, six training recipes, one named trick for the judge's data. As evidence, it has nothing yet, and its own placeholders say so. Read it as a research plan from June 2024, not a result. The open problems are the ones the author names: training through the loop doesn't fit in memory, the alternatives either need human preference data or risk a writer that overfits its judge, and nothing has been measured against a single model.</p>
+
+  <details class="verified">
+    <summary>Checked against the source</summary>
+    <ul>
+      <li>Source: the PDF at the link above, 22 pages, dated June 7, 2024, read in full. Its title page reads “Strange-Loop Networks (SLNs): A novel class of ‘loopy’ Neural Network Architectures…”; the file name says “Using 2 LLMs to form a ‘strange loop’ to step toward AGI”. Self-published, not peer-reviewed.</li>
+      <li>Brain sizes of 450, 510, 900 to 1,100 and 1,350 cm³, the dates 2.1 to 1.5 million, 1.9 million and 300,000 years ago, and “over 6 million years”: Section 1.2 and Figure 1. The draft cites no source for them.</li>
+      <li>10 to 15% for Reflexion and Self-Refine on HumanEval and MBPP: Section 1.3, about other people's methods, no reference given.</li>
+      <li>The definition, the two roles and their other names: the abstract and Figure 2. What each side reads (“C += system prompt + the other's last response + its own last response”): Figures 2, 3 and 5. Ways to stop (a number of rounds, a confidence score, agreement between the two): Figure 2's caption.</li>
+      <li>Shapes: tall, Figure 3 (“a pretrained LLM (like Llama 3 7B)”; Llama 3 came out in 8B and 70B sizes and the draft's own Table 1 says 8B, so “7B” looks like a slip); wide, Figure 4 (the first 3 and last 3 transformer blocks, a main gating network choosing left, right or out, each side a gating network plus a randomly initialised expert layer); lateralized, Figure 5 (the left side outputs its reply and an expected reward, the right side a reward only).</li>
+      <li>Cost per round: Section 5 (m1 then m2 forward passes a round over d rounds, written O(m1·m2·d)) and Section 5.2 (the judge needs one pass). Counting the passes as described gives d × (m1 + m2), which Fig. 4 computes; the draft's product is a looser bound.</li>
+      <li>Algorithm 2 and Equation 7, the judge's loss −log(ŷ_true) − log(1 − ŷ): pages 16 and 17. Fig. 5 computes −ln 0.95 − ln(1 − 0.90) = 2.35 and the writer's reward from illustrative scores.</li>
+      <li>Pavlovian gradient decay: Section 5.5 and Equation 9; λ of 0.1 to 0.5 and 1 to 4 seconds as stated there, no source given; C₀ = 1 from its “100% for example”.</li>
+      <li>Soft tokens at τ = 0.001: Equations 3 and 4. Memory: 3.9 GB for Pythia-70M at batch size 1, “a 30x increase in memory footprint to model size”, and 240 GB for 8B: Section 5.1, page 15. These don't follow from one rule: 3.9 GB over 70 million weights is about 56 bytes a weight, while 240 GB over 8 billion is 30 bytes a weight; at 2 bytes a weight, 30× an 8B model would be 480 GB. The guide shows the draft's numbers as given.</li>
+      <li>Placeholders quoted in Fig. 8 and the text (“XX%”, “[NEED TO GO PROVE!]”, “TODO :)”, “(insert paper)”, “[insert]”, the question-marked test sets, Table 1's blank cells, Table 2's “Widgets 42, Gadgets 13”, the Overleaf appendix, and the single reference, Greenwade 1993): pages 2, 4, 5, 6, 13, 20, 21 and 22.</li>
+      <li>Illustrative, not from the draft: the worked example's drafts (“about 13.7 million”, then the long multiplication), every score (0.20, 0.90, 0.95, 0.97 and the rest), the bar of 0.80, the limit of 8 rounds, draft lengths of 2 and 40 tokens, 12 writer tokens a round in Fig. 7, and every speed. 2534 × 5423 = 13,741,882 is plain arithmetic; the draft uses the product only as an example of a hard prompt.</li>
+      <li>This guide's reading, not the draft's: the level numbers in Fig. 1, the page sorting in Fig. 8, and the observation in Fig. 5 that the judge's loss pushes it to score even a correct draft low.</li>
+      <li>Left out on purpose: the neuroscience asides (hemispheres and emotion, humour, Broca's and Wernicke's areas, Jaynes' bicameral mind), the draft's eight-step account of how a brain might learn, the hide-and-seek and AlphaGo Zero discussion, the GAN and SPIN equations in full, and the scaling remarks at the end of Section 5.5, which run off the page in the PDF.</li>
+      <li>Not verified: whether code was released at github.com/fchaubard/, and whether a later version of the draft exists.</li>
+    </ul>
+  </details>
+</main>
+
+<!--__SITE_FOOT__-->
+<script>
+/*__RUNTIME__*/
+</script>
+<script>
+/*__THEMES_JS__*/
+/*__SITE_JS__*/
+</script>
+<script>
+/*__FLOW_JS__*/
+/*__GUIDE_JS__*/
+</script>
+</body>
+</html>
