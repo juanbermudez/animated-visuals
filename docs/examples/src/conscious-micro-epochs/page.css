@@ -1,0 +1,26 @@
+/* Conscious micro-epochs: the guide's own furniture. State 1 (seen) is solid, state 2 (suppressed) is hatched; the
+   legend chips repeat that so the reader never has to guess. */
+.guide .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0 0 1.5rem; color: var(--fs-muted); font-size: 0.875rem; }
+.guide .legend span { display: inline-flex; align-items: center; gap: 8px; }
+.guide .sw { display: inline-block; width: 22px; height: 11px; border-radius: 2px; border: 1px solid var(--fs-line); }
+.guide .sw.seen { background: var(--fs-fg); border-color: var(--fs-fg); }
+.guide .sw.supp { background: repeating-linear-gradient(135deg, var(--fs-muted) 0 1px, var(--fs-surface-2) 1px 5px); }
+.guide .formula { margin: 0 0 1rem; padding: 12px 16px; border: 1px solid var(--fs-line); border-radius: 8px; background: var(--fs-surface); font: 500 0.9375rem/1.5 var(--fs-font-mono); overflow-x: auto; }
+.guide .formula .lab { display: block; margin-bottom: 4px; color: var(--fs-muted); font: 600 0.75rem/1.4 var(--fs-font-body); letter-spacing: 0.04em; text-transform: uppercase; }
+.guide .kicker { margin: 3.5rem 0 0.25rem; color: var(--fs-muted); font: 600 0.75rem/1.4 var(--fs-font-mono); letter-spacing: 0.06em; }
+.guide .kicker + h2 { margin-top: 0; }
+.guide table.matrix td { text-align: center; }
+.guide table.matrix th.hl, .guide table.matrix td.hl { background: var(--fs-surface-2); }
+.guide .pass { color: var(--fs-strong); font-weight: 600; }
+.guide .fail { color: var(--fs-muted); }
+.guide .models { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 10px 18px; margin: 0 0 1.25rem; font-size: 0.9375rem; }
+.guide .models span { display: block; }
+.guide .models b { display: block; color: var(--fs-strong); }
+.guide ul.checks, .guide ol.limits { margin: 0 0 1.25rem; padding-left: 1.25rem; }
+.guide ul.checks li, .guide ol.limits li { margin-bottom: 8px; }
+.guide .points { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 14px 24px; margin: 0 0 1.5rem; }
+.guide .points h4 { margin: 0 0 4px; font: 600 1rem/1.3 var(--fs-font-display); }
+.guide .points p { margin: 0; font-size: 0.9375rem; }
+
+/* four stats on one row at the guide width */
+.guide .stats { grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
