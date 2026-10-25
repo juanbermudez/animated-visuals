@@ -1,0 +1,4 @@
+/* The paper's equations, set apart from the prose on the site's tokens. */
+.guide .eq { margin: 0 0 1.25rem; padding: 12px 16px; overflow-x: auto; color: var(--fs-fg); background: var(--fs-surface-2); border-radius: 6px; font: 500 0.9375rem/1.5 var(--fs-font-mono); white-space: nowrap; }
+.guide ul { padding-left: 1.25rem; }
+.guide li { margin-bottom: 6px; }
