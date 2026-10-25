@@ -379,7 +379,8 @@ button.fs-button {
   margin-inline: -7px;
   padding-inline: 7px;
   background: color-mix(in srgb, var(--fs-accent) 9%, transparent);
-  border-radius: var(--fs-radius-control);
+  /* The rule sits on a flat edge: no radius on the left, so the inset line stays straight. */
+  border-radius: 0 var(--fs-radius-control) var(--fs-radius-control) 0;
   box-shadow: inset 2px 0 0 var(--fs-accent);
 }
 

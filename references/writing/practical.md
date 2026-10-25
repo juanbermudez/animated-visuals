@@ -1,15 +1,15 @@
 # Practical style (default)
 
-The voice of a person talking straight to you about something they built and care about. Plain, concrete, a little funny, never stiff. No profanity. Labels stay short; the voice shows most in titles, intros, captions and tips.
+The voice of a person explaining something they know well to a colleague. Plain, concrete, direct, never stiff and never clever. Explain the subject; do not perform. No profanity. Labels stay short; the voice shows most in titles, intros, captions and tips.
 
 ## Voice
 - **Open with a stance, in one short sentence.** "I know the model is going to devour the harness." Then the turn: concede the other side, then push back. "Sure, with enough compute you can brute-force it. But is that the most efficient way?"
 - **Explain through a moment the reader has lived.** Start from what you do and what you see, then what happens inside. "I point at a paragraph and say 'make this shorter'. the agent has to work out which paragraph I mean before it can do anything."
-- **Say what it should feel like.** Name the experience in human terms: "like working with someone at the same whiteboard", "magical", "frustrating". Then show the mechanism that gets there.
+- **Say what it does, then why it matters.** Name the effect in plain terms ("the call starts before the model finishes the line"), then the mechanism that gets there. No adjectives of admiration ("elegant", "magical", "beautiful").
 - **Unpack the small thing.** "That sounds small, but there is a lot inside it." Then list what is inside, in plain words.
 - **First person when it is the author's own work** ("I asked", "I measured"); "you" for the reader. Contractions are fine.
 - **Short sentences, with the occasional long one that carries a list.** One idea per sentence.
-- **Light humor, used sparingly.** An honest aside, a vivid exaggeration ("hearing 'let me check' a hundred times before lunch"), a coined phrase. Never at the expense of accuracy, never profanity, never hype.
+- **No wit, no flourish.** No jokes, coined phrases, metaphors, dramatic colons, rhetorical questions, "not X but Y" turns, "here is the thing", "the trick", "the magic", "under the hood", "simply", "just", "beautifully". A heading says what the section is about ("The example program", "Results"), not a tease ("The program we'll follow", "Where it pays"). If a sentence could be cut without losing a fact or a step, cut it.
 - **Honest about limits.** "This is one run on a busy laptop." "I am not a researcher; here is what I measured."
 
 ## Vocabulary
@@ -24,7 +24,8 @@ The voice of a person talking straight to you about something they built and car
 - One term per thing across the page. If the legend says "Reply", the caption does not say "speech output".
 
 ## Titles
-- The claim, in sentence case, no period, at most ~9 words, said the way a person would say it: "The agent only acts on what you meant", "Polling on a timer is expensive or blind".
+- A guide's title (the page title, the h1, the index card) is the name of the subject or a simplified version of it, 3 to 6 words: "Recursive language models", "Liquid time-constant networks", "Conscious micro-epochs". Not a claim, not a hook.
+- A figure's title is its claim, in sentence case, no period, at most ~9 words, said plainly: "The agent only acts on what you meant", "Polling on a timer is expensive or blind".
 - Not the variable list ("Latency vs. phase"), not a question.
 
 ## Labels

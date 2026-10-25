@@ -499,10 +499,12 @@ a.card:hover { border-color: var(--fs-line-strong); }
   height: 0;
   background: var(--fs-surface-2);
   border-radius: 8px;
-  box-shadow: inset 2px 0 0 var(--fs-fg);
   opacity: 0;
   pointer-events: none;
 }
+/* The marker's line is a square-cornered bar inside the straight part of the edge, never a border or inset shadow on
+   the rounded box (that would follow the curve). */
+.types-indicator::before { content: ""; position: absolute; top: 8px; bottom: 8px; left: 0; width: 2px; background: var(--fs-fg); }
 .types-nav.is-ready .types-indicator { transition: transform 280ms var(--doc-ease), height 280ms var(--doc-ease), opacity 200ms linear; }
 
 .param-row { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; padding: 10px 20px 12px; border-top: var(--fs-border, 1px) solid var(--fs-line); }

@@ -9,7 +9,7 @@
 .guide table.plain th, .guide table.plain td { padding: 8px 10px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--fs-line); }
 .guide table.plain th { color: var(--fs-muted); font-weight: 600; font-size: 0.8125rem; letter-spacing: 0.02em; }
 .guide .tablewrap { overflow-x: auto; }
-.guide .note { padding: 12px 16px; margin: 0 0 1.25rem; color: var(--fs-muted); background: var(--fs-surface-2); border-left: 2px solid var(--fs-line-strong); border-radius: 6px; font-size: 0.9375rem; }
+.guide .note { padding: 12px 16px; margin: 0 0 1.25rem; color: var(--fs-muted); background: var(--fs-surface-2); border-left: 2px solid var(--fs-line-strong); border-radius: 0 6px 6px 0; font-size: 0.9375rem; }
 .guide .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 12px; margin: 1.25rem 0 1.5rem; }
 .guide .stat { padding: 14px 16px; border: 1px solid var(--fs-line); border-radius: 8px; background: var(--fs-surface); }
 .guide .stat b { display: block; font: 600 1.5rem/1.1 var(--fs-font-display); color: var(--fs-strong); margin-bottom: 6px; }

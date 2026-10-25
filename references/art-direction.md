@@ -20,6 +20,7 @@ The look, and the rules that keep it honest. The default register is calm and mo
 - The accent is ink, not color. Emphasis comes from contrast and dimming: the subject is full-strength `--fs-fg`/`--fs-strong`, context drops to `--fs-dim` (0.28). Under an Omarchy theme the same token becomes the theme's accent hue.
 - Manrope for everything, including text inside figures; JetBrains Mono for code and data identifiers only.
 - Soft frames: 1px `--fs-line` border, 12px outer radius, 6px inner radius, no shadows.
+- A line on one side only (the bar of a callout, the active marker of a nav or sidebar, a selected row) sits on a flat edge: either that side has no radius, or the line is a square-cornered `::before` bar inside the straight part of the edge. Never a one-sided `border-*` or inset shadow on a rounded box: it follows the curve and looks broken.
 - Motion is soft and short: 240 ms, `cubic-bezier(0.16, 1, 0.3, 1)`; step transitions ~0.48 s.
 
 ## 2. The plate

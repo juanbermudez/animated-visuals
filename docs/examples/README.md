@@ -29,6 +29,9 @@ listed on `docs/examples.html`; the sources live in `src/<slug>/`.
 
 ## Rules
 
+- The guide's title is the subject's name or a simplified version of it, 3 to 6 words. Section headings say what the
+  section is about. Prose is practical, concise and direct: it explains the subject and never embellishes, jokes or
+  teases (`references/writing/practical.md`).
 - Every number in a guide comes from the source and says where (the figure, table or section). Anything simulated or
   illustrative says so in the plate's status chip and caption.
 - A guide ends with a "Checked against the source" list: the numbers and where they come from, what is simulated,
