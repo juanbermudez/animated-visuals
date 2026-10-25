@@ -42,9 +42,9 @@ function knob(f, c, x, y, key) {
   const WINDOW = 8, PERIOD = 6, PRESS = [1.5, 3.5];
   const loopInput = (t) => { const p = t % PERIOD; return p >= PRESS[0] && p < PRESS[1] ? 1 : 0; };
   const tips = {
-    input: { title: "Input", body: "The touch sensor's reading, 0 for nothing, 1 for a firm press. Drag the knob at the right edge to press it yourself." },
-    tau: { title: "Time constant", body: "τ/(1 + τf) from Eq. 1: about the seconds the state needs to cover two thirds of the way. Strong input, short time constant." },
-    state: { title: "State", body: "The neuron's internal value, x in Eq. 1. It heads for τfA/(1 + τf): 0.07 at rest, 0.80 while pressed." },
+    input: { title: "Input", body: "The touch sensor reads 0 when untouched and 1 for a firm press. Drag the knob at the right edge to set the input." },
+    tau: { title: "Time constant", body: "From Eq. 1, τ/(1 + τf) is roughly the seconds needed for the state to cover two thirds of the distance. A stronger input shortens it." },
+    state: { title: "State", body: "The neuron's internal value, x in Eq. 1. Its resting value is τfA/(1 + τf): 0.07 when untouched and 0.80 while pressed." },
   };
   const geo = (f) => {
     const narrow = narrowOf(f), Lx = narrow ? 96 : 118, R = f.w - (narrow ? 58 : 72);
@@ -66,7 +66,7 @@ function knob(f, c, x, y, key) {
   };
   FS.figure("fig-neuron", {
     height: (w) => (w < 560 ? 296 : 270),
-    params: { source: { value: "loop", label: "Input", placement: "inline", options: [{ value: "loop", label: "Press loop" }, { value: "hand", label: "Your hand" }] } },
+    params: { source: { value: "loop", label: "Input", placement: "inline", options: [{ value: "loop", label: "Press loop" }, { value: "hand", label: "Manual input" }] } },
     reserve: { read: ["input 1.00 · gate f 3.93 · time constant 0.93 s · state 0.80"] },
     tips,
     tipAt: (f, x, y) => { const g = geo(f); if (x > g.Lx) return null; const i = g.lanes.findIndex((l) => y >= l.y0 - 6 && y <= l.y1 + 6); return ["input", "tau", "state"][i] ?? null; },
@@ -166,17 +166,17 @@ function knob(f, c, x, y, key) {
   const [node, ctrnn, ltc] = MODELS;
   const ratio = ctrnn.rise / ltc.rise;
   const steps = [
-    { lanes: 1, caption: "The touch sensor: nothing, then a press from 1 s to 3 s, then nothing. All three models get exactly this input." },
-    { lanes: 2, caption: `Neural ODE: the input sets the slope directly. Nothing pulls the state back, so it climbs while pressed and stays at ${node.at(END).toFixed(1)}.` },
-    { lanes: 3, caption: `CT-RNN: a leak pulls the state back with a fixed τ = 1 s. It rises in ${ctrnn.rise.toFixed(2)} s and falls in ${ctrnn.fall.toFixed(2)} s: one speed both ways.` },
-    { lanes: 4, caption: `LTC: the gate sits beside the leak. It rises in ${ltc.rise.toFixed(2)} s while pressed and falls in ${ltc.fall.toFixed(2)} s after release.` },
-    { lanes: 4, compare: true, caption: `Same input, same τ: the LTC answers the press ${ratio.toFixed(1)}× faster than the CT-RNN, and lets go almost as slowly.` },
+    { lanes: 1, caption: "The touch sensor is untouched, then pressed from 1 s to 3 s, then untouched again; all three models receive this input." },
+    { lanes: 2, caption: `For the neural ODE, the input sets the slope directly, so the state rises while pressed and remains at ${node.at(END).toFixed(1)} without a leak.` },
+    { lanes: 3, caption: `The CT-RNN uses a fixed τ = 1 s, so it rises in ${ctrnn.rise.toFixed(2)} s and falls in ${ctrnn.fall.toFixed(2)} s.` },
+    { lanes: 4, caption: `For the LTC, the gate changes the time constant, so the state rises in ${ltc.rise.toFixed(2)} s while pressed and falls in ${ltc.fall.toFixed(2)} s after release.` },
+    { lanes: 4, compare: true, caption: `With the same input and τ, the LTC responds to the press ${ratio.toFixed(1)}× faster than the CT-RNN and returns almost as slowly.` },
   ];
   const tips = {
-    lane0: { title: "Input", body: "The press: 0, then 1 from 1 s to 3 s, then 0. Every model below gets it through the same gate f." },
-    lane1: { title: "Neural ODE", body: "The network sets the rate of change directly. No leak, so nothing returns the state to rest." },
-    lane2: { title: "CT-RNN", body: "Adds a leak −x/τ. Its time constant is τ, the same whatever the input does." },
-    lane3: { title: "LTC", body: "Eq. 1: the gate f joins the leak, so the time constant is τ/(1 + τf) and moves with the input." },
+    lane0: { title: "Input", body: "The input is 0, then 1 from 1 s to 3 s, then 0. Every model receives it through the same gate f." },
+    lane1: { title: "Neural ODE", body: "The network sets the rate of change directly. Without a leak, the state does not return to rest." },
+    lane2: { title: "CT-RNN", body: "The leak −x/τ gives the model a fixed time constant τ. The input does not change it." },
+    lane3: { title: "LTC", body: "In Eq. 1, the gate f joins the leak, so the time constant τ/(1 + τf) changes with the input." },
   };
   FS.figure("fig-family", {
     height: (w) => (w < 560 ? 350 : 300),
@@ -258,10 +258,10 @@ function knob(f, c, x, y, key) {
     return { narrow, Lx, R, lanes, yIn: (v) => Y(lanes[0], v, -1.1, 1.1), yTau: (v) => Y(lanes[1], v, 0, 1.12), yX: (v) => Y(lanes[2], v, -1.15, 1.15) };
   };
   const tips = {
-    input: { title: "Input", body: "A seeded random signal between −1 and 1, times the strength. At ×1000 the gate flips between fully off and fully on." },
-    tau: { title: "Time constant", body: "Theorem 1 (Eq. 4): between τ/(1 + τW) and τ, because the gate f stays between 0 and W." },
-    state: { title: "State", body: "Theorem 2 (Eq. 5): between min(0, A) and max(0, A), because the leak pulls toward 0 and the gate toward A." },
-    target: { title: "Target A", body: "Where the gate pulls the state, like a synapse's reversal potential. Drag it; below zero the gate pulls the state down." },
+    input: { title: "Input", body: "A seeded random signal between −1 and 1, multiplied by the input strength. At ×1000 the gate switches between fully off and fully on." },
+    tau: { title: "Time constant", body: "Theorem 1 (Eq. 4) places it between τ/(1 + τW) and τ because the gate f stays between 0 and W." },
+    state: { title: "State", body: "Theorem 2 (Eq. 5) places it between min(0, A) and max(0, A) because the leak pulls toward 0 and the gate toward A." },
+    target: { title: "Target A", body: "The gate pulls the state toward this value. Drag it below zero to make the gate pull the state down." },
   };
   FS.figure("fig-bounds", {
     height: (w) => (w < 560 ? 300 : 278),
@@ -347,19 +347,19 @@ function knob(f, c, x, y, key) {
   const at = (f) => run(f.params.dt, f.params.W);
   const first = (r) => ({ e: r.euler[1][1], u: r.fused[1][1], x: r.exact(r.euler[1][0]) });
   const steps = [
-    { show: ["exact"], caption: (f) => { const r = at(f); return `Pressed at t = 0, the state heads for ${r.rest.toFixed(2)} with a time constant of ${r.ts.toFixed(2)} s. This curve is the exact answer.`; } },
-    { show: ["exact", "euler"], caption: (f) => { const r = at(f), p = first(r), dt = f.params.dt; return p.e > LTC.A ? `Euler follows the starting slope for a whole Δt = ${dt.toFixed(2)} s: its first step lands at ${p.e.toFixed(2)}, above the ceiling A = 1.` : dt > r.ts ? `At Δt = ${dt.toFixed(2)} s Euler's first step lands at ${p.e.toFixed(2)}, past the resting value ${r.rest.toFixed(2)}, and swings back.` : `With Δt = ${dt.toFixed(2)} s Euler tracks the curve. Drag the step past ${r.ts.toFixed(2)} s and watch it overshoot.`; } },
-    { show: ["exact", "euler", "fused"], caption: (f) => { const r = at(f), p = first(r); return `The fused step's first move lands at ${p.u.toFixed(2)} (exact: ${p.x.toFixed(2)}). It creeps up from below and never passes ${r.rest.toFixed(2)}, at any Δt.`; } },
-    { show: ["exact", "euler", "fused", "mix"], caption: (f) => { const w = at(f).weights.map((v) => Math.round(v * 100)); return `One fused step is a weighted average: ${w[0]}% the current state, ${w[1]}% the target A, ${w[2]}% rest at 0. It can't leave [0, A].`; } },
+    { show: ["exact"], caption: (f) => { const r = at(f); return `After the press at t = 0, the exact curve approaches ${r.rest.toFixed(2)} with a time constant of ${r.ts.toFixed(2)} s.`; } },
+    { show: ["exact", "euler"], caption: (f) => { const r = at(f), p = first(r), dt = f.params.dt; return p.e > LTC.A ? `Euler uses the starting slope across Δt = ${dt.toFixed(2)} s, so its first step lands at ${p.e.toFixed(2)}, above the ceiling A = 1.` : dt > r.ts ? `At Δt = ${dt.toFixed(2)} s, Euler's first step lands at ${p.e.toFixed(2)}, past the resting value ${r.rest.toFixed(2)}, then returns.` : `With Δt = ${dt.toFixed(2)} s, Euler tracks the curve, but a step above ${r.ts.toFixed(2)} s causes overshoot.`; } },
+    { show: ["exact", "euler", "fused"], caption: (f) => { const r = at(f), p = first(r); return `The fused step's first move lands at ${p.u.toFixed(2)} (exact: ${p.x.toFixed(2)}) and approaches ${r.rest.toFixed(2)} from below without passing it at any Δt.`; } },
+    { show: ["exact", "euler", "fused", "mix"], caption: (f) => { const w = at(f).weights.map((v) => Math.round(v * 100)); return `One fused step averages ${w[0]}% of the current state, ${w[1]}% of the target A and ${w[2]}% of rest at 0, which keeps it inside [0, A].`; } },
   ];
   const geo = (f) => {
     const narrow = narrowOf(f), L = narrow ? 34 : 52, R = f.w - (narrow ? 14 : 110), T = narrow ? 30 : 16, B = f.h - (narrow ? 104 : 96);
     return { narrow, L, R, T, B, X: (t) => L + (t / END) * (R - L), Y: (v) => B - ((v + 0.4) / 2.0) * (B - T) };
   };
   const tips = {
-    exact: { title: "Exact", body: "The closed-form answer for a constant gate, rest·(1 − e^(−t/τsys)). What both step rules try to follow." },
-    euler: { title: "Explicit Euler", body: "x + Δt·slope at the start of the step. Cheap, but with a strong gate it overshoots and can blow up." },
-    fused: { title: "Fused step", body: "The paper's Eq. 3: the x outside f is taken at the end of the step. One division, no overshoot." },
+    exact: { title: "Exact", body: "The closed-form answer for a constant gate is rest·(1 − e^(−t/τsys)). Both step rules approximate this curve." },
+    euler: { title: "Explicit Euler", body: "This rule adds Δt times the starting slope to x. With a strong gate, it can overshoot and become unstable." },
+    fused: { title: "Fused step", body: "In the paper's Eq. 3, the x outside f is taken at the end of the step. The result does not overshoot." },
   };
   FS.figure("fig-solver", {
     height: (w) => (w < 560 ? 380 : 340),
