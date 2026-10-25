@@ -59,19 +59,38 @@
 <main class="page" id="main">
   <p class="eyebrow">Themes</p>
   <h1>One figure, 27 looks</h1>
-  <p class="lede">Figures read only <code>--fs-*</code> tokens, so a theme is one block of CSS variables. Pick a theme from the sun or moon button and the page and every figure change together. Each card below is pinned to its own theme, so you can compare them side by side.</p>
+  <p class="lede">Figures read only <code>--fs-*</code> tokens, so a theme is one block of CSS variables. Each card below is pinned to its own theme, so you can compare them side by side; <b>Use</b> applies one to this whole page, the same as the sun or moon button.</p>
   <noscript><p>The theme cards and figures need JavaScript.</p></noscript>
 
-  <h2 id="default">Default and Notebook</h2>
-  <p>Default is monochrome, with ink as the accent. Notebook swaps in mono figure text, uppercase heads, square corners and an amber focus, for paper explainers.</p>
-  <div class="theme-grid wide" data-family="default notebook"></div>
+  <p>Default is monochrome, with ink as the accent. Notebook swaps in mono figure text, uppercase heads, square corners and an amber focus, for paper explainers. The other 23 are palettes from <a href="https://github.com/basecamp/omarchy">Omarchy</a>'s themes, with contrast fixed where needed: muted text reaches 4.5:1, the accent and categories 3:1.</p>
 
-  <h2 id="omarchy-light">Omarchy, light</h2>
-  <p>Palettes from <a href="https://github.com/basecamp/omarchy">Omarchy</a>'s themes, with contrast fixed where needed: muted text reaches 4.5:1, the accent and categories 3:1.</p>
-  <div class="theme-grid wide" data-family="omarchy" data-mode="light"></div>
+  <form class="theme-filters wide" role="search" aria-label="Filter themes" data-theme-filters>
+    <label class="search-field">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+      <span class="sr-only">Search themes by name or id</span>
+      <input type="search" name="q" autocomplete="off" spellcheck="false" placeholder="Search by name or id">
+      <button type="button" class="search-clear" aria-label="Clear search" hidden><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button>
+    </label>
+    <div class="segmented" role="radiogroup" aria-label="Mode">
+      <span class="segmented-indicator" aria-hidden="true"></span>
+      <button type="button" role="radio" data-value="all" aria-checked="true">All</button>
+      <button type="button" role="radio" data-value="dark" aria-checked="false">Dark</button>
+      <button type="button" role="radio" data-value="light" aria-checked="false">Light</button>
+    </div>
+    <div class="chips" role="group" aria-label="Family">
+      <button type="button" class="chip" data-family="default" aria-pressed="false">Default</button>
+      <button type="button" class="chip" data-family="notebook" aria-pressed="false">Notebook</button>
+      <button type="button" class="chip" data-family="omarchy" aria-pressed="false">Omarchy</button>
+    </div>
+    <p class="filter-count" role="status" aria-live="polite"></p>
+  </form>
 
-  <h2 id="omarchy-dark">Omarchy, dark</h2>
-  <div class="theme-grid wide" data-family="omarchy" data-mode="dark"></div>
+  <div class="theme-grid wide" id="theme-grid"></div>
+  <div class="filter-empty wide" hidden>
+    <p class="filter-empty-title"></p>
+    <p class="muted">Clear the search and filters to see all 27 themes.</p>
+    <button type="button" class="btn small" data-clear-filters>Clear filters</button>
+  </div>
 
   <h2 id="tokens">Tokens</h2>
   <p>This is the whole contract. Canvas figures read the colors as <code>f.C</code> (<code>f.C.fg</code>, <code>f.C.accent</code>, <code>f.C.c[0]</code>); SVG and HTML use <code>var(--fs-…)</code>. The swatches show the theme you picked and change with it.</p>

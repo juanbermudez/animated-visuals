@@ -1,5 +1,5 @@
 /* Themes page: one plate per theme, pinned with data-fs-theme, each with live token swatches and a small
-   live figure; plus the Harbor example. All figures share one seeded dataset so themes compare fairly. */
+   live figure, filtered by search, mode and family; plus the Harbor example. All figures share one seeded dataset so themes compare fairly. */
 (() => {
   const THEMES = window.AV_THEMES || [];
   const TOKENS = ["bg", "surface", "surface-2", "line", "line-strong", "faint", "muted", "fg", "strong", "accent", "c1", "c2", "c3", "c4", "c5", "c6", "good", "bad"];
@@ -79,20 +79,127 @@
     const plate = document.createElement("figure");
     plate.className = "fs-plate";
     plate.dataset.fsTheme = t.attr;
+    plate.dataset.id = t.id;
+    plate.dataset.mode = t.mode;
+    plate.dataset.family = t.family;
+    plate.dataset.search = `${t.name} ${t.id}`.toLowerCase();
     const id = `spec-${t.id}`;
     plate.setAttribute("aria-labelledby", `${id}-title`);
-    plate.innerHTML = `<header class="fs-head"><h3 class="fs-title" id="${id}-title">${t.name}</h3><span class="fs-status">${t.mode} · ${FAMILY[t.family]}</span></header><div class="fs-stage"><canvas id="${id}" role="img" aria-label="${t.name}: three lines drawn up to a playhead, with a hatched forecast band"></canvas></div><div></div><div class="fs-toolbar"><span class="fs-position">Drag to replay</span><button type="button" class="use-btn" data-theme="${t.id}" aria-pressed="false" aria-label="Use ${t.name} for this site">Use</button></div>`;
+    plate.innerHTML = `<header class="fs-head"><h3 class="fs-title" id="${id}-title">${t.name}</h3><span class="fs-status">${t.mode} · ${FAMILY[t.family]}</span></header><div class="fs-stage"><canvas id="${id}" role="img" aria-label="${t.name}: three lines drawn up to a playhead, with a hatched forecast band"></canvas></div><div></div><div class="fs-toolbar"><span class="fs-position"><code>${t.id}</code></span><button type="button" class="use-btn" data-theme="${t.id}" aria-pressed="false" aria-label="Use ${t.name} for this site">Use</button></div>`;
     strip(plate.children[2]);
     return plate;
   }
 
-  document.querySelectorAll(".theme-grid").forEach((grid) => {
-    const families = grid.dataset.family.split(" ");
-    const mode = grid.dataset.mode;
-    for (const t of THEMES) if (families.includes(t.family) && (!mode || t.mode === mode)) grid.append(card(t));
-  });
+  const grid = document.getElementById("theme-grid");
+  const cards = THEMES.map(card);
+  grid?.append(...cards);
   document.querySelectorAll(".specimen .tokens-strip").forEach(strip);
   document.querySelectorAll(".fs-plate canvas[id^='spec-']").forEach((canvas) => specimen(canvas.id));
+
+  // ---------- search and filters ----------
+  // State lives in the URL (?q=&mode=&family=) so a filtered view can be shared or reloaded.
+  const form = document.querySelector("[data-theme-filters]");
+  if (form && grid) {
+    const input = form.querySelector('input[name="q"]');
+    const clear = form.querySelector(".search-clear");
+    const radios = [...form.querySelectorAll('[role="radio"]')];
+    const indicator = form.querySelector(".segmented-indicator");
+    const chips = [...form.querySelectorAll(".chip")];
+    const count = form.querySelector(".filter-count");
+    const empty = document.querySelector(".filter-empty");
+    const state = { q: "", mode: "all", families: new Set() };
+
+    const params = new URLSearchParams(location.search);
+    state.q = params.get("q") || "";
+    if (["dark", "light"].includes(params.get("mode"))) state.mode = params.get("mode");
+    for (const f of (params.get("family") || "").split(",")) if (FAMILY[f]) state.families.add(f);
+    input.value = state.q;
+
+    function placeIndicator() {
+      const on = radios.find((r) => r.dataset.value === state.mode);
+      indicator.style.width = `${on.offsetWidth}px`;
+      indicator.style.transform = `translateX(${on.offsetLeft - radios[0].offsetLeft}px)`;
+    }
+
+    function render() {
+      const words = state.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      let shown = 0;
+      for (const c of cards) {
+        const match =
+          words.every((w) => c.dataset.search.includes(w)) &&
+          (state.mode === "all" || c.dataset.mode === state.mode) &&
+          (!state.families.size || state.families.has(c.dataset.family));
+        c.hidden = !match;
+        if (match) shown += 1;
+      }
+      for (const r of radios) {
+        const on = r.dataset.value === state.mode;
+        r.setAttribute("aria-checked", String(on));
+        r.tabIndex = on ? 0 : -1;
+      }
+      for (const chip of chips) chip.setAttribute("aria-pressed", String(state.families.has(chip.dataset.family)));
+      placeIndicator();
+      clear.hidden = !state.q;
+      count.textContent = shown === cards.length ? `${cards.length} themes` : `${shown} of ${cards.length} themes`;
+      empty.hidden = shown > 0;
+      if (!shown) {
+        const kind = [state.mode !== "all" && state.mode, [...state.families].map((f) => FAMILY[f]).join(" or ")].filter(Boolean).join(" ");
+        const subject = `${kind ? `${kind} ` : ""}theme`;
+        empty.querySelector(".filter-empty-title").textContent = state.q.trim() ? `No ${subject} matches “${state.q.trim()}”.` : `No ${subject} here.`;
+      }
+      const next = new URLSearchParams();
+      if (state.q.trim()) next.set("q", state.q.trim());
+      if (state.mode !== "all") next.set("mode", state.mode);
+      if (state.families.size) next.set("family", [...state.families].join(","));
+      const query = next.toString();
+      history.replaceState(null, "", `${location.pathname}${query ? `?${query}` : ""}${location.hash}`);
+    }
+
+    function setMode(value, focus) {
+      state.mode = value;
+      render();
+      if (focus) radios.find((r) => r.dataset.value === value).focus();
+    }
+    function reset() {
+      state.q = "";
+      state.mode = "all";
+      state.families.clear();
+      input.value = "";
+      render();
+      input.focus();
+    }
+
+    form.addEventListener("submit", (e) => e.preventDefault());
+    input.addEventListener("input", () => { state.q = input.value; render(); });
+    input.addEventListener("keydown", (e) => { if (e.key === "Escape" && input.value) { e.preventDefault(); input.value = ""; state.q = ""; render(); } });
+    clear.addEventListener("click", () => { input.value = ""; state.q = ""; render(); input.focus(); });
+    radios.forEach((r, i) => {
+      r.addEventListener("click", () => setMode(r.dataset.value, false));
+      // A radio group: arrows move and select, Home and End jump.
+      r.addEventListener("keydown", (e) => {
+        const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+        let j = null;
+        if (step) j = (i + step + radios.length) % radios.length;
+        else if (e.key === "Home") j = 0;
+        else if (e.key === "End") j = radios.length - 1;
+        if (j == null) return;
+        e.preventDefault();
+        setMode(radios[j].dataset.value, true);
+      });
+    });
+    chips.forEach((chip) => chip.addEventListener("click", () => {
+      const f = chip.dataset.family;
+      if (state.families.has(f)) state.families.delete(f);
+      else state.families.add(f);
+      render();
+    }));
+    document.querySelector("[data-clear-filters]")?.addEventListener("click", reset);
+    addEventListener("resize", placeIndicator);
+    document.fonts?.ready.then(placeIndicator);
+    render();
+    // The indicator is placed without a transition first, then slides from there on.
+    requestAnimationFrame(() => form.querySelector(".segmented").classList.add("is-ready"));
+  }
 
   function syncUse() {
     const id = window.AV?.currentTheme();
