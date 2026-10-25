@@ -1,0 +1,3 @@
+/* The flow helper draws sublabels at 10.5px; on a phone that is below the 11px floor, so lift them here. */
+.guide svg g[data-key] > text:nth-of-type(2) { font-size: 11px; }
+.guide .verified p { margin: 0.75rem 0 0; }
