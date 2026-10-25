@@ -72,15 +72,15 @@
       S.ms += S.bin;
     }
     const tips = {
-      seen: { title: "Cells that prefer the seen face", body: "Simulated cells that fire more for the flashed face. They are busy while the population carries it and quiet otherwise." },
-      supp: { title: "Cells that prefer the suppressed face", body: "The other half. In the recordings, cells like these fire for a face the animal is not seeing (Fig. 2e–g)." },
-      carried: { title: "Which face the population carries", body: "Solid: the seen face (state 1). Hatched: the suppressed face (state 2). The flips come about 15 times a second (Fig. 2d, Fig. 5)." },
-      face: { title: "The two faces", body: "Both stay on screen the whole time. Only one is seen; the lit face follows what the population carries." },
+      seen: { title: "Seen-face cells", body: "These simulated cells fire more for the flashed, seen face while the population carries it." },
+      supp: { title: "Suppressed-face cells", body: "In the recordings, these cells fire for the primed, suppressed face (Fig. 2e–g)." },
+      carried: { title: "Decoded state", body: "State 1 is the flashed, seen face (solid). State 2 is the primed, suppressed face (hatched). The population flips about 15 times a second (Fig. 2d, Fig. 5)." },
+      face: { title: "Faces shown", body: "Both faces remain on screen. Only the flashed face is seen; the highlighted face follows the decoded state." },
     };
     FS.figure("fig-hero", {
       height: (w) => (w < 640 ? 350 : 310),
       params: { slow: { value: 10, min: 2, max: 40, step: 1, label: "Slowed down by", format: (v) => `${Math.round(v)}×` } },
-      reserve: { state: ["carrying the suppressed face"], flips: ["999 flips in 99.9 s of brain time"] },
+      reserve: { state: ["state 2 · primed, suppressed"], flips: ["999 flips in 99.9 s of brain time"] },
       tips, tipAt: hit, settle: 2,
       init(f) { const S = f.state; S.r = mulberry(7); S.N = 36; S.bin = 5; S.win = 600; S.cols = []; S.acc = 0; S.s = 1; S.flips = 0; S.ms = 0; S.mul = []; for (let i = 0; i < S.N; i++) S.mul.push(0.6 + 0.8 * S.r()); for (let k = 0; k < S.win / S.bin; k++) push(S); S.flips = 0; S.ms = 0; S.alpha = [1, 0.2]; },
       update(f, dt) { const S = f.state; S.acc += (dt * 1000) / f.v.slow; while (S.acc >= S.bin) { S.acc -= S.bin; push(S); } const tg = S.s === 1 ? [1, 0.2] : [0.2, 1]; for (let i = 0; i < 2; i++) S.alpha[i] += (tg[i] - S.alpha[i]) * Math.min(1, dt * 5); },
@@ -90,12 +90,12 @@
         if (nar) {
           const fs = 62, fy = 40;
           drawFace(f, c, W * 0.27, fy, fs, FACE_B, { alpha: S.alpha[0] }); drawFace(f, c, W * 0.73, fy, fs, FACE_A, { alpha: S.alpha[1], dash: dashFor(fs) });
-          text(f, c, "flashed · seen", W * 0.27, fy + 46, { align: "center", size: 10, color: S.s === 1 ? C.fg : C.muted }); text(f, c, "primed · suppressed", W * 0.73, fy + 46, { align: "center", size: 10, color: S.s === 2 ? C.fg : C.muted });
+          text(f, c, "state 1 · seen", W * 0.27, fy + 46, { align: "center", size: 10, color: S.s === 1 ? C.fg : C.muted }); text(f, c, "state 2 · suppressed", W * 0.73, fy + 46, { align: "center", size: 10, color: S.s === 2 ? C.fg : C.muted });
           hits.push({ kind: "face", x: 0, y: 0, w: W, h: 90 }); rx0 = 22; ry0 = 108;
         } else {
           const fs = 86;
           drawFace(f, c, 80, H * 0.25, fs, FACE_B, { alpha: S.alpha[0] }); drawFace(f, c, 80, H * 0.64, fs, FACE_A, { alpha: S.alpha[1], dash: dashFor(fs) });
-          text(f, c, "flashed face · seen", 80, H * 0.25 + 58, { align: "center", size: 10, color: S.s === 1 ? C.fg : C.muted }); text(f, c, "primed face · suppressed", 80, H * 0.64 + 58, { align: "center", size: 10, color: S.s === 2 ? C.fg : C.muted });
+          text(f, c, "state 1 · flashed, seen", 80, H * 0.25 + 58, { align: "center", size: 10, color: S.s === 1 ? C.fg : C.muted }); text(f, c, "state 2 · primed, suppressed", 80, H * 0.64 + 58, { align: "center", size: 10, color: S.s === 2 ? C.fg : C.muted });
           hits.push({ kind: "face", x: 0, y: 0, w: 170, h: H }); rx0 = 200; ry0 = 16;
         }
         const rx1 = W - 2, ry1 = H - 58, n = S.cols.length, cw = (rx1 - rx0) / n, off = (S.acc / S.bin) * cw, rh = (ry1 - ry0) / S.N, xOf = (k) => rx1 - (n - k) * cw - off;
@@ -113,7 +113,7 @@
         const px = rx1 - off; c.strokeStyle = C.strong; c.lineWidth = 1; line(c, px, ry0, px, ry1 + 25);
         const sb = (100 / S.bin) * cw; c.strokeStyle = C.muted; line(c, rx1 - sb, H - 12, rx1, H - 12); line(c, rx1 - sb, H - 16, rx1 - sb, H - 8); line(c, rx1, H - 16, rx1, H - 8);
         text(f, c, "100 ms", rx1 - sb - 8, H - 8, { align: "right", size: 10 }); text(f, c, `simulated · slowed ${Math.round(f.v.slow)}×`, rx0, H - 8, { size: 10 });
-        f.api.out("state", S.s === 1 ? "carrying the seen face" : "carrying the suppressed face");
+        f.api.out("state", S.s === 1 ? "state 1 · flashed, seen" : "state 2 · primed, suppressed");
         f.api.out("flips", `${S.flips} ${S.flips === 1 ? "flip" : "flips"} in ${(S.ms / 1000).toFixed(1)} s of brain time`);
       },
     });
@@ -122,13 +122,13 @@
   /* ================= Fig 1: the puzzle scatter (two steps) ================= */
   (() => {
     const steps = [
-      { caption: "If face cells tracked perception, selectivity during rivalry would equal selectivity when the faces are shown alone: every dot on the diagonal." },
-      { caption: "What the recordings show: selectivity collapses to about a quarter (slope 0.23). Nearly every strongly selective cell falls below the line. 5,550 cell–stimulus pairs, p = 8×10⁻¹³³ (Fig. 1h)." },
+      { caption: "If face cells tracked perception, selectivity during rivalry would equal selectivity when the faces are shown alone, with every dot on the diagonal." },
+      { caption: "The recordings put nearly every strongly selective cell below the diagonal, with selectivity at about a quarter of plain viewing (slope 0.23; 5,550 cell–stimulus pairs, p = 8×10⁻¹³³, Fig. 1h)." },
     ];
     FS.figure("fig-puzzle", {
       height: (w) => (w < 640 ? w - 56 + 62 : 400),
       steps,
-      tips: { dots: { title: "One dot, one cell and stimulus pair", body: "Its selectivity for a pair of faces, measured when the faces are shown alone (across) and during rivalry (up). Illustrative dots; the slope is the paper's." } },
+      tips: { dots: { title: "Cell-stimulus pair", body: "Each illustrative dot compares selectivity when the faces are shown alone (across) with selectivity during rivalry (up); the slope is from the paper." } },
       tipAt: hit,
       init(f) { const r = mulberry(11), P = []; while (P.length < 440) { const x = 0.22 + 0.36 * gauss(r); if (Math.abs(x) < 0.08 || Math.abs(x) > 0.97) continue; P.push({ x, z: gauss(r) }); } f.state.P = P; },
       render(f, c) {
@@ -154,10 +154,10 @@
   /* ================= Fig 2: binocular flash suppression (timeline, brain seconds −1 to +1) ================= */
   (() => {
     const tips = {
-      left: { title: "Left eye", body: "The primed face, shown alone for 1 to 2 s before the flash and still shown after it." },
-      right: { title: "Right eye", body: "Blank until the flash, then the second face. Anaglyph goggles send each eye its own image." },
-      percept: { title: "What is seen", body: "The primed face before the flash; after it, only the flashed face. In 14 people this held on 82% of trials against 87% for an image with no competitor (Fig. 1b, Methods)." },
-      window: { title: "Analysis window", body: "300 to 1000 ms after the flash: every neural analysis in the paper uses this window, when the flashed face dominates." },
+      left: { title: "Left eye", body: "The primed face appears alone for 1 to 2 s before the flash and remains after it." },
+      right: { title: "Right eye", body: "This eye is blank until the flash, when the second face appears. Anaglyph goggles send each eye its own image." },
+      percept: { title: "What is seen", body: "The primed face is seen before the flash, then only the flashed face. In 14 people this held on 82% of trials against 87% for an image with no competitor (Fig. 1b, Methods)." },
+      window: { title: "Analysis window", body: "Every neural analysis uses 300 to 1000 ms after the flash, when the flashed face dominates." },
     };
     FS.figure("fig-flash", {
       height: (w) => (w < 640 ? 520 : 330),
@@ -199,7 +199,7 @@
         text(f, c, "flash", tx(0), base - 18, { align: "center", size: 10, color: C.fg });
         FS.k.hoverTime(f, c, base - 22, ay, (s) => tx(s - 1), (s) => `${s - 1 < 0 ? "−" : "+"}${Math.abs(s - 1).toFixed(2)} s`);
         FS.k.playhead(f, c, tx(tc), base - 6, ay);
-        f.api.out("phase", tt < 0 ? "the primed face alone, seen" : tt < 0.3 ? "the flash: the new face takes over" : "the flashed face is seen, the primed face suppressed");
+        f.api.out("phase", tt < 0 ? "before the flash · primed face seen" : tt < 0.3 ? "at the flash · flashed face takes over" : "after the flash · flashed face seen");
       },
     });
   })();
@@ -207,7 +207,7 @@
   /* ================= Fig 3: where the probes went (flow) ================= */
   (() => {
     const meta = {
-      eye: { label: "Eyes", sub: "one face each", tip: { title: "Eyes", body: "Anaglyph goggles: the left eye sees the primed face, the right eye the flashed one." } },
+      eye: { label: "Eyes", sub: "one face each", tip: { title: "Eyes", body: "Anaglyph goggles send the primed face to the left eye and the flashed face to the right eye." } },
       early: { label: "V1 to V4", sub: "not recorded", tip: { title: "Early visual cortex", body: "Not recorded in this study; the probes sat higher in the hierarchy." } },
       ML: { label: "ML", sub: "middle lateral face patch", tip: { title: "ML", body: "A face patch in inferotemporal cortex, found with fMRI. 91% of visually responsive cells were face-selective in the example session (Fig. 1f)." } },
       AM: { label: "AM", sub: "anterior medial face patch", tip: { title: "AM", body: "The most anterior face patch; 71% face-selective cells in the example session (Fig. 1f). ML and AM were recorded at once: 429 cells in one trial (Fig. 1g)." } },
@@ -220,11 +220,11 @@
     };
     const edges = [["eye", "early"], ["early", "ML"], ["ML", "AM"], { a: "AM", b: "PVL", wide: "x", narrow: "y" }, { a: "AM", b: "PO", wide: "x", narrow: "right" }];
     const steps = [
-      { on: Object.keys(meta), caption: "Four regions were recorded in two macaques with Neuropixels NHP probes: a 45 mm shaft, 384 of its 4,416 contacts recording at once. Step through them." },
-      { on: ["eye", "early"], caption: "Each eye gets its own face. Early visual areas were not recorded." },
-      { on: ["ML", "AM"], caption: "Two face patches in inferotemporal cortex, located first with fMRI. In one example trial 429 cells were recorded together (Fig. 1g)." },
-      { on: ["PVL", "PO"], caption: "Two prefrontal regions, recorded in a separate set of experiments: 661 neurons in all (Methods)." },
-      { on: ["ML", "AM", "PVL", "PO"], caption: "The faces: 1,500 synthetic faces in 750 rival pairs, each a point in a 50-dimensional face space (20 shape and 30 appearance features)." },
+      { on: Object.keys(meta), caption: "Step through the four regions recorded in two macaques with Neuropixels NHP probes, each with a 45 mm shaft and 384 of 4,416 contacts recording at once." },
+      { on: ["eye", "early"], caption: "Each eye gets its own face, and early visual areas were not recorded." },
+      { on: ["ML", "AM"], caption: "The two face patches in inferotemporal cortex were located with fMRI, and one example trial recorded 429 cells together (Fig. 1g)." },
+      { on: ["PVL", "PO"], caption: "A separate set of experiments recorded 661 neurons across two prefrontal regions (Methods)." },
+      { on: ["ML", "AM", "PVL", "PO"], caption: "The stimulus set contains 1,500 synthetic faces in 750 rival pairs, each a point in a 50-dimensional face space with 20 shape and 30 appearance features." },
     ];
     flowFigure("fig-rig", { meta, layouts, edges, steps, regions: [{ label: "inferotemporal", keys: ["ML", "AM"] }, { label: "prefrontal", keys: ["PVL", "PO"] }] });
   })();
@@ -241,16 +241,16 @@
       S.bins.push({ h: S.hidden, L, dec, contrib, pos }); if (S.bins.length > 41) S.bins.shift();
     }
     const tips = {
-      templates: { title: "Templates, from priming", body: "Each neuron's average rate for the face that will be seen (solid) and the one that will be suppressed (hatched), measured when each face is shown alone." },
-      raster: { title: "Spikes in 10 ms bins", body: "14 of 60 simulated neurons. Each tick is a spike. Even rows prefer the seen face, odd rows the suppressed one." },
-      trace: { title: "ℓ(t), the evidence", body: "Positive: the bin looks like the seen face. Negative: like the suppressed face. The sum of every neuron's weighted vote." },
-      decoded: { title: "Decoded state", body: "The sign of ℓ: state 1 above zero, state 2 below." },
-      truth: { title: "Hidden truth", body: "Known only because this is a simulation. In the brain nobody knows it, which is why the controls in step 07 matter." },
-      evidence: { title: "Who voted how, newest bin", body: "A spike from a cell that strongly prefers the seen face pushes ℓ up a lot; silence from that cell pulls it down a little." },
+      templates: { title: "Priming templates", body: "Each neuron has one average rate for the flashed, seen face (solid) and another for the primed, suppressed face (hatched), measured when each face was shown alone." },
+      raster: { title: "10 ms slices", body: "The raster shows 14 of 60 simulated neurons. Each tick is a spike; even rows prefer the seen face and odd rows prefer the suppressed face." },
+      trace: { title: "Log-likelihood ratio", body: "Positive values match the seen-face template; negative values match the suppressed-face template. Each value sums the neurons’ weighted contributions." },
+      decoded: { title: "Decoded state", body: "Positive ℓ assigns state 1, the flashed, seen face. Negative ℓ assigns state 2, the primed, suppressed face." },
+      truth: { title: "Hidden state", body: "The state is known only in this simulation. The recordings require the controls in section 07 because their underlying state is unknown." },
+      evidence: { title: "Neuron contributions", body: "For the newest 10 ms slice, a spike from a cell that strongly prefers the seen face raises ℓ; silence lowers it." },
     };
     FS.figure("fig-llr", {
       height: (w) => (w < 760 ? 368 : 380),
-      reserve: { readout: ["ℓ = −99.9 · state 2 · agrees with the truth 100%"] },
+      reserve: { readout: ["ℓ = −99.9 · state 2 · matches hidden state 100%"] },
       tips, tipAt: hit, settle: 3,
       init(f) {
         const S = f.state; S.r = mulberry(23); S.N = 60; S.dt = 10; S.lc = []; S.ls = [];
@@ -263,7 +263,7 @@
         const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 760, hits = (f.state.hits = []);
         const tplW = nar ? 62 : 150, rx0 = tplW + (nar ? 8 : 20), evW = nar ? 0 : 196, rx1 = W - evW - (nar ? 0 : 22);
         const y0 = 26, rowH = nar ? 13 : 15, nR = S.disp.length, y1 = y0 + rowH * nR, ncol = 40, cw = (rx1 - rx0) / ncol, off = (S.acc / STEP) * cw, n = S.bins.length, xOf = (k) => rx1 - (n - k) * cw - off;
-        text(f, c, nar ? "templates" : "templates, from priming", 0, 12, { size: 10, color: C.fg }); text(f, c, "spikes in 10 ms bins", rx0, 12, { size: 10, color: C.fg }); if (!nar) text(f, c, "evidence, newest bin", W - evW, 12, { size: 10, color: C.fg });
+        text(f, c, nar ? "templates" : "templates, from priming", 0, 12, { size: 10, color: C.fg }); text(f, c, "spikes in 10 ms slices", rx0, 12, { size: 10, color: C.fg }); if (!nar) text(f, c, "contributions, newest slice", W - evW, 12, { size: 10, color: C.fg });
         hits.push({ kind: "templates", x: 0, y: y0, w: tplW, h: y1 - y0 }, { kind: "raster", x: rx0, y: y0, w: rx1 - rx0, h: y1 - y0 });
         let maxR = 0; for (const i of S.disp) maxR = Math.max(maxR, S.lc[i], S.ls[i]);
         S.disp.forEach((i, r) => { const y = y0 + r * rowH; fillState(f, c, 0, y + rowH * 0.1, (S.lc[i] / maxR) * (tplW - 6), rowH * 0.36, 1); fillState(f, c, 0, y + rowH * 0.52, (S.ls[i] / maxR) * (tplW - 6), rowH * 0.36, 2); });
@@ -280,17 +280,17 @@
         const xn = xOf(n - 1); c.strokeStyle = C.strong; c.lineWidth = 1.4; c.strokeRect(xn + 0.5, y0 - 4, cw - 1, hy + 16 - y0);
         c.restore();
         text(f, c, nar ? "ℓ(t)" : "ℓ(t)  + seen", 0, tz - 6, { size: 10, color: C.fg }); if (!nar) text(f, c, "      − suppressed", 0, tz + 10, { size: 10 });
-        text(f, c, nar ? "decoded" : "decoded state", 0, dy + 10, { size: 10, color: C.fg }); text(f, c, nar ? "truth" : "hidden truth (sim)", 0, hy + 10, { size: 10 });
+        text(f, c, nar ? "decoded" : "decoded state", 0, dy + 10, { size: 10, color: C.fg }); text(f, c, nar ? "hidden" : "hidden state (simulated)", 0, hy + 10, { size: 10 });
         const nb = S.bins[n - 1], acc = Math.round((100 * S.correct) / Math.max(1, S.total)), Ls = (nb.L >= 0 ? "+" : "−") + Math.abs(nb.L).toFixed(1);
         if (!nar) {
           const ex0 = W - evW, cx = ex0 + evW / 2, half = evW / 2 - 8; hits.push({ kind: "evidence", x: ex0, y: y0, w: evW, h: y1 - y0 });
           c.strokeStyle = C.muted; c.lineWidth = 1; line(c, cx + 0.5, y0 - 2, cx + 0.5, y1 + 2);
           S.disp.forEach((i, r) => { const v = nb.contrib[i], len = FS.clamp(v * 16, -half, half), y = y0 + r * rowH; if (len >= 0) fillState(f, c, cx + 1, y + 3, len, rowH - 6, 1); else fillState(f, c, cx + len, y + 3, -len, rowH - 6, 2); });
           text(f, c, "← suppressed", cx - 6, y1 + 14, { align: "right", size: 10 }); text(f, c, "seen →", cx + 6, y1 + 14, { size: 10 });
-          text(f, c, `ℓ = ${Ls}`, ex0 + 4, y1 + 52, { size: 26, weight: 600, color: C.fg }); text(f, c, nb.dec === 1 ? "state 1 · the flashed face" : "state 2 · the primed face", ex0 + 4, y1 + 74, { size: 11, color: C.fg });
-          text(f, c, "sum over all 60 neurons", ex0 + 4, y1 + 92, { size: 10 }); text(f, c, `agrees with the truth ${acc}%`, ex0 + 4, y1 + 116, { size: 11, color: C.fg });
+          text(f, c, `ℓ = ${Ls}`, ex0 + 4, y1 + 52, { size: 26, weight: 600, color: C.fg }); text(f, c, nb.dec === 1 ? "state 1 · flashed, seen" : "state 2 · primed, suppressed", ex0 + 4, y1 + 74, { size: 11, color: C.fg });
+          text(f, c, "sum over all 60 neurons", ex0 + 4, y1 + 92, { size: 10 }); text(f, c, `matches hidden state ${acc}%`, ex0 + 4, y1 + 116, { size: 11, color: C.fg });
         }
-        f.api.out("readout", `ℓ = ${Ls} · state ${nb.dec} · agrees with the truth ${acc}%`);
+        f.api.out("readout", `ℓ = ${Ls} · state ${nb.dec} · matches hidden state ${acc}%`);
       },
     });
   })();
@@ -298,10 +298,10 @@
   /* ================= Fig 5: one percept, many flips (timeline at real speed) ================= */
   (() => {
     const tips = {
-      percept: { title: "What is seen", body: "From the human reports: the primed face before the flash, the flashed face after it. In flash suppression the percept does not switch inside the window." },
-      pop: { title: "What the population carries", body: "Decoded state in 5 ms steps, simulated with the paper's 67 ms mean dwell after the flash and a slower, primed-face-dominated pattern before it (Fig. 2c)." },
-      auto: { title: "Autocorrelation of ℓ(t)", body: "Recorded: fades over tens of milliseconds, fit by a two-state model with a 67 ms mean dwell. Shuffled: gone after one 10 ms bin (Fig. 2d)." },
-      rates: { title: "Switches per second", body: "About 15 neural flips a second against about one perceptual switch every two seconds in classic rivalry (Discussion)." },
+      percept: { title: "What is seen", body: "Human reports indicate the primed face before the flash and the flashed face after it. The percept does not switch inside the flash-suppression window." },
+      pop: { title: "Decoded state", body: "The simulation uses 5 ms steps, the paper’s 67 ms mean dwell after the flash, and a slower pattern dominated by the primed face before it (Fig. 2c)." },
+      auto: { title: "Autocorrelation", body: "The recorded correlation fades over tens of milliseconds and fits a two-state model with a 67 ms mean dwell. The shuffled correlation vanishes after one 10 ms slice (Fig. 2d)." },
+      rates: { title: "Switching rates", body: "The population flips about 15 times a second, compared with about one perceptual switch every two seconds in classic rivalry (Discussion)." },
     };
     FS.figure("fig-time", {
       height: (w) => (w < 640 ? 460 : 340),
@@ -345,7 +345,7 @@
         text(f, c, "switches per second", bx0, by, { size: 10, color: C.fg }); text(f, c, "the population  ≈15", bx0, by + 24, { color: C.fg }); fillState(f, c, bx0, by + 32, bw, 14, 1);
         text(f, c, "perception in rivalry  ≈0.5", bx0, by + 68, {}); fillState(f, c, bx0, by + 76, Math.max(3, (bw * 0.5) / 15), 14, 2);
         if (!nar) wrap(f, c, "About 30 flips of the population for every switch of perception in classic rivalry. In flash suppression the percept does not switch at all inside the window.", bx0, by + 122, bw, 19, { size: 13, color: C.fg });
-        f.api.out("note", tp < 0 ? "before the flash: the primed face is seen and mostly carried" : "after the flash: about 15 flips a second while the percept stays put");
+        f.api.out("note", tp < 0 ? "before the flash · primed face seen and mostly carried" : "after the flash · about 15 flips a second, percept unchanged");
       },
     });
   })();
@@ -358,15 +358,15 @@
       { lab: "state 2 moments only", target: FACE_A, dash: "d", out: "the suppressed face" },
     ];
     const steps = [
-      { caption: "Average every moment and the decoder returns a blend that matches neither face (Extended Data Fig. 2)." },
-      { caption: "Average state 1 moments only: the seen face comes back, some features above 80% explained variance against a 90% ceiling (Fig. 2h–i)." },
-      { caption: "Average state 2 moments only: the suppressed face comes back in detail, though the animal is not seeing it (p = 3×10⁻²⁹, Fig. 2i)." },
+      { caption: "Averaging every moment returns a blend that matches neither face (Extended Data Fig. 2)." },
+      { caption: "Averaging only state 1 moments reconstructs the seen face, with some features above 80% explained variance against a 90% ceiling (Fig. 2h–i)." },
+      { caption: "Averaging only state 2 moments reconstructs the suppressed face in detail, though the animal is not seeing it (p = 3×10⁻²⁹, Fig. 2i)." },
     ];
     const tips = {
-      tape: { title: "Population activity, sorted", body: "The same stream of moments three ways: all of them, only the state 1 moments, only the state 2 moments." },
-      decoder: { title: "The decoder W", body: "A linear map from population activity to the 50 face features, trained only on priming, when each face is shown alone. The same W every time." },
-      recon: { title: "Reconstruction", body: "The features W returns, drawn as a face. Schematic glyphs; the paper reconstructs its synthetic macaque faces (Fig. 2h)." },
-      truth: { title: "Ground truth", body: "The face that was actually shown to that eye." },
+      tape: { title: "Sorted activity", body: "The rows use the same activity in three ways: all moments, state 1 moments only, and state 2 moments only." },
+      decoder: { title: "Linear decoder", body: "W maps population activity to the 50 face features. It is trained only on priming and remains the same for every row." },
+      recon: { title: "Reconstruction", body: "The returned features are drawn as schematic face glyphs. The paper reconstructs its synthetic macaque faces (Fig. 2h)." },
+      truth: { title: "Shown face", body: "The face shown to the corresponding eye." },
     };
     FS.figure("fig-recon", {
       height: (w) => (w < 640 ? 420 : 410),
@@ -406,7 +406,7 @@
       { name: "state 1 only", sub: "p = 2×10⁻⁶", seen: 61, supp: 4, exact: true },
       { name: "state 2 only", sub: "p = 3×10⁻⁷", seen: 5, supp: 60, exact: false },
     ];
-    const tips = { seen: { title: "Decoding the seen face", body: "How often a decoder trained on priming picked the right one of 10 faces for the face that was seen. Chance is 10%." }, supp: { title: "Decoding the suppressed face", body: "The same decoder, asked for the face that was suppressed." }, chance: { title: "Chance, 10%", body: "Ten faces, one right answer." } };
+    const tips = { seen: { title: "Seen-face decoding", body: "A decoder trained on priming identifies one of 10 faces for the face that was seen. Chance is 10%." }, supp: { title: "Suppressed-face decoding", body: "The same decoder identifies the face that was suppressed." }, chance: { title: "Chance, 10%", body: "Ten faces, one right answer." } };
     FS.figure("fig-decode", {
       height: (w) => (w < 560 ? 250 : 220),
       tips, tipAt: hit,
@@ -433,7 +433,7 @@
       height: (w) => (w < 640 ? 300 : 250),
       params: { decider: { value: "same", label: "Who decides the state", options: [{ value: "same", label: "The same neuron" }, { value: "other", label: "Other neurons" }], placement: "inline" } },
       reserve: { gap: ["gap between the state averages: 9.99 SD"] },
-      tips: { bars: { title: "One neuron, one bar per 10 ms slice", body: "Its true rate never changes; only noise moves it. Each slice is labelled state 1 or 2 by whichever rule is selected." }, avg: { title: "The two state averages", body: "When the neuron's own noise picks the label, high slices go one way and low slices the other, and a gap opens from nothing." } },
+      tips: { bars: { title: "10 ms slices", body: "The neuron’s true rate never changes; only noise changes each slice. The selected rule assigns state 1 or state 2." }, avg: { title: "State averages", body: "When the neuron’s own noise assigns the label, high and low slices separate and create a false difference." } },
       tipAt: hit, settle: 3,
       init(f) { const S = f.state; S.r = mulberry(41); S.bins = []; S.hist = []; S.acc = 0; for (let k = 0; k < 400; k++) push(S); },
       update(f, dt) { const S = f.state; S.acc += dt; while (S.acc >= 0.16) { S.acc -= 0.16; push(S); } },
@@ -449,7 +449,7 @@
         let s1 = 0, n1 = 0, s2 = 0, n2 = 0; for (const b of S.hist) { if (label(b) === 1) { s1 += b.own; n1++; } else { s2 += b.own; n2++; } }
         const m1 = n1 ? s1 / n1 : 0, m2 = n2 ? s2 / n2 : 0, gap = m1 - m2;
         c.strokeStyle = C.strong; c.lineWidth = 2; line(c, 0, mid - m1 * sc, pw, mid - m1 * sc); c.setLineDash([7, 4]); line(c, 0, mid - m2 * sc, pw, mid - m2 * sc); c.setLineDash([]);
-        const verdict = same ? "Looks like switching. It is only noise, sorted by itself." : "No gap. When other neurons decide, this neuron's noise cannot sort itself.";
+        const verdict = same ? "Self-labelling creates an apparent switch from noise." : "Labels from other neurons produce no state difference.";
         if (!nar) { const ex = pw + 26; hits.push({ kind: "avg", x: ex, y: 0, w: W - ex, h: H }); text(f, c, "average of state 1 slices", ex, mid - m1 * sc - 5, { size: 10, color: C.fg }); text(f, c, "average of state 2 slices", ex, mid - m2 * sc + 14, { size: 10 }); text(f, c, `gap ${gap.toFixed(2)} SD`, ex, 40, { size: 24, weight: 600, color: C.fg }); wrap(f, c, verdict, ex, H - 52, W - ex - 4, 18, { size: 13, color: C.fg }); }
         else { text(f, c, `gap between state averages  ${gap.toFixed(2)} SD`, 0, H - 40, { size: 10.5, color: C.fg }); wrap(f, c, verdict, 0, H - 20, W - 4, 16, { size: 12.5, color: C.fg }); }
         f.api.out("gap", `gap between the state averages: ${gap.toFixed(2)} SD`);
@@ -461,16 +461,16 @@
   (() => {
     FS.figure("fig-tune", {
       height: (w) => (w < 640 ? 560 : 330),
-      params: { state: { value: "1", label: "The population is carrying", options: [{ value: "1", label: "State 1 · the seen face" }, { value: "2", label: "State 2 · the suppressed face" }], placement: "inline" } },
-      tips: { seen: { title: "Ordered by the seen face", body: "Each dot is one rival pair, placed by where its seen face falls on this cell's preferred axis in face space." }, supp: { title: "Ordered by the suppressed face", body: "The same pairs, placed by their suppressed face instead." } },
+      params: { state: { value: "1", label: "Decoded state", options: [{ value: "1", label: "State 1 · flashed, seen" }, { value: "2", label: "State 2 · primed, suppressed" }], placement: "inline" } },
+      tips: { seen: { title: "Seen-face order", body: "Each dot is one rival pair, placed by where its seen face falls on this cell's preferred axis in face space." }, supp: { title: "Suppressed-face order", body: "The same pairs are placed by their suppressed face." } },
       tipAt: hit,
       init(f) { const S = f.state; S.r = mulberry(53); S.P = []; for (let i = 0; i < 160; i++) S.P.push({ xb: FS.clamp(0.42 * gauss(S.r), -0.98, 0.98), xa: FS.clamp(0.42 * gauss(S.r), -0.98, 0.98), z: gauss(S.r) }); S.k = 0; },
       update(f, dt) { const S = f.state, target = f.params.state === "2" ? 1 : 0; S.k += (target - S.k) * Math.min(1, dt * 3.2); },
       render(f, c) {
         const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 640, hits = (f.state.hits = []), st = S.k < 0.5 ? 1 : 2;
-        fillState(f, c, 0, 4, 22, 12, st); text(f, c, st === 1 ? "state 1 · the population carries the flashed, seen face" : "state 2 · the population carries the primed, suppressed face", 32, 14, { size: nar ? 9.5 : 10.5, color: C.fg });
+        fillState(f, c, 0, 4, 22, 12, st); text(f, c, st === 1 ? "state 1 · flashed face, seen" : "state 2 · primed face, suppressed", 32, 14, { size: nar ? 9.5 : 10.5, color: C.fg });
         const resp = (p) => FS.lerp(1.21 * p.xb + 0.28 * p.z, 0.15 + 1.0 * p.xa + 0.28 * p.z, S.k);
-        const panels = [{ title: "ordered by the seen face", key: "xb", kind: "seen" }, { title: "ordered by the suppressed face", key: "xa", kind: "supp" }];
+        const panels = [{ title: "seen-face order", key: "xb", kind: "seen" }, { title: "suppressed-face order", key: "xa", kind: "supp" }];
         const gap = 40, pw = nar ? W - 36 : (W - 36 - gap) / 2, ph = nar ? (H - 40 - 70) / 2 : H - 92;
         panels.forEach((pn, j) => {
           const ox = 36 + (nar ? 0 : j * (pw + gap)), oy = 40 + (nar ? j * (ph + 64) : 0), X = (v) => ox + ((v + 1) / 2) * pw, Y = (v) => oy + (1 - (v + 1.9) / 3.8) * ph;
@@ -497,15 +497,15 @@
       { s: 0.07, sd: 0.2, line: true, name: "gain-equalized average", stat: "slope 0.07 · r = −0.02" },
     ];
     const steps = [
-      { caption: "Averaged over time, the seen and suppressed epochs cancel most of each other out: the weak smear everyone found (r = 0.45)." },
-      { caption: "State 1 moments only: cells act as if the seen face were shown alone. The dots return to the diagonal (slope 0.93, r = 0.66)." },
-      { caption: "State 2 moments only: cells act as if the suppressed face were shown alone. The dots tip onto the anti-diagonal (slope −0.76, r = −0.44)." },
-      { caption: "Equalize the tuning gain of the two states, then average: the leftover positive tilt disappears (slope 0.07, r = −0.02, p = 0.31)." },
+      { caption: "Averaging the seen and suppressed epochs removes most of both signals and leaves a weak relationship (r = 0.45)." },
+      { caption: "In state 1 moments, cells respond as if the seen face were shown alone, and the dots follow the diagonal (slope 0.93, r = 0.66)." },
+      { caption: "In state 2 moments, cells respond as if the suppressed face were shown alone, and the dots follow the anti-diagonal (slope −0.76, r = −0.44)." },
+      { caption: "Equalizing the tuning gain before averaging removes the remaining positive slope (slope 0.07, r = −0.02, p = 0.31)." },
     ];
     FS.figure("fig-mi", {
       height: (w) => (w < 640 ? w - 56 + 62 : 420),
       steps,
-      tips: { dots: { title: "One dot, one cell and stimulus pair", body: "2,885 pairs in the paper, with states inferred from the other half of the neurons (Fig. 4g). Illustrative dots built to the paper's slopes and correlations." } },
+      tips: { dots: { title: "Cell-stimulus pair", body: "The paper has 2,885 pairs with states inferred from the other half of the neurons (Fig. 4g). These illustrative dots use the paper’s slopes and correlations." } },
       tipAt: hit,
       init(f) { const S = f.state; S.r = mulberry(61); S.P = []; while (S.P.length < 480) { const x = 0.12 + 0.4 * gauss(S.r); if (Math.abs(x) < 0.05 || Math.abs(x) > 0.97) continue; S.P.push({ x, z: gauss(S.r) }); } },
       render(f, c) {
@@ -533,7 +533,7 @@
     function push(S) { if (S.r() < 5 / DWELL) S.a = 3 - S.a; if (S.r() < 5 / DWELL) S.b = 3 - S.b; if (S.a !== S.b && S.r() < 0.025) S.b = S.a; S.ml.push(S.a); S.am.push(S.b); if (S.ml.length > 160) { S.ml.shift(); S.am.shift(); } }
     FS.figure("fig-patch", {
       height: () => 118,
-      tips: { ML: { title: "ML's state", body: "Which face the ML population carries, moment by moment. Schematic: the paper reports weak but significant prediction across patches, not an agreement rate (Fig. 5e)." }, AM: { title: "AM's state", body: "AM on its own clock, nudged toward ML now and then. ML→AM p = 3×10⁻⁴, AM→ML p = 9×10⁻⁶." } },
+      tips: { ML: { title: "ML state", body: "This schematic shows which face the ML population carries. The paper reports weak but significant prediction across patches, not an agreement rate (Fig. 5e)." }, AM: { title: "AM state", body: "The schematic gives AM an independent switching sequence with occasional alignment to ML. ML→AM p = 3×10⁻⁴, AM→ML p = 9×10⁻⁶." } },
       tipAt: hit, settle: 2,
       init(f) { const S = f.state; S.r = mulberry(71); S.ml = []; S.am = []; S.a = 1; S.b = 1; S.acc = 0; for (let k = 0; k < 160; k++) push(S); },
       update(f, dt) { const S = f.state; S.acc += dt * 100; while (S.acc >= 5) { S.acc -= 5; push(S); } },
@@ -553,7 +553,7 @@
     function spawn(S, s0) { let d = -DWELL * Math.log(1 - S.r()); d = FS.clamp(d, 12, 220); S.state = 3 - S.state; S.tiles.push({ s: s0 == null ? 0 : s0, w: d * 0.42, st: S.state }); }
     FS.figure("fig-route", {
       height: (w) => (w < 640 ? 300 : 250),
-      tips: { gate: { title: "Routing?", body: "The authors' speculation: something, perhaps feedback from parietal cortex or the pulvinar, may decide which epochs are sent on. The two states are linearly separable (66%, Fig. 4f), so the activity may carry such a tag." }, up: { title: "Broadcast", body: "State 1 epochs may reach circuits for report, introspection and action." }, down: { title: "Not broadcast", body: "State 2 epochs may let the brain try the other interpretation without acting on it." } },
+      tips: { gate: { title: "Possible routing", body: "The authors speculate that feedback from parietal cortex or the pulvinar may determine which epochs continue. The two states are linearly separable (66%, Fig. 4f), so the activity may carry a routing tag." }, up: { title: "Broadcast", body: "State 1 epochs may reach circuits for report, introspection and action." }, down: { title: "Not broadcast", body: "State 2 epochs may remain outside circuits for report, introspection and action." } },
       tipAt: hit, settle: 4,
       init(f) { const S = f.state; S.r = mulberry(83); S.tiles = []; S.state = 2; let s = 900; while (s > 0) { spawn(S, s); s -= S.tiles[S.tiles.length - 1].w; } S.tiles.reverse(); },
       update(f, dt) { const S = f.state; for (const t of S.tiles) t.s += 36 * dt; const last = S.tiles[S.tiles.length - 1]; if (!last || last.s >= last.w) spawn(S, last ? last.s - last.w : 0); S.tiles = S.tiles.filter((t) => t.s < 1600); },
@@ -561,14 +561,14 @@
         const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 640, my = H * 0.5, xg = W * (nar ? 0.42 : 0.46), boxW = nar ? 116 : 220, boxH = nar ? 58 : 54, bx = W - boxW - 2, up = [bx, H * 0.2], dn = [bx, H * 0.8];
         f.state.hits = [{ kind: "gate", x: xg - 30, y: my - 50, w: 60, h: 100 }, { kind: "up", x: bx, y: up[1] - boxH / 2, w: boxW, h: boxH }, { kind: "down", x: bx, y: dn[1] - boxH / 2, w: boxW, h: boxH }];
         text(f, c, "micro-epochs in IT", 0, my - 22, { size: 10, color: C.fg });
-        c.strokeStyle = C.fg; c.lineWidth = 1.4; c.strokeRect(xg - 4 + 0.5, my - 30 + 0.5, 8, 60); text(f, c, "routing?", xg, my - 40, { align: "center", size: 10, color: C.fg }); if (!nar) text(f, c, "feedback from parietal cortex or the pulvinar?", xg, my + 50, { align: "center", size: 10 });
+        c.strokeStyle = C.fg; c.lineWidth = 1.4; c.strokeRect(xg - 4 + 0.5, my - 30 + 0.5, 8, 60); text(f, c, "possible routing", xg, my - 40, { align: "center", size: 10, color: C.fg }); if (!nar) text(f, c, "possible feedback from parietal cortex or the pulvinar", xg, my + 50, { align: "center", size: 10 });
         const bez = (P, t) => { const cx = xg + 70, cy = my, a = (1 - t) ** 2, b = 2 * (1 - t) * t, d = t * t; return [a * xg + b * cx + d * P[0], a * my + b * cy + d * P[1]]; };
         c.strokeStyle = C.line; c.lineWidth = 1; c.setLineDash([2, 4]); for (const P of [up, dn]) { c.beginPath(); for (let i = 0; i <= 30; i++) { const q = bez(P, i / 30); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); } c.stroke(); } c.setLineDash([]);
         c.save(); c.beginPath(); c.rect(0, 0, xg - 6, H); c.clip(); for (const t of S.tiles) { const x = t.s - t.w; if (t.s > 0 && x < xg) fillState(f, c, x + 0.5, my - 8, t.w - 1, 16, t.st); } c.restore();
         const len = Math.hypot(up[0] - xg, up[1] - my) + 40;
         for (const t of S.tiles) { const past = t.s - xg; if (past <= 0) continue; const u = past / len; if (u >= 1) continue; const q = bez(t.st === 1 ? up : dn, u); c.globalAlpha = u > 0.8 ? (1 - u) / 0.2 : 1; if (t.st === 1) { c.fillStyle = C.fg; c.beginPath(); c.arc(q[0], q[1], 5, 0, 6.2832); c.fill(); } else { c.fillStyle = FS.k.hatch(f, c, C.muted, 4); c.beginPath(); c.arc(q[0], q[1], 5, 0, 6.2832); c.fill(); c.strokeStyle = C.muted; c.lineWidth = 1; c.stroke(); } c.globalAlpha = 1; }
         const box = (P, title, sub, solid) => { const x = P[0], y = P[1] - boxH / 2; c.fillStyle = C.bg; c.fillRect(x, y, boxW, boxH); c.strokeStyle = solid ? C.fg : C.muted; c.lineWidth = 1.2; c.setLineDash(solid ? [] : [4, 3]); c.strokeRect(x + 0.5, y + 0.5, boxW - 1, boxH - 1); c.setLineDash([]); wrap(f, c, title, x + 10, y + 20, boxW - 18, 15, { size: nar ? 12 : 13, weight: 600, color: C.fg }); if (!nar) text(f, c, sub, x + 10, y + boxH - 10, { size: 10 }); };
-        box(up, nar ? "Report, introspection" : "Report · introspection · action", "state 1 epochs, broadcast", true); box(dn, "Not broadcast", nar ? "" : "state 2 epochs: the alternative, kept quietly", false);
+        box(up, nar ? "Report, introspection" : "Report · introspection · action", "state 1 epochs, broadcast", true); box(dn, "Not broadcast", nar ? "" : "state 2 epochs, not broadcast", false);
       },
     });
   })();

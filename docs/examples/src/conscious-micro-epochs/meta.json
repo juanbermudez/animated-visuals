@@ -1,6 +1,6 @@
 {
-  "title": "Conscious micro-epochs: seen, unseen, seen, unseen",
-  "summary": "A macaque's face cells flip about 15 times a second between the face that is seen and the one that is suppressed. Thirteen figures walk through the puzzle, the method, the controls and what it means.",
+  "title": "Conscious micro-epochs",
+  "summary": "Conscious micro-epochs are brief population states that alternate about 15 times a second and encode either the seen or suppressed face during binocular flash suppression. Thirteen figures show how the states were decoded, what they encode and how the authors tested for sorting bias.",
   "source": { "label": "Hesse, Lanfranchi, McGrory, Shi, Engel & Tsao · bioRxiv, October 2026 (preprint)", "url": "https://doi.org/10.64898/2026.10.15.759299" },
   "order": 1
 }

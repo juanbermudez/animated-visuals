@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Conscious micro-epochs · Animated Visuals</title>
-<meta name="description" content="A visual guide to Hesse et al. (bioRxiv 2026): macaque face cells flip about 15 times a second between the face that is seen and the face that is suppressed.">
+<meta name="description" content="A visual guide to Hesse et al. (bioRxiv 2026), which shows how macaque face-cell activity alternates between state 1 and state 2 about 15 times a second.">
 <!--__EARLY_THEME__-->
 <link rel="icon" href="../site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,10 +23,10 @@
 
 <main class="page guide" id="main">
   <p class="eyebrow">Example · a paper, explained</p>
-  <h1>Face cells carry the seen face and the unseen face in turn, about 15 times a second</h1>
-  <p class="source">A visual guide to Hesse, Lanfranchi, McGrory, Shi, Engel &amp; Tsao, “Rapid alternation of conscious and suppressed stimulus representations in the primate brain”, bioRxiv preprint, October 2026 · <a href="https://doi.org/10.64898/2026.10.15.759299">the paper</a>. Built with Animated Visuals; every number is from the paper and says which figure it comes from.</p>
-  <p class="lede">Show one face to one eye, then flash a second face to the other. The new face is seen; the first drops out of awareness, though it never leaves the screen. Recording hundreds of face cells at once in macaques, the authors found the population never settles on the seen face. About 15 times a second it flips between carrying the face that is seen and the face that is suppressed. Each run of one state is a micro-epoch, about 60 ms long. Averaged over time the two blur together, which is why a clean neural signal of conscious perception had never turned up.</p>
-  <div class="legend" aria-label="Legend"><span><i class="sw seen"></i>Solid: the flashed face, the one that is seen (state 1)</span><span><i class="sw supp"></i>Hatched or dashed: the primed face, still on screen but suppressed (state 2)</span></div>
+  <h1>Conscious micro-epochs</h1>
+  <p class="source">A visual guide to Hesse, Lanfranchi, McGrory, Shi, Engel &amp; Tsao, “Rapid alternation of conscious and suppressed stimulus representations in the primate brain”, bioRxiv preprint, October 2026 · <a href="https://doi.org/10.64898/2026.10.15.759299">the paper</a>. Every number is from the paper and cites its figure.</p>
+  <p class="lede">Binocular flash suppression shows one face to each eye while only the flashed face is seen. Hesse et al. recorded macaque face cells during this task and found two alternating population states: state 1 encodes the flashed, seen face, and state 2 encodes the primed, suppressed face. Each state lasts about 60 ms, so averaging across time weakens both signals. This guide explains how the authors identified the states, what each state encodes and how they tested for sorting bias.</p>
+  <div class="legend" aria-label="Legend"><span><i class="sw seen"></i>State 1: flashed face, seen (solid)</span><span><i class="sw supp"></i>State 2: primed face, suppressed (hatched or dashed)</span></div>
 
   <figure class="fs-plate wide" aria-labelledby="fig-hero-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-hero-title">One steady percept, two alternating representations</h3><span class="fs-chip" data-fs-out="fig-hero:flips" aria-live="off"></span></header>
@@ -35,7 +35,7 @@
       <span class="fs-position" data-fs-out="fig-hero:state"></span>
       <div class="fs-controls"><button type="button" data-fs="fig-hero play">Pause</button></div>
     </div>
-    <p class="fs-caption">Simulated population, slowed 10×; the speed is in the settings. Each tick is a spike. Top rows prefer the seen face, bottom rows the suppressed one. The strip under the raster shows which face the population carries at each moment, and the face on the left lights up to match. The recorded version is Fig. 2b–g of the paper. Hover a region.</p>
+    <p class="fs-caption">Seeded simulation of a face-cell population, slowed 10×; the speed is in the settings, each tick is a spike and the strip shows which face the population carries. The recorded version is Fig. 2b–g; hover a region.</p>
   </figure>
 
   <div class="stats">
@@ -46,43 +46,43 @@
   </div>
 
   <p class="kicker">01 · The puzzle</p>
-  <h2>Face cells barely seem to care what is seen</h2>
+  <h2>Selectivity drops during rivalry</h2>
   <p>Take a cell that fires more for face A than face B when the two are shown one at a time. Its preference can be written as a modulation index, where <i>R</i> is the cell’s average firing rate:</p>
   <div class="formula"><span class="lab">Modulation index</span>MI = (R<sub>A</sub> − R<sub>B</sub>) / (R<sub>A</sub> + R<sub>B</sub>)</div>
-  <p>Now put the two faces in rivalry, one per eye. If the cell simply tracked what is seen, its index for the seen face should match its index when that face is shown alone. It does not. Across 5,550 cell–stimulus pairs in inferotemporal (IT) cortex, the index during rivalry was roughly a quarter of the index during plain viewing (slope 0.23, p = 8×10⁻¹³³). Earlier work had also shown the suppressed face is still decodable from IT.</p>
-  <p>So high-level visual cortex looked like a muddy mix, never a clean copy of what is seen. That absence fed a long fight over where consciousness lives: the front of the brain (global workspace and higher-order theories) or the back (integrated information and recurrent processing theories).</p>
+  <p>Now put the two faces in rivalry, one per eye. If the cell tracked what is seen, its index for the seen face should match its index when that face is shown alone. It does not. Across 5,550 cell–stimulus pairs in inferotemporal (IT) cortex, the index during rivalry was roughly a quarter of the index during plain viewing (slope 0.23, p = 8×10⁻¹³³). Earlier work had also shown the suppressed face is still decodable from IT.</p>
+  <p>Time-averaged IT activity therefore showed little selectivity for the seen face, even though the suppressed face remained decodable. This result bears on theories that place consciousness mainly in the front of the brain (global workspace and higher-order theories) or the back (integrated information and recurrent processing theories).</p>
   <figure class="fs-plate wide" aria-labelledby="fig-puzzle-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-puzzle-title">Selectivity during rivalry is a quarter of what perception predicts</h3><span class="fs-status">Fig. 1 · illustrative dots, the paper’s slope</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-puzzle-title">Selectivity falls to one quarter during rivalry</h3><span class="fs-status">Fig. 1 · illustrative dots, the paper’s slope</span></header>
     <div class="fs-stage"><canvas id="fig-puzzle" role="img" aria-label="A scatter of cell and stimulus pairs: selectivity when the faces are shown alone across, selectivity during rivalry up. In step one the dots sit on the diagonal; in step two they fall to a line of slope 0.23."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-puzzle:step"></span>
       <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-puzzle" aria-hidden="true"></span><button type="button" data-fs="fig-puzzle prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-puzzle next" aria-label="Next step">Next</button><button type="button" data-fs="fig-puzzle play">Pause</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-puzzle:caption" aria-live="polite"></p>
-    <p class="fs-caption">Each dot is one cell and stimulus pair. Dashed: slope 1, cells following perception. Solid: slope 0.23, the recordings (Fig. 1h). Illustrative dots, the paper’s slope.</p>
+    <p class="fs-caption">Each illustrative dot is one cell and stimulus pair. The dashed line is slope 1 for cells following perception; the solid line is the recorded slope 0.23 (Fig. 1h).</p>
   </figure>
 
-  <p class="kicker">02 · The trick</p>
-  <h2>Keep the image fixed and let perception change</h2>
+  <p class="kicker">02 · The method</p>
+  <h2>Binocular flash suppression</h2>
   <p>To pull apart what is seen from what is shown, the authors used <b>binocular flash suppression</b>. One face (the primed face) is shown to one eye for 1 to 2 seconds. Then a second face is flashed to the other eye. The flashed face takes over perception, and the primed face, still physically there, drops out of awareness.</p>
   <p>They checked this in 14 people with button presses. The flashed face was reported on 82% of rivalry trials, close to the 87% people report for an image with no competitor at all (p = 4×10⁻⁷). Every neural analysis below uses the window from 300 to 1000 ms after the flash, when the flashed face dominates.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-flash-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-flash-title">After the flash both faces are on screen, but only one is seen</h3><span class="fs-status">Fig. 2 · one trial, schematic</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-flash-title">Only the flashed face is seen</h3><span class="fs-status">Fig. 2 · one trial, schematic</span></header>
     <div class="fs-stage"><canvas id="fig-flash" role="img" aria-label="Three panels, left eye, right eye and what is seen, above a two-second timeline. Before the flash the left eye and the percept show the primed face. At the flash the right eye gets the second face and the percept switches to it. A hatched band marks the analysis window, 300 to 1000 ms after the flash."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-flash:clock"></span>
       <div class="fs-controls"><button type="button" data-fs="fig-flash chapter-prev" aria-label="Previous moment">←</button><div data-fs-seek="fig-flash" data-label="Time"></div><button type="button" data-fs="fig-flash chapter-next" aria-label="Next moment">→</button><button type="button" data-fs="fig-flash play">Pause</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-flash:phase" aria-live="polite"></p>
-    <p class="fs-caption">Red and cyan anaglyph goggles send a different image to each eye. The monkeys only fixated; the percept they had is inferred from the human reports (Fig. 1b). Drag the time slider or step between the moments.</p>
+    <p class="fs-caption">Red and cyan anaglyph goggles send a different image to each eye; the monkeys fixated without reporting, so the percept is inferred from the human reports (Fig. 1b). Drag the time slider or step between moments.</p>
   </figure>
 
   <p class="kicker">03 · The recording</p>
-  <h2>Hundreds of neurons at once, in four places</h2>
-  <p>Two macaques. Neuropixels NHP probes, each a 45 mm shaft with 4,416 contacts of which 384 record at a time, were lowered into two face patches of inferotemporal cortex, <b>ML</b> and <b>AM</b>, and two prefrontal regions, <b>PO</b> (orbitofrontal) and <b>PVL</b> (ventrolateral). The patches were found first with fMRI. In one example trial 429 cells were recorded together.</p>
+  <h2>The recordings</h2>
+  <p>The authors recorded from two macaques with Neuropixels NHP probes. Each probe has a 45 mm shaft with 4,416 contacts, of which 384 record at a time. The recordings covered two face patches in inferotemporal cortex, <b>ML</b> and <b>AM</b>, and two prefrontal regions, <b>PO</b> (orbitofrontal) and <b>PVL</b> (ventrolateral). The patches were located with fMRI. One example trial recorded 429 cells together.</p>
   <p>The monkeys saw 1,500 synthetic faces arranged in 750 rival pairs. Each face is a point in a 50-dimensional face space: 20 shape features and 30 appearance features. Face cells respond roughly as a straight line along one preferred direction in that space. That linear code is what lets the authors read a face back out of the spikes.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-rig-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-rig-title">Two face patches and two prefrontal regions, not the early visual areas</h3><span class="fs-status">Fig. 3 · schematic, not anatomy</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-rig-title">Recordings covered two IT and two prefrontal regions</h3><span class="fs-status">Fig. 3 · schematic, not anatomy</span></header>
     <div class="fs-stage"><svg id="fig-rig" viewBox="0 0 960 300" role="img" aria-label="A flow from the eyes through early visual cortex, which was not recorded, to the face patches ML and AM in inferotemporal cortex and on to the prefrontal regions PVL and PO. The four recorded regions light up step by step."></svg></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-rig:step"></span>
@@ -99,81 +99,81 @@
   </div>
 
   <p class="kicker">04 · The decoder</p>
-  <h2>Every 10 ms, ask which face the spikes look like</h2>
-  <p>First, record each neuron’s average firing rate for each face when it is shown alone, during priming. That gives two <b>templates</b> per neuron: one for the face that will be seen, one for the face that will be suppressed. Then, during rivalry, cut the spikes into 10 ms slices and ask which template more likely produced each slice. With Poisson spiking (spikes arriving at random at a set rate) the answer is a log-likelihood ratio, a score for which template fits better:</p>
+  <h2>The decoder</h2>
+  <p>First, the authors recorded each neuron’s average firing rate for each face when it was shown alone, during priming. That produced two <b>templates</b> per neuron: one for the flashed, seen face and one for the primed, suppressed face. During rivalry, they divided the spikes into 10 ms slices and tested which template more likely produced each slice. With Poisson spiking (spikes arriving at random at a set rate), a log-likelihood ratio scores which template fits better:</p>
   <div class="formula"><span class="lab">Log-likelihood ratio, one 10 ms slice</span>ℓ(t) = Σ<sub>i</sub> n<sub>i</sub>(t) · log(λ<sup>c</sup><sub>i</sub> / λ<sup>s</sup><sub>i</sub>) − (λ<sup>c</sup><sub>i</sub> − λ<sup>s</sup><sub>i</sub>) · Δt</div>
-  <p>Here <i>n<sub>i</sub></i> is neuron <i>i</i>’s spike count in the slice, λ<sup>c</sup> and λ<sup>s</sup> are its template rates for the seen and suppressed face, and Δt is 10 ms. Each neuron casts a weighted vote. A spike from a cell that strongly prefers the seen face pushes ℓ up a lot; silence from that cell pulls it down a little. Positive ℓ labels the slice <b>state 1</b> (looks like the seen face). Negative labels it <b>state 2</b> (looks like the suppressed face).</p>
+  <p>Here <i>n<sub>i</sub></i> is neuron <i>i</i>’s spike count in the slice, λ<sup>c</sup> and λ<sup>s</sup> are its template rates for the seen and suppressed face, and Δt is 10 ms. Each neuron contributes according to its face preference. A spike from a cell that strongly prefers the seen face raises ℓ; silence from that cell lowers it. Positive ℓ labels the slice <b>state 1</b>, the flashed, seen face. Negative ℓ labels it <b>state 2</b>, the primed, suppressed face.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-llr-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-llr-title">Each slice is a vote: every neuron weighs in, the sign decides</h3><span class="fs-status">Fig. 4 · simulated, 60 neurons</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-llr-title">The sign of each slice assigns its state</h3><span class="fs-status">Fig. 4 · simulated, 60 neurons</span></header>
     <div class="fs-stage"><canvas id="fig-llr" role="img" aria-label="A spike raster of fourteen simulated neurons beside their two templates, with the evidence trace below it: a bar per 10 ms slice, up when the slice looks like the seen face and down when it looks like the suppressed one. Two strips show the decoded state and the hidden truth, and a panel breaks the newest slice down into each neuron's vote."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-llr:readout"></span>
       <div class="fs-controls"><button type="button" data-fs="fig-llr play">Pause</button></div>
     </div>
-    <p class="fs-caption">Simulated: 60 neurons (14 shown) switching between two hidden states, slowed about 20×. In a simulation we know the hidden state, so we can score the decoder. In the real brain nobody knows it, which is why the controls in step 07 matter. Hover a panel.</p>
+    <p class="fs-caption">Seeded simulation of 60 neurons (14 shown) switching between two hidden states, slowed about 20×. The hidden state is known in the simulation, so the decoder can be scored; this is not possible in the recordings, which is why section 07 tests for sorting bias, and each panel can be hovered for detail.</p>
   </figure>
   <p>In the recordings, during priming (one face on screen) most slices match that face. After the flash the population splits about evenly between the two states, trial after trial (Fig. 2c). For pairs where each face had its own preferring cells, the switching is visible by eye in single-cell rasters (Fig. 2e–g).</p>
 
-  <p class="kicker">05 · The speed</p>
-  <h2>The labels persist for tens of milliseconds, so the flips are real</h2>
-  <p>If the labels were noise, ℓ would forget itself within one 10 ms slice, which is exactly what happens when the slices are shuffled. Instead ℓ stays correlated for tens of milliseconds. Fitting a two-state switching model to that decay gives a <b>mean dwell of 67 ms</b>. A hidden Markov model, which lets each state persist on purpose, gives median dwells of <b>64 ms</b> for state 1 and <b>59 ms</b> for state 2, stable across a range of bin sizes.</p>
+  <p class="kicker">05 · Timing</p>
+  <h2>How fast the states flip</h2>
+  <p>If the labels were noise, the autocorrelation of ℓ would vanish within one 10 ms slice, as it does when the slices are shuffled. In the recordings, ℓ stays correlated for tens of milliseconds. Fitting a two-state switching model to that decay gives a <b>mean dwell of 67 ms</b>. A hidden Markov model, which allows each state to persist, gives median dwells of <b>64 ms</b> for state 1 and <b>59 ms</b> for state 2, stable across a range of bin sizes.</p>
   <p>Each run of one state, a micro-epoch, lasts about 60 ms. Perception in classic binocular rivalry switches about once every two seconds (about 0.5 Hz). The population flips about 30 times faster, while the percept stays put.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-time-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-time-title">The percept holds while the population flips about 15 times a second</h3><span class="fs-status">Fig. 5 · simulated, real speed</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-time-title">The population flips about 15 times a second</h3><span class="fs-status">Fig. 5 · simulated, real speed</span></header>
     <div class="fs-stage"><canvas id="fig-time" role="img" aria-label="Two strips over a two-second trial: what is seen, which changes once at the flash, and what the population carries, which flips many times a second after the flash. Below, the autocorrelation of the evidence fades over tens of milliseconds for recorded data and vanishes after one bin for shuffled data, and two bars compare about 15 switches a second for the population with about half a switch a second for perception."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-time:clock"></span>
       <div class="fs-controls"><button type="button" data-fs="fig-time chapter-prev" aria-label="Previous moment">←</button><div data-fs-seek="fig-time" data-label="Time"></div><button type="button" data-fs="fig-time chapter-next" aria-label="Next moment">→</button><button type="button" data-fs="fig-time play">Pause</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-time:note" aria-live="polite"></p>
-    <p class="fs-caption">Top: one simulated 2 s trial drawn at real speed. Before the flash the population mostly carries the primed face; after it, the two states split evenly. Bottom left: the shape of the ℓ autocorrelation, recorded against shuffled (schematic of Fig. 2d). Bottom right: switches per second, population against perception.</p>
+    <p class="fs-caption">The top shows one simulated 2 s trial at real speed: before the flash the population mostly carries the primed face, and after it the two states split evenly. The bottom compares the recorded and shuffled ℓ autocorrelation (schematic of Fig. 2d) and the switches per second for population activity and perception.</p>
   </figure>
 
-  <p class="kicker">06 · The content</p>
-  <h2>Sort the moments, and two clean faces appear</h2>
+  <p class="kicker">06 · State content</p>
+  <h2>What each state encodes</h2>
   <p>Because face cells encode faces linearly, a plain linear decoder trained on priming responses (each face shown alone) turns population activity into the 50 face features, and those into a picture. The authors applied that same decoder to rivalry activity three ways.</p>
-  <p>Averaged over all moments, it returns a blend that matches neither face. Averaged over state 1 moments only, it returns the seen face. Averaged over state 2 moments only, it returns the <b>suppressed face, in detail</b>, though the animal is not seeing it.</p>
+  <p>Applied to all moments, the decoder returns a blend that matches neither face. Applied only to state 1 moments, it returns the seen face. Applied only to state 2 moments, it returns the <b>suppressed face, in detail</b>, though the animal is not seeing it.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-recon-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-recon-title">The same decoder returns a blend, then the seen face, then the suppressed face</h3><span class="fs-status">Fig. 6 · schematic faces</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-recon-title">Each state reconstructs a different face</h3><span class="fs-status">Fig. 6 · schematic faces</span></header>
     <div class="fs-stage"><canvas id="fig-recon" role="img" aria-label="Three rows. Each sends a stream of population moments through the same decoder W. All moments give a blurred blend; state 1 moments give the seen face; state 2 moments give the suppressed face. The true face shown to each eye sits at the right."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-recon:step"></span>
       <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-recon" aria-hidden="true"></span><button type="button" data-fs="fig-recon prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-recon next" aria-label="Next step">Next</button><button type="button" data-fs="fig-recon play">Pause</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-recon:caption" aria-live="polite"></p>
-    <p class="fs-caption">Schematic faces. The paper reconstructs its synthetic macaque faces (Fig. 2h) and shows the time-averaged blend in Extended Data Fig. 2. The decoder weights come only from priming, so a good reconstruction means each state replays the same code the face evokes when shown alone.</p>
+    <p class="fs-caption">The faces are schematic; the paper reconstructs its synthetic macaque faces (Fig. 2h) and shows the time-averaged blend in Extended Data Fig. 2. The decoder weights come only from priming, so accurate reconstruction shows that each state uses the code measured when that face was shown alone.</p>
   </figure>
   <p>In state 1, some features of the seen face reached over 80% explained variance (how much of the true feature the reconstruction recovers), close to the over-90% ceiling set by priming. The suppressed face in state 1 sat at chance. State 2 reversed this (p = 3×10⁻²⁹).</p>
   <p>The same split works on single trials. A decoder picked which of 10 faces was shown from a 200 ms window (chance 10%):</p>
   <figure class="fs-plate" aria-labelledby="fig-decode-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-decode-title">Single trials: sorted moments name the right face six times in ten</h3><span class="fs-status">Fig. 2l · the paper’s numbers</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-decode-title">State-sorted moments identify the face six times in ten</h3><span class="fs-status">Fig. 2l · the paper’s numbers</span></header>
     <div class="fs-stage"><canvas id="fig-decode" role="img" aria-label="Bar chart of single-trial decoding accuracy. All moments: seen face 40 percent, suppressed 34 percent. State 1 only: seen 61 percent, suppressed 4 percent. State 2 only: roughly 5 percent seen, 60 percent suppressed. Chance is 10 percent."></canvas></div>
-    <p class="fs-caption">One of 10 faces, from a 200 ms window. All-moments and state 1 values are stated in the text; state 2 values are approximate, read off Fig. 2l.</p>
+    <p class="fs-caption">The decoder chose one of 10 faces from a 200 ms window. All-moments and state 1 values are stated in the text; state 2 values are approximate and read off Fig. 2l.</p>
   </figure>
 
-  <p class="kicker">07 · The doubt</p>
-  <h2>The sorting could fool itself, so the authors split the neurons</h2>
-  <p>There is a trap in step 06. The same spikes decide each slice’s state and then get averaged within that state. That alone can fake switching. Slices where a cell happened to fire a little more get sorted one way, slices where it fired less get sorted the other way, and the two averages drift apart even if nothing switched. The authors call it <b>circular conditioning bias</b>. The fix is to let some neurons decide the state and measure the others.</p>
+  <p class="kicker">07 · Controls</p>
+  <h2>Controls against circular sorting</h2>
+  <p>Section 06 has a circular sorting risk. The same spikes decide each slice’s state and then get averaged within that state. This can create an apparent difference without real switching: slices where a cell fired more are sorted one way, and slices where it fired less are sorted the other way. The authors call this <b>circular conditioning bias</b>. Their control lets some neurons decide the state and measures the others.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-circ-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-circ-title">A neuron that never switches looks like it does, if it labels its own slices</h3><span class="fs-status">Fig. 7 · simulated, one neuron</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-circ-title">Self-labelling creates a false state difference</h3><span class="fs-status">Fig. 7 · simulated, one neuron</span></header>
     <div class="fs-stage"><canvas id="fig-circ" role="img" aria-label="One simulated neuron whose true rate never changes, drawn as a bar per 10 ms slice around its mean. When the neuron's own noise labels the slices, the state 1 and state 2 averages drift apart; when other neurons label them, the two averages sit together."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-circ:gap"></span>
       <div class="fs-controls"><div data-fs-param="fig-circ:decider"></div><button type="button" data-fs="fig-circ play">Pause</button></div>
     </div>
-    <p class="fs-caption">One simulated neuron that never switches: its true rate is constant and only Poisson-like noise moves it. Each bar is one slice, labelled state 1 or state 2. Switch who decides the label and watch the gap between the two state averages.</p>
+    <p class="fs-caption">One simulated neuron never switches: its true rate is constant, and only Poisson-like noise changes each 10 ms slice. Choose whether the same neuron or other neurons assign state 1 and state 2, then compare the two state averages.</p>
   </figure>
 
-  <h3>Controls that held</h3>
+  <h3>Tests with recorded data</h3>
   <ul class="checks">
-    <li><b>Two states beat one.</b> A two-state model explained the activity better than the best single static state in all 19 sessions (p = 10⁻⁴).</li>
-    <li><b>Split the neurons.</b> States inferred from a random half of the neurons still made the other half reconstruct the seen face in state 1 and the suppressed face in state 2 (p = 6×10⁻¹⁷). Leaving out one neuron at a time did about 2 points better, so neuron count was not the limit.</li>
-    <li><b>Within trials, not between them.</b> Forcing every trial to contribute equal state 1 and state 2 samples kept the reconstructions. The flips happen inside single trials.</li>
-    <li><b>The method cannot invent faces.</b> With shuffled templates, reconstructions fell below zero explained variance.</li>
-    <li><b>Not just excitability.</b> Firing swings between high-gain On and low-gain Off periods. The state split was 49/51 during On and 50/50 during Off, agreed with a split by total firing no better than chance (Cohen’s κ ≈ 0), and a four-state decoder matched the two-state labels 80% of the time.</li>
+    <li><b>Model comparison.</b> A two-state model explained the activity better than the best single static state in all 19 sessions (p = 10⁻⁴).</li>
+    <li><b>Held-out neurons.</b> States inferred from a random half of the neurons still made the other half reconstruct the seen face in state 1 and the suppressed face in state 2 (p = 6×10⁻¹⁷). Leaving out one neuron at a time did about 2 points better, so neuron count was not the limit.</li>
+    <li><b>Within-trial control.</b> Forcing every trial to contribute equal state 1 and state 2 samples kept the reconstructions. The flips happen inside single trials.</li>
+    <li><b>Shuffled templates.</b> With shuffled templates, reconstructions fell below zero explained variance.</li>
+    <li><b>Excitability control.</b> Firing swings between high-gain On and low-gain Off periods. The state split was 49/51 during On and 50/50 during Off, agreed with a split by total firing no better than chance (Cohen’s κ ≈ 0), and a four-state decoder matched the two-state labels 80% of the time.</li>
   </ul>
 
-  <h3>Four simulated brains, four tests</h3>
+  <h3>Tests with simulated populations</h3>
   <p>The authors simulated four kinds of population, each built from the real priming templates, and ran them through the same tests as the data. Only a population that truly switches as a whole passes everything, as the real data does.</p>
   <div class="tablewrap">
     <table class="plain matrix">
@@ -194,38 +194,38 @@
   </div>
   <p>Averaging and uncoordinated pass the first test for the reason Fig. 7 shows, and fail as soon as other neurons decide. Even on the first test, with dwell times matched, the real data beat the averaging model by 8.2 points of explained variance (p = 0.007).</p>
 
-  <p class="kicker">08 · The cells</p>
-  <h2>The same neurons serve both faces, taking turns</h2>
-  <p>A face cell ramps: its firing rises as a face moves along the cell’s preferred direction in face space. Order all the rival pairs by the seen face and the cell ramps in state 1 and goes flat in state 2. Order them by the suppressed face and it is the reverse. These are not two groups of cells, one per face. They are the same cells changing what they encode. Across 543 cells, gain for the seen face in state 1 and gain for the suppressed face in state 2 correlate at r = 0.90.</p>
+  <p class="kicker">08 · Single cells</p>
+  <h2>One cell in both states</h2>
+  <p>A face cell’s firing rises as a face moves along the cell’s preferred direction in face space. Order all the rival pairs by the seen face and the cell’s response rises in state 1 and stays flat in state 2. Order them by the suppressed face and the pattern reverses. The same cells change what they encode across the two states. Across 543 cells, gain for the seen face in state 1 and gain for the suppressed face in state 2 correlate at r = 0.90.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-tune-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-tune-title">One cell ramps for whichever face the population is carrying</h3><span class="fs-status">Fig. 8 · illustrative cell, the paper’s gain ratio</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-tune-title">One cell encodes either face by state</h3><span class="fs-status">Fig. 8 · illustrative cell, the paper’s gain ratio</span></header>
     <div class="fs-stage"><canvas id="fig-tune" role="img" aria-label="Two scatter panels of one cell's responses to 160 rival pairs, one ordered by the seen face and one by the suppressed face. In state 1 the seen-face panel ramps and the suppressed-face panel is flat; in state 2 the ramp moves to the suppressed-face panel and is slightly shallower."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position"></span>
       <div class="fs-controls"><div data-fs-param="fig-tune:state"></div></div>
     </div>
-    <p class="fs-caption">Illustrative cell, 160 of the 1,500 rival pairs. Each dot is one pair, placed by where its seen face (left) or suppressed face (right) falls on the cell’s preferred axis. Gains are set to the paper’s 1.21 : 1 ratio (Fig. 4a–c); the slopes shown are fitted to these dots. Switch the state.</p>
+    <p class="fs-caption">Illustrative cell using 160 of the 1,500 rival pairs; each dot is positioned by its seen face (left) or suppressed face (right) on the cell’s preferred axis. The gains use the paper’s 1.21 : 1 ratio (Fig. 4a–c), the slopes are fitted to the drawn dots, and the state control changes which face drives the cell.</p>
   </figure>
-  <p>But the two states are not mirror images. Tuning to the seen face in state 1 is <b>1.21× steeper</b> than tuning to the suppressed face in state 2 (p = 3×10⁻⁴⁰). Mean firing is slightly higher in state 2 (p = 2×10⁻¹⁵). A linear decoder can tell a state 1 moment from a state 2 moment 66% of the time, against 50% chance. Something in the activity marks which kind of epoch it is.</p>
+  <p>The two states are not mirror images. Tuning to the seen face in state 1 is <b>1.21× steeper</b> than tuning to the suppressed face in state 2 (p = 3×10⁻⁴⁰). Mean firing is slightly higher in state 2 (p = 2×10⁻¹⁵). A linear decoder can tell a state 1 moment from a state 2 moment 66% of the time, against 50% chance.</p>
 
-  <p class="kicker">09 · The answer</p>
-  <h2>The weak signal was an average of two strong ones</h2>
-  <p>Back to the puzzle from step 01. Compute each cell’s selectivity separately in each state, with states inferred from the other half of the neurons. In state 1, cells behave as if the seen face were shown alone. In state 2, they behave as if the suppressed face were shown alone. Average the two and you get the weak, positive smear everyone found.</p>
-  <p>The leftover positive tilt comes from the conscious epochs tuning a bit more steeply. Equalize the gain of the two states before averaging and the tilt vanishes.</p>
+  <p class="kicker">09 · Selectivity</p>
+  <h2>Why selectivity looked weak</h2>
+  <p>The authors computed each cell’s selectivity separately in each state, with states inferred from the other half of the neurons. In state 1, cells behave as if the seen face were shown alone. In state 2, they behave as if the suppressed face were shown alone. Averaging the two produces the weak positive relationship measured in section 01.</p>
+  <p>The remaining positive slope comes from steeper tuning in state 1. Equalizing the gain of the two states before averaging removes that slope.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-mi-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-mi-title">Split by state, the smear becomes a diagonal and an anti-diagonal</h3><span class="fs-status">Fig. 9 · illustrative dots, the paper’s slopes</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-mi-title">State sorting restores opposite selectivity patterns</h3><span class="fs-status">Fig. 9 · illustrative dots, the paper’s slopes</span></header>
     <div class="fs-stage"><canvas id="fig-mi" role="img" aria-label="The scatter from Fig. 1 morphing through four views: all moments (a weak positive smear), state 1 only (dots on the diagonal, slope 0.93), state 2 only (dots on the anti-diagonal, slope minus 0.76), and gain-equalized (flat, slope 0.07)."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-mi:step"></span>
       <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-mi" aria-hidden="true"></span><button type="button" data-fs="fig-mi prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-mi next" aria-label="Next step">Next</button><button type="button" data-fs="fig-mi play">Pause</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-mi:caption" aria-live="polite"></p>
-    <p class="fs-caption">Illustrative dots built to the paper’s slopes and correlations (Fig. 4g: 2,885 cell–stimulus pairs, states inferred from held-out neurons).</p>
+    <p class="fs-caption">The illustrative dots use the paper’s slopes and correlations (Fig. 4g: 2,885 cell–stimulus pairs, states inferred from held-out neurons).</p>
   </figure>
 
   <p class="kicker">10 · Beyond IT</p>
-  <h2>Prefrontal cortex flickers too</h2>
-  <p>If consciousness were a front-of-brain affair, prefrontal cortex should hold a pure copy of the seen face. It does not. Decoding is weaker there overall, but the pattern is the same: state 1 gives the seen face, state 2 the suppressed one, and the split survives the held-out-neuron test.</p>
+  <h2>Prefrontal cortex</h2>
+  <p>Prefrontal cortex does not hold a pure copy of the seen face. Decoding is weaker there overall, but the pattern is the same: state 1 gives the seen face, state 2 gives the suppressed face, and the split survives the held-out-neuron test.</p>
   <div class="tablewrap">
     <table class="plain">
       <thead><tr><th>Measure</th><th>IT (ML, AM)</th><th>Prefrontal (PO, PVL)</th></tr></thead>
@@ -238,53 +238,53 @@
       </tbody>
     </table>
   </div>
-  <p>The flips are also only <b>weakly coordinated</b> between the two IT patches. States inferred in ML predicted AM’s content, and the reverse, but weakly (ML→AM p = 3×10⁻⁴, AM→ML p = 9×10⁻⁶), and the authors say this is not strong evidence that the patches switch together. Each patch may run partly on its own clock.</p>
+  <p>The flips are only <b>weakly coordinated</b> between the two IT patches. States inferred in ML predicted AM’s content, and the reverse, but weakly (ML→AM p = 3×10⁻⁴, AM→ML p = 9×10⁻⁶). The authors say this is not strong evidence that the patches switch together, so each patch may operate partly independently.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-patch-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-patch-title">ML and AM flip on loosely coupled clocks</h3><span class="fs-status">Fig. 10 · schematic</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-patch-title">ML and AM states are weakly coordinated</h3><span class="fs-status">Fig. 10 · schematic</span></header>
     <div class="fs-stage"><canvas id="fig-patch" role="img" aria-label="Two state strips, one for the face patch ML and one for AM, each flipping between solid and hatched on its own, with the two agreeing more often than chance but not always."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position"></span>
       <div class="fs-controls"><button type="button" data-fs="fig-patch play">Pause</button></div>
     </div>
-    <p class="fs-caption">Schematic of weak coordination, slowed 10×. The paper reports the statistics above (Fig. 5e), not a measured agreement rate.</p>
+    <p class="fs-caption">This schematic of weak coordination is slowed 10×. The paper reports the statistics above (Fig. 5e), not a measured agreement rate.</p>
   </figure>
 
-  <p class="kicker">11 · What it means</p>
-  <h2>Consciousness may be a matter of when, not only where</h2>
-  <p>The paper’s own conclusion: conscious access needs <b>temporal selection</b>, on top of whatever regions are involved.</p>
+  <p class="kicker">11 · Conclusions</p>
+  <h2>What the authors conclude</h2>
+  <p>The authors conclude that conscious access requires <b>temporal selection</b> in addition to the regions involved.</p>
   <div class="points">
-    <div><h4>No pure signal in any one place</h4><p>Neither IT nor prefrontal averages hold a clean copy of what is seen. Searching for consciousness by averaging a region’s activity, front or back, misses the structure in time.</p></div>
-    <div><h4>The unseen is not a faint trace</h4><p>The suppressed face gets the same high-dimensional code as the seen one, in its own time slots, through the same neurons and the same feature mapping.</p></div>
-    <div><h4>Time as a coding dimension</h4><p>Similar flicker shows up elsewhere: rhythmic sampling in attention, brief bursts in working memory, alternating value states in orbitofrontal cortex, and flickering place maps in the hippocampus.</p></div>
-    <div><h4>The open question</h4><p>Why do some epochs reach awareness and others not? The two states are linearly separable, so the activity may carry a tag that decides where each epoch is sent.</p></div>
+    <div><h4>Regional averages</h4><p>Neither IT nor prefrontal averages hold a clean copy of what is seen. Averaging a region’s activity, front or back, removes the structure in time.</p></div>
+    <div><h4>Suppressed-face representation</h4><p>The suppressed face gets the same high-dimensional code as the seen one, in its own time slots, through the same neurons and the same feature mapping.</p></div>
+    <div><h4>Timing</h4><p>Similar alternation appears in rhythmic sampling in attention, brief bursts in working memory, alternating value states in orbitofrontal cortex, and flickering place maps in the hippocampus.</p></div>
+    <div><h4>Unresolved routing</h4><p>The data do not show why some epochs reach awareness. The two states are linearly separable, so the activity may carry a tag that determines where each epoch is sent.</p></div>
   </div>
   <figure class="fs-plate wide" aria-labelledby="fig-route-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-route-title">One possible answer: only state 1 epochs are sent on</h3><span class="fs-status">Fig. 11 · speculative</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-route-title">State 1 epochs may be routed onward</h3><span class="fs-status">Fig. 11 · speculative</span></header>
     <div class="fs-stage"><canvas id="fig-route" role="img" aria-label="A stream of micro-epochs arrives at a gate marked routing with a question mark. Solid state 1 epochs are sent up to a box for report, introspection and action; hatched state 2 epochs are sent down to a box marked not broadcast."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position"></span>
       <div class="fs-controls"><button type="button" data-fs="fig-route play">Pause</button></div>
     </div>
-    <p class="fs-caption">The authors’ speculation, not a result: state 1 epochs may be routed to circuits for report, introspection and action, perhaps by feedback from parietal cortex or the pulvinar, while state 2 epochs let the brain try out the other interpretation without broadcasting it.</p>
+    <p class="fs-caption">The authors’ speculation, not a result: state 1 epochs may be routed to circuits for report, introspection and action, perhaps by feedback from parietal cortex or the pulvinar, while state 2 epochs may remain outside those circuits.</p>
   </figure>
 
-  <h3>Read with care</h3>
+  <h3>Limits</h3>
   <ol class="limits">
     <li><b>Preprint.</b> Posted 16 October 2026 and not yet peer reviewed.</li>
     <li><b>Two monkeys, 19 sessions.</b> Effects held in each animal and each session, but the sample of brains is two.</li>
-    <li><b>The monkeys never reported what they saw.</b> They fixated. That the flashed face was seen rests on 14 humans doing the same task.</li>
-    <li><b>“Conscious state” is a label for “looks like the flashed face”.</b> The paper shows two representations alternating. That each state 1 micro-epoch is what gets experienced is an interpretation the data cannot test directly.</li>
-    <li><b>The headline numbers are partly inflated.</b> In-sample reconstructions carry the circularity bias; held-out ones are lower, and the real data fall well short of the idealized two-state simulation. The authors suggest real transitions are gradual, not instant.</li>
-    <li><b>Unity is unexplained.</b> If ML and AM flip on loosely coupled clocks, it is open how a single percept comes out of them.</li>
+    <li><b>The monkeys did not report what they saw.</b> They fixated. Evidence that the flashed face was seen comes from 14 humans doing the same task.</li>
+    <li><b>“Conscious state” means “looks like the flashed face”.</b> The paper shows two representations alternating. The data cannot directly test whether each state 1 micro-epoch is experienced.</li>
+    <li><b>In-sample reconstructions are partly inflated.</b> They contain circularity bias; held-out reconstructions are lower, and the real data fall well short of the idealized two-state simulation. The authors suggest real transitions are gradual, not instant.</li>
+    <li><b>Coordination across patches remains unresolved.</b> If ML and AM flip on loosely coupled clocks, it is unclear how they produce one percept.</li>
   </ol>
 
   <details class="verified">
     <summary>Checked against the source</summary>
     <ul>
-      <li><b>Source.</b> Hesse JK, Lanfranchi FF, McGrory C, Shi Y, Engel TA, Tsao DY. Rapid alternation of conscious and suppressed stimulus representations in the primate brain. bioRxiv, posted 16 October 2026, <a href="https://doi.org/10.64898/2026.10.15.759299">doi:10.64898/2026.10.15.759299</a>, CC BY 4.0. Every number on this page was checked against the full text, figure legends and Methods of that version.</li>
+      <li><b>Source.</b> Hesse JK, Lanfranchi FF, McGrory C, Shi Y, Engel TA, Tsao DY. Rapid alternation of conscious and suppressed stimulus representations in the primate brain. bioRxiv, posted 16 October 2026, <a href="https://doi.org/10.64898/2026.10.15.759299">doi:10.64898/2026.10.15.759299</a>, CC BY 4.0. Every number was checked against that version’s full text, figure legends and Methods.</li>
       <li><b>Where the numbers come from.</b> Slope 0.23 over 5,550 pairs, p = 8×10⁻¹³³: Fig. 1h. Human reports 82% against 87%, p = 4×10⁻⁷: Fig. 1b and Methods. Probe geometry, 429 cells, 3,501 IT neurons, 661 prefrontal neurons, 19 sessions, 1,500 faces in 750 pairs, 50-dimensional face space: Fig. 1f–g and Methods. The ℓ(t) formula, the 10 ms bin and the 300–1000 ms window: Methods. Mean dwell 67 ms: Fig. 2d. Median dwells 64 and 59 ms: Fig. 5c–d. Explained variance over 80% against an over-90% ceiling, p = 3×10⁻²⁹: Fig. 2h–i. Single-trial decoding 40/34, 61/4 (p = 2×10⁻⁶), about 5/60 (p = 3×10⁻⁷): text and Fig. 2l. Two states beat one in 19 sessions, p = 10⁻⁴; held-out neurons p = 6×10⁻¹⁷; On/Off splits, κ ≈ 0, 80% four-state agreement; the four-model matrix; 8.2 points, p = 0.007: Fig. 3, Extended Data and text. Gain ratio 1.21, p = 3×10⁻⁴⁰; r = 0.90 over 543 cells; state 2 firing p = 2×10⁻¹⁵; 66% state decoding: Fig. 4a–f. Slopes 0.93, −0.76, 0.07 with r = 0.45, 0.66, −0.44, −0.02 (p = 0.31) over 2,885 pairs: Fig. 4g. Prefrontal slopes 0.32, 0.91, −0.52 and p = 3×10⁻⁴: Fig. 6. ML↔AM p = 3×10⁻⁴ and 9×10⁻⁶: Fig. 5e. About 0.5 Hz perceptual switching: Discussion.</li>
-      <li><b>What is simulated.</b> Every animation is a seeded simulation built from the paper’s numbers; none shows recorded data. Figs. 0, 4, 5 and 10 draw two-state switching with the paper’s 67 ms mean dwell. Figs. 1 and 9 scatter illustrative points to the paper’s slopes and correlations. Fig. 7 is a constant-rate neuron with Gaussian noise. Fig. 8 uses the 1.21 : 1 gain ratio; its fitted slopes are of the drawn dots. Faces are drawn glyphs standing in for points in the paper’s face space, not its stimuli.</li>
-      <li><b>Left out on purpose.</b> The hidden Markov model fitting details, the On/Off gain analysis beyond the split it reports, the per-feature explained-variance curves, and the Extended Data figures other than the time-averaged blend. The guide names the four theory families once and does not adjudicate between them.</li>
+      <li><b>Simulations.</b> Every animation is a seeded simulation built from the paper’s numbers; none shows recorded data. Figs. 0, 4, 5 and 10 draw two-state switching with the paper’s 67 ms mean dwell. Figs. 1 and 9 scatter illustrative points to the paper’s slopes and correlations. Fig. 7 is a constant-rate neuron with Gaussian noise. Fig. 8 uses the 1.21 : 1 gain ratio; its fitted slopes are of the drawn dots. Faces are drawn glyphs standing in for points in the paper’s face space, not its stimuli.</li>
+      <li><b>Omissions.</b> The hidden Markov model fitting details, the On/Off gain analysis beyond the split it reports, the per-feature explained-variance curves, and the Extended Data figures other than the time-averaged blend. The guide names the four theory families once and does not adjudicate between them.</li>
     </ul>
   </details>
 </main>
