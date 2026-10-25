@@ -69,7 +69,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
     formatTime: (t) => `t = ${(t * span()).toFixed(1)} s`,
     timeAxis: (f) => ({ x0: f.w < 560 ? 70 : 128, x1: f.w - 18 }),
     params: {
-      call: { value: 4, min: 0.5, max: 12, step: 0.5, label: "Each sub-call takes", unit: " s", format: (v) => `${v.toFixed(1)} s` },
+      call: { value: 4, min: 0.5, max: 12, step: 0.5, label: "Each sub-model call takes", unit: " s", format: (v) => `${v.toFixed(1)} s` },
       speed: { value: 1, min: 0.5, max: 3, step: 0.25, label: "Writing speed", format: (v) => `${v.toFixed(2)}×` },
     },
     reserve: {
@@ -210,14 +210,14 @@ const sec = (s) => `${s.toFixed(1)} s`;
     return ["ran", "3 handed over", "handed over", "reads the file", "calls now", "prints"][i];
   };
   const steps = [
-    { line: -1, caption: "Before the code starts, the harness deep-copies the program's variables. The copy runs ahead; the real program waits." },
-    { line: 0, caption: "Line 1 is complete. It's plain code, so the copy runs it: chunks now holds the parts of the text." },
-    { line: 1, caption: "Line 2 is complete. Its three calls have known inputs, so the copy starts all three at once and gets promises back." },
-    { line: 2, caption: "Line 3 needs labels. The copy waits for the three answers, then starts the tally. The model is still writing." },
-    { line: 3, caption: "Line 4 reads a file. That touches the outside world, so the copy doesn't run it: notes is unknown." },
-    { line: 4, caption: "Line 5 needs notes. Its input is unknown, so the review isn't started early. Meanwhile the tally has come back." },
-    { line: 5, caption: "Writing ends. The copy is thrown away and the real program runs the cell from the top. Four answers are waiting." },
-    { line: 5, caption: "Lines 4 and 5 run the normal way: the file is read for real, and the review calls the sub-model now." },
+    { line: -1, caption: "Before the code starts, the harness deep-copies the program's variables; the copy runs ahead while the real program waits." },
+    { line: 0, caption: "When line 1 is complete, the copy runs its plain code and stores the parts of the text in chunks." },
+    { line: 1, caption: "When line 2 is complete, the copy starts its three known-input calls at once and receives promises." },
+    { line: 2, caption: "Line 3 needs labels, so the copy waits for the three answers and starts the tally while the model keeps writing." },
+    { line: 3, caption: "Line 4 reads a file outside the program, so the copy skips it and leaves notes unknown." },
+    { line: 4, caption: "Line 5 needs the unknown notes, so the review does not start early while the tally finishes." },
+    { line: 5, caption: "When writing ends, the copy is thrown away and the real program starts with four answers waiting." },
+    { line: 5, caption: "Lines 4 and 5 run normally as the real program reads the file and starts the review sub-model call." },
   ];
   const tipsFor = {
     code: ["The program so far", "What the model has written. A line counts once the next one begins; unwritten lines are grey bars."],
@@ -350,8 +350,8 @@ const sec = (s) => `${s.toFixed(1)} s`;
       });
       // the real program
       realNote.textContent = L.narrow
-        ? (s < 6 ? "Waits for the whole cell; untouched." : s === 6 ? "Runs the cell; answers are waiting." : "4 of 5 sub-calls were done. 1 runs now.")
-        : (s < 6 ? "Waits for the whole cell. Its variables haven't changed." : s === 6 ? "Runs the cell from the top. Lines 2 and 3 find their answers waiting." : "Four of the five sub-calls were done before it asked. One runs now.");
+        ? (s < 6 ? "Waits for the whole cell; untouched." : s === 6 ? "Runs the cell; answers are waiting." : "4 of 5 sub-model calls were done. 1 runs now.")
+        : (s < 6 ? "Waits for the whole cell. Its variables haven't changed." : s === 6 ? "Runs the cell from the top. Lines 2 and 3 find their answers waiting." : "Four of the five sub-model calls were done before it asked. One runs now.");
       realNote.setAttribute("fill", s < 6 ? C.muted : C.fg);
       realCells.forEach((r, i) => {
         const v = realState(i, s), active = s >= 6 && v && v !== "next";
@@ -371,7 +371,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
   const states = {
     closes: { label: "Line complete", sub: "the call can be read", tip: "The harness only reads a call once its line is complete, so it knows the whole call and its inputs." },
     check: { label: "Inputs safe?", sub: "known, no side effects", tip: "The tool must be marked speculatable and pure, and every input must come from code the copy could run safely." },
-    wait: { label: "Waits for inputs", sub: "an earlier early call", tip: "Safe, but an input is still a promise from another early call. The copy waits for it; the model keeps writing." },
+    wait: { label: "Waits for inputs", sub: "an earlier call", tip: "Safe, but an input is still a promise from another early call. The copy waits for it; the model keeps writing." },
     started: { label: "Started early", sub: "a promise, filed by inputs", tip: "Runs in the background. Its answer is filed under its inputs and its occurrence, so repeated identical calls stay separate." },
     claimed: { label: "Handed over", sub: "no new call made", tip: "The real program asks for the same call and gets the filed answer, at once if it is ready, or as soon as it is." },
     thrown: { label: "Thrown away", sub: "nobody asked for it", tip: "The real program never asked: the cell failed, or later code changed the call. Only the copy saw it, so nothing needs undoing." },
@@ -388,25 +388,25 @@ const sec = (s) => `${s.toFixed(1)} s`;
   ];
   const CALLS = {
     label: { path: ["closes", "check", "started", "claimed"], at: [-1, 0, 1, 2, 3], caps: [
-      "Line 2 is complete, so the harness can read the call and its input: “Label: ” plus one part of the text.",
+      "Once line 2 is complete, the harness can read the call's input, “Label: ” plus one part of the text.",
       "The input comes from plain code and llm_query is marked safe, so the call can start now.",
-      "It starts in the background, filed under its input. Three such calls, three separate slots.",
-      "The real program reaches line 2, finds the answer filed under the same input, and gets it at once."] },
+      "Each of the three calls starts in the background in a separate slot filed under its input.",
+      "At line 2, the real program finds the answer filed under the same input and receives it at once."] },
     tally: { path: ["closes", "check", "wait", "started", "claimed"], at: [-1, 0, 2, 3, 4], caps: [
-      "Line 3 is complete. Its input is labels, which are still three promises.",
-      "Safe, but not ready: the copy waits for the three labels while the model keeps writing.",
-      "The labels arrive and the tally starts, still before the writing ends.",
-      "The real program reaches line 3. If the tally is still running, it waits for that call, never a new one."] },
+      "The complete line 3 depends on labels, which are still three promises.",
+      "The input is safe but not ready, so the copy waits for the three labels while the model keeps writing.",
+      "When the labels arrive, the tally starts before the writing ends.",
+      "At line 3, the real program waits for the running tally instead of making a new call."] },
     review: { path: ["closes", "check", "normal"], at: [-1, 0, 1, 2, 2], caps: [
-      "Line 5 is complete. Its input is notes, from read_file on line 4.",
-      "read_file touches the outside world, so the copy never ran it. notes is unknown, so the call is not safe.",
-      "Not started. After writing ends, the real program reads the file and makes this call itself.",
-      "That costs a full call after the writing, which is why the review sits at the end of Fig. 1."] },
+      "The complete line 5 depends on notes from read_file on line 4.",
+      "Because read_file touches the outside world, the copy leaves notes unknown and does not start the call.",
+      "After writing ends, the real program reads the file and makes the call itself.",
+      "The full call runs after writing, so the review appears at the end of Fig. 1."] },
     typo: { path: ["closes", "check", "started", "thrown"], at: [-1, 1, 2, 2, 3], caps: [
-      "The same label call as before: line 2 is complete and its input is safe.",
-      "It starts early, as before.",
-      "Then the model ends the cell with a typo. The cell can't run, so nothing ever asks for the label.",
-      "Its answer is thrown away. The real variables never saw it; the cost is one wasted sub-call."] },
+      "The complete line 2 makes the same label call with the same safe input.",
+      "The call starts early again.",
+      "The model ends the cell with a typo, so the cell cannot run and nothing asks for the label.",
+      "The answer is thrown away without reaching the real variables, at the cost of one wasted sub-model call."] },
   };
   const OPTIONS = [{ value: "label", label: "A label call" }, { value: "tally", label: "The tally" }, { value: "review", label: "The review" }, { value: "typo", label: "A typo at the end" }];
   const G = { states: {}, trans: {} };
@@ -461,7 +461,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
   FS.figure(ID, {
     height: (w) => (w < 560 ? (w * 430) / 360 : (w * 330) / 960),
     params: { call: { value: "label", label: "Which call", options: OPTIONS, placement: "inline" } },
-    steps: [0, 1, 2, 3, 4].map((i) => ({ caption: (f) => (i === 0 ? "Every call the copy finds goes through these states. Step through to follow this one." : callOf(f).caps[i - 1]) })),
+    steps: [0, 1, 2, 3, 4].map((i) => ({ caption: (f) => (i === 0 ? "Step through the states for the selected call." : callOf(f).caps[i - 1]) })),
     onParam(f) { f.api.goto(1); f.dirty = true; },
     resize(f) { layout(f.w); },
     render(f) {
@@ -508,14 +508,14 @@ const sec = (s) => `${s.toFixed(1)} s`;
   const invX = (f, x) => { const g = geo(f); return CMIN + ((x - g.L) / (g.R - g.L)) * (CMAX - CMIN); };
   const tips = {
     band: { title: "Measured range", body: "The post's summary for its RLM benchmark: speed-ups of about 1 to 1.2×. Everything else on this chart is the simulated turn." },
-    full: { title: "With speculation", body: "Plain run time divided by speculative run time, for the worked turn, as each sub-call gets longer." },
-    once: { title: "Running at once only", body: "If the same calls started together only after writing ended: the JIT part of the saving, without any overlap." },
-    peak: { title: "The peak", body: "Where the tally just finishes as writing ends. Shorter calls leave writing time unused; longer ones run past it." },
+    full: { title: "With speculation", body: "Plain run time divided by speculative run time for the worked turn as each sub-model call gets longer." },
+    once: { title: "Running at once only", body: "This curve shows the JIT part of the saving when the calls start together only after writing ends, without overlap." },
+    peak: { title: "The peak", body: "The tally finishes as writing ends. Shorter calls leave writing time unused; longer calls run past it." },
   };
   const fig = FS.figure(ID, {
     height: (w) => (w < 560 ? 280 : 300),
     params: {
-      call: { value: 4, min: CMIN, max: CMAX, step: 0.1, label: "Each sub-call takes", hidden: true },
+      call: { value: 4, min: CMIN, max: CMAX, step: 0.1, label: "Each sub-model call takes", hidden: true },
       speed: { value: 1, min: 0.5, max: 3, step: 0.25, label: "Writing speed", format: (v) => `${v.toFixed(2)}×` },
     },
     reserve: { peak: ["about 9.99× when each call takes 99.9 s"] },
@@ -523,7 +523,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
     tipAt: (f, x, y) => f.state.hits?.find((h) => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h)?.kind ?? null,
     handles: {
       line: {
-        label: "Sub-call length: drag or use the arrow keys",
+        label: "Sub-model call length: drag or use the arrow keys",
         radius: 22,
         get: (f) => ({ x: X(f, f.params.call), y: (geo(f).T + geo(f).B) / 2 }),
         set: (f, x) => { const v = invX(f, x); f.state.raw = v; f.api.set("call", FS.clamp(v, CMIN, CMAX), { instant: true }); },
@@ -544,7 +544,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
       c.strokeStyle = C.line; c.lineWidth = 1;
       for (let r = 1; r <= yMax(f) + 1e-9; r += 0.5) { FS.k.line(c, g.L, Y(f, r), g.R, Y(f, r)); FS.k.text(f, c, `${r.toFixed(1)}×`, g.L - 8, Y(f, r) + 4, { align: "right", size: 11 }); }
       for (let v = 2; v <= CMAX; v += 2) FS.k.text(f, c, `${v} s`, X(f, v), g.B + 16, { align: "center", size: 11 });
-      FS.k.text(f, c, "length of each sub-call →", g.R, g.B + 32, { align: "right", size: 11 });
+      FS.k.text(f, c, "length of each sub-model call →", g.R, g.B + 32, { align: "right", size: 11 });
       // curves
       const curve = (key, dash, color, width) => {
         c.save(); c.strokeStyle = color; c.lineWidth = width; if (dash) c.setLineDash(dash);
@@ -580,7 +580,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
   });
   function outs(f) {
     const r = ratio(f.params.call, f.params.speed), pk = peakOf(f.params.speed);
-    f.api.out("readout", `At ${f.params.call.toFixed(1)} s per call: ${r.full.toFixed(2)}× (${sec(r.saved)} sooner). Running at once alone: ${r.once.toFixed(2)}×.`);
+    f.api.out("readout", `At ${f.params.call.toFixed(1)} s per sub-model call: ${r.full.toFixed(2)}× (${sec(r.saved)} sooner). Running at once alone: ${r.once.toFixed(2)}×.`);
     f.api.out("peak", `about ${pk.r.toFixed(2)}× when each call takes ${sec(pk.c)}`);
   }
   // Figs. 1 and 4 share the call length and the writing speed.
@@ -599,7 +599,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
     subcalls: { unit: "", base: [[667, 269, 1050], [694, 315, 1055], [938, 726, 1131], [1182, 531, 1814]], spec: [[1001, 250, 1729], [890, 213, 1553], [1177, 658, 1682], [914, 297, 1516]] },
     turns: { unit: "", base: [[10.3, 9.2, 11.3], [10.4, 9.0, 11.7], [8.8, 7.7, 9.9], [10.0, 9.1, 10.8]], spec: [[10.0, 8.9, 11.0], [8.9, 7.7, 10.0], [9.7, 8.1, 11.2], [10.2, 9.2, 11.0]] },
   };
-  const NAMES = { wall: "Wall time", subcalls: "Sub-calls per task", turns: "Turns per task" };
+  const NAMES = { wall: "Wall time", subcalls: "Sub-model calls per task", turns: "Turns per task" };
   const fmtV = (m, v) => (m === "turns" ? v.toFixed(1) : Math.round(v).toLocaleString("en-US")) + (m === "wall" ? " s" : "");
   const delta = (m, i) => {
     const b = DATA[m].base[i][0], s = DATA[m].spec[i][0];
@@ -681,7 +681,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
     const m = f.params.metric, n = CELLS.length, ov = CELLS.filter((_, i) => overlap(m, i)).length;
     const lower = CELLS.filter((_, i) => DATA[m].spec[i][0] < DATA[m].base[i][0]).length;
     const text = m === "wall" ? `Lower with speculation in ${lower} of ${n} settings; the intervals overlap in ${ov} of ${n}.`
-      : m === "subcalls" ? `More sub-calls with speculation in ${n - lower} of ${n} settings; the intervals overlap in ${ov} of ${n}.`
+      : m === "subcalls" ? `More sub-model calls with speculation in ${n - lower} of ${n} settings; the intervals overlap in ${ov} of ${n}.`
       : `About 9 to 10 turns per task either way; the intervals overlap in ${ov} of ${n}.`;
     f.api.out("readout", text);
     const rs = CELLS.map((_, i) => DATA.wall.base[i][0] / DATA.wall.spec[i][0]);
