@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Strange-loop networks: two models that read each other · Animated Visuals</title>
-<meta name="description" content="A visual guide to Francois Chaubard's self-published draft on Strange-Loop Networks: two language models wired into a loop, a writer and a judge, how the draft proposes to run and train it, and what it has not shown yet.">
+<title>Strange-loop networks · Animated Visuals</title>
+<meta name="description" content="A visual guide to Strange-Loop Networks, a draft architecture where two language models exchange outputs until a stopping rule is met. Eight figures show how the loop runs, the proposed training methods, and the draft's missing results.">
 <script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="../site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2574,14 +2574,14 @@ a.card:hover { border-color: var(--fs-line-strong); }
 
 <main class="page guide" id="main">
   <p class="eyebrow">Example · a paper, explained</p>
-  <h1>Two language models that read each other's replies until one is satisfied</h1>
-  <p class="source">A visual guide to Francois Chaubard, “Strange-Loop Networks (SLNs): A novel class of ‘loopy’ Neural Network Architectures that mimic the cerebral cortex to natively encode self-reflection, hemispheric specialization, and an infinite composition of functions”, a self-published draft dated June 7, 2024, not peer-reviewed · <a href="https://fchaubard.github.io/Strange_Loop_Networks__Using_2_LLMs_to_form_a__strange_loop__to_step_toward_AGI%20(9).pdf">the PDF</a>. The claims are the author's; every number says where in the draft it appears.</p>
-  <p class="lede">Ask a language model for 2 + 2 or for 2534 × 5423 and it runs the same fixed stack of layers before the first token of either answer. Chaubard's draft proposes a fix borrowed from the two halves of the brain: seat a second model next to the first, let it read the answer, send its reaction back, and go round until it is satisfied. This guide follows one question, 2534 × 5423, around that loop. Up front: the draft is unfinished. It describes the architecture and six ways to train it, but its results table is empty.</p>
+  <h1>Strange-loop networks</h1>
+  <p class="source">Source: Francois Chaubard, “Strange-Loop Networks (SLNs): A novel class of ‘loopy’ Neural Network Architectures that mimic the cerebral cortex to natively encode self-reflection, hemispheric specialization, and an infinite composition of functions”. This self-published draft is dated June 7, 2024 and is not peer-reviewed · <a href="https://fchaubard.github.io/Strange_Loop_Networks__Using_2_LLMs_to_form_a__strange_loop__to_step_toward_AGI%20(9).pdf">the PDF</a>. The claims are the author's. Every number says where it appears in the draft.</p>
+  <p class="lede">Strange-loop networks are a draft architecture in which two language models read each other's output until a stopping rule is met. This guide follows 2534 × 5423 through a writer-and-judge version of the loop, then covers the proposed training methods and their memory cost. Afterward, the reader can explain how the loop runs, how the draft proposes to train it, and what remains untested. The draft is unfinished: the results section says “TODO :)”, Table 1 is blank, and the abstract reports “XX%”.</p>
 
-  <h2>What a strange loop is</h2>
-  <p>The name comes from Douglas Hofstadter's <i>Gödel, Escher, Bach</i> (1979), which the draft quotes. In an ordinary hierarchy, levels stack: some text at the bottom, a judgment about the text above it, and nothing flows back down. A strange loop is a hierarchy where climbing up a level lands you back where you started, like Escher's two hands drawing each other. The draft builds that into a network: the <span data-fs-ref="fig-loop:judge">judge's</span> verdict about a draft becomes part of the text the <span data-fs-ref="fig-loop:writer">writer</span> reads next. Switch the wiring and watch the counter: the place repeats, the level keeps climbing.</p>
+  <h2>Strange loops</h2>
+  <p>The name comes from Douglas Hofstadter's <i>Gödel, Escher, Bach</i> (1979), which the draft quotes. In an ordinary hierarchy, one level holds text and the next level judges it. Information moves up and does not return. Hofstadter calls it a strange loop when moving up a level returns to the starting point, as in Escher's two hands drawing each other. In the draft's network, the <span data-fs-ref="fig-loop:judge">judge's</span> verdict about a draft becomes part of the text the <span data-fs-ref="fig-loop:writer">writer</span> reads next. Switch the wiring to compare the ordinary hierarchy with the loop.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-loop-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-loop-title">In a strange loop, going up brings you back down</h3><span class="fs-status">Fig. 1 · concept</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-loop-title">A strange loop returns to its starting level</h3><span class="fs-status">Fig. 1 · concept</span></header>
     <div class="fs-stage"><svg id="fig-loop" viewBox="0 0 960 300" role="img" aria-label="Two boxes, a writer at level one and a judge at level two. In the ordinary wiring a token climbs from the writer to the judge and stops. In the strange loop the judge's verdict is fed back into the writer's input, so the token keeps returning to the writer while a counter of levels keeps climbing."></svg></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-loop:levels"></span>
@@ -2591,31 +2591,31 @@ a.card:hover { border-color: var(--fs-line-strong); }
     <p class="fs-caption">Hofstadter's idea as the draft uses it. The draft quotes <i>Gödel, Escher, Bach</i> but never defines levels; calling a draft level 1 and a verdict on it level 2 is this guide's reading.</p>
   </figure>
 
-  <h2>Why two halves, according to the author</h2>
-  <p>The motivation is an analogy with human evolution (Section 1.2, Figure 1). Brains grew for millions of years, then stopped, and the author argues the next gain came from specialization between the two hemispheres and a thicker corpus callosum linking them, not from more size. The draft lines this up with language models: they have been scaled up and up, and the next step should be two specialized models that talk. The sizes it gives:</p>
+  <h2>The author's argument for two halves</h2>
+  <p>The draft motivates the design with an analogy to human evolution (Section 1.2, Figure 1). It says brains grew for millions of years and then stopped growing. The author argues that specialization between the two hemispheres and a thicker corpus callosum linking them produced the next gain. The draft compares this account with the growth of language models and proposes two specialized models that exchange outputs. It gives these sizes:</p>
   <div class="stats">
     <div class="stat"><b>450 cm³</b><span>Australopithecines, roughly flat for over 6 million years</span><small>Section 1.2</small></div>
     <div class="stat"><b>510 cm³</b><span>Homo habilis, 2.1 to 1.5 million years ago</span><small>Section 1.2</small></div>
     <div class="stat"><b>900 to 1,100 cm³</b><span>Homo erectus, “doubled” from 1.9 million years ago</span><small>Section 1.2</small></div>
     <div class="stat"><b>1,350 cm³</b><span>Homo sapiens, from 300,000 years ago, unchanged since</span><small>Section 1.2</small></div>
   </div>
-  <p>The draft gives no source for these sizes, and the analogy is an argument, not evidence about networks. It also lists what it thinks one model can't do alone: second-guess itself before answering (it blames hallucinations on this), spend more thought on harder problems, reuse the same learned step many times, and improve by practising against itself (Section 1.1).</p>
+  <p>The draft gives no source for these sizes. The analogy is an argument rather than evidence about networks. It also lists what the author thinks one model cannot do alone: review its answer before responding, spend more computation on harder problems, reuse the same learned step many times, and improve by practising against itself (Section 1.1). The author attributes hallucinations to the first limitation.</p>
 
-  <h2>Two models, one loop</h2>
-  <p>The definition is short. A strange-loop network is any architecture with at least two distinct models, a left one and a right one, where the left model's input is the right model's output and the other way round. They talk in what the author calls an inner dialogue loop until a stopping rule is met, and only then answer. The left model is the <span data-fs-ref="fig-sln:left">writer</span> (the draft also calls it actor, generator or student); the right one is the <span data-fs-ref="fig-sln:right">judge</span> (critic, reward model, discriminator or teacher). Around them sit an optional <span data-fs-ref="fig-sln:enc">encoder</span> and <span data-fs-ref="fig-sln:dec">decoder</span>, and a <span data-fs-ref="fig-sln:check">check</span> that decides whether to go round again. Step through one question in the version the draft trains, where the judge only returns a score.</p>
+  <h2>How the loop runs</h2>
+  <p>A strange-loop network has at least two distinct models, called left and right in the draft. Each model receives the other's output. They exchange outputs in what the author calls an inner dialogue loop until a stopping rule is met. The left model is the <span data-fs-ref="fig-sln:left">writer</span> (also called actor, generator or student). The right model is the <span data-fs-ref="fig-sln:right">judge</span> (critic, reward model, discriminator or teacher). An optional <span data-fs-ref="fig-sln:enc">encoder</span> prepares the input, an optional <span data-fs-ref="fig-sln:dec">decoder</span> prepares the answer, and a <span data-fs-ref="fig-sln:check">check</span> decides whether to run another round. The figure follows one question through the version where the judge returns only a score.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-sln-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-sln-title">One question goes round until the judge is satisfied</h3><span class="fs-chip" data-fs-out="fig-sln:round" aria-live="polite"></span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-sln-title">The score decides when the loop stops</h3><span class="fs-chip" data-fs-out="fig-sln:round" aria-live="polite"></span></header>
     <div class="fs-stage"><svg id="fig-sln" viewBox="0 0 960 420" role="img" aria-label="The strange-loop network: a prompt enters an encoder and a stop check in the middle; the check sends the context to the writer on the left and to the judge on the right, each of which sends its output back to the check; when the judge's score clears the bar, the check sends the result through a decoder to the answer. A panel lists what the models read, growing each turn."></svg></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-sln:step"></span>
       <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-sln" aria-hidden="true"></span><button type="button" data-fs="fig-sln prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-sln next" aria-label="Next step">Next</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-sln:caption" aria-live="polite"></p>
-    <p class="fs-caption">Wiring from the draft's Figures 2 and 5. The writer goes first as in Section 5 and Algorithm 2 (Figure 2's numbered badges put odd turns at the right model). The drafts, the scores and the bar of 0.80 are illustrative.</p>
+    <p class="fs-caption">Wiring follows the draft's Figures 2 and 5, with the writer first as in Section 5 and Algorithm 2; Figure 2's numbered badges put odd turns at the right model. The drafts, scores and bar of 0.80 are illustrative.</p>
   </figure>
 
   <h2>Three shapes of the same loop</h2>
-  <p>The draft sketches three ways to build it. <b>Tall</b>: copy one pretrained model into both seats and steer each with its own system prompt. <b>Wide</b>: cut a model open, keep its first and last three blocks, and put a router in the middle that keeps choosing between two thin expert layers until it decides to answer. <b>Lateralized</b>: the tall version, but the right model only ever returns a score. The author calls the lateralized shape the most brain-like, citing brain scans that show the left hemisphere busier during logic tasks (no reference given), and it's the one the training sections focus on.</p>
+  <p>The draft sketches three ways to build the loop. The <b>tall</b> shape copies one pretrained model into both roles and gives each copy its own system prompt. The <b>wide</b> shape keeps the model's first and last three blocks, with a router between them that repeatedly chooses one of two thin expert layers or sends the result out. The <b>lateralized</b> shape uses two full model copies, and the right model returns only a score. The author calls the lateralized shape the most brain-like and focuses the training sections on it. The draft cites brain scans that show the left hemisphere more active during logic tasks, with no reference given.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-shapes-title">
     <header class="fs-head"><h3 class="fs-title fs-sr" id="fig-shapes-title">The same loop in three shapes</h3><div class="fs-head-tabs" data-fs-param="fig-shapes:shape" data-label="Shape"></div><span class="fs-status">Fig. 3 · paper Figs. 3 to 5</span></header>
     <div class="fs-stage"><svg id="fig-shapes" viewBox="0 0 960 330" role="img" aria-label="Three versions of the loop. Tall: two full copies of one model trade full replies. Wide: the first three blocks of a model feed a router that sends the context to a thin left or right expert layer and back, until it sends it to the last three blocks. Lateralized: two full copies, but the right one returns only a score."></svg></div>
@@ -2623,9 +2623,9 @@ a.card:hover { border-color: var(--fs-line-strong); }
     <p class="fs-caption">Redrawn from the draft's Figures 3, 4 and 5; the token's speed is illustrative. In the wide shape the expert layers start from random weights (“MOE (random)” in Figure 4).</p>
   </figure>
 
-  <h2>Hard questions earn more rounds</h2>
-  <p>This is what the loop is for. A normal model has a fixed number of layers between your question and its first token, so 2 + 2 and 2534 × 5423 get the same budget (Section 1.1). In the loop, the stopping rule sets the budget: an easy prompt clears the <span data-fs-ref="fig-rounds:bar">bar</span> in the first round, a hard one goes round until the judge is happy or a round limit is reached. Drag the bar.</p>
-  <p>Each round costs the writer one forward pass per token it writes, and the judge one pass, because in the lateralized shape it only returns a score (Section 5.2). Over several rounds that adds up: rounds × (draft tokens + 1). The draft writes the total for the general case as O(m1·m2·d), with m1 and m2 the two models' reply lengths and d the rounds, calls it expensive next to one model, and says that is “more than offset” by needing fewer layers and a smaller model (Section 5). It doesn't measure either side.</p>
+  <h2>How many rounds a question gets</h2>
+  <p>A normal model has a fixed number of layers between the question and its first token, so 2 + 2 and 2534 × 5423 get the same budget (Section 1.1). In the loop, the stopping rule sets the budget. An easy prompt can clear the <span data-fs-ref="fig-rounds:bar">bar</span> in the first round. A harder prompt continues until its score clears the bar or it reaches the round limit. Drag the bar to change the stopping point.</p>
+  <p>Each round costs the writer one forward pass for every token it writes and the judge one pass, because the lateralized judge returns only a score (Section 5.2). The total over several rounds is rounds × (draft tokens + 1). For the general case, the draft writes the cost as O(m1·m2·d), where m1 and m2 are the two models' reply lengths and d is the number of rounds (Section 5). It calls this expensive compared with one model and says fewer layers and a smaller model “more than offset” the cost. It does not measure either claim.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-rounds-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-rounds-title">The bar decides how long each question gets</h3><span class="fs-status">Fig. 4 · illustrative scores</span></header>
     <div class="fs-stage"><canvas id="fig-rounds" role="img" aria-label="The judge's score by round for two prompts. 2 + 2 scores 0.97 from the first round. 2534 × 5423 scores 0.20 in round one and 0.90 in round two, rising slowly after. A draggable bar at 0.80 decides where each stops; bars on the right count the forward passes each prompt used."></canvas></div>
@@ -2635,22 +2635,22 @@ a.card:hover { border-color: var(--fs-line-strong); }
     <p class="fs-caption">Scores, draft lengths and the bar are illustrative; the cost per round, one pass per draft token plus one for the judge, follows Section 5.2. Drag the bar; set the round limit in settings.</p>
   </figure>
 
-  <h2>Training: the writer chases the judge's score</h2>
-  <p>Running the loop is the easy part. Most of the draft is about training the two models together, ideally without paying people to rank answers (Section 5). It reviews six recipes and writes three out as algorithms. The one it develops furthest is actor-critic, Algorithm 2: the <span data-fs-ref="fig-train:writer">writer</span> is trained to raise the judge's score, and the <span data-fs-ref="fig-train:judge">judge</span> is trained to tell the true answer from the writer's drafts. That second half has a sharp edge, which the last steps show with numbers.</p>
+  <h2>Training the writer and judge</h2>
+  <p>Most of the draft covers how to train the two models together without human rankings (Section 5). It reviews six training methods and writes three as algorithms. The most developed method is actor-critic, Algorithm 2. The <span data-fs-ref="fig-train:writer">writer</span> is trained to raise the judge's score. The <span data-fs-ref="fig-train:judge">judge</span> is trained to distinguish the true answer from the writer's drafts. The last steps show a problem this creates.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-train-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-train-title">The writer learns to please the judge; the judge learns to doubt it</h3><span class="fs-status">Fig. 5 · paper Algorithm 2</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-train-title">Writer and judge learn opposing goals</h3><span class="fs-status">Fig. 5 · paper Algorithm 2</span></header>
     <div class="fs-stage"><svg id="fig-train" viewBox="0 0 960 400" role="img" aria-label="One training example, a prompt with its true answer, feeds the writer and the judge. Beside it, the draft's Algorithm 2 in plain words, with the current lines highlighted step by step: write, score, retry, the writer's loss from the score, the judge's score of the true answer, the judge's loss, and the optimizer step."></svg></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-train:step"></span>
       <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-train" aria-hidden="true"></span><button type="button" data-fs="fig-train prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-train next" aria-label="Next step">Next</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-train:caption" aria-live="polite"></p>
-    <p class="fs-caption">Algorithm 2 (p. 17) in plain words, with its line numbers; the judge's loss is Equation 7. The scores are illustrative and the losses are computed from them. Hover a line for the draft's notation.</p>
+    <p class="fs-caption">Algorithm 2 (p. 17) in plain words, with its line numbers and Equation 7 for the judge's loss. The scores are illustrative and the losses are computed from them; hover a line for the draft's notation.</p>
   </figure>
 
-  <p>The six recipes, and the catch the author names for each:</p>
+  <p>The six training methods and the limitation the author names for each:</p>
   <div class="tablewrap"><table class="plain">
-    <thead><tr><th>Recipe</th><th>How the two models learn</th><th>The catch the draft names</th></tr></thead>
+    <thead><tr><th>Training method</th><th>How the two models learn</th><th>Limitation in the draft</th></tr></thead>
     <tbody>
       <tr><td>Fine-tuning, then RLHF (5.1)</td><td>Separately: the judge on human preference pairs, then the writer with PPO against it</td><td>They never learn to collaborate, preference data is expensive, and the judge isn't used when answering</td></tr>
       <tr><td>Straight through the loop (5.1)</td><td>As one network, backpropagating through every round with “soft tokens”</td><td>Memory: 3.9 GB for a 70-million-weight model (Fig. 7 below)</td></tr>
@@ -2661,12 +2661,12 @@ a.card:hover { border-color: var(--fs-line-strong); }
       <tr><td>Self-play fine-tuning, SPIN (5.6, Algorithm 3)</td><td>A DPO-like update with no reward model and no preference data</td><td>Written out as an algorithm only</td></tr>
     </tbody>
   </table></div>
-  <p>That's seven rows for six recipes because Section 5.1 holds two: the usual separate training, and the end-to-end version it tries and drops.</p>
+  <p>The table has seven rows because Section 5.1 contains two methods: separate training and an end-to-end version that the author tries and drops.</p>
 
-  <h2>Pavlovian gradient decay: go easy on early drafts</h2>
-  <p>Training the judge is lopsided: each prompt has one true answer and as many wrong drafts as you care to sample. The author's fix, named Pavlovian gradient decay (Section 5.5), turns one example into many. Every prefix of the true answer becomes a positive and the writer's draft from every round becomes a negative, each with a value from the curve Pavlovian conditioning uses for how learning fades with delay, C(ΔT) = C₀ · e<sup>−λΔT</sup> (Equation 9). Here ΔT counts rounds back from the end instead of seconds. The full true answer gets all of C₀ and the last draft gets nothing; the rest fall in between. The intent is to be lenient with early drafts, because the writer is supposed to need a few rounds of thinking. Drag <span data-fs-ref="fig-decay:lambda">λ</span>.</p>
+  <h2>Pavlovian gradient decay</h2>
+  <p>Each prompt provides one true answer and many sampled wrong drafts, which makes the judge's training data unbalanced. The author proposes Pavlovian gradient decay (Section 5.5) to turn one example into many. Every prefix of the true answer becomes a positive example. The writer's draft from every round becomes a negative example. Each receives a value from the Pavlovian conditioning curve C(ΔT) = C₀ · e<sup>−λΔT</sup> (Equation 9), which describes how learning fades with delay. Here ΔT counts rounds back from the end instead of seconds. The full true answer receives all of C₀, the last draft receives nothing, and the other values fall between them. The author intends this to give early drafts less negative weight because the writer is expected to need several rounds. Drag <span data-fs-ref="fig-decay:lambda">λ</span> to change the decay.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-decay-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-decay-title">The last draft counts as fully wrong, early ones barely</h3><span class="fs-status">Fig. 6 · paper Section 5.5</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-decay-title">Earlier drafts receive higher values</h3><span class="fs-status">Fig. 6 · paper Section 5.5</span></header>
     <div class="fs-stage"><canvas id="fig-decay" role="img" aria-label="Paired bars for each step back from the end of the loop. Solid bars: the true answer cut short, valued C0 times e to the minus lambda delta T, so the full answer gets 1 and short prefixes little. Hatched bars: the writer's draft from each round, valued one minus that, so the last draft gets 0 and early drafts nearly 1."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-decay:readout"></span>
@@ -2674,10 +2674,10 @@ a.card:hover { border-color: var(--fs-line-strong); }
     </div>
     <p class="fs-caption">Values exactly as Section 5.5 writes them, with C₀ = 1 (its example is 100%); the draft calls them each example's “reward” and says they weight the judge's gradient, without writing the loss. Set the number of rounds in settings.</p>
   </figure>
-  <p>Where the curve comes from: in conditioning, the draft says, typical λ in humans is 0.1 to 0.5, with the best learning at 1 to 4 seconds between stimulus and reward (Section 5.5, no source given). Those two values are marked on the slider. Nothing in the draft says what λ should be for a network.</p>
+  <p>The draft says typical λ values in human conditioning are 0.1 to 0.5, with the best learning at 1 to 4 seconds between stimulus and reward (Section 5.5, no source given). The slider marks 0.1 and 0.5. The draft does not specify a λ value for a network.</p>
 
-  <h2>Why not train straight through the loop</h2>
-  <p>The obvious move is to treat the loop as one big network and backpropagate through every round. Sampling a token isn't differentiable, so the author replaces each sampled token with a “soft token”, a mix of word embeddings at a temperature of 0.001, close enough to one word that the judge can read it (Equations 3 and 4). The draft says this converges. The catch is memory: the backward pass needs every activation from every token of every round. On Pythia-70M at a batch size of 1 the author measured <b>3.9 GB</b> of GPU memory, which the draft calls a 30× increase over the model's size, and projects <b>240 GB</b> for an 8-billion-weight model (Section 5.1). Keeping only the last round, truncated backpropagation, would fit, but the author rejects it because only the last round would learn.</p>
+  <h2>Memory cost of training through the loop</h2>
+  <p>One proposed method treats the loop as one network and backpropagates through every round. Sampling a token is not differentiable, so the author replaces each sampled token with a “soft token”. This is a mix of word embeddings at a temperature of 0.001 that is close enough to one word for the judge to read (Equations 3 and 4). The draft says this converges. The backward pass must keep every activation from every token in every round. On Pythia-70M at a batch size of 1, the author measured <b>3.9 GB</b> of GPU memory. The draft calls this a 30× increase over the model's size and projects <b>240 GB</b> for an 8-billion-weight model (Section 5.1). Truncated backpropagation would keep only the last round and fit in memory. The author rejects it because only the last round would learn.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-memory-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-memory-title">Backpropagating through the loop keeps every round in memory</h3><span class="fs-status">Fig. 7 · paper Section 5.1</span></header>
     <div class="fs-stage"><canvas id="fig-memory" role="img" aria-label="Left: the loop unrolled into rounds, each a row of writer token steps and one judge step; with full backpropagation every step is kept, with truncation only the last round. Right: the draft's two memory numbers, 3.9 GB measured on Pythia-70M at batch size 1 and 240 GB projected for an 8-billion-weight model."></canvas></div>
@@ -2685,11 +2685,11 @@ a.card:hover { border-color: var(--fs-line-strong); }
       <span class="fs-position" data-fs-out="fig-memory:kept"></span>
       <div class="fs-controls"><div data-fs-param="fig-memory:keep" data-label="Keep"></div></div>
     </div>
-    <p class="fs-caption">The two memory numbers are the draft's (Section 5.1); the grid of steps is illustrative, 12 writer tokens a round. The draft gives no number for the truncated version. Set the rounds in settings.</p>
+    <p class="fs-caption">The two memory numbers are the draft's (Section 5.1); the grid of 12 writer-token steps per round is illustrative. The draft gives no number for the truncated version; set the rounds in settings.</p>
   </figure>
 
-  <h2>What the draft has not shown yet</h2>
-  <p>Here's the uncomfortable part. The abstract promises “remarkable improvements on many common benchmarks of XX%”, and the list of contributions ends with “achieves state-of-the-art results on many benchmarks. [NEED TO GO PROVE!]”. Section 6, Results, reads “TODO :)”. The comparison it plans, seven setups labelled A to G from a single model up to the lateralized wide loop (Section 1.5), isn't run. The only evidence it cites for loops of models is other people's: prompting methods where one model reflects on its own output, Reflexion and Self-Refine, which it says gained 10 to 15% on HumanEval and MBPP (Section 1.3, no reference given). The draft says code, demos and datasets are released at github.com/fchaubard/; this guide didn't check.</p>
+  <h2>Status of the draft</h2>
+  <p>The abstract promises “remarkable improvements on many common benchmarks of XX%”. The list of contributions ends with “achieves state-of-the-art results on many benchmarks. [NEED TO GO PROVE!]”. Section 6, Results, reads “TODO :)”. The planned comparison has seven setups labelled A to G, from a single model to the lateralized wide loop (Section 1.5), and has not been run. The only cited evidence for loops of models comes from other work. The draft says the prompting methods Reflexion and Self-Refine gained 10 to 15% on HumanEval and MBPP (Section 1.3, no reference given). The draft also says code, demos and datasets are released at github.com/fchaubard/. This guide did not check that claim.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-draft-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-draft-title">Twenty-two pages of method, no results</h3><span class="fs-chip" data-fs-out="fig-draft:count" aria-live="polite"></span></header>
     <div class="fs-stage"><svg id="fig-draft" viewBox="0 0 960 300" role="img" aria-label="The draft's 22 pages as tiles, shaded by what they hold: argument on pages 1 to 7, architecture figures on 8, 9, 10 and 12, training recipes on 11 and 13 to 20, results and end matter on 21 and 22. Marked tiles hold placeholders; page 15 holds the only measurement."></svg></div>
@@ -2712,8 +2712,8 @@ a.card:hover { border-color: var(--fs-line-strong); }
     </tbody>
   </table></div>
 
-  <h2>What to take from it</h2>
-  <p>As a definition, the draft is clear: two models, each reading the other's last reply, with a rule for when to stop. As a design space it's generous: three shapes, six training recipes, one named trick for the judge's data. As evidence, it has nothing yet, and its own placeholders say so. Read it as a research plan from June 2024, not a result. The open problems are the ones the author names: training through the loop doesn't fit in memory, the alternatives either need human preference data or risk a writer that overfits its judge, and nothing has been measured against a single model.</p>
+  <h2>Open problems</h2>
+  <p>The draft defines a network with two models that read each other's last reply and a rule that stops the loop. It proposes three shapes, six training methods, and Pavlovian gradient decay for the judge's data. It reports no results, and its placeholders say so. As of June 2024, it reads as a research plan. The author names three open problems: training through the loop does not fit in memory, the alternatives need human preference data or risk a writer that overfits its judge, and no comparison with a single model has been measured.</p>
 
   <details class="verified">
     <summary>Checked against the source</summary>
@@ -5099,8 +5099,8 @@ function along(edges, u) {
 (() => {
   const id = "fig-loop", K = svgKit(id), LAP = 4.4;
   const tips = {
-    writer: { title: "Writer", body: "Writes a draft: level 1, the text itself. In the strange loop its input also holds the judge's last verdict." },
-    judge: { title: "Judge", body: "Writes a verdict on the draft: level 2, text about the text. In an ordinary stack nothing carries it back down." },
+    writer: { title: "Writer", body: "Writes a draft at level 1. In the strange loop, its input also includes the judge's last verdict." },
+    judge: { title: "Judge", body: "Writes a verdict about the draft at level 2. An ordinary hierarchy does not carry the verdict back to the writer." },
   };
   const bands = [0, 1].map(() => ({ rect: K.el("rect", { rx: 10 }), text: K.el("text", { "font-size": 11, "font-weight": 600, "letter-spacing": "0.06em" }) }));
   bands[0].text.textContent = "LEVEL 1 · THE TEXT"; bands[1].text.textContent = "LEVEL 2 · ABOUT THE TEXT";
@@ -5136,20 +5136,20 @@ function along(edges, u) {
   function moment(f) {
     const strange = f.params.wiring === "strange", c = f.state.clock || 0, lap = Math.floor(c / LAP), u = c % LAP;
     if (strange) {
-      if (u < 1.4) return { levels: 2 * lap + 1, at: "on the way up", pos: ["up", u / 1.4], text: lap ? `Draft ${lap + 1} goes up to the judge. It was written knowing the last verdict.` : "Draft 1 goes up to the judge." };
-      if (u < 2.2) return { levels: 2 * lap + 2, at: "the judge", pos: ["judge"], text: `The judge writes a verdict on draft ${lap + 1}: level ${2 * lap + 2}.` };
+      if (u < 1.4) return { levels: 2 * lap + 1, at: "on the way up", pos: ["up", u / 1.4], text: lap ? `Draft ${lap + 1} goes to the judge with the last verdict in its context.` : "Draft 1 goes up to the judge." };
+      if (u < 2.2) return { levels: 2 * lap + 2, at: "the judge", pos: ["judge"], text: `The judge writes a verdict about draft ${lap + 1}: level ${2 * lap + 2}.` };
       if (u < 3.6) return { levels: 2 * lap + 2, at: "on the way down", pos: ["back", (u - 2.2) / 1.4], text: "The verdict comes back down, into the writer's input." };
-      return { levels: 2 * lap + 2, at: "the writer", pos: ["writer"], text: `Back where it started, the writer now writes at level ${2 * lap + 3}.` };
+      return { levels: 2 * lap + 2, at: "the writer", pos: ["writer"], text: `The verdict returns to the writer, which now writes at level ${2 * lap + 3}.` };
     }
     if (u < 1.4) return { levels: 1, at: "on the way up", pos: ["up", u / 1.4], text: "A draft goes up to the judge." };
-    if (u < 2.4) return { levels: 2, at: "the judge", pos: ["judge"], text: "The judge writes a verdict: level 2. Nothing carries it back down." };
+    if (u < 2.4) return { levels: 2, at: "the judge", pos: ["judge"], text: "The judge writes a verdict at level 2, and nothing carries it back to the writer." };
     if (u < 3.6) return { levels: 1, at: "a new prompt", pos: ["input", (u - 2.4) / 1.2], text: "A new prompt arrives, and the writer starts again at level 1." };
     return { levels: 1, at: "the writer", pos: ["writer"], text: "A new prompt arrives, and the writer starts again at level 1." };
   }
   FS.figure(id, {
     height: (w) => { const b = LAYOUTS[w < 560 ? "narrow" : "wide"].box; return (w * b[1]) / b[0]; },
     params: { wiring: { value: "strange", label: "Wiring", placement: "inline", options: [{ value: "ordinary", label: "Ordinary stack" }, { value: "strange", label: "Strange loop" }] } },
-    reserve: { levels: ["Levels climbed: 88 · now at: on the way down"], wire: ["Back where it started, the writer now writes at level 88.", "Draft 88 goes up to the judge. It was written knowing the last verdict."] },
+    reserve: { levels: ["Levels climbed: 88 · now at: on the way down"], wire: ["The verdict returns to the writer, which now writes at level 88.", "Draft 88 goes to the judge with the last verdict in its context."] },
     settle: 10.5,
     init(f) { f.state.clock = 0; f.state.mix = 1; },
     onParam(f) { f.state.clock = 0; f.dirty = true; },
@@ -5192,13 +5192,13 @@ function along(edges, u) {
 (() => {
   const id = "fig-sln", K = svgKit(id);
   const tips = {
-    prompt: { title: "Your prompt", body: "What you ask. The shared context C, which both models read, starts as just this. Turn 0 in the draft's Figure 2." },
-    enc: { title: "Encoder (optional)", body: "The draft says it can make sense to pass the input through a separate encoder first. Not needed here." },
+    prompt: { title: "Your prompt", body: "What you ask. The shared context C, which both models read, starts with this prompt. It is turn 0 in the draft's Figure 2." },
+    enc: { title: "Encoder (optional)", body: "A separate encoder can prepare the input before it enters the loop. This example does not use one." },
     check: { title: "Check", body: "Decides whether to go round again. The draft's options: a number of rounds, a confidence score, or the two models agreeing." },
     left: { title: "Writer (left model)", body: "Reads its own system prompt plus the conversation so far and writes a draft. Also called actor, generator or student." },
     right: { title: "Judge (right model)", body: "In this version it returns only a score. Also called critic, reward model, discriminator or teacher." },
     dec: { title: "Decoder (optional)", body: "Turns the agreed result into the final output; the draft likens it to putting a thought into words." },
-    out: { title: "Answer", body: "The only thing that leaves the loop: turn n + 1 in the draft's Figure 2." },
+    out: { title: "Answer", body: "Only the answer leaves the loop. It is turn n + 1 in the draft's Figure 2." },
   };
   const E = {
     inEnc: edge(K), encCheck: edge(K), checkLeft: edge(K, "context C"), leftCheck: edge(K, "draft"),
@@ -5261,15 +5261,15 @@ function along(edges, u) {
   }
   const bar = fmt2(EX.bar);
   const steps = [
-    { on: Object.keys(N), via: [], cards: 0, check: "stop?", round: "Overview", caption: "The whole loop. Your prompt enters at the bottom, the two models take turns through the check, and an answer leaves at the top." },
-    { on: ["prompt", "enc", "check"], via: ["inEnc", "encCheck"], cards: 1, check: "no score yet", round: "Round 1", caption: "You ask: what is 2534 × 5423? The context C, what both models read, starts as just your prompt." },
-    { on: ["check", "left"], via: ["checkLeft"], cards: 2, check: "no score yet", round: "Round 1", caption: `The writer reads its own instructions plus C and drafts a quick answer: “${EX.draft1.toLowerCase().replace(".", "")}”.` },
-    { on: ["left", "check"], via: ["leftCheck"], cards: 2, check: "no score yet", round: "Round 1", caption: "The draft comes back to the check. There's no score yet, so it goes on to the judge." },
-    { on: ["check", "right"], via: ["checkRight"], cards: 3, check: "no score yet", round: "Round 1", caption: `The judge reads the prompt and the draft and returns one number: ${fmt2(EX.score1)}. Not convinced.` },
-    { on: ["right", "check"], via: ["rightCheck"], cards: 3, check: `${fmt2(EX.score1)}: again`, round: "Round 1", caption: `${fmt2(EX.score1)} is below the bar of ${bar}. The draft and its score join C, and the loop goes round again.` },
-    { on: ["check", "left"], via: ["checkLeft"], cards: 4, check: "no score yet", round: "Round 2", caption: `The writer rereads everything, its weak draft and the ${fmt2(EX.score1)} included, and works it out properly this time.` },
-    { on: ["left", "check", "right"], via: ["leftCheck", "checkRight"], cards: 5, check: "no score yet", round: "Round 2", caption: `The new draft goes through the check to the judge, which scores it ${fmt2(EX.score2)}.` },
-    { on: ["right", "check", "dec", "out"], via: ["rightCheck", "checkDec", "decOut"], cards: 6, check: `${fmt2(EX.score2)}: stop`, round: "Answered", caption: `${fmt2(EX.score2)} clears the bar. The loop stops, and the decoder writes out the final answer: ${EX.answer}.` },
+    { on: Object.keys(N), via: [], cards: 0, check: "stop?", round: "Overview", caption: "The prompt enters at the bottom, the models take turns through the check, and the answer leaves at the top." },
+    { on: ["prompt", "enc", "check"], via: ["inEnc", "encCheck"], cards: 1, check: "no score yet", round: "Round 1", caption: "The context C, which both models read, begins with the prompt “What is 2534 × 5423?”" },
+    { on: ["check", "left"], via: ["checkLeft"], cards: 2, check: "no score yet", round: "Round 1", caption: `The writer reads its instructions and C, then drafts “${EX.draft1.toLowerCase().replace(".", "")}”.` },
+    { on: ["left", "check"], via: ["leftCheck"], cards: 2, check: "no score yet", round: "Round 1", caption: "The draft returns to the check and continues to the judge because no score is available." },
+    { on: ["check", "right"], via: ["checkRight"], cards: 3, check: "no score yet", round: "Round 1", caption: `The judge reads the prompt and draft, then returns a score of ${fmt2(EX.score1)}.` },
+    { on: ["right", "check"], via: ["rightCheck"], cards: 3, check: `${fmt2(EX.score1)}: again`, round: "Round 1", caption: `${fmt2(EX.score1)} is below the bar of ${bar}, so the draft and score join C for another round.` },
+    { on: ["check", "left"], via: ["checkLeft"], cards: 4, check: "no score yet", round: "Round 2", caption: `The writer reads the prompt, its first draft, and the ${fmt2(EX.score1)} score before producing a worked answer.` },
+    { on: ["left", "check", "right"], via: ["leftCheck", "checkRight"], cards: 5, check: "no score yet", round: "Round 2", caption: `The worked draft passes through the check, and the judge scores it ${fmt2(EX.score2)}.` },
+    { on: ["right", "check", "dec", "out"], via: ["rightCheck", "checkDec", "decOut"], cards: 6, check: `${fmt2(EX.score2)}: stop`, round: "Answered", caption: `${fmt2(EX.score2)} clears the bar, so the loop stops and the decoder returns ${EX.answer}.` },
   ];
   FS.figure(id, {
     height: (w) => { const b = LAYOUTS[w < 560 ? "narrow" : "wide"].box; return (w * b[1]) / b[0]; },
@@ -5312,12 +5312,12 @@ function along(edges, u) {
 (() => {
   const id = "fig-shapes", K = svgKit(id);
   const FACTS = {
-    tall: "Each side is a full copy of one pretrained model, steered by its own system prompt. Each returns a full reply; they stop on a stop token or when they agree.",
-    wide: "A router picks left, right or out, again and again. Each side is two thin layers, a gate and an expert that starts random; its output is added to the context.",
-    lateralized: "Two full copies again, but specialized: the writer returns a reply plus the score it expects, the judge returns a score only. They stop when the score clears a bar.",
+    tall: "Both sides are full copies of one pretrained model with separate system prompts, and each returns full replies until a stop token or agreement ends the loop.",
+    wide: "A router repeatedly chooses left, right or out, and each side adds the output of a gate and randomly initialized expert layer to the context.",
+    lateralized: "Two full model copies have separate roles, with the writer returning a reply and its expected score and the judge returning only a score until that score clears the bar.",
   };
   const T = {
-    prompt: { title: "Your prompt", body: "Where every shape starts: the prompt becomes the shared context." },
+    prompt: { title: "Your prompt", body: "The prompt becomes the shared context for every shape." },
     check: { title: "Check", body: "Decides whether to go round again or answer. The tall shape stops on a stop token (Figure 3)." },
     answer: { title: "Answer", body: "The final output, written once the loop stops." },
     tallL: { title: "Left: a full model", body: "A pretrained model with its whole stack of N attention and feed-forward blocks. Figure 3 suggests “Llama 3 7B”, copied into both seats." },
@@ -5326,10 +5326,10 @@ function along(edges, u) {
     latR: { title: "Judge", body: "A full model copy specialized as a reward model: it outputs a score only (“does it make sense or not?”, Figure 5)." },
     first: { title: "First 3 blocks", body: "The first three transformer blocks of the original model, kept as they were. The draft calls the cut “a lobotomy”." },
     last: { title: "Last 3 blocks", body: "The original model's last three blocks and output layer write the answer once the router picks out." },
-    router: { title: "Router", body: "The main gating network: each pass it sends the context left, right or out. It decides when to stop." },
+    router: { title: "Router", body: "The main gating network sends the context left, right or out on each pass. Its choice decides when the loop stops." },
     gate: { title: "Gate", body: "A gating network that picks which compute to run on this pass." },
     expert: { title: "Expert layer", body: "A mixture-of-experts layer, randomly initialised (“MOE (random)” in Figure 4), that does the compute the gate picked." },
-    plus: { title: "Add to context", body: "The expert's result is concatenated onto the context, “C += c”, and sent back to the router." },
+    plus: { title: "Add to context", body: "The expert's result is added to the context as “C += c” and returned to the router." },
   };
   const groups = {};
   const mkShape = (name, build) => { const g = K.el("g"); groups[name] = { g, alpha: name === "tall" ? 1 : 0, ...build(g) }; };
@@ -5472,9 +5472,9 @@ function along(edges, u) {
     { key: "hard", name: "2534 × 5423", tokens: 40, scores: [EX.score1, EX.score2, 0.92, 0.94, 0.95, 0.95, 0.96, 0.96, 0.96, 0.96, 0.96, 0.96] },
   ];
   const tips = {
-    bar: { title: "The bar", body: "How sure the judge must be before the loop stops. The draft gives no value; 0.80 is illustrative. Drag it." },
-    easy: { title: "2 + 2", body: "An easy prompt: the judge is satisfied by the first draft. Illustrative scores; a 2-token draft." },
-    hard: { title: "2534 × 5423", body: "The worked example: a rough first draft scores 0.20, the worked-out second one 0.90. Illustrative; 40-token drafts." },
+    bar: { title: "Score bar", body: "The minimum judge score that stops the loop. The draft gives no value, so 0.80 is illustrative. Drag the bar to change it." },
+    easy: { title: "2 + 2", body: "The judge accepts this easy prompt's first draft. The scores and 2-token draft are illustrative." },
+    hard: { title: "2534 × 5423", body: "In the worked example, the first draft scores 0.20 and the second scores 0.90. The scores and 40-token drafts are illustrative." },
     cost: { title: "Forward passes", body: "Each round costs one pass per draft token for the writer plus one for the judge, which only returns a score (Section 5.2)." },
   };
   const used = (p, bar, limit) => { for (let i = 0; i < limit; i++) if (p.scores[i] >= bar) return { rounds: i + 1, capped: false }; return { rounds: limit, capped: true }; };
@@ -5495,7 +5495,7 @@ function along(edges, u) {
     tipAt: (f, x, y) => f.state.hits?.find((h) => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h)?.key ?? null,
     handles: {
       bar: {
-        label: "The bar: drag up or down, or use the arrow keys",
+        label: "Score bar: drag up or down, or use the arrow keys",
         radius: () => 16, step: 4,
         get: (f) => { const g = geo(f); return { x: g.x1, y: g.bottom - f.v.bar * (g.bottom - g.top) }; },
         set: (f, x, y) => { const g = geo(f); let v = (g.bottom - y) / (g.bottom - g.top); if (Math.abs(v - EX.bar) < 0.012) v = EX.bar; FS.get(id).set("bar", FS.clamp(v, 0, 1), { instant: true }); },
@@ -5568,11 +5568,11 @@ function along(edges, u) {
     { key: "r2", text: "for round 1, 2, … up to the limit:", ref: "l. 4–5", indent: 1, tip: "Start the inner dialogue loop: for i = 1 to IDL_limit." },
     { key: "r3", text: "writer writes a draft, token by token", ref: "l. 6–13", indent: 2, tip: "x_left^j ← Actor(x_left), appended until the end-of-sequence token." },
     { key: "r4", text: "judge scores the draft", ref: "l. 14", indent: 2, tip: "ŷ_right ← Critic(x_left)." },
-    { key: "r5", text: "score ≥ bar? stop the loop", ref: "l. 15–16", indent: 2, tip: "if ŷ_right ≥ threshold then break." },
-    { key: "r6", text: "else add draft and score to the prompt", ref: "l. 18", indent: 2, tip: "x ← concat(x, x_left, ŷ_right)." },
+    { key: "r5", text: "stop if score ≥ bar", ref: "l. 15–16", indent: 2, tip: "if ŷ_right ≥ threshold then break." },
+    { key: "r6", text: "otherwise add draft and score to the prompt", ref: "l. 18", indent: 2, tip: "x ← concat(x, x_left, ŷ_right)." },
     { key: "r7", text: "writer's loss uses the score as reward", ref: "l. 20–21", indent: 2, tip: "L_actor = L^CLIP(ŷ_left, y_true, ŷ_right), then backward. L^CLIP is PPO's clipped objective with the judge's score in place of the advantage (Eq. 8)." },
     { key: "r8", text: "judge scores the true answer", ref: "l. 23", indent: 1, tip: "ŷ_right_true ← Critic(x + y_true)." },
-    { key: "r9", text: "judge's loss: true high, draft low", ref: "l. 24–25", indent: 1, tip: "L_critic = −log(ŷ_right_true) − log(1 − ŷ_right) (Eq. 7), then backward." },
+    { key: "r9", text: "judge's loss favors true over draft", ref: "l. 24–25", indent: 1, tip: "L_critic = −log(ŷ_right_true) − log(1 − ŷ_right) (Eq. 7), then backward." },
     { key: "r10", text: "step both optimizers", ref: "l. 27–28", indent: 0, tip: "optimizer_critic.step(); optimizer_actor.step()." },
   ];
   const tips = {
@@ -5580,7 +5580,7 @@ function along(edges, u) {
     writer: { title: "Writer (actor)", body: "Writes drafts. It is trained to make the judge's score go up." },
     judge: { title: "Judge (critic)", body: "Scores text from 0 to 1. It is trained to give the true answer a high score and the writer's draft a low one." },
     wloss: { title: "Writer's loss", body: "PPO's clipped objective with the judge's score as the reward (Eq. 8). Higher score, smaller loss." },
-    jloss: { title: "Judge's loss", body: "Binary cross-entropy: −log of the true answer's score, minus log of one minus the draft's score (Eq. 7)." },
+    jloss: { title: "Judge's loss", body: "Binary cross-entropy uses −log of the true answer's score minus log of one minus the draft's score (Eq. 7)." },
   };
   const N = {
     data: box(K, "data", { label: "One training example", sub: "prompt 2534 × 5423 · true answer 13,741,882", tip: tips.data }),
@@ -5626,15 +5626,15 @@ function along(edges, u) {
   }
   const scores = (n) => [`draft 1 → ${fmt2(EX.score1)}`, `draft 2 → ${fmt2(EX.score2)}`, `true answer → ${fmt2(EX.scoreTrue)}`].slice(0, n).join(" · ");
   const steps = [
-    { rows: [], on: ["data", "writer", "judge", "wloss", "jloss"], via: [], scores: 0, wl: "—", jl: "—", caption: "One training example, two models, and the draft's Algorithm 2. Step through one pass of it." },
-    { rows: ["r1"], on: ["data"], via: [], scores: 0, wl: "—", jl: "—", caption: "Take a training example: the prompt 2534 × 5423 and the answer we want, 13,741,882." },
-    { rows: ["r2", "r3"], on: ["data", "writer"], via: ["prompt"], scores: 0, wl: "—", jl: "—", caption: "Round 1: the writer reads the prompt and drafts “about 13.7 million”, token by token until it stops." },
-    { rows: ["r4"], on: ["writer", "judge"], via: ["draft"], scores: 1, wl: "—", jl: "—", caption: `The judge scores the draft: ${fmt2(EX.score1)}.` },
-    { rows: ["r5", "r6"], on: ["judge", "writer"], via: ["score"], scores: 2, wl: "—", jl: "—", caption: `Below the bar, so draft and score are added to the prompt and the writer goes again. Round 2 scores ${fmt2(EX.score2)}: stop.` },
-    { rows: ["r7"], on: ["writer", "wloss"], via: ["wl"], scores: 2, wl: `reward = score ${fmt2(EX.score2)}`, jl: "—", caption: "Each round the writer's loss uses the judge's score as its reward, clipped like PPO. A higher score means a smaller loss." },
+    { rows: [], on: ["data", "writer", "judge", "wloss", "jloss"], via: [], scores: 0, wl: "—", jl: "—", caption: "Step through one pass of the draft's Algorithm 2 with one training example and two models." },
+    { rows: ["r1"], on: ["data"], via: [], scores: 0, wl: "—", jl: "—", caption: "The training example contains the prompt 2534 × 5423 and the target answer 13,741,882." },
+    { rows: ["r2", "r3"], on: ["data", "writer"], via: ["prompt"], scores: 0, wl: "—", jl: "—", caption: "In round 1, the writer reads the prompt and produces “about 13.7 million” one token at a time." },
+    { rows: ["r4"], on: ["writer", "judge"], via: ["draft"], scores: 1, wl: "—", jl: "—", caption: `The judge gives the draft a score of ${fmt2(EX.score1)}.` },
+    { rows: ["r5", "r6"], on: ["judge", "writer"], via: ["score"], scores: 2, wl: "—", jl: "—", caption: `Because the score is below the bar, the draft and score are added to the prompt before round 2 reaches ${fmt2(EX.score2)} and stops the loop.` },
+    { rows: ["r7"], on: ["writer", "wloss"], via: ["wl"], scores: 2, wl: `reward = score ${fmt2(EX.score2)}`, jl: "—", caption: "Each round uses the judge's score as the writer's PPO-style clipped reward, so a higher score produces a smaller loss." },
     { rows: ["r8"], on: ["data", "judge"], via: ["truth"], scores: 3, wl: `reward = score ${fmt2(EX.score2)}`, jl: "—", caption: `After the loop, the judge is shown the true answer and scores it ${fmt2(EX.scoreTrue)}.` },
     { rows: ["r9"], on: ["judge", "jloss"], via: ["jl"], scores: 3, wl: `reward = score ${fmt2(EX.score2)}`, jl: `−ln ${fmt2(EX.scoreTrue)} − ln ${fmt2(1 - EX.score2)} = ${judgeLoss.toFixed(2)}`,
-      caption: `Judge's loss: ${judgeLoss.toFixed(2)}, mostly for scoring the last draft high. It's pushed to doubt that draft, though the draft was right.` },
+      caption: `The judge's loss is ${judgeLoss.toFixed(2)} because it scored the last draft high, so training pushes its score down even though the draft was correct.` },
     { rows: ["r10"], on: ["writer", "judge", "wloss", "jloss"], via: [], scores: 3, wl: `reward = score ${fmt2(EX.score2)}`, jl: `−ln ${fmt2(EX.scoreTrue)} − ln ${fmt2(1 - EX.score2)} = ${judgeLoss.toFixed(2)}`,
       caption: `Both models take an optimizer step. Had the last draft scored ${fmt2(EX.score1)}, the judge's loss would be ${judgeLossIfWrong.toFixed(2)}.` },
   ];
@@ -5668,9 +5668,9 @@ function along(edges, u) {
 (() => {
   const id = "fig-decay", C0 = 1;
   const tips = {
-    pos: { title: "True answer, cut short", body: "A positive example: the true answer stopped early. Its value is C₀ · e^(−λΔT), so the full answer gets C₀ and short prefixes less." },
-    neg: { title: "Writer's draft", body: "A negative example: the writer's draft from one round. Its value is 1 − C₀ · e^(−λΔT): the last draft gets 0, early drafts almost 1." },
-    lambda: { title: "λ, the decay rate", body: "How fast the values fall off with rounds before the end. The draft gives 0.1 to 0.5 as typical in human conditioning." },
+    pos: { title: "True answer, cut short", body: "A positive example is the true answer stopped early. Its value is C₀ · e^(−λΔT), so the full answer gets C₀ and shorter prefixes get less." },
+    neg: { title: "Writer's draft", body: "A negative example is the writer's draft from one round. Its value is 1 − C₀ · e^(−λΔT), so the last draft gets 0 and early drafts get almost 1." },
+    lambda: { title: "Decay rate", body: "How quickly values fall with the number of rounds before the end. The draft gives 0.1 to 0.5 as typical in human conditioning." },
   };
   FS.figure(id, {
     height: (w) => (w < 560 ? 330 : 290),
@@ -5734,8 +5734,8 @@ function along(edges, u) {
     tok: { title: "Writer token step", body: "One forward pass of the writer, producing one soft token. Its activations must be kept for the backward pass." },
     judge: { title: "Judge step", body: "The judge's single pass that scores the round's draft." },
     measured: { title: "Measured", body: "3.9 GB of GPU memory for Pythia-70M at batch size 1, which the draft calls 30× the model's size (Section 5.1)." },
-    projected: { title: "Projected", body: "The draft's estimate for a “small” 8B model: 240 GB, “prohibitive”. Not measured (Section 5.1)." },
-    dropped: { title: "Dropped", body: "With truncated backpropagation these rounds are not kept, so they get no gradient: only the last round learns." },
+    projected: { title: "Projected", body: "The draft estimates 240 GB for a “small” 8B model and calls it “prohibitive”. This was not measured (Section 5.1)." },
+    dropped: { title: "Dropped", body: "With truncated backpropagation, these rounds are not kept and receive no gradient. Only the last round learns." },
   };
   FS.figure(id, {
     height: (w) => (w < 560 ? 440 : 250),
@@ -5803,7 +5803,7 @@ function along(edges, u) {
   const KINDS = {
     arg: { name: "Argument and motivation" },
     arch: { name: "Architecture figures" },
-    train: { name: "Training recipes" },
+    train: { name: "Training methods" },
     end: { name: "Results and end matter" },
   };
   const PAGES = [
@@ -5821,7 +5821,7 @@ function along(edges, u) {
     ["arch", ["Figure 5", "lateral."], "Figure 5: the lateralized shape, where the right lobe outputs a reward only."],
     ["train", ["Test sets,", "cost"], "Test sets, several with question marks (“Gridworld?”); the cost of a round; the lateralized setup.", "?"],
     ["train", ["RLHF,", "soft tokens"], "Equations 1 to 3: fine-tuning, RLHF, and soft tokens for training straight through the loop."],
-    ["train", ["Memory,", "GAN"], "The only measurement: 3.9 GB for Pythia-70M at batch size 1. Then the GAN recipe, Algorithm 1.", null, true],
+    ["train", ["Memory,", "GAN"], "The only measurement: 3.9 GB for Pythia-70M at batch size 1. Then the GAN method, Algorithm 1.", null, true],
     ["train", ["Actor-", "critic"], "Section 5.3: the writer as actor, the judge as critic, Equations 7 and 8."],
     ["train", ["Algo-", "rithm 2"], "Algorithm 2, the actor-critic training loop."],
     ["train", ["Self-", "play"], "Section 5.4, self-play, and the start of 5.5."],
@@ -5870,15 +5870,15 @@ function along(edges, u) {
     K.set(lgDot, { cx: 8, cy: -4 }); K.set(lgText, { x: 24, y: 0 }); K.set(lgRing, { cx: 8, cy: -4 }); K.set(lgMText, { x: 24, y: 0 });
   }
   const steps = [
-    { lit: null, caption: `${PAGES.length} pages: ${count("arg")} of argument, ${count("arch")} of architecture figures, ${count("train")} of training recipes, ${count("end")} of results and end matter.` },
-    { lit: [2], caption: "Page 2: the abstract promises “remarkable improvements on many common benchmarks of XX%”." },
-    { lit: [4, 5], caption: "Pages 4 and 5: two citations were never filled in, “[insert]” and “(insert paper)”." },
-    { lit: [6], caption: "Page 6: Section 1.4 is “TODO”, the last contribution ends “[NEED TO GO PROVE!]”, and Related Work is “(TODO)”." },
-    { lit: [13], caption: "Page 13: the planned test sets include “Gridworld?” and “Stockfish for chess?”, question marks and all." },
-    { lit: [15], caption: "Page 15 holds the only number the author measured: 3.9 GB of GPU memory for Pythia-70M, batch size 1." },
-    { lit: [20], caption: "Page 20: “TODO Describe LLaMAC”, then Section 6, Results, which reads “TODO :)”." },
-    { lit: [21], caption: "Page 21: Table 1 is blank, Table 2 is the template's “Widgets 42, Gadgets 13”, and the appendix is Overleaf's help text." },
-    { lit: [22], caption: "Page 22: one reference, Greenwade 1993, the template's sample. The works named in the text never made the list." },
+    { lit: null, caption: `The ${PAGES.length} pages contain ${count("arg")} pages of argument, ${count("arch")} of architecture figures, ${count("train")} of training methods, and ${count("end")} of results and end matter.` },
+    { lit: [2], caption: "On page 2, the abstract promises “remarkable improvements on many common benchmarks of XX%”." },
+    { lit: [4, 5], caption: "Pages 4 and 5 contain two unfilled citations, “[insert]” and “(insert paper)”." },
+    { lit: [6], caption: "On page 6, Section 1.4 is “TODO”, the last contribution ends “[NEED TO GO PROVE!]”, and Related Work is “(TODO)”." },
+    { lit: [13], caption: "On page 13, the planned test sets include “Gridworld?” and “Stockfish for chess?”, including the question marks." },
+    { lit: [15], caption: "Page 15 contains the only number the author measured, 3.9 GB of GPU memory for Pythia-70M at batch size 1." },
+    { lit: [20], caption: "Page 20 says “TODO Describe LLaMAC”, and Section 6, Results, reads “TODO :)”." },
+    { lit: [21], caption: "On page 21, Table 1 is blank, Table 2 contains the template's “Widgets 42, Gadgets 13”, and the appendix contains Overleaf's help text." },
+    { lit: [22], caption: "Page 22 contains one reference, the template's Greenwade 1993 sample, while the works named in the text are absent from the list." },
   ];
   FS.figure(id, {
     height: (w) => { const b = LAYOUTS[w < 560 ? "narrow" : "wide"].box; return (w * b[1]) / b[0]; },

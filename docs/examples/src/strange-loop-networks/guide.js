@@ -90,8 +90,8 @@ function along(edges, u) {
 (() => {
   const id = "fig-loop", K = svgKit(id), LAP = 4.4;
   const tips = {
-    writer: { title: "Writer", body: "Writes a draft: level 1, the text itself. In the strange loop its input also holds the judge's last verdict." },
-    judge: { title: "Judge", body: "Writes a verdict on the draft: level 2, text about the text. In an ordinary stack nothing carries it back down." },
+    writer: { title: "Writer", body: "Writes a draft at level 1. In the strange loop, its input also includes the judge's last verdict." },
+    judge: { title: "Judge", body: "Writes a verdict about the draft at level 2. An ordinary hierarchy does not carry the verdict back to the writer." },
   };
   const bands = [0, 1].map(() => ({ rect: K.el("rect", { rx: 10 }), text: K.el("text", { "font-size": 11, "font-weight": 600, "letter-spacing": "0.06em" }) }));
   bands[0].text.textContent = "LEVEL 1 · THE TEXT"; bands[1].text.textContent = "LEVEL 2 · ABOUT THE TEXT";
@@ -127,20 +127,20 @@ function along(edges, u) {
   function moment(f) {
     const strange = f.params.wiring === "strange", c = f.state.clock || 0, lap = Math.floor(c / LAP), u = c % LAP;
     if (strange) {
-      if (u < 1.4) return { levels: 2 * lap + 1, at: "on the way up", pos: ["up", u / 1.4], text: lap ? `Draft ${lap + 1} goes up to the judge. It was written knowing the last verdict.` : "Draft 1 goes up to the judge." };
-      if (u < 2.2) return { levels: 2 * lap + 2, at: "the judge", pos: ["judge"], text: `The judge writes a verdict on draft ${lap + 1}: level ${2 * lap + 2}.` };
+      if (u < 1.4) return { levels: 2 * lap + 1, at: "on the way up", pos: ["up", u / 1.4], text: lap ? `Draft ${lap + 1} goes to the judge with the last verdict in its context.` : "Draft 1 goes up to the judge." };
+      if (u < 2.2) return { levels: 2 * lap + 2, at: "the judge", pos: ["judge"], text: `The judge writes a verdict about draft ${lap + 1}: level ${2 * lap + 2}.` };
       if (u < 3.6) return { levels: 2 * lap + 2, at: "on the way down", pos: ["back", (u - 2.2) / 1.4], text: "The verdict comes back down, into the writer's input." };
-      return { levels: 2 * lap + 2, at: "the writer", pos: ["writer"], text: `Back where it started, the writer now writes at level ${2 * lap + 3}.` };
+      return { levels: 2 * lap + 2, at: "the writer", pos: ["writer"], text: `The verdict returns to the writer, which now writes at level ${2 * lap + 3}.` };
     }
     if (u < 1.4) return { levels: 1, at: "on the way up", pos: ["up", u / 1.4], text: "A draft goes up to the judge." };
-    if (u < 2.4) return { levels: 2, at: "the judge", pos: ["judge"], text: "The judge writes a verdict: level 2. Nothing carries it back down." };
+    if (u < 2.4) return { levels: 2, at: "the judge", pos: ["judge"], text: "The judge writes a verdict at level 2, and nothing carries it back to the writer." };
     if (u < 3.6) return { levels: 1, at: "a new prompt", pos: ["input", (u - 2.4) / 1.2], text: "A new prompt arrives, and the writer starts again at level 1." };
     return { levels: 1, at: "the writer", pos: ["writer"], text: "A new prompt arrives, and the writer starts again at level 1." };
   }
   FS.figure(id, {
     height: (w) => { const b = LAYOUTS[w < 560 ? "narrow" : "wide"].box; return (w * b[1]) / b[0]; },
     params: { wiring: { value: "strange", label: "Wiring", placement: "inline", options: [{ value: "ordinary", label: "Ordinary stack" }, { value: "strange", label: "Strange loop" }] } },
-    reserve: { levels: ["Levels climbed: 88 · now at: on the way down"], wire: ["Back where it started, the writer now writes at level 88.", "Draft 88 goes up to the judge. It was written knowing the last verdict."] },
+    reserve: { levels: ["Levels climbed: 88 · now at: on the way down"], wire: ["The verdict returns to the writer, which now writes at level 88.", "Draft 88 goes to the judge with the last verdict in its context."] },
     settle: 10.5,
     init(f) { f.state.clock = 0; f.state.mix = 1; },
     onParam(f) { f.state.clock = 0; f.dirty = true; },
@@ -183,13 +183,13 @@ function along(edges, u) {
 (() => {
   const id = "fig-sln", K = svgKit(id);
   const tips = {
-    prompt: { title: "Your prompt", body: "What you ask. The shared context C, which both models read, starts as just this. Turn 0 in the draft's Figure 2." },
-    enc: { title: "Encoder (optional)", body: "The draft says it can make sense to pass the input through a separate encoder first. Not needed here." },
+    prompt: { title: "Your prompt", body: "What you ask. The shared context C, which both models read, starts with this prompt. It is turn 0 in the draft's Figure 2." },
+    enc: { title: "Encoder (optional)", body: "A separate encoder can prepare the input before it enters the loop. This example does not use one." },
     check: { title: "Check", body: "Decides whether to go round again. The draft's options: a number of rounds, a confidence score, or the two models agreeing." },
     left: { title: "Writer (left model)", body: "Reads its own system prompt plus the conversation so far and writes a draft. Also called actor, generator or student." },
     right: { title: "Judge (right model)", body: "In this version it returns only a score. Also called critic, reward model, discriminator or teacher." },
     dec: { title: "Decoder (optional)", body: "Turns the agreed result into the final output; the draft likens it to putting a thought into words." },
-    out: { title: "Answer", body: "The only thing that leaves the loop: turn n + 1 in the draft's Figure 2." },
+    out: { title: "Answer", body: "Only the answer leaves the loop. It is turn n + 1 in the draft's Figure 2." },
   };
   const E = {
     inEnc: edge(K), encCheck: edge(K), checkLeft: edge(K, "context C"), leftCheck: edge(K, "draft"),
@@ -252,15 +252,15 @@ function along(edges, u) {
   }
   const bar = fmt2(EX.bar);
   const steps = [
-    { on: Object.keys(N), via: [], cards: 0, check: "stop?", round: "Overview", caption: "The whole loop. Your prompt enters at the bottom, the two models take turns through the check, and an answer leaves at the top." },
-    { on: ["prompt", "enc", "check"], via: ["inEnc", "encCheck"], cards: 1, check: "no score yet", round: "Round 1", caption: "You ask: what is 2534 × 5423? The context C, what both models read, starts as just your prompt." },
-    { on: ["check", "left"], via: ["checkLeft"], cards: 2, check: "no score yet", round: "Round 1", caption: `The writer reads its own instructions plus C and drafts a quick answer: “${EX.draft1.toLowerCase().replace(".", "")}”.` },
-    { on: ["left", "check"], via: ["leftCheck"], cards: 2, check: "no score yet", round: "Round 1", caption: "The draft comes back to the check. There's no score yet, so it goes on to the judge." },
-    { on: ["check", "right"], via: ["checkRight"], cards: 3, check: "no score yet", round: "Round 1", caption: `The judge reads the prompt and the draft and returns one number: ${fmt2(EX.score1)}. Not convinced.` },
-    { on: ["right", "check"], via: ["rightCheck"], cards: 3, check: `${fmt2(EX.score1)}: again`, round: "Round 1", caption: `${fmt2(EX.score1)} is below the bar of ${bar}. The draft and its score join C, and the loop goes round again.` },
-    { on: ["check", "left"], via: ["checkLeft"], cards: 4, check: "no score yet", round: "Round 2", caption: `The writer rereads everything, its weak draft and the ${fmt2(EX.score1)} included, and works it out properly this time.` },
-    { on: ["left", "check", "right"], via: ["leftCheck", "checkRight"], cards: 5, check: "no score yet", round: "Round 2", caption: `The new draft goes through the check to the judge, which scores it ${fmt2(EX.score2)}.` },
-    { on: ["right", "check", "dec", "out"], via: ["rightCheck", "checkDec", "decOut"], cards: 6, check: `${fmt2(EX.score2)}: stop`, round: "Answered", caption: `${fmt2(EX.score2)} clears the bar. The loop stops, and the decoder writes out the final answer: ${EX.answer}.` },
+    { on: Object.keys(N), via: [], cards: 0, check: "stop?", round: "Overview", caption: "The prompt enters at the bottom, the models take turns through the check, and the answer leaves at the top." },
+    { on: ["prompt", "enc", "check"], via: ["inEnc", "encCheck"], cards: 1, check: "no score yet", round: "Round 1", caption: "The context C, which both models read, begins with the prompt “What is 2534 × 5423?”" },
+    { on: ["check", "left"], via: ["checkLeft"], cards: 2, check: "no score yet", round: "Round 1", caption: `The writer reads its instructions and C, then drafts “${EX.draft1.toLowerCase().replace(".", "")}”.` },
+    { on: ["left", "check"], via: ["leftCheck"], cards: 2, check: "no score yet", round: "Round 1", caption: "The draft returns to the check and continues to the judge because no score is available." },
+    { on: ["check", "right"], via: ["checkRight"], cards: 3, check: "no score yet", round: "Round 1", caption: `The judge reads the prompt and draft, then returns a score of ${fmt2(EX.score1)}.` },
+    { on: ["right", "check"], via: ["rightCheck"], cards: 3, check: `${fmt2(EX.score1)}: again`, round: "Round 1", caption: `${fmt2(EX.score1)} is below the bar of ${bar}, so the draft and score join C for another round.` },
+    { on: ["check", "left"], via: ["checkLeft"], cards: 4, check: "no score yet", round: "Round 2", caption: `The writer reads the prompt, its first draft, and the ${fmt2(EX.score1)} score before producing a worked answer.` },
+    { on: ["left", "check", "right"], via: ["leftCheck", "checkRight"], cards: 5, check: "no score yet", round: "Round 2", caption: `The worked draft passes through the check, and the judge scores it ${fmt2(EX.score2)}.` },
+    { on: ["right", "check", "dec", "out"], via: ["rightCheck", "checkDec", "decOut"], cards: 6, check: `${fmt2(EX.score2)}: stop`, round: "Answered", caption: `${fmt2(EX.score2)} clears the bar, so the loop stops and the decoder returns ${EX.answer}.` },
   ];
   FS.figure(id, {
     height: (w) => { const b = LAYOUTS[w < 560 ? "narrow" : "wide"].box; return (w * b[1]) / b[0]; },
@@ -303,12 +303,12 @@ function along(edges, u) {
 (() => {
   const id = "fig-shapes", K = svgKit(id);
   const FACTS = {
-    tall: "Each side is a full copy of one pretrained model, steered by its own system prompt. Each returns a full reply; they stop on a stop token or when they agree.",
-    wide: "A router picks left, right or out, again and again. Each side is two thin layers, a gate and an expert that starts random; its output is added to the context.",
-    lateralized: "Two full copies again, but specialized: the writer returns a reply plus the score it expects, the judge returns a score only. They stop when the score clears a bar.",
+    tall: "Both sides are full copies of one pretrained model with separate system prompts, and each returns full replies until a stop token or agreement ends the loop.",
+    wide: "A router repeatedly chooses left, right or out, and each side adds the output of a gate and randomly initialized expert layer to the context.",
+    lateralized: "Two full model copies have separate roles, with the writer returning a reply and its expected score and the judge returning only a score until that score clears the bar.",
   };
   const T = {
-    prompt: { title: "Your prompt", body: "Where every shape starts: the prompt becomes the shared context." },
+    prompt: { title: "Your prompt", body: "The prompt becomes the shared context for every shape." },
     check: { title: "Check", body: "Decides whether to go round again or answer. The tall shape stops on a stop token (Figure 3)." },
     answer: { title: "Answer", body: "The final output, written once the loop stops." },
     tallL: { title: "Left: a full model", body: "A pretrained model with its whole stack of N attention and feed-forward blocks. Figure 3 suggests “Llama 3 7B”, copied into both seats." },
@@ -317,10 +317,10 @@ function along(edges, u) {
     latR: { title: "Judge", body: "A full model copy specialized as a reward model: it outputs a score only (“does it make sense or not?”, Figure 5)." },
     first: { title: "First 3 blocks", body: "The first three transformer blocks of the original model, kept as they were. The draft calls the cut “a lobotomy”." },
     last: { title: "Last 3 blocks", body: "The original model's last three blocks and output layer write the answer once the router picks out." },
-    router: { title: "Router", body: "The main gating network: each pass it sends the context left, right or out. It decides when to stop." },
+    router: { title: "Router", body: "The main gating network sends the context left, right or out on each pass. Its choice decides when the loop stops." },
     gate: { title: "Gate", body: "A gating network that picks which compute to run on this pass." },
     expert: { title: "Expert layer", body: "A mixture-of-experts layer, randomly initialised (“MOE (random)” in Figure 4), that does the compute the gate picked." },
-    plus: { title: "Add to context", body: "The expert's result is concatenated onto the context, “C += c”, and sent back to the router." },
+    plus: { title: "Add to context", body: "The expert's result is added to the context as “C += c” and returned to the router." },
   };
   const groups = {};
   const mkShape = (name, build) => { const g = K.el("g"); groups[name] = { g, alpha: name === "tall" ? 1 : 0, ...build(g) }; };
@@ -463,9 +463,9 @@ function along(edges, u) {
     { key: "hard", name: "2534 × 5423", tokens: 40, scores: [EX.score1, EX.score2, 0.92, 0.94, 0.95, 0.95, 0.96, 0.96, 0.96, 0.96, 0.96, 0.96] },
   ];
   const tips = {
-    bar: { title: "The bar", body: "How sure the judge must be before the loop stops. The draft gives no value; 0.80 is illustrative. Drag it." },
-    easy: { title: "2 + 2", body: "An easy prompt: the judge is satisfied by the first draft. Illustrative scores; a 2-token draft." },
-    hard: { title: "2534 × 5423", body: "The worked example: a rough first draft scores 0.20, the worked-out second one 0.90. Illustrative; 40-token drafts." },
+    bar: { title: "Score bar", body: "The minimum judge score that stops the loop. The draft gives no value, so 0.80 is illustrative. Drag the bar to change it." },
+    easy: { title: "2 + 2", body: "The judge accepts this easy prompt's first draft. The scores and 2-token draft are illustrative." },
+    hard: { title: "2534 × 5423", body: "In the worked example, the first draft scores 0.20 and the second scores 0.90. The scores and 40-token drafts are illustrative." },
     cost: { title: "Forward passes", body: "Each round costs one pass per draft token for the writer plus one for the judge, which only returns a score (Section 5.2)." },
   };
   const used = (p, bar, limit) => { for (let i = 0; i < limit; i++) if (p.scores[i] >= bar) return { rounds: i + 1, capped: false }; return { rounds: limit, capped: true }; };
@@ -486,7 +486,7 @@ function along(edges, u) {
     tipAt: (f, x, y) => f.state.hits?.find((h) => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h)?.key ?? null,
     handles: {
       bar: {
-        label: "The bar: drag up or down, or use the arrow keys",
+        label: "Score bar: drag up or down, or use the arrow keys",
         radius: () => 16, step: 4,
         get: (f) => { const g = geo(f); return { x: g.x1, y: g.bottom - f.v.bar * (g.bottom - g.top) }; },
         set: (f, x, y) => { const g = geo(f); let v = (g.bottom - y) / (g.bottom - g.top); if (Math.abs(v - EX.bar) < 0.012) v = EX.bar; FS.get(id).set("bar", FS.clamp(v, 0, 1), { instant: true }); },
@@ -559,11 +559,11 @@ function along(edges, u) {
     { key: "r2", text: "for round 1, 2, … up to the limit:", ref: "l. 4–5", indent: 1, tip: "Start the inner dialogue loop: for i = 1 to IDL_limit." },
     { key: "r3", text: "writer writes a draft, token by token", ref: "l. 6–13", indent: 2, tip: "x_left^j ← Actor(x_left), appended until the end-of-sequence token." },
     { key: "r4", text: "judge scores the draft", ref: "l. 14", indent: 2, tip: "ŷ_right ← Critic(x_left)." },
-    { key: "r5", text: "score ≥ bar? stop the loop", ref: "l. 15–16", indent: 2, tip: "if ŷ_right ≥ threshold then break." },
-    { key: "r6", text: "else add draft and score to the prompt", ref: "l. 18", indent: 2, tip: "x ← concat(x, x_left, ŷ_right)." },
+    { key: "r5", text: "stop if score ≥ bar", ref: "l. 15–16", indent: 2, tip: "if ŷ_right ≥ threshold then break." },
+    { key: "r6", text: "otherwise add draft and score to the prompt", ref: "l. 18", indent: 2, tip: "x ← concat(x, x_left, ŷ_right)." },
     { key: "r7", text: "writer's loss uses the score as reward", ref: "l. 20–21", indent: 2, tip: "L_actor = L^CLIP(ŷ_left, y_true, ŷ_right), then backward. L^CLIP is PPO's clipped objective with the judge's score in place of the advantage (Eq. 8)." },
     { key: "r8", text: "judge scores the true answer", ref: "l. 23", indent: 1, tip: "ŷ_right_true ← Critic(x + y_true)." },
-    { key: "r9", text: "judge's loss: true high, draft low", ref: "l. 24–25", indent: 1, tip: "L_critic = −log(ŷ_right_true) − log(1 − ŷ_right) (Eq. 7), then backward." },
+    { key: "r9", text: "judge's loss favors true over draft", ref: "l. 24–25", indent: 1, tip: "L_critic = −log(ŷ_right_true) − log(1 − ŷ_right) (Eq. 7), then backward." },
     { key: "r10", text: "step both optimizers", ref: "l. 27–28", indent: 0, tip: "optimizer_critic.step(); optimizer_actor.step()." },
   ];
   const tips = {
@@ -571,7 +571,7 @@ function along(edges, u) {
     writer: { title: "Writer (actor)", body: "Writes drafts. It is trained to make the judge's score go up." },
     judge: { title: "Judge (critic)", body: "Scores text from 0 to 1. It is trained to give the true answer a high score and the writer's draft a low one." },
     wloss: { title: "Writer's loss", body: "PPO's clipped objective with the judge's score as the reward (Eq. 8). Higher score, smaller loss." },
-    jloss: { title: "Judge's loss", body: "Binary cross-entropy: −log of the true answer's score, minus log of one minus the draft's score (Eq. 7)." },
+    jloss: { title: "Judge's loss", body: "Binary cross-entropy uses −log of the true answer's score minus log of one minus the draft's score (Eq. 7)." },
   };
   const N = {
     data: box(K, "data", { label: "One training example", sub: "prompt 2534 × 5423 · true answer 13,741,882", tip: tips.data }),
@@ -617,15 +617,15 @@ function along(edges, u) {
   }
   const scores = (n) => [`draft 1 → ${fmt2(EX.score1)}`, `draft 2 → ${fmt2(EX.score2)}`, `true answer → ${fmt2(EX.scoreTrue)}`].slice(0, n).join(" · ");
   const steps = [
-    { rows: [], on: ["data", "writer", "judge", "wloss", "jloss"], via: [], scores: 0, wl: "—", jl: "—", caption: "One training example, two models, and the draft's Algorithm 2. Step through one pass of it." },
-    { rows: ["r1"], on: ["data"], via: [], scores: 0, wl: "—", jl: "—", caption: "Take a training example: the prompt 2534 × 5423 and the answer we want, 13,741,882." },
-    { rows: ["r2", "r3"], on: ["data", "writer"], via: ["prompt"], scores: 0, wl: "—", jl: "—", caption: "Round 1: the writer reads the prompt and drafts “about 13.7 million”, token by token until it stops." },
-    { rows: ["r4"], on: ["writer", "judge"], via: ["draft"], scores: 1, wl: "—", jl: "—", caption: `The judge scores the draft: ${fmt2(EX.score1)}.` },
-    { rows: ["r5", "r6"], on: ["judge", "writer"], via: ["score"], scores: 2, wl: "—", jl: "—", caption: `Below the bar, so draft and score are added to the prompt and the writer goes again. Round 2 scores ${fmt2(EX.score2)}: stop.` },
-    { rows: ["r7"], on: ["writer", "wloss"], via: ["wl"], scores: 2, wl: `reward = score ${fmt2(EX.score2)}`, jl: "—", caption: "Each round the writer's loss uses the judge's score as its reward, clipped like PPO. A higher score means a smaller loss." },
+    { rows: [], on: ["data", "writer", "judge", "wloss", "jloss"], via: [], scores: 0, wl: "—", jl: "—", caption: "Step through one pass of the draft's Algorithm 2 with one training example and two models." },
+    { rows: ["r1"], on: ["data"], via: [], scores: 0, wl: "—", jl: "—", caption: "The training example contains the prompt 2534 × 5423 and the target answer 13,741,882." },
+    { rows: ["r2", "r3"], on: ["data", "writer"], via: ["prompt"], scores: 0, wl: "—", jl: "—", caption: "In round 1, the writer reads the prompt and produces “about 13.7 million” one token at a time." },
+    { rows: ["r4"], on: ["writer", "judge"], via: ["draft"], scores: 1, wl: "—", jl: "—", caption: `The judge gives the draft a score of ${fmt2(EX.score1)}.` },
+    { rows: ["r5", "r6"], on: ["judge", "writer"], via: ["score"], scores: 2, wl: "—", jl: "—", caption: `Because the score is below the bar, the draft and score are added to the prompt before round 2 reaches ${fmt2(EX.score2)} and stops the loop.` },
+    { rows: ["r7"], on: ["writer", "wloss"], via: ["wl"], scores: 2, wl: `reward = score ${fmt2(EX.score2)}`, jl: "—", caption: "Each round uses the judge's score as the writer's PPO-style clipped reward, so a higher score produces a smaller loss." },
     { rows: ["r8"], on: ["data", "judge"], via: ["truth"], scores: 3, wl: `reward = score ${fmt2(EX.score2)}`, jl: "—", caption: `After the loop, the judge is shown the true answer and scores it ${fmt2(EX.scoreTrue)}.` },
     { rows: ["r9"], on: ["judge", "jloss"], via: ["jl"], scores: 3, wl: `reward = score ${fmt2(EX.score2)}`, jl: `−ln ${fmt2(EX.scoreTrue)} − ln ${fmt2(1 - EX.score2)} = ${judgeLoss.toFixed(2)}`,
-      caption: `Judge's loss: ${judgeLoss.toFixed(2)}, mostly for scoring the last draft high. It's pushed to doubt that draft, though the draft was right.` },
+      caption: `The judge's loss is ${judgeLoss.toFixed(2)} because it scored the last draft high, so training pushes its score down even though the draft was correct.` },
     { rows: ["r10"], on: ["writer", "judge", "wloss", "jloss"], via: [], scores: 3, wl: `reward = score ${fmt2(EX.score2)}`, jl: `−ln ${fmt2(EX.scoreTrue)} − ln ${fmt2(1 - EX.score2)} = ${judgeLoss.toFixed(2)}`,
       caption: `Both models take an optimizer step. Had the last draft scored ${fmt2(EX.score1)}, the judge's loss would be ${judgeLossIfWrong.toFixed(2)}.` },
   ];
@@ -659,9 +659,9 @@ function along(edges, u) {
 (() => {
   const id = "fig-decay", C0 = 1;
   const tips = {
-    pos: { title: "True answer, cut short", body: "A positive example: the true answer stopped early. Its value is C₀ · e^(−λΔT), so the full answer gets C₀ and short prefixes less." },
-    neg: { title: "Writer's draft", body: "A negative example: the writer's draft from one round. Its value is 1 − C₀ · e^(−λΔT): the last draft gets 0, early drafts almost 1." },
-    lambda: { title: "λ, the decay rate", body: "How fast the values fall off with rounds before the end. The draft gives 0.1 to 0.5 as typical in human conditioning." },
+    pos: { title: "True answer, cut short", body: "A positive example is the true answer stopped early. Its value is C₀ · e^(−λΔT), so the full answer gets C₀ and shorter prefixes get less." },
+    neg: { title: "Writer's draft", body: "A negative example is the writer's draft from one round. Its value is 1 − C₀ · e^(−λΔT), so the last draft gets 0 and early drafts get almost 1." },
+    lambda: { title: "Decay rate", body: "How quickly values fall with the number of rounds before the end. The draft gives 0.1 to 0.5 as typical in human conditioning." },
   };
   FS.figure(id, {
     height: (w) => (w < 560 ? 330 : 290),
@@ -725,8 +725,8 @@ function along(edges, u) {
     tok: { title: "Writer token step", body: "One forward pass of the writer, producing one soft token. Its activations must be kept for the backward pass." },
     judge: { title: "Judge step", body: "The judge's single pass that scores the round's draft." },
     measured: { title: "Measured", body: "3.9 GB of GPU memory for Pythia-70M at batch size 1, which the draft calls 30× the model's size (Section 5.1)." },
-    projected: { title: "Projected", body: "The draft's estimate for a “small” 8B model: 240 GB, “prohibitive”. Not measured (Section 5.1)." },
-    dropped: { title: "Dropped", body: "With truncated backpropagation these rounds are not kept, so they get no gradient: only the last round learns." },
+    projected: { title: "Projected", body: "The draft estimates 240 GB for a “small” 8B model and calls it “prohibitive”. This was not measured (Section 5.1)." },
+    dropped: { title: "Dropped", body: "With truncated backpropagation, these rounds are not kept and receive no gradient. Only the last round learns." },
   };
   FS.figure(id, {
     height: (w) => (w < 560 ? 440 : 250),
@@ -794,7 +794,7 @@ function along(edges, u) {
   const KINDS = {
     arg: { name: "Argument and motivation" },
     arch: { name: "Architecture figures" },
-    train: { name: "Training recipes" },
+    train: { name: "Training methods" },
     end: { name: "Results and end matter" },
   };
   const PAGES = [
@@ -812,7 +812,7 @@ function along(edges, u) {
     ["arch", ["Figure 5", "lateral."], "Figure 5: the lateralized shape, where the right lobe outputs a reward only."],
     ["train", ["Test sets,", "cost"], "Test sets, several with question marks (“Gridworld?”); the cost of a round; the lateralized setup.", "?"],
     ["train", ["RLHF,", "soft tokens"], "Equations 1 to 3: fine-tuning, RLHF, and soft tokens for training straight through the loop."],
-    ["train", ["Memory,", "GAN"], "The only measurement: 3.9 GB for Pythia-70M at batch size 1. Then the GAN recipe, Algorithm 1.", null, true],
+    ["train", ["Memory,", "GAN"], "The only measurement: 3.9 GB for Pythia-70M at batch size 1. Then the GAN method, Algorithm 1.", null, true],
     ["train", ["Actor-", "critic"], "Section 5.3: the writer as actor, the judge as critic, Equations 7 and 8."],
     ["train", ["Algo-", "rithm 2"], "Algorithm 2, the actor-critic training loop."],
     ["train", ["Self-", "play"], "Section 5.4, self-play, and the start of 5.5."],
@@ -861,15 +861,15 @@ function along(edges, u) {
     K.set(lgDot, { cx: 8, cy: -4 }); K.set(lgText, { x: 24, y: 0 }); K.set(lgRing, { cx: 8, cy: -4 }); K.set(lgMText, { x: 24, y: 0 });
   }
   const steps = [
-    { lit: null, caption: `${PAGES.length} pages: ${count("arg")} of argument, ${count("arch")} of architecture figures, ${count("train")} of training recipes, ${count("end")} of results and end matter.` },
-    { lit: [2], caption: "Page 2: the abstract promises “remarkable improvements on many common benchmarks of XX%”." },
-    { lit: [4, 5], caption: "Pages 4 and 5: two citations were never filled in, “[insert]” and “(insert paper)”." },
-    { lit: [6], caption: "Page 6: Section 1.4 is “TODO”, the last contribution ends “[NEED TO GO PROVE!]”, and Related Work is “(TODO)”." },
-    { lit: [13], caption: "Page 13: the planned test sets include “Gridworld?” and “Stockfish for chess?”, question marks and all." },
-    { lit: [15], caption: "Page 15 holds the only number the author measured: 3.9 GB of GPU memory for Pythia-70M, batch size 1." },
-    { lit: [20], caption: "Page 20: “TODO Describe LLaMAC”, then Section 6, Results, which reads “TODO :)”." },
-    { lit: [21], caption: "Page 21: Table 1 is blank, Table 2 is the template's “Widgets 42, Gadgets 13”, and the appendix is Overleaf's help text." },
-    { lit: [22], caption: "Page 22: one reference, Greenwade 1993, the template's sample. The works named in the text never made the list." },
+    { lit: null, caption: `The ${PAGES.length} pages contain ${count("arg")} pages of argument, ${count("arch")} of architecture figures, ${count("train")} of training methods, and ${count("end")} of results and end matter.` },
+    { lit: [2], caption: "On page 2, the abstract promises “remarkable improvements on many common benchmarks of XX%”." },
+    { lit: [4, 5], caption: "Pages 4 and 5 contain two unfilled citations, “[insert]” and “(insert paper)”." },
+    { lit: [6], caption: "On page 6, Section 1.4 is “TODO”, the last contribution ends “[NEED TO GO PROVE!]”, and Related Work is “(TODO)”." },
+    { lit: [13], caption: "On page 13, the planned test sets include “Gridworld?” and “Stockfish for chess?”, including the question marks." },
+    { lit: [15], caption: "Page 15 contains the only number the author measured, 3.9 GB of GPU memory for Pythia-70M at batch size 1." },
+    { lit: [20], caption: "Page 20 says “TODO Describe LLaMAC”, and Section 6, Results, reads “TODO :)”." },
+    { lit: [21], caption: "On page 21, Table 1 is blank, Table 2 contains the template's “Widgets 42, Gadgets 13”, and the appendix contains Overleaf's help text." },
+    { lit: [22], caption: "Page 22 contains one reference, the template's Greenwade 1993 sample, while the works named in the text are absent from the list." },
   ];
   FS.figure(id, {
     height: (w) => { const b = LAYOUTS[w < 560 ? "narrow" : "wide"].box; return (w * b[1]) / b[0]; },
