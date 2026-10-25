@@ -24,6 +24,7 @@ The voice of a person explaining something they know well to a colleague. Plain,
 - One term per thing across the page. If the legend says "Reply", the caption does not say "speech output".
 
 ## Titles
+- Do not put a label above a heading. The heading stands alone.
 - A guide's title (the page title, the h1, the index card) is the name of the subject or a simplified version of it, 3 to 6 words: "Recursive language models", "Liquid time-constant networks", "Conscious micro-epochs". Not a claim, not a hook.
 - A figure's title is its claim, in sentence case, no period, at most ~9 words, said plainly: "The agent only acts on what you meant", "Polling on a timer is expensive or blind".
 - Not the variable list ("Latency vs. phase"), not a question.

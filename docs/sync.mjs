@@ -52,48 +52,76 @@ function inject(page, name, html) {
 
 const escape = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-// Just enough Markdown for THIRD_PARTY_NOTICES.md: headings, paragraphs, bullets, bold, links, code.
-function inline(text) {
-  const codes = [];
-  let s = escape(text).replace(/`([^`]+)`/g, (_, c) => `\u0000${codes.push(c) - 1}\u0000`);
-  s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, t, href) => `<a href="${href}">${t}</a>`);
-  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-  return s.replace(/\u0000(\d+)\u0000/g, (_, i) => `<code>${codes[i]}</code>`);
-}
-function markdown(md) {
-  const out = [];
-  let para = [];
-  let list = null;
-  const flush = () => {
-    if (para.length) out.push(`<p>${inline(para.join(" "))}</p>`);
-    para = [];
-    if (list) out.push(`<ul>\n${list.map((li) => `  <li>${inline(li)}</li>`).join("\n")}\n</ul>`);
-    list = null;
-  };
-  for (const line of md.split("\n")) {
-    const heading = /^(#{1,3})\s+(.*)$/.exec(line);
-    if (heading) {
-      flush();
-      // The page owns its h1, so the notices start at h2.
-      const level = Math.max(2, heading[1].length);
-      out.push(`<h${level}>${inline(heading[2])}</h${level}>`);
-    } else if (/^\s*-\s+/.test(line)) {
-      if (para.length) flush();
-      list ??= [];
-      list.push(line.replace(/^\s*-\s+/, ""));
-    } else if (!line.trim()) flush();
-    else if (list && /^\s+/.test(line)) list[list.length - 1] += ` ${line.trim()}`;
-    else {
-      if (list) flush();
-      para.push(line.trim());
+// Plain summaries for the Credits page. THIRD_PARTY_NOTICES.md remains the full legal source.
+const creditSections = [
+  {
+    title: "Inspiration and adapted ideas",
+    items: [
+      { name: "diagram-design", href: "https://github.com/cathrynlavery/diagram-design", description: "is Cathryn Lavery's MIT-licensed diagram taxonomy, adapted here with motion and interaction guidance." },
+      { name: "pmndrs math", href: "https://github.com/pmndrs/math", description: "is an MIT-licensed geometry and simulation library whose data-oriented approach informs the WebGL guidance." },
+      { name: "gpgpu-curl-noise-dof", href: "https://pmndrs.github.io/examples/gpgpu-curl-noise-dof", description: "is an MIT-licensed Poimandres example that informed the per-point depth-of-field approach." },
+      { name: "Alex Zhang's blog figures", href: "https://alexzhang13.github.io/", description: "provided interaction patterns for study; no code is included, and the source notice does not state a software license." },
+      { name: "interface-design guidance", href: "https://github.com/jakubkrehel/skills", description: "combines MIT-licensed guidance from jakubkrehel/skills and Vercel's Web Interface Guidelines." },
+      { name: "OKLab", href: "https://bottosson.github.io/posts/oklab/", description: "and the W3C CSS Color 4 matrices define the color conversion used by the theme tools; no source code is included." },
+      { name: "Konsistent", href: "https://github.com/vercel-labs/konsistent", description: "is Vercel Labs' optional Apache-2.0 structural linter." },
+      { name: "SapiMouse", href: "https://www.ms.sapientia.ro/~manyi/sapimouse/sapimouse.html", description: "is the mouse-dynamics dataset used for summary statistics in the interaction guidance; no recorded data is included, and the source notice does not state a dataset license." },
+    ],
+  },
+  {
+    title: "Libraries the guidance works with",
+    items: [
+      { name: "nivo", href: "https://nivo.rocks/", description: "is an MIT-licensed chart library and is not bundled." },
+      { name: "three.js", href: "https://threejs.org/", description: "is an MIT-licensed WebGL library and is not bundled." },
+      { name: "react-three-fiber", href: "https://github.com/pmndrs/react-three-fiber", description: "is an MIT-licensed React renderer for three.js and is not bundled." },
+      { name: "drei", href: "https://github.com/pmndrs/drei", description: "is an MIT-licensed helper library for react-three-fiber and is not bundled." },
+      { name: "@react-three/postprocessing", href: "https://github.com/pmndrs/react-postprocessing", description: "is an MIT-licensed post-processing library and is not bundled." },
+      { name: "maath", href: "https://github.com/pmndrs/maath", description: "is an MIT-licensed motion-math library compared with pmndrs math in the guidance and is not bundled." },
+      { name: "MediaPipe", href: "https://developers.google.com/mediapipe", description: "provides the Apache-2.0 pose landmarker used for tracing people as geometry and is not bundled." },
+      { name: "Mermaid", href: "https://mermaid.js.org/", description: "is an MIT-licensed diagram library supported by the fill expansion mode and is not bundled." },
+    ],
+  },
+  {
+    title: "Themes",
+    items: [
+      { name: "Omarchy", href: "https://github.com/basecamp/omarchy", description: "provides the MIT-licensed theme colors pinned at commit 81fd2d23ca6e3462183a4dc8360de3113fa8d80c, © Basecamp/37signals and contributors." },
+      { name: "Catppuccin", href: "https://github.com/catppuccin/catppuccin", description: "provides an upstream palette under the MIT License." },
+      { name: "Everforest", href: "https://github.com/sainnhe/everforest", description: "provides an upstream palette under the MIT License." },
+      { name: "Flexoki", href: "https://github.com/kepano/flexoki", description: "provides an upstream palette under the MIT License." },
+      { name: "Gruvbox", href: "https://github.com/morhetz/gruvbox", description: "provides an upstream palette under the MIT License." },
+      { name: "Kanagawa", href: "https://github.com/rebelot/kanagawa.nvim", description: "provides an upstream palette under the MIT License." },
+      { name: "Nord", href: "https://github.com/nordtheme/nord", description: "provides an upstream palette under the MIT License." },
+      { name: "Rosé Pine", href: "https://github.com/rose-pine/rose-pine-theme", description: "provides an upstream palette under the MIT License." },
+      { name: "Tokyo Night", href: "https://github.com/enkia/tokyo-night-vscode-theme", description: "provides an upstream palette under the MIT License." },
+      { name: "Default and Notebook", href: "https://github.com/juanbermudez/animated-visuals/tree/main/themes", description: "are original Animated Visuals themes released under the MIT License." },
+    ],
+  },
+  {
+    title: "Fonts",
+    items: [
+      { name: "Manrope", href: "https://fonts.google.com/specimen/Manrope", description: "loads from Google Fonts under the SIL Open Font License 1.1." },
+      { name: "JetBrains Mono", href: "https://fonts.google.com/specimen/JetBrains+Mono", description: "loads from Google Fonts under the SIL Open Font License 1.1." },
+      { name: "IBM Plex Mono", href: "https://fonts.google.com/specimen/IBM+Plex+Mono", description: "loads from Google Fonts under the SIL Open Font License 1.1." },
+      { name: "Newsreader", href: "https://fonts.google.com/specimen/Newsreader", description: "loads from Google Fonts under the SIL Open Font License 1.1." },
+      { name: "Bricolage Grotesque", href: "https://fonts.google.com/specimen/Bricolage+Grotesque", description: "loads from Google Fonts under the SIL Open Font License 1.1." },
+    ],
+  },
+];
+
+function credits() {
+  const out = [
+    '<p>Animated Visuals is MIT-licensed. See <a href="https://github.com/juanbermudez/animated-visuals/blob/main/THIRD_PARTY_NOTICES.md"><code>THIRD_PARTY_NOTICES.md</code></a> for the full notices and attribution details.</p>',
+  ];
+  for (const section of creditSections) {
+    out.push("<h2>" + escape(section.title) + "</h2>", "<ul>");
+    for (const item of section.items) {
+      out.push('  <li><a class="name" href="' + escape(item.href) + '">' + escape(item.name) + "</a> " + item.description + "</li>");
     }
+    out.push("</ul>");
   }
-  flush();
   return out.join("\n");
 }
 
-const notices = readFileSync(join(root, "THIRD_PARTY_NOTICES.md"), "utf8").replace(/^# .*\n/, "");
-inject("credits.html", "notices", markdown(notices));
+inject("credits.html", "notices", credits());
 
 const bridge = readFileSync(join(root, "themes/site-bridge.css"), "utf8").trim();
 inject("themes.html", "bridge", `<pre><code class="language-css">${escape(bridge)}</code></pre>`);

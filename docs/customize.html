@@ -33,9 +33,8 @@
 </header>
 
 <main class="page" id="main">
-  <p class="eyebrow">Customize</p>
-  <h1>One spec per figure</h1>
-  <p class="lede">A figure is <code>FS.figure(id, spec)</code> on a canvas or SVG inside a plate. The spec says how tall it is, what state it has and how to draw that state; the runtime adds the clock, controls, settings, tips, expand and keyboard support. Every sample on this page is the code that runs it.</p>
+  <h1>Customize</h1>
+  <p class="lede">This page covers the figure plate, the <code>FS.figure</code> spec, runnable samples, prose bindings, React assets and writing styles. Each sample uses the code shown with it.</p>
 
   <h2 id="plate">The plate</h2>
   <p>A plate is plain HTML: a head with the claim, a stage with the drawing, an optional toolbar and caption. Controls are attributes, so they need no glue code.</p>
@@ -396,7 +395,7 @@ the &lt;span data-fs-ref="demo-curve:plateau"&gt;plateau&lt;/span&gt; shows up
     </table>
   </div>
   <p class="code-label">React, not run on this page</p>
-<pre><code class="language-js">"use client";
+<pre><code class="language-tsx">"use client";
 import { useFigure } from "./useFigure";
 import { FigurePlate } from "./FigurePlate";
 

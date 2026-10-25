@@ -210,25 +210,92 @@
 
   // ---------- code blocks: live source, highlighting, copy ----------
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  const KEYWORDS = new Set("const let var function return new if else for of in while true false null undefined this typeof await async import export from default class extends".split(" "));
-  /** A small scanner for JS and CSS: comments, strings, numbers, keywords, CSS custom properties. */
-  function highlight(src, lang) {
+  const JS_KEYWORDS = new Set("const let var function return new if else for of in while do switch case break continue true false null undefined this typeof instanceof await async import export from default class extends try catch finally throw yield delete void with get set static".split(" "));
+  const TS_KEYWORDS = new Set([...JS_KEYWORDS, ..."interface type enum namespace declare implements private protected public readonly abstract as satisfies keyof infer unknown never any boolean number string object symbol bigint override".split(" ")]);
+  const PY_KEYWORDS = new Set("and as assert async await break class continue def del elif else except False finally for from global if import in is lambda None nonlocal not or pass raise return True try while with yield match case".split(" "));
+  const SH_KEYWORDS = new Set("if then else elif fi for while until do done case esac function in select time coproc true false".split(" "));
+  const token = (kind, text) => '<span class="tok-' + kind + '">' + esc(text) + "</span>";
+
+  function scan(src, rules) {
     let out = "";
     let i = 0;
-    const css = lang === "css";
     while (i < src.length) {
       const rest = src.slice(i);
-      let m;
-      if ((m = /^\/\*[\s\S]*?(\*\/|$)/.exec(rest)) || (!css && (m = /^\/\/[^\n]*/.exec(rest)))) out += `<span class="tok-c">${esc(m[0])}</span>`;
-      else if ((m = /^("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`)/.exec(rest))) out += `<span class="tok-s">${esc(m[0])}</span>`;
-      else if (css && (m = /^--[\w-]+/.exec(rest))) out += `<span class="tok-p">${esc(m[0])}</span>`;
-      else if (css && (m = /^#[0-9a-fA-F]{3,8}\b/.exec(rest))) out += `<span class="tok-n">${esc(m[0])}</span>`;
-      else if ((m = /^\d+(?:\.\d+)?(?:e-?\d+)?/.exec(rest)) && !/[\w$]/.test(src[i - 1] || "")) out += `<span class="tok-n">${m[0]}</span>`;
-      else if ((m = /^[A-Za-z_$][\w$-]*/.exec(rest))) out += !css && KEYWORDS.has(m[0]) ? `<span class="tok-k">${m[0]}</span>` : esc(m[0]);
-      else { out += esc(src[i]); i += 1; continue; }
-      i += m[0].length;
+      let found = false;
+      for (const [pattern, kind] of rules) {
+        const match = pattern.exec(rest);
+        if (!match) continue;
+        const next = src.slice(i + match[0].length);
+        const resolved = typeof kind === "function" ? kind(match[0], next, i, src) : kind;
+        out += resolved ? token(resolved, match[0]) : esc(match[0]);
+        i += match[0].length;
+        found = true;
+        break;
+      }
+      if (!found) {
+        out += esc(src[i]);
+        i += 1;
+      }
     }
     return out;
+  }
+
+  /** Small, dependency-free tokenizers. Unknown languages use escaped plain text. */
+  function highlight(src, lang) {
+    const name = ({ javascript: "js", typescript: "ts", py: "python", bash: "shell", sh: "shell" })[lang] || lang;
+    const number = [/^(?:0x[\da-f]+|\d+(?:\.\d+)?(?:e[+-]?\d+)?)/i, "n"];
+    const quoted = [/^(?:"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')/, "s"];
+    if (name === "html") return scan(src, [
+      [/^<!--[\s\S]*?(?:-->|$)/, "c"],
+      [/^<!doctype[^>]*>/i, "k"],
+      [/^<\/?[A-Za-z][\w:-]*/, "k"],
+      [/^[A-Za-z_:][\w:.-]*(?=\s*=)/, "p"],
+      quoted,
+      number,
+    ]);
+    if (name === "css") return scan(src, [
+      [/^\/\*[\s\S]*?(?:\*\/|$)/, "c"],
+      quoted,
+      [/^@[A-Za-z-]+/, "k"],
+      [/^--[\w-]+/, "p"],
+      [/^[A-Za-z-]+(?=\s*:)/, "p"],
+      [/^#[\da-f]{3,8}\b/i, "n"],
+      number,
+    ]);
+    if (name === "json") return scan(src, [
+      [/^"(?:[^"\\\n]|\\.)*"/, (_, next) => /^\s*:/.test(next) ? "p" : "s"],
+      [/^(?:true|false|null)\b/, "k"],
+      [/^-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/i, "n"],
+    ]);
+    if (name === "python") return scan(src, [
+      [/^#[^\n]*/, "c"],
+      [/^(?:"""[\s\S]*?(?:"""|$)|'''[\s\S]*?(?:'''|$))/, "s"],
+      quoted,
+      [/^@[A-Za-z_][\w.]*/, "p"],
+      number,
+      [/^[A-Za-z_]\w*/, (word) => PY_KEYWORDS.has(word) ? "k" : null],
+    ]);
+    if (name === "shell") return scan(src, [
+      [/^#[^\n]*/, "c"],
+      quoted,
+      [/^\$(?:\{[^}]+\}|[A-Za-z_]\w*|[?#@*!$0-9-])/, "p"],
+      [/^--?[\w-]+/, "p"],
+      number,
+      [/^[A-Za-z_][\w-]*/, (word, _, at, source) =>
+        SH_KEYWORDS.has(word) || /(?:^|[\n;|&]\s*)$/.test(source.slice(0, at)) ? "k" : null
+      ],
+    ]);
+    if (name === "js" || name === "ts" || name === "tsx") {
+      const words = name === "js" ? JS_KEYWORDS : TS_KEYWORDS;
+      return scan(src, [
+        [/^\/\*[\s\S]*?(?:\*\/|$)/, "c"],
+        [/^\/\/[^\n]*/, "c"],
+        [/^(?:"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|\x60(?:[^\x60\\]|\\.)*\x60)/, "s"],
+        number,
+        [/^[A-Za-z_$][\w$]*/, (word) => words.has(word) ? "k" : (name !== "js" && /^[A-Z]/.test(word) ? "p" : null)],
+      ]);
+    }
+    return esc(src);
   }
   function dedent(text) {
     const lines = text.replace(/^\s*\n/, "").replace(/\s+$/, "").split("\n");
@@ -248,8 +315,9 @@
     pre.replaceChildren(code);
   });
   document.querySelectorAll("pre > code").forEach((code) => {
-    const lang = /language-(\w+)/.exec(code.className)?.[1];
-    if (lang === "js" || lang === "css" || lang === "html") code.innerHTML = lang === "html" ? code.innerHTML : highlight(code.textContent, lang);
+    let lang = /language-([^\s]+)/.exec(code.className)?.[1];
+    if (!lang) { lang = "plain"; code.classList.add("language-plain"); }
+    code.innerHTML = highlight(code.textContent, lang);
     const pre = code.parentElement;
     if (pre.parentElement.classList.contains("code")) return;
     const wrap = document.createElement("div");

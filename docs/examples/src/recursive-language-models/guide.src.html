@@ -22,7 +22,6 @@
 <!--__SITE_HEAD__-->
 
 <main class="page guide" id="main">
-  <p class="eyebrow">Example · a paper, explained</p>
   <h1>Recursive language models</h1>
   <p class="source">A visual guide to Alex L. Zhang, Tim Kraska and Omar Khattab, “Recursive Language Models”, arXiv:2512.24601, version 2, January 2026 · <a href="https://arxiv.org/abs/2512.24601v2">the paper</a> · <a href="https://github.com/alexzhang13/rlm">the code</a>. Built with Animated Visuals. Every number is from the paper and says where it comes from.</p>
   <p class="lede">Recursive language models (RLMs) let a model work with inputs longer than its context window by storing the prompt in a Python variable. The example asks who won a beauty pageant mentioned in one of 1,000 documents, about 8.3 million tokens or roughly 30 times what GPT-5 reads at once. The root model searches the variable and uses a sub-model call, a separate model request on selected text, to read the relevant document. This guide shows how the loop works, how it scales, its results on four tasks, and its limits.</p>

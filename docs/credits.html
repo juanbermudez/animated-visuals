@@ -32,40 +32,53 @@
 </header>
 
 <main class="page prose" id="main">
-  <p class="eyebrow">Credits</p>
-  <h1>Built on other people's work</h1>
-  <p class="lede">These are the projects, palettes and fonts it learned from or uses, with their licenses. The list below comes straight from <a href="https://github.com/juanbermudez/animated-visuals/blob/main/THIRD_PARTY_NOTICES.md"><code>THIRD_PARTY_NOTICES.md</code></a>.</p>
+  <h1>Credits</h1>
+  <p class="lede">This skill combines the skills and libraries I use in my day-to-day work. Check them out below, with the license for each project.</p>
 <!-- notices:start -->
-<p>Animated Visuals is MIT-licensed (see <code>LICENSE</code>). It builds on other people's work, credited here. Nothing below is vendored as code unless it says so.</p>
+<p>Animated Visuals is MIT-licensed. See <a href="https://github.com/juanbermudez/animated-visuals/blob/main/THIRD_PARTY_NOTICES.md"><code>THIRD_PARTY_NOTICES.md</code></a> for the full notices and attribution details.</p>
 <h2>Inspiration and adapted ideas</h2>
 <ul>
-  <li><strong>diagram-design</strong> by Cathryn Lavery (<a href="https://github.com/cathrynlavery/diagram-design">github.com/cathrynlavery/diagram-design</a>, MIT). The catalog of 27 diagram types and the 7 semantic patterns in <code>references/diagram-types.md</code> follow its taxonomy; our guidance adds the motion and interaction layer. Its README shaped this one. For static, branded diagrams, use that skill.</li>
-  <li><strong>pmndrs <code>math</code></strong> (MIT, Poimandres) and the <code>math</code> agent skill: the data-oriented approach to geometry and simulation that <code>references/webgl.md</code> points to.</li>
-  <li><strong>pmndrs <code>gpgpu-curl-noise-dof</code></strong> example (MIT, Poimandres): the per-point depth-of-field idea; <code>assets/react/FocusField.tsx</code> is an independent implementation.</li>
-  <li><strong>Alex Zhang's blog figures</strong> (alexzhang13.github.io): patterns studied, not copied; see <code>references/alex-zhang-notes.md</code>. No code from those posts is included.</li>
-  <li><strong>interface-design</strong> guidance (adapted from jakubkrehel/skills, MIT, and Vercel's Web Interface Guidelines, MIT) informed the interaction, motion and accessibility rules.</li>
-  <li><strong>OKLab</strong> by Björn Ottosson (<a href="https://bottosson.github.io/posts/oklab/">bottosson.github.io/posts/oklab</a>) and the sRGB, XYZ and OKLab matrices published in W3C's <a href="https://www.w3.org/TR/css-color-4/">CSS Color Module Level 4</a>: <code>scripts/oklch.mjs</code> implements the conversion every theme color goes through.</li>
-  <li><strong>Konsistent</strong> by Vercel Labs (<a href="https://github.com/vercel-labs/konsistent">github.com/vercel-labs/konsistent</a>, Apache-2.0): optional structural linting, see <code>references/konsistent.md</code> and <code>konsistent/</code>. Not bundled.</li>
+  <li><a class="name" href="https://github.com/cathrynlavery/diagram-design">diagram-design</a> is Cathryn Lavery's MIT-licensed diagram taxonomy, adapted here with motion and interaction guidance.</li>
+  <li><a class="name" href="https://github.com/pmndrs/math">pmndrs math</a> is an MIT-licensed geometry and simulation library whose data-oriented approach informs the WebGL guidance.</li>
+  <li><a class="name" href="https://pmndrs.github.io/examples/gpgpu-curl-noise-dof">gpgpu-curl-noise-dof</a> is an MIT-licensed Poimandres example that informed the per-point depth-of-field approach.</li>
+  <li><a class="name" href="https://alexzhang13.github.io/">Alex Zhang's blog figures</a> provided interaction patterns for study; no code is included, and the source notice does not state a software license.</li>
+  <li><a class="name" href="https://github.com/jakubkrehel/skills">interface-design guidance</a> combines MIT-licensed guidance from jakubkrehel/skills and Vercel's Web Interface Guidelines.</li>
+  <li><a class="name" href="https://bottosson.github.io/posts/oklab/">OKLab</a> and the W3C CSS Color 4 matrices define the color conversion used by the theme tools; no source code is included.</li>
+  <li><a class="name" href="https://github.com/vercel-labs/konsistent">Konsistent</a> is Vercel Labs' optional Apache-2.0 structural linter.</li>
+  <li><a class="name" href="https://www.ms.sapientia.ro/~manyi/sapimouse/sapimouse.html">SapiMouse</a> is the mouse-dynamics dataset used for summary statistics in the interaction guidance; no recorded data is included, and the source notice does not state a dataset license.</li>
 </ul>
+<h2>Libraries the guidance works with</h2>
 <ul>
-  <li><strong>SapiMouse</strong> (Margit Antal, Norbert Fejér and Krisztián Buza, Sapientia University; <a href="https://www.ms.sapientia.ro/~manyi/sapimouse/sapimouse.html">dataset</a>; paper: &quot;SapiMouse: Mouse Dynamics-based User Authentication Using Deep Feature Learning&quot;, 2021): the pointer-movement numbers in <code>references/interaction.md</code> are summary statistics computed from it. No recorded data is included in this repository.</li>
-</ul>
-<h2>Libraries the guidance works with (not bundled)</h2>
-<ul>
-  <li><strong>nivo</strong> (MIT) for standard charts.</li>
-  <li><strong>three.js</strong>, <strong>react-three-fiber</strong>, <strong>drei</strong> and <strong>@react-three/postprocessing</strong> (MIT) for WebGL scenes.</li>
-  <li><strong>maath</strong> (MIT, Poimandres), the legacy motion-math library <code>references/webgl.md</code> and <code>references/motion.md</code> compare with pmndrs <code>math</code>.</li>
-  <li><strong>MediaPipe</strong> pose landmarker (Google, Apache-2.0) for tracing a person from footage as geometry only (<code>references/interaction.md</code>, &quot;Real people, traced&quot;).</li>
-  <li><strong>Mermaid</strong> (MIT) diagrams can use the &quot;fill&quot; expand mode.</li>
+  <li><a class="name" href="https://nivo.rocks/">nivo</a> is an MIT-licensed chart library and is not bundled.</li>
+  <li><a class="name" href="https://threejs.org/">three.js</a> is an MIT-licensed WebGL library and is not bundled.</li>
+  <li><a class="name" href="https://github.com/pmndrs/react-three-fiber">react-three-fiber</a> is an MIT-licensed React renderer for three.js and is not bundled.</li>
+  <li><a class="name" href="https://github.com/pmndrs/drei">drei</a> is an MIT-licensed helper library for react-three-fiber and is not bundled.</li>
+  <li><a class="name" href="https://github.com/pmndrs/react-postprocessing">@react-three/postprocessing</a> is an MIT-licensed post-processing library and is not bundled.</li>
+  <li><a class="name" href="https://github.com/pmndrs/maath">maath</a> is an MIT-licensed motion-math library compared with pmndrs math in the guidance and is not bundled.</li>
+  <li><a class="name" href="https://developers.google.com/mediapipe">MediaPipe</a> provides the Apache-2.0 pose landmarker used for tracing people as geometry and is not bundled.</li>
+  <li><a class="name" href="https://mermaid.js.org/">Mermaid</a> is an MIT-licensed diagram library supported by the fill expansion mode and is not bundled.</li>
 </ul>
 <h2>Themes</h2>
 <ul>
-  <li><strong>Omarchy theme palettes</strong> (<code>themes/omarchy.json</code>, generated <code>themes/omarchy.css</code>): color values from <a href="https://github.com/basecamp/omarchy">basecamp/omarchy</a> at commit 81fd2d23ca6e3462183a4dc8360de3113fa8d80c, MIT License, © Basecamp/37signals and Omarchy contributors (Ethereal, Hackerman, Last Horizon, Lumon, Lupine, Matte Black, Miasma, Osaka Jade, Retro 82, Ristretto, Solitude, Starship, Vantablack, White).</li>
-  <li>Upstream palettes, credited to their authors (all MIT): <strong>Catppuccin</strong> (Catppuccin org), <strong>Everforest</strong> (sainnhe), <strong>Flexoki</strong> (Steph Ango), <strong>Gruvbox</strong> (morhetz, Pavel Pertsev), <strong>Kanagawa</strong> (rebelot), <strong>Nord</strong> (Arctic Ice Studio, Sven Greb), <strong>Rosé Pine</strong> (Rosé Pine), <strong>Tokyo Night</strong> (enkia). Derived ladders and contrast adjustments are computed by <code>scripts/build-themes.mjs</code>.</li>
-  <li><strong>Default</strong> and <strong>Notebook</strong> themes (<code>themes/default.css</code>, <code>themes/notebook.css</code>) and the example bridge <code>themes/site-bridge.css</code>: original to this project (MIT).</li>
+  <li><a class="name" href="https://github.com/basecamp/omarchy">Omarchy</a> provides the MIT-licensed theme colors pinned at commit 81fd2d23ca6e3462183a4dc8360de3113fa8d80c, © Basecamp/37signals and contributors.</li>
+  <li><a class="name" href="https://github.com/catppuccin/catppuccin">Catppuccin</a> provides an upstream palette under the MIT License.</li>
+  <li><a class="name" href="https://github.com/sainnhe/everforest">Everforest</a> provides an upstream palette under the MIT License.</li>
+  <li><a class="name" href="https://github.com/kepano/flexoki">Flexoki</a> provides an upstream palette under the MIT License.</li>
+  <li><a class="name" href="https://github.com/morhetz/gruvbox">Gruvbox</a> provides an upstream palette under the MIT License.</li>
+  <li><a class="name" href="https://github.com/rebelot/kanagawa.nvim">Kanagawa</a> provides an upstream palette under the MIT License.</li>
+  <li><a class="name" href="https://github.com/nordtheme/nord">Nord</a> provides an upstream palette under the MIT License.</li>
+  <li><a class="name" href="https://github.com/rose-pine/rose-pine-theme">Rosé Pine</a> provides an upstream palette under the MIT License.</li>
+  <li><a class="name" href="https://github.com/enkia/tokyo-night-vscode-theme">Tokyo Night</a> provides an upstream palette under the MIT License.</li>
+  <li><a class="name" href="https://github.com/juanbermudez/animated-visuals/tree/main/themes">Default and Notebook</a> are original Animated Visuals themes released under the MIT License.</li>
 </ul>
 <h2>Fonts</h2>
-<p>Manrope, JetBrains Mono, IBM Plex Mono, Newsreader and Bricolage Grotesque load from Google Fonts under the SIL Open Font License 1.1.</p>
+<ul>
+  <li><a class="name" href="https://fonts.google.com/specimen/Manrope">Manrope</a> loads from Google Fonts under the SIL Open Font License 1.1.</li>
+  <li><a class="name" href="https://fonts.google.com/specimen/JetBrains+Mono">JetBrains Mono</a> loads from Google Fonts under the SIL Open Font License 1.1.</li>
+  <li><a class="name" href="https://fonts.google.com/specimen/IBM+Plex+Mono">IBM Plex Mono</a> loads from Google Fonts under the SIL Open Font License 1.1.</li>
+  <li><a class="name" href="https://fonts.google.com/specimen/Newsreader">Newsreader</a> loads from Google Fonts under the SIL Open Font License 1.1.</li>
+  <li><a class="name" href="https://fonts.google.com/specimen/Bricolage+Grotesque">Bricolage Grotesque</a> loads from Google Fonts under the SIL Open Font License 1.1.</li>
+</ul>
 <!-- notices:end -->
   <h2>This site</h2>
   <p>Plain HTML, CSS and the skill's own runtime, with no build step and no third-party scripts. Fonts load from Google Fonts. Every figure on these pages is a synthetic illustration made for the docs.</p>

@@ -1,6 +1,6 @@
 # Animated Visuals
 
-**Figures and diagrams that move only to explain, and that readers can touch.**
+**An agent skill for interactive and animated figures.**
 
 An agent skill for Claude Code, Codex and other coding agents. It builds explorable charts, stepped mechanism diagrams, animated architecture flows, timelines you can scrub, particle fields and WebGL scenes for papers, articles, explainers and sites. Every figure proves one claim, runs on one clock, can be driven by code, and is checked in a real browser before it ships.
 
@@ -8,7 +8,7 @@ An agent skill for Claude Code, Codex and other coding agents. It builds explora
 
 ---
 
-## What it makes
+## Figure types
 
 - **Diagrams that explain a process**: architecture flows with packets on the path that matters, flowcharts with a token that takes the branch, sequence diagrams that draw on in order, state machines you fire events at.
 - **Timelines you can scrub**: drag anywhere on the surface and the clock glides there; hover shows the time under the pointer; chapters mark the moments that matter.
@@ -62,11 +62,11 @@ Markup can drive figures with no glue code: `data-fs="id play"`, `data-fs-param=
 - **Writing style**: captions, tips and labels follow a style in `references/writing/` (practical by default, academic on request). Add a style by adding a file there.
 - **Frames**: every figure sits in a 4px frame band, like the images and diagrams around it.
 
-## Optional: lint with Konsistent
+## Konsistent linting
 
 For projects with many figures, the agent can set up [Konsistent](https://github.com/vercel-labs/konsistent) with the convention pack in `konsistent/`: every figure must declare its claim, status (measured or illustration) and sources, export its tips, render in a plate and keep heavy libraries out. See [references/konsistent.md](references/konsistent.md). It asks before installing anything.
 
-## What "done" means
+## Verification
 
 Each figure is checked in a real browser: no console errors; nothing shifts as values change; tips, scrubbing, handles and expand work by mouse, touch and keyboard; it reads at 375 px wide and in light and dark; reduced motion gives a still that tells the whole story. `references/verification.md` has the checklist.
 
@@ -86,7 +86,7 @@ docs/                    the docs site (GitHub Pages)
 
 ## Credits
 
-Built on other people's work. The full list, with licenses, is in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+This skill combines the skills and libraries I use in my day-to-day work. Check them out below, with the license for each project. The full notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 - **Inspiration**: [diagram-design](https://github.com/cathrynlavery/diagram-design) by [Cathryn Lavery](https://github.com/cathrynlavery) (MIT). Its 27 diagram types and 7 semantic patterns are the taxonomy in [references/diagram-types.md](references/diagram-types.md), and its approach to diagrams and its README shaped this skill; this one adds motion and interaction.
 - **Theme palettes**: [Omarchy](https://github.com/basecamp/omarchy) (MIT, Basecamp/37signals and contributors), pinned at commit [`81fd2d2`](https://github.com/basecamp/omarchy/tree/81fd2d23ca6e3462183a4dc8360de3113fa8d80c/themes), and the original palette authors: Catppuccin, Everforest, Flexoki, Gruvbox, Kanagawa, Nord, Rosé Pine and Tokyo Night.

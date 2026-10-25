@@ -57,9 +57,8 @@
 </header>
 
 <main class="page" id="main">
-  <p class="eyebrow">Themes</p>
-  <h1>One figure, 27 looks</h1>
-  <p class="lede">Figures read only <code>--fs-*</code> tokens, so a theme is one block of CSS variables. Each card below is pinned to its own theme, so you can compare them side by side; <b>Use</b> applies one to this whole page, the same as the sun or moon button.</p>
+  <h1>Themes</h1>
+  <p class="lede">A theme is a set of <code>--fs-*</code> CSS variables that controls a figure's colors, type and shape. Each card previews one theme; <b>Use</b> applies it to this page.</p>
   <noscript><p>The theme cards and figures need JavaScript.</p></noscript>
 
   <p>Default is monochrome, with ink as the accent. Notebook swaps in mono figure text, uppercase heads, square corners and an amber focus, for paper explainers. The other 23 are palettes from <a href="https://github.com/basecamp/omarchy">Omarchy</a>'s themes, with contrast fixed where needed: muted text reaches 4.5:1, the accent and categories 3:1.</p>
@@ -77,23 +76,18 @@
       <button type="button" role="radio" data-value="dark" aria-checked="false">Dark</button>
       <button type="button" role="radio" data-value="light" aria-checked="false">Light</button>
     </div>
-    <div class="chips" role="group" aria-label="Family">
-      <button type="button" class="chip" data-family="default" aria-pressed="false">Default</button>
-      <button type="button" class="chip" data-family="notebook" aria-pressed="false">Notebook</button>
-      <button type="button" class="chip" data-family="omarchy" aria-pressed="false">Omarchy</button>
-    </div>
     <p class="filter-count" role="status" aria-live="polite"></p>
   </form>
 
   <div class="theme-grid wide" id="theme-grid"></div>
   <div class="filter-empty wide" hidden>
     <p class="filter-empty-title"></p>
-    <p class="muted">Clear the search and filters to see all 27 themes.</p>
+    <p class="muted">Clear the search or select All to see every theme.</p>
     <button type="button" class="btn small" data-clear-filters>Clear filters</button>
   </div>
 
   <h2 id="tokens">Tokens</h2>
-  <p>This is the whole contract. Canvas figures read the colors as <code>f.C</code> (<code>f.C.fg</code>, <code>f.C.accent</code>, <code>f.C.c[0]</code>); SVG and HTML use <code>var(--fs-…)</code>. The swatches show the theme you picked and change with it.</p>
+  <p>These tokens are the theme contract. Canvas figures read the colors as <code>f.C</code> (<code>f.C.fg</code>, <code>f.C.accent</code>, <code>f.C.c[0]</code>); SVG and HTML use <code>var(--fs-…)</code>. The swatches show the active theme and change with it.</p>
   <div class="table-wrap wide">
     <table class="tokens-table">
       <thead><tr><th>Token</th><th>Now</th><th>Used for</th></tr></thead>
@@ -147,7 +141,7 @@ FS.setMode("light");        // Default and Notebook come in light and dark</code
 :root { transition: --fs-bg 520ms cubic-bezier(0.16, 1, 0.3, 1) /* , … */; }</code></pre>
 
   <h2 id="bridge">Bridge to your site's tokens</h2>
-  <p>Inside a site that already has a palette, don't pick a theme: map the figure tokens to the site's own variables once, instead of loading <code>default.css</code>. Then the site's light and dark modes and its palettes flow into every figure. The runtime resolves <code>var()</code> chains and <code>color-mix()</code> through a probe element, so canvas figures follow too, and it re-reads tokens when <code>&lt;html&gt;</code> changes its <code>class</code>, <code>data-fs-theme</code>, <code>data-fs-mode</code> or <code>data-style-palette</code>. This is the example bridge, <code>themes/site-bridge.css</code>; replace the <code>--site-*</code> names with your site's variables:</p>
+  <p>Inside a site that already has a palette, map the figure tokens to the site's variables instead of loading <code>default.css</code>. The site's light and dark modes and palettes then apply to every figure. The runtime resolves <code>var()</code> chains and <code>color-mix()</code> through a probe element, so canvas figures follow too, and it re-reads tokens when <code>&lt;html&gt;</code> changes its <code>class</code>, <code>data-fs-theme</code>, <code>data-fs-mode</code> or <code>data-style-palette</code>. This is the example bridge, <code>themes/site-bridge.css</code>; replace the <code>--site-*</code> names with your site's variables:</p>
 <!-- bridge:start -->
 <pre><code class="language-css">/* Example bridge: load this instead of default.css inside a site that already has design tokens, so the
    figure tokens follow the site's own variables and its light/dark modes and palettes flow into every figure.
