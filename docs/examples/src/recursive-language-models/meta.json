@@ -1,6 +1,6 @@
 {
-  "title": "Recursive Language Models",
-  "summary": "How a model can answer questions about inputs 30 times longer than it can read: the prompt goes into a Python variable, and the model writes code that reads it in pieces and calls itself on them. Six live figures, every number from the paper.",
+  "title": "Recursive language models",
+  "summary": "A recursive language model stores an input 30 times longer than its context window in a Python variable, then writes code to inspect it and make sub-model calls on selected pieces. Six figures show the loop, results on four tasks, and its limits using numbers from the paper.",
   "source": { "label": "Zhang, Kraska and Khattab, “Recursive Language Models”, arXiv:2512.24601v2, 2026", "url": "https://arxiv.org/abs/2512.24601v2" },
   "order": 10
 }
