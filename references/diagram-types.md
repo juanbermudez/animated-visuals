@@ -11,7 +11,9 @@ The catalog follows Cathryn Lavery's [diagram-design](https://github.com/cathryn
 6. Position and comparison
 7. Data charts
 8. Semantic patterns
-9. Picking the type
+9. Presentation primitives
+10. Picking the type
+11. Coverage against diagram-design
 
 ---
 
@@ -31,6 +33,7 @@ The catalog follows Cathryn Lavery's [diagram-design](https://github.com/cathryn
 | Type | Use it when | What moves | What the reader can do | Watch out |
 |---|---|---|---|---|
 | **Architecture** | Components, tiers, trust boundaries, integrations | 2 to 4 packets per edge on the path the current step is about; one request traced end to end | Step through a request; hover a node to light every edge it touches; click a boundary to dim everything outside it | Packets on every edge at once reads as noise; animate one request, not the whole system |
+| **ER / data model** | Entities, fields, keys and cardinality are the point | A query trace crosses only the relationships used by one worked example | Pick an entity to trace its related records; hover a relationship for its cardinality | Do not turn every foreign key into a crossing arrow; cluster the model or split it |
 | **High-level stack** | An end-to-end stack: ingest, store, query, show | A single record climbing the stack, with the time each layer added | Scrub the record's journey; toggle a layer off to see what breaks | Don't animate the cluster frame; it is context |
 | **IT current-state** | The "before" of a modernization, with its friction | Manual hand-offs as slow, stalled packets (a file waiting in a folder); the friction points pulse once when the step names them | A before/after toggle that morphs the same nodes into the target layout | The after view must reuse node identity; morph, don't swap |
 | **Layer stack** | Abstractions stacked on each other | A call descending the layers and the response climbing back, with time per layer | Click a layer to expand its internals in place; drag a "where this runs" marker | Expanding a layer must push the others smoothly, not reflow in a jump |
@@ -101,10 +104,42 @@ When behavior, state or risk is the point, start from the pattern, then use its 
 
 Use one pattern per figure. If two patterns both need full treatment, make an overview plate and a detail plate.
 
-## 9. Picking the type
+## 9. Presentation primitives
+
+These are supporting devices, not substitutes for a clear diagram type. Their detailed rules are in `diagram-primitives.md`.
+
+| Type | Use it when | What moves | What the reader can do | Watch out |
+|---|---|---|---|---|
+| **Attached callout** | One detail needs a short editorial explanation | The anchor follows its target; the dashed leader and label ease to the new position | Move the worked example and confirm the note stays attached; focus the anchor for the same text | Keep it out of the active path and use at most two |
+| **Icon specimen** | Shape recognition is faster than another word inside a technical diagram | Selection focus moves between specimens; the icons stay still | Move through the set by keyboard or pointer and read the plain name and role | Icons support labels; they do not replace unfamiliar terms |
+| **Sketch treatment** | A working-note or essay register is part of the meaning | A fixed, seeded wobble settles with the figure; text never deforms | Toggle the treatment on the same geometry | Never use fresh randomness per frame or distort text |
+| **Terminal / log** | Ordered command output or an append-only record is the subject | Lines append on the figure clock and the viewport follows the newest entry | Play, pause, scrub and step between named log moments | The settled frame must keep the decisive line visible; do not loop a semantic log |
+
+## 10. Picking the type
 
 1. Write the claim in one sentence (`content-design.md`).
 2. If behavior, state or risk is load-bearing, pick the semantic pattern first; otherwise pick the type from the tables above.
 3. Decide the interaction from the reader's question: steps (how does it work?), timeline (when does what happen?), handles (what if?).
 4. Sketch the still frame first. If it doesn't stand on its own, the motion won't save it.
 5. If nothing needs to move or be touched, use diagram-design and ship a static diagram.
+
+## 11. Coverage against diagram-design
+
+This comparison uses the canonical light examples and reference rules in Cathryn Lavery's diagram-design skill. “More” means the gallery adds a useful interactive or quantitative dimension, not that it replaces the static reference. The worked scenarios and exact counts are recorded in the coverage worker report.
+
+| Area | Ours | Coverage | Remaining action |
+|---|---|---|---|
+| Architecture, flowchart, sequence, state, swimlane, tree, Venn, bar and line | Live worked examples with steps, scrubbing, parameters or direct inspection | More | None |
+| High-level, medallion, process, data flow and timeline | Existing examples plus a second scenario where the canonical reference exercises a different grammar | Same or more | Keep both scenarios |
+| IT current-state | A narrower four-node system, but with a direct today/target comparison and visible re-entry work | Same | None |
+| ER / data model | Query trace across an order model | Same, with interaction | New type added |
+| Layer stack, nested and loop | The same structural ground with one-clock motion and tips | More | None |
+| DP integration | Source and consumer routes are present, but cross-cutting identity and logging are absent | Less | Add cross-cutting services to the existing figure |
+| DP security matrix | A role-by-component permissions lookup with filtering | Same | None |
+| Gantt, org chart and scatter | Core grammar is present; one reference feature is still absent | Less | Add a today line, subtree collapse and brushed selection to the existing figures |
+| Pyramid / funnel, quadrant and radar | The figures worker owns the current revisions | Pending this round | Verify after that branch lands |
+| Consultant 2x2 | Named scenarios and a moving current-state marker | More | None |
+| Seven semantic patterns | Fan-in already live; six pattern-specific worked examples added | Same or more | None |
+| Attached callouts, icons, sketch treatment and terminal/log | Live primitive specimens | Same, with interaction | New primitives added |
+| Animation | One clock, still-frame meaning, keyboard, reduced motion and programmatic control | More | None |
+| Import, export and brand onboarding | No gallery equivalent | Less, outside figure scope | Documented request; an interactive wizard is useful for onboarding, not for export |
