@@ -1,6 +1,9 @@
 {
   "title": "Strange-loop networks: two models that read each other",
   "summary": "A self-published draft wires two language models into a loop, a writer and a judge, until the judge is satisfied. Eight figures walk one multiplication through the loop, the training ideas, and what the draft has not shown yet.",
-  "source": { "label": "Francois Chaubard, Strange-Loop Networks (SLNs), self-published draft, June 2024", "url": "https://fchaubard.github.io/Strange_Loop_Networks__Using_2_LLMs_to_form_a__strange_loop__to_step_toward_AGI%20(9).pdf" },
-  "order": 20
+  "source": {
+    "label": "Francois Chaubard, Strange-Loop Networks (SLNs), self-published draft, June 2024",
+    "url": "https://fchaubard.github.io/Strange_Loop_Networks__Using_2_LLMs_to_form_a__strange_loop__to_step_toward_AGI%20(9).pdf"
+  },
+  "order": 30
 }

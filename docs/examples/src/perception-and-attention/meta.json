@@ -1,6 +1,9 @@
 {
   "title": "Perception and attention",
   "summary": "The six walkthroughs of an open-source 3D brain guide as 2D figures: the routes for vision, touch, hearing and speech, the cortex tuning its own input, and a draggable model of why attending to one sense dims the others.",
-  "source": { "label": "Juan Bermudez, Perception & Attention (open source, MIT), 2026", "url": "https://github.com/juanbermudez/perception-and-attention" },
-  "order": 20
+  "source": {
+    "label": "Juan Bermudez, Perception & Attention (open source, MIT), 2026",
+    "url": "https://github.com/juanbermudez/perception-and-attention"
+  },
+  "order": 40
 }

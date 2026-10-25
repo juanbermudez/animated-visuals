@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Examples · Animated Visuals</title>
 <meta name="description" content="Visual guides built with Animated Visuals: each explains one paper or idea with live figures, verified against its source.">
-<script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="zef-light"||t==="zef-dark")r.dataset.fsMode=t.slice(4);else if(t)r.dataset.fsTheme=t}catch(e){}</script>
+<script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&display=swap">
-<link rel="stylesheet" href="vendor/zef.css">
+<link rel="stylesheet" href="vendor/default.css">
 <link rel="stylesheet" href="vendor/notebook.css">
 <link rel="stylesheet" href="vendor/omarchy.css">
 <link rel="stylesheet" href="vendor/base.css">
@@ -24,7 +24,7 @@
 <header class="site-head">
   <div class="site-head-inner">
     <a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 32 32" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="12.5" width="7" height="7" rx="2" stroke-width="1.8"/><rect x="20" y="6.5" width="7" height="7" rx="2" stroke-width="1.8"/><rect x="20" y="18.5" width="7" height="7" rx="2" stroke-width="1.8"/><path d="M12 16c4 0 4-6 8-6M12 16c4 0 4 6 8 6" stroke-width="1.5"/><circle cx="16.2" cy="12.4" r="1.9" fill="currentColor" stroke="none"/></svg>Animated Visuals</a>
-    <nav class="site-nav" aria-label="Main"><a href="gallery.html">Gallery</a><a href="themes.html">Themes</a><a href="customize.html">Customize</a><a href="credits.html">Credits</a></nav>
+    <nav class="site-nav" aria-label="Main"><a href="gallery.html">Gallery</a><a href="examples.html">Examples</a><a href="themes.html">Themes</a><a href="customize.html">Customize</a><a href="credits.html">Credits</a></nav>
     <div class="head-actions">
       <a class="icon-btn" href="https://github.com/juanbermudez/animated-visuals" aria-label="Source on GitHub"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a>
       <button class="icon-btn theme-btn" type="button" aria-label="Change theme"></button>
@@ -37,6 +37,11 @@
   <h1>Guides built with the skill</h1>
   <p class="lede">Each guide explains one paper or idea with live figures on the runtime, written claims-first and checked against its source. Open one, change the theme from the palette button, and try <code>FS.list()</code> in the console. The sources are under <code>docs/examples/src/</code>.</p>
   <div class="cards">
+    <a class="card" href="examples/conscious-micro-epochs.html"><img src="examples/cards/conscious-micro-epochs.png" alt="" loading="lazy"><b>Conscious micro-epochs: seen, unseen, seen, unseen</b><span>A macaque's face cells flip about 15 times a second between the face that is seen and the one that is suppressed. Thirteen figures walk through the puzzle, the method, the controls and what it means.</span><span class="muted">Hesse, Lanfranchi, McGrory, Shi, Engel &amp; Tsao · bioRxiv, October 2026 (preprint)</span></a>
+    <a class="card" href="examples/recursive-language-models.html"><img src="examples/cards/recursive-language-models.png" alt="" loading="lazy"><b>Recursive Language Models</b><span>How a model can answer questions about inputs 30 times longer than it can read: the prompt goes into a Python variable, and the model writes code that reads it in pieces and calls itself on them. Six live figures, every number from the paper.</span><span class="muted">Zhang, Kraska and Khattab, “Recursive Language Models”, arXiv:2512.24601v2, 2026</span></a>
+    <a class="card" href="examples/speculative-programmatic-tool-calling.html"><img src="examples/cards/speculative-programmatic-tool-calling.png" alt="" loading="lazy"><b>Start the tool calls before the model finishes the code</b><span>Speculative programmatic tool calling, followed through one six-line program: a throwaway copy runs the half-written code, starts the safe calls early, and the real program finds the answers waiting.</span><span class="muted">Alex L. Zhang, “Speculative Programmatic Tool Calling”, blog post, August 24, 2026</span></a>
+    <a class="card" href="examples/liquid-time-constant-networks.html"><img src="examples/cards/liquid-time-constant-networks.png" alt="" loading="lazy"><b>Liquid time-constant networks</b><span>A neuron whose reaction speed is set by its input: drag the input and watch the time constant move, see why the state can't escape its bounds, step the fused solver, and compare the paper's trajectory lengths and benchmarks.</span><span class="muted">Hasani, Lechner, Amini, Rus, Grosu, Liquid Time-constant Networks, AAAI 2021</span></a>
+    <a class="card" href="examples/strange-loop-networks.html"><img src="examples/cards/strange-loop-networks.png" alt="" loading="lazy"><b>Strange-loop networks: two models that read each other</b><span>A self-published draft wires two language models into a loop, a writer and a judge, until the judge is satisfied. Eight figures walk one multiplication through the loop, the training ideas, and what the draft has not shown yet.</span><span class="muted">Francois Chaubard, Strange-Loop Networks (SLNs), self-published draft, June 2024</span></a>
     <a class="card" href="examples/perception-and-attention.html"><img src="examples/cards/perception-and-attention.png" alt="" loading="lazy"><b>Perception and attention</b><span>The six walkthroughs of an open-source 3D brain guide as 2D figures: the routes for vision, touch, hearing and speech, the cortex tuning its own input, and a draggable model of why attending to one sense dims the others.</span><span class="muted">Juan Bermudez, Perception &amp; Attention (open source, MIT), 2026</span></a>
   </div>
 </main>
