@@ -36,7 +36,7 @@
   color-scheme: light;
   --fs-bg: oklch(0.96115 0 0);
   --fs-surface: oklch(0.99405 0 0);
-  --fs-block: oklch(0.86686 0 0);
+  --fs-block: oklch(0.905 0 0);
   --fs-node: oklch(0.91279 0 0);
   --fs-surface-2: oklch(0.95514 0 0);
   --fs-line: oklch(0.91279 0 0);
@@ -64,7 +64,7 @@
     color-scheme: light;
     --fs-bg: oklch(0.96115 0 0);
     --fs-surface: oklch(0.99405 0 0);
-    --fs-block: oklch(0.86686 0 0);
+    --fs-block: oklch(0.905 0 0);
     --fs-node: oklch(0.91279 0 0);
     --fs-surface-2: oklch(0.95514 0 0);
     --fs-line: oklch(0.91279 0 0);
