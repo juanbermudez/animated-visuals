@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Recursive Language Models · Animated Visuals</title>
-<meta name="description" content="A visual guide to Zhang, Kraska and Khattab's Recursive Language Models (arXiv:2512.24601v2): the prompt becomes a variable in a Python session, the model reads it with code and calls itself on pieces. Six live figures, every number from the paper.">
+<title>Recursive language models · Animated Visuals</title>
+<meta name="description" content="A visual guide to Zhang, Kraska and Khattab's Recursive Language Models (arXiv:2512.24601v2). The guide shows how the prompt becomes a variable, how the model inspects it with code, and how it uses sub-model calls on selected pieces. Six figures use numbers from the paper.">
 <script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="../site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2574,122 +2574,122 @@ a.card:hover { border-color: var(--fs-line-strong); }
 
 <main class="page guide" id="main">
   <p class="eyebrow">Example · a paper, explained</p>
-  <h1>Put the prompt in a variable, and a model can work through inputs 30 times longer than it can read</h1>
-  <p class="source">A visual guide to Alex L. Zhang, Tim Kraska and Omar Khattab, “Recursive Language Models”, arXiv:2512.24601, version 2, January 2026 · <a href="https://arxiv.org/abs/2512.24601v2">the paper</a> · <a href="https://github.com/alexzhang13/rlm">the code</a>. Built with Animated Visuals; every number is from the paper and says where it comes from.</p>
-  <p class="lede">Give a model 1,000 documents and ask who won a beauty pageant mentioned in one of them. It can't even take the question: the documents are about 8.3 million tokens, roughly 30 times what GPT-5 reads at once. Now give it a Python session where those documents sit in a variable. It can search them, pull out the one that matters, and ask a copy of itself to read just that one. That is a Recursive Language Model, and this guide follows that one question all the way through.</p>
+  <h1>Recursive language models</h1>
+  <p class="source">A visual guide to Alex L. Zhang, Tim Kraska and Omar Khattab, “Recursive Language Models”, arXiv:2512.24601, version 2, January 2026 · <a href="https://arxiv.org/abs/2512.24601v2">the paper</a> · <a href="https://github.com/alexzhang13/rlm">the code</a>. Built with Animated Visuals. Every number is from the paper and says where it comes from.</p>
+  <p class="lede">Recursive language models (RLMs) let a model work with inputs longer than its context window by storing the prompt in a Python variable. The example asks who won a beauty pageant mentioned in one of 1,000 documents, about 8.3 million tokens or roughly 30 times what GPT-5 reads at once. The root model searches the variable and uses a sub-model call, a separate model request on selected text, to read the relevant document. This guide shows how the loop works, how it scales, its results on four tasks, and its limits.</p>
 
-  <h2>The prompt is something to look at, not something to read</h2>
-  <p>A model's window is how much text it can read at once. For GPT-5 that is 272K tokens (the paper's Fig. 1). The question's 1,000 documents come to about 8.3M tokens (App. E.1), so a base model can't take them: in Table 1, base GPT-5 scores 0.0 on this task, marked as running into its input limit. And inputs that do fit still suffer from what the paper calls context rot: quality drops as the prompt gets longer (§1).</p>
-  <p>An RLM never puts the input in the window. It starts a Python session, stores the input in a variable named <code>context</code>, and tells the model only what kind of thing <code>context</code> is and how long its pieces are (App. C.1). The <span data-fs-ref="fig-window:window">window</span> stays almost empty; the <span data-fs-ref="fig-window:input">input</span> is all there, one variable away. Switch between the two below, and pick a smaller input in settings to see one that fits.</p>
+  <h2>The prompt as a variable</h2>
+  <p>A model's context window is the text it can read at once. GPT-5's window is 272K tokens (the paper's Fig. 1). The example's 1,000 documents total about 8.3M tokens (App. E.1). A base model cannot take the full input. Base GPT-5 therefore scores 0.0 on this task in Table 1, marked as running into its input limit. Even when an input fits, the paper reports context rot, where quality drops as the prompt grows (§1).</p>
+  <p>An RLM stores the input in a Python variable named <code>context</code> instead of putting it in the model's window. It tells the model what <code>context</code> contains and how long its pieces are (App. C.1). The <span data-fs-ref="fig-window:window">window</span> holds a short description while the complete <span data-fs-ref="fig-window:input">input</span> remains available in the variable. Switch between the two models below, or choose a smaller input to see one that fits.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-window-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-window-title">A base model must fit the input; an RLM doesn't</h3><span class="fs-status">Fig. 1 · lengths to scale</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-window-title">A base model must fit the full input</h3><span class="fs-status">Fig. 1 · lengths to scale</span></header>
     <div class="fs-stage"><canvas id="fig-window" role="img" aria-label="On the left, the model's window, 272K tokens. On the right, the input drawn as tiles the size of that window: the worked example's 8.3M tokens make about 30 tiles. A base model has to fit every tile into the one window; an RLM keeps all of them in a variable in a Python session and puts only a short description in the window."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-window:readout"></span>
       <div class="fs-controls"><div data-fs-param="fig-window:who" data-label="Who reads it"></div></div>
     </div>
-    <p class="fs-caption">Each tile is one GPT-5 window, 272K tokens (the paper's Fig. 1); input sizes are from Table 1 and App. E. What sits inside the RLM's window is illustrative: the paper says only that it holds the instructions, the question and a description of the input (§2, App. C.1).</p>
+    <p class="fs-caption">Each tile is one 272K-token GPT-5 window (the paper's Fig. 1), and the input sizes come from Table 1 and App. E. The RLM window contents are illustrative, based on the instructions, question and input description in §2 and App. C.1; switch models or choose a smaller input.</p>
   </figure>
 
-  <h2>The loop: write code, run it, look at a little</h2>
-  <p>The model in charge is the <span data-fs-ref="fig-loop:root">root model</span>. Each turn it writes a bit of code, the <span data-fs-ref="fig-loop:repl">session</span> runs it, and only a short, cut-off printout comes back into the root's window (§2). The code can do anything Python can, plus call one extra function, <code>llm_query</code>, which sends any string to another model and returns its answer. That is a <span data-fs-ref="fig-loop:sub">sub-call</span>. In the paper's GPT-5 runs the root is GPT-5 and sub-calls go to GPT-5-mini (§3.2). Results land in <span data-fs-ref="fig-loop:vars">variables</span>, not in the root's window. The loop ends when the root writes <code>FINAL(answer)</code>, or <code>FINAL_VAR(name)</code> to hand back a variable (App. C.1).</p>
-  <p>Here is the real run of the pageant question from Appendix E.1, one turn at a time.</p>
+  <h2>How the loop runs</h2>
+  <p>The <span data-fs-ref="fig-loop:root">root model</span> controls the loop. On each turn, it writes code. The <span data-fs-ref="fig-loop:repl">Python session</span> runs that code and returns a short, cut-off printout to the root model's window (§2). The code can use Python and one extra function, <code>llm_query</code>. This function sends a string to another model and returns the response. Each use is a <span data-fs-ref="fig-loop:sub">sub-model call</span>. In the paper's GPT-5 runs, GPT-5 is the root model and GPT-5-mini handles the sub-model calls (§3.2). The results stay in <span data-fs-ref="fig-loop:vars">variables</span> outside the root model's window. The root model ends the loop with <code>FINAL(answer)</code>, or uses <code>FINAL_VAR(name)</code> to return a variable (App. C.1).</p>
+  <p>The next figure follows the real pageant-question run from Appendix E.1, one turn at a time.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-loop-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-loop-title">The root writes code; only short printouts come back</h3><span class="fs-status">App. E.1 · a real run</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-loop-title">The root receives only short printouts</h3><span class="fs-status">App. E.1 · a real run</span></header>
     <div class="fs-stage"><svg id="fig-loop" viewBox="0 0 960 250" role="img" aria-label="Flow: your question goes to the root model; the root writes code that the Python session runs; the session holds the documents in a variable and can send any piece to a sub-call on a smaller model; sub-call answers land in variables; only short printouts go back to the root; the root returns the final answer."></svg></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-loop:step"></span>
       <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-loop" aria-hidden="true"></span><button type="button" data-fs="fig-loop prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-loop next" aria-label="Next step">Next</button><button type="button" data-fs="fig-loop play" aria-label="Pause the flow">Pause</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-loop:caption" aria-live="polite"></p>
-    <p class="fs-caption">The steps follow the paper's trajectory for BrowseComp-Plus query 74 (App. E.1); the cost, token count and run times are from its panels. Packet speed is illustrative. Hover a box for what it is.</p>
+    <p class="fs-caption">The steps follow the paper's trajectory for BrowseComp-Plus query 74 (App. E.1); the cost, token count and run times come from its panels, and the animation timing is illustrative. Use Prev and Next to change steps, or hover a box for its role.</p>
   </figure>
 
-  <h2>Three choices separate an RLM from an agent with tools</h2>
-  <p>Coding agents and retrieval agents also run code and call models. The paper sets its loop (Algorithm 1) beside a look-alike (Algorithm 2) and names the three places where the look-alike goes wrong (§2):</p>
+  <h2>What separates it from an agent with tools</h2>
+  <p>Coding agents and retrieval agents also run code and call models. The paper compares its RLM loop in Algorithm 1 with a similar agent loop in Algorithm 2 and identifies three differences (§2).</p>
   <div class="tablewrap"><table class="plain">
-    <thead><tr><th>Choice</th><th>An RLM</th><th>The look-alike</th></tr></thead>
+    <thead><tr><th>Design choice</th><th>An RLM</th><th>An agent with tools</th></tr></thead>
     <tbody>
-      <tr><td>Where the prompt lives</td><td>In a variable; the model gets a handle and a length</td><td>In the model's window, so it hits the window's limit and falls back to summarizing</td></tr>
-      <tr><td>Where the answer comes from</td><td>Can be a variable, so it can be longer than anything one call could write</td><td>The model writes it out, so it can't be longer than one call's output</td></tr>
-      <tr><td>How sub-calls happen</td><td>From code, inside loops, on pieces the code picked: one per line if that's what it takes</td><td>As an action the model spells out by hand, a few at a time</td></tr>
+      <tr><td>Prompt location</td><td>A variable; the model receives a handle and a length</td><td>The model's window; it reaches the window limit and falls back to summarizing</td></tr>
+      <tr><td>Answer location</td><td>A variable, so the answer can exceed one call's output</td><td>The model's output, limited to what one call can write</td></tr>
+      <tr><td>Sub-model calls</td><td>Code makes them inside loops on selected pieces, including one per line when needed</td><td>The model requests a few calls at a time as actions</td></tr>
     </tbody>
   </table></div>
 
-  <h2>The model decides how to cut the input</h2>
-  <p>Nobody tells the root how to split the work. Its instructions show a few example strategies and leave the choice to the model (App. C.1). The paper's appendix shows four real runs that cut very differently: for the pageant question it searched first and read one document; on a code repository it cut the input into big chunks and asked about each; on two counting tasks Qwen3-Coder labelled questions in <span data-fs-ref="fig-split:calls">batches</span> in one run and one at a time in the other. The cut decides how many sub-calls happen. One thing all four share: recursion is one level deep. A sub-call is a plain model call, not another RLM (§6).</p>
+  <h2>How the model splits the input</h2>
+  <p>The instructions show the root model several example strategies but do not prescribe how to split the work (App. C.1). Appendix E shows four different runs. For the pageant question, the root searches first and reads one document. On a code repository, it splits the input into large chunks and asks about each one. On two counting tasks, Qwen3-Coder labels questions in <span data-fs-ref="fig-split:calls">batches</span> in one run and one at a time in the other. The split determines the number of sub-model calls. All four runs use one level of recursion. Their sub-model calls are regular model calls and cannot start another RLM (§6).</p>
   <figure class="fs-plate wide" aria-labelledby="fig-split-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-split-title">The root chooses the cut; the cut sets the calls</h3><span class="fs-chip" data-fs-out="fig-split:chip" aria-live="polite"></span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-split-title">The root decides how to split the input</h3><span class="fs-chip" data-fs-out="fig-split:chip" aria-live="polite"></span></header>
     <div class="fs-tabbar"><div data-fs-param="fig-split:run" data-label="Runs from Appendix E"></div></div>
     <div class="fs-stage"><canvas id="fig-split" role="img" aria-label="Four real runs from the paper's appendix. For each: the input as a long bar, how the code cut it, the sub-calls as dots under their pieces, how the pieces were put back together, and whether the answer was right, with the run's cost."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-split:readout"></span>
       <div class="fs-controls"><button type="button" data-fs="fig-split play" aria-label="Replay">Play</button></div>
     </div>
-    <p class="fs-caption">Each tab is one trajectory from Appendix E; counts, sizes and costs are from it. Pieces are drawn evenly except the pageant run's document 6, which is its real position. Pick a tab to replay it.</p>
+    <p class="fs-caption">Each tab shows one trajectory from Appendix E, with its counts, sizes and costs. The pieces are spaced evenly except for document 6 in the pageant run, which uses its real position; choose a tab to replay it.</p>
   </figure>
 
-  <h2>Long inputs, hard tasks</h2>
-  <p>The paper's first figure pulls apart two things that usually get blurred: how long the input is, and how much of it the answer depends on (§3). S-NIAH hides one phrase in filler, so the work stays the same as the input grows. OOLONG asks for a count that depends on nearly every line: the work grows with the input. OOLONG-Pairs asks for pairs of entries: the work grows with the square of the input (§3.1). GPT-5 finds the needle at every length it can take, and it falls to almost nothing on the pairs task by 33K tokens. The RLM slides slowly and keeps going past <span data-fs-ref="fig-scale:window">GPT-5's window</span>, to 1M tokens. Drag the <span data-fs-ref="fig-scale:cursor">cursor</span> to read any length.</p>
+  <h2>Scaling with input length</h2>
+  <p>The paper's Fig. 1 compares input length with how much of the input the answer depends on (§3). S-NIAH hides one phrase in filler, so the work stays constant as the input grows. OOLONG asks for a count that depends on nearly every line, so the work grows with the input. OOLONG-Pairs asks for pairs of entries, so the work grows with the square of the input (§3.1). GPT-5 finds the phrase at every length it can take. Its score falls to almost nothing on OOLONG-Pairs by 33K tokens. The RLM declines more slowly and continues past <span data-fs-ref="fig-scale:window">GPT-5's window</span> to 1M tokens. Drag the <span data-fs-ref="fig-scale:cursor">cursor</span> to inspect any length.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-scale-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-scale-title">Harder tasks break GPT-5 sooner; the RLM slides slowly</h3><span class="fs-status">Fig. 1 · the paper's data</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-scale-title">RLM scores decline more slowly with input length</h3><span class="fs-status">Fig. 1 · the paper's data</span></header>
     <div class="fs-tabbar"><div data-fs-param="fig-scale:task" data-label="Tasks"></div></div>
     <div class="fs-stage"><canvas id="fig-scale" role="img" aria-label="Score against input length from 8K to 1M tokens on a log scale, for GPT-5 and for an RLM built on GPT-5. GPT-5's points stop at its 272K window. On the needle task both stay at 100; on OOLONG and OOLONG-Pairs GPT-5 falls much faster."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-scale:readout"></span>
     </div>
-    <p class="fs-caption">Values extracted from the vector drawing of the paper's Fig. 1 (GPT-5 against RLM(GPT-5), one level of sub-calls); they match Table 1 where the two overlap. Drag the cursor or focus it and use the arrow keys.</p>
+    <p class="fs-caption">The values were extracted from the paper's vector Fig. 1 for GPT-5 and RLM(GPT-5), using one level of sub-model calls; they match Table 1 where the two overlap. Drag the cursor, or focus it and use the arrow keys.</p>
   </figure>
 
-  <h2>Four tasks, against the usual tools</h2>
-  <p>Table 1 lines the RLM up against the tools people already use: the <span data-fs-ref="fig-results:base">base model</span>; CodeAct, an agent that runs code but keeps the prompt in its window, given either a search tool (BM25) or sub-calls; a <span data-fs-ref="fig-results:summary">summary agent</span> that summarizes whenever its window fills; and the RLM with its session but <span data-fs-ref="fig-results:nosub">no sub-calls</span> (§3.2).</p>
-  <p>With GPT-5 the RLM is best on all four. On BrowseComp+, the pageant question's task, it scores 91.3 against 70.5 for the summary agent, at $0.99 a query; the paper's linear estimate for GPT-5-mini simply reading all 6 to 11M tokens is $1.50 to $2.75 (Obs. 1). On OOLONG, which fits in the window, it beats the base model by 28.4% (56.5 against 44.0). On OOLONG-Pairs it scores 58.0 where the base model scores 0.1. Sub-calls earn their keep on the dense tasks: 56.5 against 36.0 without them on OOLONG, 58.0 against 43.9 on the pairs. Not always, though: with Qwen3-Coder, the version without sub-calls wins CodeQA (66.0 against 56.0) and BrowseComp+ (46.0 against 44.7) (Obs. 2). Switch the model.</p>
+  <h2>Results on four tasks</h2>
+  <p>Table 1 compares the RLM with a <span data-fs-ref="fig-results:base">base model</span>; CodeAct, an agent that runs code but keeps the prompt in its window, with either the BM25 search tool or sub-model calls; a <span data-fs-ref="fig-results:summary">summary agent</span> that summarizes when its window fills; and an RLM with a Python session but <span data-fs-ref="fig-results:nosub">no sub-model calls</span> (§3.2).</p>
+  <p>With GPT-5, the RLM scores highest on all four tasks. On BrowseComp+, the pageant question's task, it scores 91.3 against 70.5 for the summary agent at $0.99 a query. The paper's linear estimate for GPT-5-mini reading all 6 to 11M tokens is $1.50 to $2.75 (Obs. 1). On OOLONG, which fits in the window, the RLM improves on the base model by 28.4% (56.5 against 44.0). On OOLONG-Pairs, it scores 58.0 while the base model scores 0.1. Sub-model calls improve the dense tasks: 56.5 against 36.0 without them on OOLONG, and 58.0 against 43.9 on OOLONG-Pairs. With Qwen3-Coder, the version without sub-model calls scores highest on CodeQA (66.0 against 56.0) and BrowseComp+ (46.0 against 44.7) (Obs. 2). Switch the model to compare both.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-results-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-results-title">An RLM variant wins every task, with either model</h3><span class="fs-status">Table 1</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-results-title">An RLM variant leads every task for both models</h3><span class="fs-status">Table 1</span></header>
     <div class="fs-stage"><canvas id="fig-results" role="img" aria-label="Scores of six methods on four tasks, as bars, for GPT-5 or Qwen3-Coder-480B. A dashed line marks the base model in each task. With GPT-5 the RLM has the longest bar on all four tasks; with Qwen3-Coder the RLM or the RLM without sub-calls has it. Each bar carries its average cost per query."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-results:readout"></span>
       <div class="fs-controls"><div data-fs-param="fig-results:model" data-label="Model"></div></div>
     </div>
-    <p class="fs-caption">Scores and average API cost per query from Table 1; higher is better (F1 on OOLONG-Pairs, percent correct elsewhere). Hatched bars ran into the input limit at least sometimes (Table 1's asterisk). Hover a bar for its cost spread.</p>
+    <p class="fs-caption">The bars show scores and average API cost per query from Table 1; higher is better, using F1 on OOLONG-Pairs and percent correct elsewhere. Hatched bars mark input-limit cases from Table 1's asterisk; hover a bar to see its cost spread.</p>
   </figure>
-  <p>The cost story is good on average and rough in the tail. With GPT-5, the median RLM run is cheaper than the median base-model call, but some runs go on for many turns and cost far more (the paper's Fig. 3, Obs. 4). Against the summary agent, which reads the whole input, the paper reports RLMs up to 3× cheaper (Obs. 4).</p>
+  <p>Average cost does not show the most expensive runs. With GPT-5, the median RLM run costs less than the median base-model call. Some runs take many turns and cost much more (the paper's Fig. 3, Obs. 4). Compared with the summary agent, which reads the whole input, the paper reports RLMs up to 3× cheaper (Obs. 4).</p>
 
-  <h2>Training a small model to do it</h2>
-  <p>Qwen3-8B, a small open model, barely works as an RLM out of the box. The authors fine-tuned it on 1,000 filtered RLM runs that Qwen3-Coder-480B produced on LongBenchPro, tasks unrelated to the four benchmarks (§3.2, App. A). The training is tiny by today's standards: 300 steps at a batch size of 64, 48 H100 hours (App. A). What made it cheap is that a sub-call is an ordinary model call, so only the root's job, driving the session, has to be learned (§3.2). Step through.</p>
+  <h2>Fine-tuning a small model</h2>
+  <p>Qwen3-8B, a small open model, performs poorly as an RLM without fine-tuning. The authors fine-tuned it on 1,000 filtered RLM runs that Qwen3-Coder-480B produced on LongBenchPro, using tasks unrelated to the four benchmarks (§3.2, App. A). Training used 300 steps at a batch size of 64 and took 48 H100 hours (App. A). Each sub-model call is an ordinary model call, so only the root model had to learn how to manage the session (§3.2). Use Next to step through the comparison.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-train-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-train-title">A thousand examples teach a small model the loop</h3><span class="fs-status">Table 1</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-train-title">Fine-tuning improves the small model on all tasks</h3><span class="fs-status">Table 1</span></header>
     <div class="fs-stage"><canvas id="fig-train" role="img" aria-label="Four tasks, each with Qwen3-8B's score on its own, run as an RLM, and after fine-tuning, plus base GPT-5 for comparison. Fine-tuning raises all four; the fine-tuned small RLM is above base GPT-5 on three tasks and below it on OOLONG."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-train:step"></span>
       <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-train" aria-hidden="true"></span><button type="button" data-fs="fig-train prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-train next" aria-label="Next step">Next</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-train:caption" aria-live="polite"></p>
-    <p class="fs-caption">Scores from Table 1, Qwen3-8B and GPT-5 rows; the gains under the chart are computed from them. Hover a mark for its value and cost.</p>
+    <p class="fs-caption">The scores come from the Qwen3-8B and GPT-5 rows in Table 1, and the gains under the chart are computed from them. Hover a mark to see its value and cost.</p>
   </figure>
-  <p>The paper sums this up as a 28.3% improvement (“on average” in the abstract, “a median” in the introduction). From the rounded Table 1 scores the four relative gains are <span data-fs-out="fig-train:gains"></span>; their median is <span data-fs-out="fig-train:median"></span>, so the 28.3% is the median, give or take rounding, not the mean. It also got cheaper: 1 to 4 cents a query instead of 3 to 19 (Table 1). And it passes base GPT-5 on three tasks, two of which GPT-5 couldn't fully take in; on OOLONG it trails, 32.0 against 44.0.</p>
+  <p>The paper reports a 28.3% improvement, described as “on average” in the abstract and “a median” in the introduction. From the rounded Table 1 scores, the four relative gains are <span data-fs-out="fig-train:gains"></span> and their median is <span data-fs-out="fig-train:median"></span>. Allowing for rounding, 28.3% is the median rather than the mean. The fine-tuned model also costs less, at 1 to 4 cents a query instead of 3 to 19 (Table 1). It exceeds base GPT-5 on three tasks, including two that GPT-5 could not fully take in. On OOLONG, it scores 32.0 against 44.0.</p>
 
-  <h2>Where it struggles</h2>
-  <p>The paper is candid about this (App. B, App. E):</p>
+  <h2>Limits</h2>
+  <p>The paper reports four limits (App. B, App. E).</p>
   <ul>
-    <li><strong>It's slow.</strong> Every sub-call waits for the one before it, so the slowest runs take far longer than any baseline (§4, the paper's Figs. 7 and 8). Running sub-calls in parallel is left to future work.</li>
-    <li><strong>Models differ a lot.</strong> On one OOLONG question Qwen3-Coder sent a sub-call per line, hundreds to thousands for one task, where GPT-5 makes “on the order of ten” (App. E). The authors added one line to Qwen3-Coder's instructions warning it off (App. C.1).</li>
-    <li><strong>Telling an answer from a thought is brittle.</strong> In one OOLONG-Pairs run the model built the right list in a variable, kept re-checking it, then returned an answer it wrote itself, which was wrong (App. E.2).</li>
-    <li><strong>Small inputs.</strong> On short inputs the base model is sometimes slightly better (Obs. 3), and small models without good coding skills struggle in the session at all (App. B).</li>
+    <li><strong>Latency.</strong> Every sub-model call waits for the previous one, so the slowest runs take much longer than any baseline (§4, the paper's Figs. 7 and 8). Parallel sub-model calls are left to future work.</li>
+    <li><strong>Model behavior varies.</strong> On one OOLONG question, Qwen3-Coder made one sub-model call per line, producing hundreds to thousands for one task. GPT-5 makes “on the order of ten” (App. E). The authors added one line to Qwen3-Coder's instructions to discourage this behavior (App. C.1).</li>
+    <li><strong>Final-answer handling.</strong> In one OOLONG-Pairs run, the model built the correct list in a variable and kept checking it. It then returned a different answer that it wrote itself, and that answer was wrong (App. E.2).</li>
+    <li><strong>Short inputs.</strong> The base model is sometimes slightly better on short inputs (Obs. 3). Small models without strong coding skills also struggle to use the session (App. B).</li>
   </ul>
 
   <details class="verified">
     <summary>Checked against the source</summary>
     <ul>
-      <li>Source: arXiv:2512.24601 <strong>version 2</strong> (28 January 2026), read in full including the appendices. Version 3 (11 May 2026) extends Table 1 with recursion depths 0 to 3 and coding-agent baselines and changes some numbers; none of version 3's numbers are used here.</li>
-      <li>272K tokens, GPT-5's window: the paper's Fig. 1 caption. 1,000 documents, about 8.3M tokens, $0.079, the nine search keywords, document index 6, the sub-call's 1,605 tokens and $0.001682 on GPT-5-mini, run times 0.158 s, 9.089 s and 6.279 s, the answer Maria Dalmacio: App. E.1. “About 30 windows” is 8.3M ÷ 272K = 30.5.</li>
-      <li>Task lengths (CodeQA 23K to 4.2M, BrowseComp+ 6M to 11M, OOLONG 131K, OOLONG-Pairs 32K), every score and every cost with its spread in Figs. 5 and 6: Table 1. The percentages 28.4% (OOLONG over base), 91.3 against 70.5, 17.9% and 3% for the no-sub-call ablation with Qwen3-Coder: Obs. 1 and 2, re-computed from Table 1 and matching.</li>
-      <li>Fig. 4's scores were extracted from the paper's Fig. 1, which is a vector drawing: each plotted point's coordinates were read from the PDF and mapped onto its gridlines (0 to 100). They match Table 1 at 131K (GPT-5 44.0, RLM 56.5) and at 32K for the RLM (58.0). At 33K, Fig. 1 shows GPT-5 at 3.7 on OOLONG-Pairs where Table 1 has 0.1 at 32K; they appear to be separate runs.</li>
-      <li>The paper's Fig. 1 caption in version 2 says lengths run from 2¹³ to 2¹⁸, but its RLM points go to 1M (2²⁰); version 3's caption says 2²⁰. The guide plots what is drawn.</li>
-      <li>Fig. 3's runs: App. E.1 (BrowseComp+ query 74), E.4 (CodeQA query 44: about 900K tokens, chunks of 380,000 characters, 11 sub-calls, $0.27), E.2 (OOLONG-Pairs query 3: 76,083 characters, 794 lines of which 787 questions, 8 batches of 100, 131 users, 8,515 pairs, $1.12, wrong answer), E.3 (OOLONG query 212: 3,182 questions, 382 sub-calls in the step shown, $0.38). The CodeQA run's 10 chunks are inferred: 11 calls minus the one that combines them.</li>
-      <li>Fine-tuning: 1,000 trajectories (§3.2); 300 steps, batch 64, 48 H100 hours (App. A). The relative gains and their median are computed in the page from Table 1. Appendix A also gives other counts at different filtering stages (2,250, 1,072, and 2,241 and 953 in its Fig. 5) that don't obviously reconcile with 1,000; the guide uses §3.2's number.</li>
-      <li>Simulated or illustrative: what is drawn inside the RLM's window in Fig. 1, packet speed in Fig. 2, and the even spacing of pieces in Fig. 3. Everything else is the paper's data.</li>
-      <li>Left out on purpose: the cost-against-length plot (Fig. 11) and the cost and runtime percentile charts (Figs. 3, 7 to 10), which are raster images without printed values, so no number is read off them; the BrowseComp+ document-count experiment (the paper's Fig. 6, App. D.2); the trajectory screenshots' code.</li>
+      <li>This guide uses arXiv:2512.24601 <strong>version 2</strong> (28 January 2026), including the appendices. Version 3 (11 May 2026) extends Table 1 with recursion depths 0 to 3 and coding-agent baselines, and it changes some numbers. This guide does not use version 3's numbers.</li>
+      <li>GPT-5's 272K-token window comes from the paper's Fig. 1 caption. App. E.1 provides the 1,000 documents, about 8.3M tokens, $0.079, nine search keywords, document index 6, the sub-model call's 1,605 tokens and $0.001682 on GPT-5-mini, run times of 0.158 s, 9.089 s and 6.279 s, and the answer Maria Dalmacio. “About 30 windows” is 8.3M ÷ 272K = 30.5.</li>
+      <li>Table 1 provides the task lengths (CodeQA 23K to 4.2M, BrowseComp+ 6M to 11M, OOLONG 131K, OOLONG-Pairs 32K), every score, and every cost with its spread in Figs. 5 and 6. The percentages 28.4% for OOLONG over the base model, 91.3 against 70.5, and 17.9% and 3% for the no-sub-model-call ablation with Qwen3-Coder were recomputed from Table 1 and match Obs. 1 and 2.</li>
+      <li>Fig. 4's scores were extracted from the paper's vector Fig. 1. Each plotted point's coordinates were read from the PDF and mapped to its gridlines from 0 to 100. They match Table 1 at 131K (GPT-5 44.0, RLM 56.5) and at 32K for the RLM (58.0). At 33K, Fig. 1 shows GPT-5 at 3.7 on OOLONG-Pairs, while Table 1 has 0.1 at 32K; these appear to be separate runs.</li>
+      <li>The paper's Fig. 1 caption in version 2 says the lengths run from 2¹³ to 2¹⁸, while its RLM points extend to 1M (2²⁰). Version 3's caption says 2²⁰. The guide plots the points that are drawn.</li>
+      <li>Fig. 3 uses App. E.1 (BrowseComp+ query 74); E.4 (CodeQA query 44, about 900K tokens, chunks of 380,000 characters, 11 sub-model calls, $0.27); E.2 (OOLONG-Pairs query 3, 76,083 characters, 794 lines including 787 questions, 8 batches of 100, 131 users, 8,515 pairs, $1.12, wrong answer); and E.3 (OOLONG query 212, 3,182 questions, 382 sub-model calls in the step shown, $0.38). The CodeQA run's 10 chunks are inferred from 11 calls minus the one that combines them.</li>
+      <li>Fine-tuning uses 1,000 trajectories (§3.2), 300 steps, batch 64, and 48 H100 hours (App. A). The page computes the relative gains and their median from Table 1. Appendix A also gives other counts at different filtering stages, 2,250, 1,072, and 2,241 and 953 in its Fig. 5, that do not clearly reconcile with 1,000. The guide uses the number from §3.2.</li>
+      <li>The RLM window contents in Fig. 1, animation timing in Fig. 2, and even piece spacing in Fig. 3 are simulated or illustrative. Everything else is data from the paper.</li>
+      <li>The guide leaves out the cost-against-length plot in Fig. 11 and the cost and runtime percentile charts in Figs. 3, 7 to 10 because they are raster images without printed values, so no number is read from them. It also leaves out the BrowseComp+ document-count experiment in the paper's Fig. 6 and App. D.2, and the code in the trajectory screenshots.</li>
     </ul>
   </details>
 </main>
@@ -4987,10 +4987,10 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
     bcp: { label: "1,000 documents · ~8.3M", tokens: 8.3e6, what: "the pageant question's documents" }, // App. E.1
   };
   const tips = {
-    window: { title: "The window", body: "How much text the model reads in one call: 272K tokens for GPT-5. Everything it knows about the task has to be in here." },
-    input: { title: "The input", body: "Drawn as tiles the size of one window, so the lengths compare to scale." },
-    session: { title: "Python session", body: "The RLM's REPL: a Python session that keeps its variables between turns. The whole input sits in one of them, named context." },
-    over: { title: "Doesn't fit", body: "Every tile past the first window. A base model can't take these at all; the call fails or the input must be cut." },
+    window: { title: "Context window", body: "GPT-5 reads up to 272K tokens in one call. All task information it uses must fit here." },
+    input: { title: "Input", body: "Each tile matches one context window, so the lengths are shown to scale." },
+    session: { title: "Python session", body: "The session keeps variables between turns. The complete input is stored in one named context." },
+    over: { title: "Input limit", body: "Every tile after the first exceeds the context window. A base model cannot take the full input." },
   };
   const layout = (w) => {
     const narrow = w < 560, gap = narrow ? 4 : 6, cols = narrow ? 7 : 10, rows = narrow ? 5 : 4;
@@ -5082,12 +5082,12 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
 /* ================= Fig 2: the loop on the pageant question (stepped flow, App. E.1) ================= */
 (() => {
   const meta = {
-    question: { label: "Your question", sub: "who won the pageant?", tip: { title: "The question", body: "A multi-hop trivia question from BrowseComp-Plus, query 74: a festival, its 13th year, a pageant, the winner's first and last name." } },
-    root: { label: "Root model", sub: "GPT-5, sees summaries", tip: { title: "Root model", body: "The model in charge. It never sees the documents themselves, only the question, a description of context, and short printouts." } },
-    repl: { label: "Python session", sub: "runs the root's code", tip: { title: "Python session", body: "A REPL: it runs each block of code the root writes and keeps every variable for the next turn." } },
-    context: { label: "context", sub: "1,000 documents", tip: { title: "context", body: "The prompt, stored as a variable: 1,000 documents, about 8.3M tokens. Code can index, slice and search it." } },
-    vars: { label: "Variables", sub: "answer6, confirm", tip: { title: "Variables", body: "Where results go. Sub-call answers are stored here, so they don't fill the root's window." } },
-    sub: { label: "Sub-call", sub: "GPT-5-mini, one piece", tip: { title: "Sub-call", body: "llm_query(text): one call to a smaller model on whatever string the code passes it, here one document." } },
+    question: { label: "Your question", sub: "who won the pageant?", tip: { title: "Question", body: "BrowseComp-Plus query 74 asks about a festival, its 13th year, a pageant, and the winner's first and last name." } },
+    root: { label: "Root model", sub: "GPT-5, short printouts", tip: { title: "Root model", body: "This model controls the loop. It receives the question, a description of context, and short printouts instead of the documents." } },
+    repl: { label: "Python session", sub: "runs the root's code", tip: { title: "Python session", body: "It runs each block of code from the root model and keeps every variable for the next turn." } },
+    context: { label: "context", sub: "1,000 documents", tip: { title: "context", body: "This variable stores the prompt: 1,000 documents and about 8.3M tokens. Code can index, slice and search it." } },
+    vars: { label: "Variables", sub: "answer6, confirm", tip: { title: "Variables", body: "Sub-model call responses are stored here, outside the root model's context window." } },
+    sub: { label: "Sub-model call", sub: "GPT-5-mini, one piece", tip: { title: "Sub-model call", body: "llm_query(text) sends one selected string to a smaller model and returns its response, here for one document." } },
     answer: { label: "Answer", sub: "FINAL(...)", tip: { title: "Final answer", body: "The root ends the loop by writing FINAL(answer), or FINAL_VAR(name) to return a variable." } },
   };
   const layouts = {
@@ -5105,13 +5105,13 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
   ];
   const returns = [{ a: "repl", b: "root", wide: "top", narrow: "left" }];
   const steps = [
-    { on: Object.keys(meta), caption: "One root model, one Python session holding the prompt, and a function that calls a smaller model on any piece." },
-    { on: ["question", "root", "repl", "context"], caption: "The 1,000 documents, about 8.3M tokens, go into a variable. The root gets the question and a short description of it." },
-    { on: ["root", "repl", "context"], caption: "The root writes a keyword search over every document: “festival”, “beauty pageant”, “La Union” and six more. It runs in 0.158 s." },
-    { on: ["repl", "root"], caption: "Only a short, cut-off printout of the hits comes back. One hit, the document at index 6, looks promising." },
-    { on: ["repl", "context", "sub", "vars"], caption: "Code sends document 6 to a sub-call. The GPT-5-mini call uses 1,605 tokens and costs $0.0017; its answer goes into answer6." },
-    { on: ["repl", "sub", "vars", "root"], caption: "Two more sub-calls confirm the year and pull out the winner's first and last name: Maria Dalmacio." },
-    { on: ["root", "answer"], caption: "The root returns it with FINAL. The right answer, and the whole run cost $0.079." },
+    { on: Object.keys(meta), caption: "The RLM starts with one root model, one Python session that holds the prompt, and a function for sub-model calls." },
+    { on: ["question", "root", "repl", "context"], caption: "The 1,000 documents, about 8.3M tokens, enter a variable while the root model receives the question and a short description." },
+    { on: ["root", "repl", "context"], caption: "The root searches every document for “festival”, “beauty pageant”, “La Union” and six more keywords in 0.158 s." },
+    { on: ["repl", "root"], caption: "A short, cut-off printout returns one promising hit, the document at index 6." },
+    { on: ["repl", "context", "sub", "vars"], caption: "Code sends document 6 to a GPT-5-mini sub-model call that uses 1,605 tokens, costs $0.0017, and stores its response in answer6." },
+    { on: ["repl", "sub", "vars", "root"], caption: "Two more sub-model calls confirm the year and extract the winner's first and last name, Maria Dalmacio." },
+    { on: ["root", "answer"], caption: "The root returns the correct answer with FINAL, and the complete run costs $0.079." },
   ];
   flowFigure("fig-loop", {
     meta, layouts, edges, returns, steps,
@@ -5123,20 +5123,20 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
 (() => {
   const RUNS = {
     e1: { tab: "Search", model: "RLM(GPT-5)", input: "1,000 documents · about 8.3M tokens", kind: "filter", units: 1000, pieces: 1000, pick: 6,
-      cut: "Code searches all 1,000 for keywords; no model", calls: 3, callNote: "3 sub-calls, all on document 6", combine: "The root reads three short answers", answer: "Maria Dalmacio", ok: true, cost: "$0.079", src: "App. E.1" },
+      cut: "Code searches all 1,000 for keywords without a model", calls: 3, callNote: "3 sub-model calls, all on document 6", combine: "The root reads three short answers", answer: "Maria Dalmacio", ok: true, cost: "$0.079", src: "App. E.1" },
     e4: { tab: "Chunks", model: "RLM(GPT-5)", input: "a code repository · about 900K tokens", kind: "chunks", pieces: 10,
-      cut: "Chunks of 380,000 characters", calls: 10, extra: 1, callNote: "a sub-call per chunk, 11 in all", combine: "One more sub-call combines the findings", answer: "choice 1", ok: true, cost: "$0.27", src: "App. E.4" },
+      cut: "Chunks of 380,000 characters", calls: 10, extra: 1, callNote: "one sub-model call per chunk, 11 in all", combine: "One more sub-model call combines the findings", answer: "choice 1", ok: true, cost: "$0.27", src: "App. E.4" },
     e2: { tab: "Batches", model: "RLM(Qwen3-Coder)", input: "787 questions · about 32K tokens", kind: "chunks", pieces: 8,
-      cut: "Batches of 100 lines", calls: 8, callNote: "8 sub-calls label every question", combine: "Plain code: 131 users, 8,515 pairs", answer: "kept re-checking, returned a different answer", ok: false, cost: "$1.12", src: "App. E.2" },
+      cut: "Batches of 100 lines", calls: 8, callNote: "8 sub-model calls label every question", combine: "Plain code finds 131 users and 8,515 pairs", answer: "kept re-checking, returned a different answer", ok: false, cost: "$1.12", src: "App. E.2" },
     e3: { tab: "Each line", model: "RLM(Qwen3-Coder)", input: "3,182 questions", kind: "lines", pieces: 3182,
-      cut: "One question per sub-call", calls: 382, callNote: "382 sub-calls in the step the paper shows", combine: "Plain code counts the labels", answer: "“less common than”", ok: true, cost: "$0.38", src: "App. E.3" },
+      cut: "One question per sub-model call", calls: 382, callNote: "382 sub-model calls in the step the paper shows", combine: "Plain code counts the labels", answer: "“less common than”", ok: true, cost: "$0.38", src: "App. E.3" },
   };
   const T = { cut: [0, 1], calls: [1, 2.6], combine: [2.6, 3.3], answer: [3.3, 4] }, END = 4.2;
   const tips = {
     input: { title: "The input", body: "What the run had to work through, stored as the variable context." },
-    cut: { title: "The cut", body: "How the root's code divided the input. The paper's instructions suggest strategies but never pick one (App. C.1)." },
-    calls: { title: "Sub-calls", body: "Each dot is one llm_query call to a model, on one piece. Recursion is one level deep here (§6)." },
-    combine: { title: "Putting it together", body: "How the pieces came back into one answer: the root reading printouts, one more sub-call, or plain code." },
+    cut: { title: "The split", body: "The root model's code decides how to divide the input. The paper's instructions suggest strategies without selecting one (App. C.1)." },
+    calls: { title: "Sub-model calls", body: "Each dot is one llm_query call on one piece. These runs use one level of recursion (§6)." },
+    combine: { title: "Combine results", body: "The root model combines the pieces by reading printouts, making one more sub-model call, or running plain code." },
     answer: { title: "The answer", body: "Whether the run was right, and what the whole trajectory cost (App. E)." },
   };
   const geo = (f) => {
@@ -5148,7 +5148,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
     duration: END,
     keyframe: END,
     params: { run: { value: "e1", label: "Runs from Appendix E", options: Object.entries(RUNS).map(([value, r]) => ({ value, label: r.tab })), placement: "inline" } },
-    reserve: { readout: ["RLM(Qwen3-Coder) · 382 sub-calls · $0.38 · right answer"], chip: ["putting it together", "App. E.3 · a real run"] },
+    reserve: { readout: ["RLM(Qwen3-Coder) · 382 sub-model calls · $0.38 · right answer"], chip: ["combining results", "App. E.3 · a real run"] },
     tips,
     tipAt: (f, x, y) => hitAt(f, x, y, 4),
     onParam(f, name) { if (name === "run") { f.api.seek(0); f.api.play(); } },
@@ -5183,7 +5183,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
       FS.k.text(f, c, R.cut, G.narrow ? G.x0 : G.x1, G.narrow ? yb - 8 : yb + hb + 14, { size: 10.5, align: G.narrow ? "left" : "right", alpha: cutP, color: f.hover === "cut" ? C.accent : C.muted });
       hits.push({ key: "cut", x: G.x0 + W / 2, y: yb + hb + 2, w: W / 2, h: 16 });
       // row 2: the sub-calls
-      rowLabel("Sub-calls", G.yCalls, "calls");
+      rowLabel("Sub-model calls", G.yCalls, "calls");
       const callP = w(...T.calls), shown = Math.floor(callP * R.calls + 1e-6);
       const dots = [];
       if (R.kind === "lines") {
@@ -5205,7 +5205,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
       FS.k.text(f, c, R.callNote, noteX, noteY, { size: 10.5, alpha: FS.clamp(callP * 4), color: f.hover === "calls" ? C.accent : C.muted });
       hits.push({ key: "calls", x: G.x0, y: G.yCalls - 26, w: W, h: 52 });
       // row 3: putting it together
-      rowLabel("Combine", G.yComb + 4, "combine");
+      rowLabel("Combine results", G.yComb + 4, "combine");
       const combP = w(...T.combine), bw = Math.min(W, G.narrow ? W : 330), bx = G.x0 + (W - bw) / 2, by = G.yComb - 14;
       c.save(); c.globalAlpha = combP;
       const fromDots = R.kind === "lines" ? [dots[0], dots[Math.floor(dots.length / 2)], lastDot] : dots;
@@ -5220,14 +5220,14 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
       rowLabel("Answer", G.yAns + 2, "answer");
       const ansP = w(...T.answer);
       c.save(); c.globalAlpha = ansP;
-      const mark = R.ok ? "✓" : "✗", text = `${mark} ${R.ok ? "right" : "wrong"}: ${R.answer} · run cost ${R.cost}`;
+      const mark = R.ok ? "✓" : "✗", text = `${mark} ${R.ok ? "right" : "wrong"} · ${R.answer} · run cost ${R.cost}`;
       FS.k.text(f, c, text, G.x0 + (G.narrow ? 0 : 0), G.yAns + 6, { size: 12, weight: 600, color: R.ok ? C.fg : C.strong });
       if (!R.ok) { c.strokeStyle = C.strong; c.setLineDash([3, 3]); const tw = c.measureText(text).width; FS.k.line(c, G.x0, G.yAns + 11, G.x0 + tw, G.yAns + 11); c.setLineDash([]); }
       c.restore();
       hits.push({ key: "answer", x: G.x0, y: G.yAns - 10, w: W, h: 22 });
-      const phase = t < T.cut[1] ? "cutting the input" : t < T.calls[1] ? "sub-calls" : t < T.combine[1] ? "putting it together" : `${R.src} · a real run`;
+      const phase = t < T.cut[1] ? "splitting the input" : t < T.calls[1] ? "sub-model calls" : t < T.combine[1] ? "combining results" : `${R.src} · a real run`;
       f.api.out("chip", phase);
-      f.api.out("readout", `${R.model} · ${R.calls + (R.extra || 0)} sub-calls · ${R.cost} · ${R.ok ? "right answer" : "wrong answer"}`);
+      f.api.out("readout", `${R.model} · ${R.calls + (R.extra || 0)} sub-model calls · ${R.cost} · ${R.ok ? "right answer" : "wrong answer"}`);
     },
   });
 })();
@@ -5250,7 +5250,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
   const tips = {
     window: { title: "GPT-5's window", body: "272K tokens. Past this line GPT-5 can't take the input, so it has no points; the RLM keeps going." },
     gpt: { title: "GPT-5", body: "The base model, the whole input in its window." },
-    rlm: { title: "RLM(GPT-5)", body: "GPT-5 as root in the Python session, sub-calls to GPT-5-mini, one level deep (§3.2)." },
+    rlm: { title: "RLM(GPT-5)", body: "GPT-5 is the root model in the Python session, with one level of GPT-5-mini sub-model calls (§3.2)." },
   };
   const geo = (f) => { const narrow = f.w < 560; return { narrow, L: narrow ? 34 : 44, R: f.w - (narrow ? 40 : 104), T: narrow ? 58 : 46, B: f.h - 44 }; };
   const X = (G, i) => G.L + ((G.R - G.L) * i) / (LENS.length - 1);
@@ -5337,8 +5337,8 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
 (() => {
   const TASKS = [{ name: "CodeQA", len: "23K–4.2M tokens" }, { name: "BrowseComp+ (1K)", len: "6M–11M tokens" }, { name: "OOLONG", len: "131K tokens" }, { name: "OOLONG-Pairs", len: "32K tokens" }];
   const ROWS = [
-    { key: "base", name: "Base model" }, { key: "bm25", name: "CodeAct + BM25" }, { key: "codesub", name: "CodeAct + sub-calls" },
-    { key: "summary", name: "Summary agent" }, { key: "rlm", name: "RLM" }, { key: "nosub", name: "RLM, no sub-calls" },
+    { key: "base", name: "Base model" }, { key: "bm25", name: "CodeAct + BM25" }, { key: "codesub", name: "CodeAct/sub-model calls" },
+    { key: "summary", name: "Summary agent" }, { key: "rlm", name: "RLM" }, { key: "nosub", name: "RLM/no sub-model calls" },
   ];
   // Table 1 (v2): [score, ran into the input limit (asterisk), mean cost $, cost std $]; null cost is N/A.
   const T1 = {
@@ -5365,7 +5365,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
   const tips = {};
   for (const m of Object.keys(T1)) ROWS.forEach((r, ri) => TASKS.forEach((task, ti) => {
     const [s, star, mean, sd] = T1[m][r.key][ti];
-    tips[`${m}:${ri}:${ti}`] = { title: `${r.name} · ${task.name}`, body: `${MODELS[m]}: score ${s.toFixed(1)}${star ? ", ran into the input limit at least sometimes" : ""}. ${mean == null ? "No cost reported." : `Average cost ${money(mean)} a query, spread ±${money(sd)}.`}` };
+    tips[`${m}:${ri}:${ti}`] = { title: `${r.name} · ${task.name}`, body: `${MODELS[m]} scores ${s.toFixed(1)}${star ? " and runs into the input limit at least sometimes" : ""}. ${mean == null ? "No cost reported." : `Average cost ${money(mean)} a query, spread ±${money(sd)}.`}` };
   }));
   const geo = (f) => {
     const narrow = f.w < 560;
@@ -5379,7 +5379,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
       model: { value: "gpt", label: "Model", options: [{ value: "gpt", label: "GPT-5" }, { value: "qwen", label: "Qwen3-Coder" }], placement: "inline" },
       m: { value: 0, min: 0, max: 1, hidden: true },
     },
-    reserve: { readout: ["Best on each task: no sub-calls, no sub-calls, RLM, RLM"] },
+    reserve: { readout: ["Best on each task: no sub-model calls, no sub-model calls, RLM, RLM"] },
     tips,
     tipAt: (f, x, y) => hitAt(f, x, y),
     autoplay: false,
@@ -5412,7 +5412,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
         });
       });
       if (!G.narrow) FS.k.text(f, c, `${MODELS[model]} · bar = score, right = average cost a query · * ran into the input limit · dashed line = base model`, G.labelW, f.h - 8, { size: 10.5 });
-      const names = TASKS.map((_, ti) => (best(model, ti).key === "rlm" ? "RLM" : "no sub-calls"));
+      const names = TASKS.map((_, ti) => (best(model, ti).key === "rlm" ? "RLM" : "no sub-model calls"));
       f.api.out("readout", names.every((n) => n === "RLM") ? "Best on each task: the RLM, all four" : `Best on each task: ${names.join(", ")}`);
     },
   });
@@ -5431,10 +5431,10 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
   const rel = S.ft.v.map((v, i) => ((v - S.rlm.v[i]) / S.rlm.v[i]) * 100);
   const sorted = [...rel].sort((a, b) => a - b), median = (sorted[1] + sorted[2]) / 2;
   const steps = [
-    { show: 1, gpt: false, caption: "Qwen3-8B on its own: it runs into its input limit on three tasks and scores almost nothing." },
-    { show: 2, gpt: false, caption: "The same model run as an RLM, no training: 26.0 on CodeQA and 24.0 on OOLONG, still weak elsewhere." },
-    { show: 3, gpt: false, caption: "Fine-tuned on 1,000 RLM runs from a bigger model, on unrelated tasks: up on all four." },
-    { show: 3, gpt: true, caption: "Base GPT-5 for scale, dashed: the small RLM is above it on three tasks and below it on OOLONG." },
+    { show: 1, gpt: false, caption: "Qwen3-8B alone runs into its input limit on three tasks and scores almost nothing." },
+    { show: 2, gpt: false, caption: "Running the same model as an RLM without training raises it to 26.0 on CodeQA and 24.0 on OOLONG, with weaker results elsewhere." },
+    { show: 3, gpt: false, caption: "Fine-tuning on 1,000 RLM runs from a larger model on unrelated tasks improves all four results." },
+    { show: 3, gpt: true, caption: "Dashed lines add base GPT-5 for comparison, with the small RLM above it on three tasks and below it on OOLONG." },
   ];
   const tips = {};
   ORDER.concat("gpt").forEach((k) => TASKS.forEach((t, i) => { const c = S[k].cost[i]; tips[`${k}:${i}`] = { title: `${S[k].name} · ${t}`, body: `Score ${S[k].v[i].toFixed(1)}${S[k].star[i] ? ", ran into the input limit at least sometimes" : ""}. ${c == null ? "No cost reported." : `Average cost $${c.toFixed(2)} a query.`} (Table 1)` }; }));

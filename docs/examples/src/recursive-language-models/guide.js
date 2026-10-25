@@ -20,10 +20,10 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
     bcp: { label: "1,000 documents · ~8.3M", tokens: 8.3e6, what: "the pageant question's documents" }, // App. E.1
   };
   const tips = {
-    window: { title: "The window", body: "How much text the model reads in one call: 272K tokens for GPT-5. Everything it knows about the task has to be in here." },
-    input: { title: "The input", body: "Drawn as tiles the size of one window, so the lengths compare to scale." },
-    session: { title: "Python session", body: "The RLM's REPL: a Python session that keeps its variables between turns. The whole input sits in one of them, named context." },
-    over: { title: "Doesn't fit", body: "Every tile past the first window. A base model can't take these at all; the call fails or the input must be cut." },
+    window: { title: "Context window", body: "GPT-5 reads up to 272K tokens in one call. All task information it uses must fit here." },
+    input: { title: "Input", body: "Each tile matches one context window, so the lengths are shown to scale." },
+    session: { title: "Python session", body: "The session keeps variables between turns. The complete input is stored in one named context." },
+    over: { title: "Input limit", body: "Every tile after the first exceeds the context window. A base model cannot take the full input." },
   };
   const layout = (w) => {
     const narrow = w < 560, gap = narrow ? 4 : 6, cols = narrow ? 7 : 10, rows = narrow ? 5 : 4;
@@ -115,12 +115,12 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
 /* ================= Fig 2: the loop on the pageant question (stepped flow, App. E.1) ================= */
 (() => {
   const meta = {
-    question: { label: "Your question", sub: "who won the pageant?", tip: { title: "The question", body: "A multi-hop trivia question from BrowseComp-Plus, query 74: a festival, its 13th year, a pageant, the winner's first and last name." } },
-    root: { label: "Root model", sub: "GPT-5, sees summaries", tip: { title: "Root model", body: "The model in charge. It never sees the documents themselves, only the question, a description of context, and short printouts." } },
-    repl: { label: "Python session", sub: "runs the root's code", tip: { title: "Python session", body: "A REPL: it runs each block of code the root writes and keeps every variable for the next turn." } },
-    context: { label: "context", sub: "1,000 documents", tip: { title: "context", body: "The prompt, stored as a variable: 1,000 documents, about 8.3M tokens. Code can index, slice and search it." } },
-    vars: { label: "Variables", sub: "answer6, confirm", tip: { title: "Variables", body: "Where results go. Sub-call answers are stored here, so they don't fill the root's window." } },
-    sub: { label: "Sub-call", sub: "GPT-5-mini, one piece", tip: { title: "Sub-call", body: "llm_query(text): one call to a smaller model on whatever string the code passes it, here one document." } },
+    question: { label: "Your question", sub: "who won the pageant?", tip: { title: "Question", body: "BrowseComp-Plus query 74 asks about a festival, its 13th year, a pageant, and the winner's first and last name." } },
+    root: { label: "Root model", sub: "GPT-5, short printouts", tip: { title: "Root model", body: "This model controls the loop. It receives the question, a description of context, and short printouts instead of the documents." } },
+    repl: { label: "Python session", sub: "runs the root's code", tip: { title: "Python session", body: "It runs each block of code from the root model and keeps every variable for the next turn." } },
+    context: { label: "context", sub: "1,000 documents", tip: { title: "context", body: "This variable stores the prompt: 1,000 documents and about 8.3M tokens. Code can index, slice and search it." } },
+    vars: { label: "Variables", sub: "answer6, confirm", tip: { title: "Variables", body: "Sub-model call responses are stored here, outside the root model's context window." } },
+    sub: { label: "Sub-model call", sub: "GPT-5-mini, one piece", tip: { title: "Sub-model call", body: "llm_query(text) sends one selected string to a smaller model and returns its response, here for one document." } },
     answer: { label: "Answer", sub: "FINAL(...)", tip: { title: "Final answer", body: "The root ends the loop by writing FINAL(answer), or FINAL_VAR(name) to return a variable." } },
   };
   const layouts = {
@@ -138,13 +138,13 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
   ];
   const returns = [{ a: "repl", b: "root", wide: "top", narrow: "left" }];
   const steps = [
-    { on: Object.keys(meta), caption: "One root model, one Python session holding the prompt, and a function that calls a smaller model on any piece." },
-    { on: ["question", "root", "repl", "context"], caption: "The 1,000 documents, about 8.3M tokens, go into a variable. The root gets the question and a short description of it." },
-    { on: ["root", "repl", "context"], caption: "The root writes a keyword search over every document: “festival”, “beauty pageant”, “La Union” and six more. It runs in 0.158 s." },
-    { on: ["repl", "root"], caption: "Only a short, cut-off printout of the hits comes back. One hit, the document at index 6, looks promising." },
-    { on: ["repl", "context", "sub", "vars"], caption: "Code sends document 6 to a sub-call. The GPT-5-mini call uses 1,605 tokens and costs $0.0017; its answer goes into answer6." },
-    { on: ["repl", "sub", "vars", "root"], caption: "Two more sub-calls confirm the year and pull out the winner's first and last name: Maria Dalmacio." },
-    { on: ["root", "answer"], caption: "The root returns it with FINAL. The right answer, and the whole run cost $0.079." },
+    { on: Object.keys(meta), caption: "The RLM starts with one root model, one Python session that holds the prompt, and a function for sub-model calls." },
+    { on: ["question", "root", "repl", "context"], caption: "The 1,000 documents, about 8.3M tokens, enter a variable while the root model receives the question and a short description." },
+    { on: ["root", "repl", "context"], caption: "The root searches every document for “festival”, “beauty pageant”, “La Union” and six more keywords in 0.158 s." },
+    { on: ["repl", "root"], caption: "A short, cut-off printout returns one promising hit, the document at index 6." },
+    { on: ["repl", "context", "sub", "vars"], caption: "Code sends document 6 to a GPT-5-mini sub-model call that uses 1,605 tokens, costs $0.0017, and stores its response in answer6." },
+    { on: ["repl", "sub", "vars", "root"], caption: "Two more sub-model calls confirm the year and extract the winner's first and last name, Maria Dalmacio." },
+    { on: ["root", "answer"], caption: "The root returns the correct answer with FINAL, and the complete run costs $0.079." },
   ];
   flowFigure("fig-loop", {
     meta, layouts, edges, returns, steps,
@@ -156,20 +156,20 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
 (() => {
   const RUNS = {
     e1: { tab: "Search", model: "RLM(GPT-5)", input: "1,000 documents · about 8.3M tokens", kind: "filter", units: 1000, pieces: 1000, pick: 6,
-      cut: "Code searches all 1,000 for keywords; no model", calls: 3, callNote: "3 sub-calls, all on document 6", combine: "The root reads three short answers", answer: "Maria Dalmacio", ok: true, cost: "$0.079", src: "App. E.1" },
+      cut: "Code searches all 1,000 for keywords without a model", calls: 3, callNote: "3 sub-model calls, all on document 6", combine: "The root reads three short answers", answer: "Maria Dalmacio", ok: true, cost: "$0.079", src: "App. E.1" },
     e4: { tab: "Chunks", model: "RLM(GPT-5)", input: "a code repository · about 900K tokens", kind: "chunks", pieces: 10,
-      cut: "Chunks of 380,000 characters", calls: 10, extra: 1, callNote: "a sub-call per chunk, 11 in all", combine: "One more sub-call combines the findings", answer: "choice 1", ok: true, cost: "$0.27", src: "App. E.4" },
+      cut: "Chunks of 380,000 characters", calls: 10, extra: 1, callNote: "one sub-model call per chunk, 11 in all", combine: "One more sub-model call combines the findings", answer: "choice 1", ok: true, cost: "$0.27", src: "App. E.4" },
     e2: { tab: "Batches", model: "RLM(Qwen3-Coder)", input: "787 questions · about 32K tokens", kind: "chunks", pieces: 8,
-      cut: "Batches of 100 lines", calls: 8, callNote: "8 sub-calls label every question", combine: "Plain code: 131 users, 8,515 pairs", answer: "kept re-checking, returned a different answer", ok: false, cost: "$1.12", src: "App. E.2" },
+      cut: "Batches of 100 lines", calls: 8, callNote: "8 sub-model calls label every question", combine: "Plain code finds 131 users and 8,515 pairs", answer: "kept re-checking, returned a different answer", ok: false, cost: "$1.12", src: "App. E.2" },
     e3: { tab: "Each line", model: "RLM(Qwen3-Coder)", input: "3,182 questions", kind: "lines", pieces: 3182,
-      cut: "One question per sub-call", calls: 382, callNote: "382 sub-calls in the step the paper shows", combine: "Plain code counts the labels", answer: "“less common than”", ok: true, cost: "$0.38", src: "App. E.3" },
+      cut: "One question per sub-model call", calls: 382, callNote: "382 sub-model calls in the step the paper shows", combine: "Plain code counts the labels", answer: "“less common than”", ok: true, cost: "$0.38", src: "App. E.3" },
   };
   const T = { cut: [0, 1], calls: [1, 2.6], combine: [2.6, 3.3], answer: [3.3, 4] }, END = 4.2;
   const tips = {
     input: { title: "The input", body: "What the run had to work through, stored as the variable context." },
-    cut: { title: "The cut", body: "How the root's code divided the input. The paper's instructions suggest strategies but never pick one (App. C.1)." },
-    calls: { title: "Sub-calls", body: "Each dot is one llm_query call to a model, on one piece. Recursion is one level deep here (§6)." },
-    combine: { title: "Putting it together", body: "How the pieces came back into one answer: the root reading printouts, one more sub-call, or plain code." },
+    cut: { title: "The split", body: "The root model's code decides how to divide the input. The paper's instructions suggest strategies without selecting one (App. C.1)." },
+    calls: { title: "Sub-model calls", body: "Each dot is one llm_query call on one piece. These runs use one level of recursion (§6)." },
+    combine: { title: "Combine results", body: "The root model combines the pieces by reading printouts, making one more sub-model call, or running plain code." },
     answer: { title: "The answer", body: "Whether the run was right, and what the whole trajectory cost (App. E)." },
   };
   const geo = (f) => {
@@ -181,7 +181,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
     duration: END,
     keyframe: END,
     params: { run: { value: "e1", label: "Runs from Appendix E", options: Object.entries(RUNS).map(([value, r]) => ({ value, label: r.tab })), placement: "inline" } },
-    reserve: { readout: ["RLM(Qwen3-Coder) · 382 sub-calls · $0.38 · right answer"], chip: ["putting it together", "App. E.3 · a real run"] },
+    reserve: { readout: ["RLM(Qwen3-Coder) · 382 sub-model calls · $0.38 · right answer"], chip: ["combining results", "App. E.3 · a real run"] },
     tips,
     tipAt: (f, x, y) => hitAt(f, x, y, 4),
     onParam(f, name) { if (name === "run") { f.api.seek(0); f.api.play(); } },
@@ -216,7 +216,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
       FS.k.text(f, c, R.cut, G.narrow ? G.x0 : G.x1, G.narrow ? yb - 8 : yb + hb + 14, { size: 10.5, align: G.narrow ? "left" : "right", alpha: cutP, color: f.hover === "cut" ? C.accent : C.muted });
       hits.push({ key: "cut", x: G.x0 + W / 2, y: yb + hb + 2, w: W / 2, h: 16 });
       // row 2: the sub-calls
-      rowLabel("Sub-calls", G.yCalls, "calls");
+      rowLabel("Sub-model calls", G.yCalls, "calls");
       const callP = w(...T.calls), shown = Math.floor(callP * R.calls + 1e-6);
       const dots = [];
       if (R.kind === "lines") {
@@ -238,7 +238,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
       FS.k.text(f, c, R.callNote, noteX, noteY, { size: 10.5, alpha: FS.clamp(callP * 4), color: f.hover === "calls" ? C.accent : C.muted });
       hits.push({ key: "calls", x: G.x0, y: G.yCalls - 26, w: W, h: 52 });
       // row 3: putting it together
-      rowLabel("Combine", G.yComb + 4, "combine");
+      rowLabel("Combine results", G.yComb + 4, "combine");
       const combP = w(...T.combine), bw = Math.min(W, G.narrow ? W : 330), bx = G.x0 + (W - bw) / 2, by = G.yComb - 14;
       c.save(); c.globalAlpha = combP;
       const fromDots = R.kind === "lines" ? [dots[0], dots[Math.floor(dots.length / 2)], lastDot] : dots;
@@ -253,14 +253,14 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
       rowLabel("Answer", G.yAns + 2, "answer");
       const ansP = w(...T.answer);
       c.save(); c.globalAlpha = ansP;
-      const mark = R.ok ? "✓" : "✗", text = `${mark} ${R.ok ? "right" : "wrong"}: ${R.answer} · run cost ${R.cost}`;
+      const mark = R.ok ? "✓" : "✗", text = `${mark} ${R.ok ? "right" : "wrong"} · ${R.answer} · run cost ${R.cost}`;
       FS.k.text(f, c, text, G.x0 + (G.narrow ? 0 : 0), G.yAns + 6, { size: 12, weight: 600, color: R.ok ? C.fg : C.strong });
       if (!R.ok) { c.strokeStyle = C.strong; c.setLineDash([3, 3]); const tw = c.measureText(text).width; FS.k.line(c, G.x0, G.yAns + 11, G.x0 + tw, G.yAns + 11); c.setLineDash([]); }
       c.restore();
       hits.push({ key: "answer", x: G.x0, y: G.yAns - 10, w: W, h: 22 });
-      const phase = t < T.cut[1] ? "cutting the input" : t < T.calls[1] ? "sub-calls" : t < T.combine[1] ? "putting it together" : `${R.src} · a real run`;
+      const phase = t < T.cut[1] ? "splitting the input" : t < T.calls[1] ? "sub-model calls" : t < T.combine[1] ? "combining results" : `${R.src} · a real run`;
       f.api.out("chip", phase);
-      f.api.out("readout", `${R.model} · ${R.calls + (R.extra || 0)} sub-calls · ${R.cost} · ${R.ok ? "right answer" : "wrong answer"}`);
+      f.api.out("readout", `${R.model} · ${R.calls + (R.extra || 0)} sub-model calls · ${R.cost} · ${R.ok ? "right answer" : "wrong answer"}`);
     },
   });
 })();
@@ -283,7 +283,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
   const tips = {
     window: { title: "GPT-5's window", body: "272K tokens. Past this line GPT-5 can't take the input, so it has no points; the RLM keeps going." },
     gpt: { title: "GPT-5", body: "The base model, the whole input in its window." },
-    rlm: { title: "RLM(GPT-5)", body: "GPT-5 as root in the Python session, sub-calls to GPT-5-mini, one level deep (§3.2)." },
+    rlm: { title: "RLM(GPT-5)", body: "GPT-5 is the root model in the Python session, with one level of GPT-5-mini sub-model calls (§3.2)." },
   };
   const geo = (f) => { const narrow = f.w < 560; return { narrow, L: narrow ? 34 : 44, R: f.w - (narrow ? 40 : 104), T: narrow ? 58 : 46, B: f.h - 44 }; };
   const X = (G, i) => G.L + ((G.R - G.L) * i) / (LENS.length - 1);
@@ -370,8 +370,8 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
 (() => {
   const TASKS = [{ name: "CodeQA", len: "23K–4.2M tokens" }, { name: "BrowseComp+ (1K)", len: "6M–11M tokens" }, { name: "OOLONG", len: "131K tokens" }, { name: "OOLONG-Pairs", len: "32K tokens" }];
   const ROWS = [
-    { key: "base", name: "Base model" }, { key: "bm25", name: "CodeAct + BM25" }, { key: "codesub", name: "CodeAct + sub-calls" },
-    { key: "summary", name: "Summary agent" }, { key: "rlm", name: "RLM" }, { key: "nosub", name: "RLM, no sub-calls" },
+    { key: "base", name: "Base model" }, { key: "bm25", name: "CodeAct + BM25" }, { key: "codesub", name: "CodeAct/sub-model calls" },
+    { key: "summary", name: "Summary agent" }, { key: "rlm", name: "RLM" }, { key: "nosub", name: "RLM/no sub-model calls" },
   ];
   // Table 1 (v2): [score, ran into the input limit (asterisk), mean cost $, cost std $]; null cost is N/A.
   const T1 = {
@@ -398,7 +398,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
   const tips = {};
   for (const m of Object.keys(T1)) ROWS.forEach((r, ri) => TASKS.forEach((task, ti) => {
     const [s, star, mean, sd] = T1[m][r.key][ti];
-    tips[`${m}:${ri}:${ti}`] = { title: `${r.name} · ${task.name}`, body: `${MODELS[m]}: score ${s.toFixed(1)}${star ? ", ran into the input limit at least sometimes" : ""}. ${mean == null ? "No cost reported." : `Average cost ${money(mean)} a query, spread ±${money(sd)}.`}` };
+    tips[`${m}:${ri}:${ti}`] = { title: `${r.name} · ${task.name}`, body: `${MODELS[m]} scores ${s.toFixed(1)}${star ? " and runs into the input limit at least sometimes" : ""}. ${mean == null ? "No cost reported." : `Average cost ${money(mean)} a query, spread ±${money(sd)}.`}` };
   }));
   const geo = (f) => {
     const narrow = f.w < 560;
@@ -412,7 +412,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
       model: { value: "gpt", label: "Model", options: [{ value: "gpt", label: "GPT-5" }, { value: "qwen", label: "Qwen3-Coder" }], placement: "inline" },
       m: { value: 0, min: 0, max: 1, hidden: true },
     },
-    reserve: { readout: ["Best on each task: no sub-calls, no sub-calls, RLM, RLM"] },
+    reserve: { readout: ["Best on each task: no sub-model calls, no sub-model calls, RLM, RLM"] },
     tips,
     tipAt: (f, x, y) => hitAt(f, x, y),
     autoplay: false,
@@ -445,7 +445,7 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
         });
       });
       if (!G.narrow) FS.k.text(f, c, `${MODELS[model]} · bar = score, right = average cost a query · * ran into the input limit · dashed line = base model`, G.labelW, f.h - 8, { size: 10.5 });
-      const names = TASKS.map((_, ti) => (best(model, ti).key === "rlm" ? "RLM" : "no sub-calls"));
+      const names = TASKS.map((_, ti) => (best(model, ti).key === "rlm" ? "RLM" : "no sub-model calls"));
       f.api.out("readout", names.every((n) => n === "RLM") ? "Best on each task: the RLM, all four" : `Best on each task: ${names.join(", ")}`);
     },
   });
@@ -464,10 +464,10 @@ const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n /
   const rel = S.ft.v.map((v, i) => ((v - S.rlm.v[i]) / S.rlm.v[i]) * 100);
   const sorted = [...rel].sort((a, b) => a - b), median = (sorted[1] + sorted[2]) / 2;
   const steps = [
-    { show: 1, gpt: false, caption: "Qwen3-8B on its own: it runs into its input limit on three tasks and scores almost nothing." },
-    { show: 2, gpt: false, caption: "The same model run as an RLM, no training: 26.0 on CodeQA and 24.0 on OOLONG, still weak elsewhere." },
-    { show: 3, gpt: false, caption: "Fine-tuned on 1,000 RLM runs from a bigger model, on unrelated tasks: up on all four." },
-    { show: 3, gpt: true, caption: "Base GPT-5 for scale, dashed: the small RLM is above it on three tasks and below it on OOLONG." },
+    { show: 1, gpt: false, caption: "Qwen3-8B alone runs into its input limit on three tasks and scores almost nothing." },
+    { show: 2, gpt: false, caption: "Running the same model as an RLM without training raises it to 26.0 on CodeQA and 24.0 on OOLONG, with weaker results elsewhere." },
+    { show: 3, gpt: false, caption: "Fine-tuning on 1,000 RLM runs from a larger model on unrelated tasks improves all four results." },
+    { show: 3, gpt: true, caption: "Dashed lines add base GPT-5 for comparison, with the small RLM above it on three tasks and below it on OOLONG." },
   ];
   const tips = {};
   ORDER.concat("gpt").forEach((k) => TASKS.forEach((t, i) => { const c = S[k].cost[i]; tips[`${k}:${i}`] = { title: `${S[k].name} · ${t}`, body: `Score ${S[k].v[i].toFixed(1)}${S[k].star[i] ? ", ran into the input limit at least sometimes" : ""}. ${c == null ? "No cost reported." : `Average cost $${c.toFixed(2)} a query.`} (Table 1)` }; }));
