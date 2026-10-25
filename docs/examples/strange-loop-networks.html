@@ -20,15 +20,19 @@
 [data-fs-theme="default"] {
   color-scheme: dark;
   --fs-bg: oklch(0.21342 0 0);
-  --fs-surface: oklch(0.21342 0 0);
-  --fs-surface-2: oklch(0.23929 0 0);
+  --fs-surface: oklch(0.24353 0 0);
+  --fs-block: oklch(0.30919 0 0);
+  --fs-node: oklch(0.32504 0 0);
+  --fs-surface-2: oklch(0.28502 0 0);
   --fs-line: oklch(0.29716 0 0);
   --fs-line-strong: oklch(0.34846 0 0);
   --fs-faint: oklch(0.44953 0 0);
-  --fs-muted: oklch(0.63343 0 0);
+  --fs-muted: oklch(0.69275 0 0);
   --fs-fg: oklch(0.94611 0 0);
   --fs-strong: oklch(1 0 0);
   --fs-accent: oklch(0.9851 0 0);
+  --fs-link: oklch(0.9851 0 0);
+  --fs-link-underline: oklch(0.9851 0 0);
   /* Achromatic categories: tell them apart by texture and labels too. */
   --fs-c1: oklch(0.94611 0 0);
   --fs-c2: oklch(0.75721 0 0);
@@ -45,15 +49,19 @@
 [data-fs-theme="default-light"] {
   color-scheme: light;
   --fs-bg: oklch(0.96115 0 0);
-  --fs-surface: oklch(1 0 0);
-  --fs-surface-2: oklch(0.94912 0 0);
+  --fs-surface: oklch(0.99405 0 0);
+  --fs-block: oklch(0.905 0 0);
+  --fs-node: oklch(0.91279 0 0);
+  --fs-surface-2: oklch(0.95514 0 0);
   --fs-line: oklch(0.91279 0 0);
   --fs-line-strong: oklch(0.83591 0 0);
   --fs-faint: oklch(0.76676 0 0);
-  --fs-muted: oklch(0.53128 0 0);
+  --fs-muted: oklch(0.47119 0 0);
   --fs-fg: oklch(0.17764 0 0);
   --fs-strong: oklch(0 0 0);
   --fs-accent: oklch(0.17764 0 0);
+  --fs-link: oklch(0.21779 0 0);
+  --fs-link-underline: oklch(0.17764 0 0);
   --fs-c1: oklch(0.17764 0 0);
   --fs-c2: oklch(0.40912 0 0);
   --fs-c3: oklch(0.57951 0 0);
@@ -69,15 +77,19 @@
   :root:not([data-fs-mode]):not([data-fs-theme]) {
     color-scheme: light;
     --fs-bg: oklch(0.96115 0 0);
-    --fs-surface: oklch(1 0 0);
-    --fs-surface-2: oklch(0.94912 0 0);
+    --fs-surface: oklch(0.99405 0 0);
+    --fs-block: oklch(0.905 0 0);
+    --fs-node: oklch(0.91279 0 0);
+    --fs-surface-2: oklch(0.95514 0 0);
     --fs-line: oklch(0.91279 0 0);
     --fs-line-strong: oklch(0.83591 0 0);
     --fs-faint: oklch(0.76676 0 0);
-    --fs-muted: oklch(0.53128 0 0);
+    --fs-muted: oklch(0.47119 0 0);
     --fs-fg: oklch(0.17764 0 0);
     --fs-strong: oklch(0 0 0);
     --fs-accent: oklch(0.17764 0 0);
+    --fs-link: oklch(0.21779 0 0);
+    --fs-link-underline: oklch(0.17764 0 0);
     --fs-c1: oklch(0.17764 0 0);
     --fs-c2: oklch(0.40912 0 0);
     --fs-c3: oklch(0.57951 0 0);
@@ -124,7 +136,7 @@
 /* ---- vendor/notebook.css ---- */
 /* Notebook theme, for paper explainers.
    Monochrome with an amber focus signal, mono type inside figures, uppercase plate heads,
-   square corners. Apply with data-fs-theme="notebook" (dark) or "notebook-light". */
+   and the shared 12 / 6 / 4px radius scale. Apply with data-fs-theme="notebook" (dark) or "notebook-light". */
 
 [data-fs-theme="notebook"],
 [data-fs-theme="notebook-light"] {
@@ -137,9 +149,9 @@
   --fs-head-case: uppercase;
   --fs-head-tracking: 0.08em;
   --fs-size-caption: 12.5px;
-  --fs-radius: 0px;
-  --fs-radius-inner: 0px;
-  --fs-radius-control: 2px;
+  --fs-radius: 12px;
+  --fs-radius-inner: 6px;
+  --fs-radius-control: 4px;
   --fs-control-size: 32px;
 }
 
@@ -147,6 +159,8 @@
   color-scheme: dark;
   --fs-bg: oklch(0.14958 0 0);
   --fs-surface: oklch(0.1822 0 0);
+  --fs-block: oklch(0.24353 0 0);
+  --fs-node: oklch(0.26032 0 0);
   --fs-surface-2: oklch(0.22213 0 0);
   --fs-line: oklch(0.28908 0 0);
   --fs-line-strong: oklch(0.34846 0 0);
@@ -155,6 +169,8 @@
   --fs-fg: oklch(0.93318 0.00401 106.477);
   --fs-strong: oklch(1 0 0);
   --fs-accent: oklch(0.8294 0.11461 86.247);
+  --fs-link: oklch(0.8294 0.11461 86.247);
+  --fs-link-underline: oklch(0.8294 0.11461 86.247);
   --fs-c1: oklch(0.93318 0.00401 106.477);
   --fs-c2: oklch(0.69155 0.00575 106.549);
   --fs-c3: oklch(0.54075 0.00459 106.552);
@@ -168,15 +184,19 @@
 [data-fs-theme="notebook-light"] {
   color-scheme: light;
   --fs-bg: oklch(0.97231 0.00397 106.473);
-  --fs-surface: oklch(0.94527 0.00399 106.476);
-  --fs-surface-2: oklch(0.91471 0.00537 106.505);
+  --fs-surface: oklch(0.93923 0.004 106.476);
+  --fs-block: oklch(0.87831 0.00407 106.483);
+  --fs-node: oklch(0.85984 0.00409 106.485);
+  --fs-surface-2: oklch(0.89975 0.00404 106.481);
   --fs-line: oklch(0.85309 0.00682 106.543);
   --fs-line-strong: oklch(0.78086 0.00836 106.592);
   --fs-faint: oklch(0.71722 0.00712 106.578);
-  --fs-muted: oklch(0.47347 0.00631 106.638);
+  --fs-muted: oklch(0.46269 0.00635 106.645);
   --fs-fg: oklch(0.20019 0 0);
   --fs-strong: oklch(0 0 0);
   --fs-accent: oklch(0.59813 0.11763 75.11);
+  --fs-link: oklch(0.47057 0.1031 68.243);
+  --fs-link-underline: oklch(0.56402 0.11762 75.415);
   --fs-c1: oklch(0.20019 0 0);
   --fs-c2: oklch(0.47347 0.00631 106.638);
   --fs-c3: oklch(0.61487 0.00887 106.658);
@@ -197,15 +217,19 @@
   color-scheme: light;
 
   --fs-bg: oklch(0.95776 0.00577 264.532);
-  --fs-surface: oklch(0.98164 0.00171 247.839);
-  --fs-surface-2: oklch(0.94299 0.00705 268.546);
+  --fs-surface: oklch(0.9904 0.00452 258.324);
+  --fs-block: oklch(0.86339 0.00592 264.529);
+  --fs-node: oklch(0.90936 0.00584 264.531);
+  --fs-surface-2: oklch(0.95174 0.00578 264.532);
   --fs-line: oklch(0.92134 0.00874 264.52);
   --fs-line-strong: oklch(0.8119 0.01573 273.805);
   --fs-faint: oklch(0.7275 0.02185 276.828);
-  --fs-muted: oklch(0.53016 0.03619 279.245);
+  --fs-muted: oklch(0.46978 0.03573 278.841);
   --fs-fg: oklch(0.43547 0.04301 279.325);
   --fs-strong: oklch(0.43547 0.04301 279.325);
   --fs-accent: oklch(0.55862 0.2255 262.087);
+  --fs-link: oklch(0.47905 0.22543 262.225);
+  --fs-link-underline: oklch(0.55862 0.2255 262.087);
   --fs-c1: oklch(0.55862 0.2255 262.087);
   --fs-c2: oklch(0.62504 0.17716 140.445);
   --fs-c3: oklch(0.65712 0.11216 65.239);
@@ -221,15 +245,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.24287 0.03036 283.911);
-  --fs-surface: oklch(0.24287 0.03036 283.911);
-  --fs-surface-2: oklch(0.26011 0.03171 283.978);
+  --fs-surface: oklch(0.27599 0.02941 284.309);
+  --fs-block: oklch(0.33669 0.03147 284.584);
+  --fs-node: oklch(0.35599 0.03103 284.715);
+  --fs-surface-2: oklch(0.31661 0.03019 284.545);
   --fs-line: oklch(0.32402 0.03188 281.978);
   --fs-line-strong: oklch(0.36988 0.03268 279.974);
   --fs-faint: oklch(0.42174 0.03343 278.186);
-  --fs-muted: oklch(0.6313 0.03795 276.352);
+  --fs-muted: oklch(0.72653 0.03801 276.813);
   --fs-fg: oklch(0.87866 0.04255 272.277);
   --fs-strong: oklch(0.87866 0.04255 272.277);
   --fs-accent: oklch(0.76642 0.11134 259.885);
+  --fs-link: oklch(0.76642 0.11134 259.885);
+  --fs-link-underline: oklch(0.76642 0.11134 259.885);
   --fs-c1: oklch(0.76642 0.11134 259.885);
   --fs-c2: oklch(0.8577 0.10923 142.715);
   --fs-c3: oklch(0.9193 0.07041 86.528);
@@ -245,15 +273,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.15679 0.04128 268.905);
-  --fs-surface: oklch(0.15679 0.04128 268.905);
-  --fs-surface-2: oklch(0.17886 0.03798 270.476);
+  --fs-surface: oklch(0.18839 0.04178 269.493);
+  --fs-block: oklch(0.25191 0.04125 269.261);
+  --fs-node: oklch(0.2683 0.04062 269.455);
+  --fs-surface-2: oklch(0.22774 0.04187 270.704);
   --fs-line: oklch(0.24868 0.02862 278.221);
   --fs-line-strong: oklch(0.30326 0.02149 288.867);
   --fs-faint: oklch(0.3608 0.01665 310.235);
-  --fs-muted: oklch(0.58785 0.02956 38.408);
+  --fs-muted: oklch(0.64238 0.03001 37.602);
   --fs-fg: oklch(0.88599 0.07084 55.576);
   --fs-strong: oklch(0.88599 0.07084 55.576);
   --fs-accent: oklch(0.6404 0.12933 279.58);
+  --fs-link: oklch(0.65014 0.1289 279.669);
+  --fs-link-underline: oklch(0.6404 0.12933 279.58);
   --fs-c1: oklch(0.6404 0.12933 279.58);
   --fs-c2: oklch(0.70185 0.03354 146.658);
   --fs-c3: oklch(0.81344 0.13457 85.656);
@@ -269,15 +301,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.32387 0.01528 240.422);
-  --fs-surface: oklch(0.32387 0.01528 240.422);
-  --fs-surface-2: oklch(0.33909 0.01394 235.29);
+  --fs-surface: oklch(0.35496 0.01496 240.344);
+  --fs-block: oklch(0.41896 0.01438 240.225);
+  --fs-node: oklch(0.43404 0.01546 244.532);
+  --fs-surface-2: oklch(0.39582 0.01551 237.031);
   --fs-line: oklch(0.38938 0.00861 219.691);
   --fs-line-strong: oklch(0.42429 0.00547 214.355);
   --fs-faint: oklch(0.46422 0.00496 157.047);
-  --fs-muted: oklch(0.69302 0.02517 90.818);
+  --fs-muted: oklch(0.81737 0.02423 90.783);
   --fs-fg: oklch(0.82987 0.04052 86.053);
   --fs-strong: oklch(0.82987 0.04052 86.053);
   --fs-accent: oklch(0.74873 0.0631 185.495);
+  --fs-link: oklch(0.81384 0.0634 185.851);
+  --fs-link-underline: oklch(0.74873 0.0631 185.495);
   --fs-c1: oklch(0.74873 0.0631 185.495);
   --fs-c2: oklch(0.77321 0.09063 125.783);
   --fs-c3: oklch(0.80815 0.08629 83.696);
@@ -293,15 +329,19 @@
   color-scheme: light;
 
   --fs-bg: oklch(0.99012 0.01608 95.219);
-  --fs-surface: oklch(0.99614 0.00796 98.875);
-  --fs-surface-2: oklch(0.9692 0.01616 95.224);
+  --fs-surface: oklch(0.9572 0.01621 95.227);
+  --fs-block: oklch(0.8958 0.01628 99.016);
+  --fs-node: oklch(0.87821 0.01655 95.247);
+  --fs-surface-2: oklch(0.91792 0.01637 95.237);
   --fs-line: oklch(0.93256 0.01481 98.294);
   --fs-line-strong: oklch(0.76054 0.01174 89.748);
   --fs-faint: oklch(0.62999 0.00915 91.532);
-  --fs-muted: oklch(0.50023 0.00674 84.581);
+  --fs-muted: oklch(0.4789 0.00681 84.582);
   --fs-fg: oklch(0.16962 0.00166 17.32);
   --fs-strong: oklch(0.16962 0.00166 17.32);
   --fs-accent: oklch(0.48178 0.1315 254.789);
+  --fs-link: oklch(0.48178 0.1315 254.789);
+  --fs-link-underline: oklch(0.48178 0.1315 254.789);
   --fs-c1: oklch(0.48178 0.1315 254.789);
   --fs-c2: oklch(0.65132 0.12419 119.384);
   --fs-c3: oklch(0.6666 0.12889 87.139);
@@ -317,15 +357,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.27685 0 0);
-  --fs-surface: oklch(0.27685 0 0);
-  --fs-surface-2: oklch(0.29275 0.00178 106.509);
+  --fs-surface: oklch(0.30919 0 0);
+  --fs-block: oklch(0.37149 0 0);
+  --fs-node: oklch(0.39042 0 0);
+  --fs-surface-2: oklch(0.34846 0 0);
   --fs-line: oklch(0.3452 0.00738 84.591);
   --fs-line-strong: oklch(0.38382 0.01075 84.593);
   --fs-faint: oklch(0.42589 0.01591 82.36);
-  --fs-muted: oklch(0.65631 0.04104 81.373);
+  --fs-muted: oklch(0.76679 0.04141 80.821);
   --fs-fg: oklch(0.81056 0.05669 81.226);
   --fs-strong: oklch(0.81056 0.05669 81.226);
   --fs-accent: oklch(0.71278 0.05459 179.186);
+  --fs-link: oklch(0.75736 0.0541 179.366);
+  --fs-link-underline: oklch(0.71278 0.05459 179.186);
   --fs-c1: oklch(0.71278 0.05459 179.186);
   --fs-c2: oklch(0.74785 0.10658 116.527);
   --fs-c3: oklch(0.75582 0.11326 77.042);
@@ -341,15 +385,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.15873 0.02127 279.275);
-  --fs-surface: oklch(0.15873 0.02127 279.275);
-  --fs-surface-2: oklch(0.18064 0.02085 275.381);
+  --fs-surface: oklch(0.19069 0.02031 279.844);
+  --fs-block: oklch(0.25488 0.02095 276.757);
+  --fs-node: oklch(0.27143 0.02061 276.867);
+  --fs-surface-2: oklch(0.23057 0.02127 280.531);
   --fs-line: oklch(0.26076 0.01971 267.918);
   --fs-line-strong: oklch(0.31952 0.01972 260.644);
   --fs-faint: oklch(0.38413 0.01941 257.259);
-  --fs-muted: oklch(0.58243 0.02178 240.977);
+  --fs-muted: oklch(0.64284 0.02127 240.913);
   --fs-fg: oklch(0.95967 0.02924 218.179);
   --fs-strong: oklch(0.95967 0.02924 218.179);
   --fs-accent: oklch(0.89457 0.17035 148.96);
+  --fs-link: oklch(0.89457 0.17035 148.96);
+  --fs-link-underline: oklch(0.89457 0.17035 148.96);
   --fs-c1: oklch(0.6966 0.08687 264.077);
   --fs-c2: oklch(0.8293 0.17971 153.798);
   --fs-c3: oklch(0.88205 0.14498 175.725);
@@ -365,15 +413,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.24332 0.01705 285.064);
-  --fs-surface: oklch(0.24332 0.01705 285.064);
-  --fs-surface-2: oklch(0.26008 0.01676 285.176);
+  --fs-surface: oklch(0.27657 0.01649 285.271);
+  --fs-block: oklch(0.33689 0.01743 285.427);
+  --fs-node: oklch(0.35624 0.01718 285.495);
+  --fs-surface-2: oklch(0.31725 0.0177 285.347);
   --fs-line: oklch(0.32344 0.01053 285.796);
   --fs-line-strong: oklch(0.37013 0.00688 297.495);
   --fs-faint: oklch(0.42153 0.00208 325.613);
-  --fs-muted: oklch(0.62914 0.01791 95.347);
+  --fs-muted: oklch(0.7242 0.01733 95.301);
   --fs-fg: oklch(0.87552 0.03911 99.086);
   --fs-strong: oklch(0.87552 0.03911 99.086);
   --fs-accent: oklch(0.87552 0.03911 99.086);
+  --fs-link: oklch(0.83537 0.03951 99.116);
+  --fs-link-underline: oklch(0.87552 0.03911 99.086);
   --fs-c1: oklch(0.69371 0.09506 263.657);
   --fs-c2: oklch(0.63217 0.06985 136.918);
   --fs-c3: oklch(0.72896 0.07799 82.015);
@@ -389,15 +441,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.15127 0.00269 325.709);
-  --fs-surface: oklch(0.15127 0.00269 325.709);
-  --fs-surface-2: oklch(0.17467 0.0026 325.687);
+  --fs-surface: oklch(0.18381 0.00256 325.681);
+  --fs-block: oklch(0.24502 0.00239 325.649);
+  --fs-node: oklch(0.26327 0.00469 325.709);
+  --fs-surface-2: oklch(0.22365 0.00244 325.658);
   --fs-line: oklch(0.25762 0.00236 325.645);
   --fs-line-strong: oklch(0.31852 0.00223 325.629);
   --fs-faint: oklch(0.38665 0 0);
-  --fs-muted: oklch(0.59563 0.0012 197.125);
+  --fs-muted: oklch(0.63592 0.00118 197.128);
   --fs-fg: oklch(0.98928 0.00248 165.078);
   --fs-strong: oklch(0.90119 0.00565 31.055);
   --fs-accent: oklch(0.70156 0.03749 33.32);
+  --fs-link: oklch(0.70156 0.03749 33.32);
+  --fs-link-underline: oklch(0.70156 0.03749 33.32);
   --fs-c1: oklch(0.70156 0.03749 33.32);
   --fs-c2: oklch(0.71188 0.03853 211.585);
   --fs-c3: oklch(0.5019 0.03638 312.59);
@@ -413,15 +469,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.25187 0.02573 237.347);
-  --fs-surface: oklch(0.25187 0.02573 237.347);
-  --fs-surface-2: oklch(0.26882 0.02674 240.078);
+  --fs-surface: oklch(0.28453 0.02517 237.007);
+  --fs-block: oklch(0.34716 0.02629 237.706);
+  --fs-node: oklch(0.36582 0.02487 234.695);
+  --fs-surface-2: oklch(0.32467 0.02576 239.65);
   --fs-line: oklch(0.33589 0.02437 236.654);
   --fs-line-strong: oklch(0.38215 0.02488 239.38);
   --fs-faint: oklch(0.43441 0.02536 241.883);
-  --fs-muted: oklch(0.63911 0.02317 241.551);
+  --fs-muted: oklch(0.73941 0.02316 239.553);
   --fs-fg: oklch(0.90731 0.02089 248.058);
   --fs-strong: oklch(0.98447 0.01131 217.541);
   --fs-accent: oklch(0.80598 0.07958 233.073);
+  --fs-link: oklch(0.80598 0.07958 233.073);
+  --fs-link-underline: oklch(0.80598 0.07958 233.073);
   --fs-c1: oklch(0.75125 0.09594 235.859);
   --fs-c2: oklch(0.64713 0.08261 240.605);
   --fs-c3: oklch(0.69566 0.07827 239.79);
@@ -437,15 +497,19 @@
   color-scheme: light;
 
   --fs-bg: oklch(0.9851 0 0);
-  --fs-surface: oklch(0.99405 0 0);
-  --fs-surface-2: oklch(0.96415 0 0);
+  --fs-surface: oklch(0.95213 0 0);
+  --fs-block: oklch(0.89143 0 0);
+  --fs-node: oklch(0.87302 0 0);
+  --fs-surface-2: oklch(0.91279 0 0);
   --fs-line: oklch(0.93403 0 0);
   --fs-line-strong: oklch(0.77944 0 0);
   --fs-faint: oklch(0.65996 0 0);
-  --fs-muted: oklch(0.54517 0 0);
+  --fs-muted: oklch(0.47478 0 0);
   --fs-fg: oklch(0.24776 0 0);
   --fs-strong: oklch(0 0 0);
   --fs-accent: oklch(0.552 0.21115 264.761);
+  --fs-link: oklch(0.48744 0.21022 264.706);
+  --fs-link-underline: oklch(0.552 0.21115 264.761);
   --fs-c1: oklch(0.552 0.21115 264.761);
   --fs-c2: oklch(0.45641 0.22865 279.937);
   --fs-c3: oklch(0.5551 0.1892 256.086);
@@ -461,15 +525,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.1822 0 0);
-  --fs-surface: oklch(0.1822 0 0);
-  --fs-surface-2: oklch(0.20019 0 0);
+  --fs-surface: oklch(0.21342 0 0);
+  --fs-block: oklch(0.27685 0 0);
+  --fs-node: oklch(0.29313 0 0);
+  --fs-surface-2: oklch(0.25196 0 0);
   --fs-line: oklch(0.26032 0 0);
   --fs-line-strong: oklch(0.30519 0 0);
   --fs-faint: oklch(0.35618 0 0);
-  --fs-muted: oklch(0.59649 0 0);
+  --fs-muted: oklch(0.66655 0 0);
   --fs-fg: oklch(0.80152 0 0);
   --fs-strong: oklch(0.80152 0 0);
   --fs-accent: oklch(0.72212 0.15777 66.454);
+  --fs-link: oklch(0.72212 0.15777 66.454);
+  --fs-link-underline: oklch(0.72212 0.15777 66.454);
   --fs-c1: oklch(0.72212 0.15777 66.454);
   --fs-c2: oklch(0.84417 0.17216 84.934);
   --fs-c3: oklch(0.51629 0.18285 27.576);
@@ -485,15 +553,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.25196 0 0);
-  --fs-surface: oklch(0.25196 0 0);
-  --fs-surface-2: oklch(0.26824 0.00182 106.522);
+  --fs-surface: oklch(0.28502 0 0);
+  --fs-block: oklch(0.34846 0 0);
+  --fs-node: oklch(0.36386 0 0);
+  --fs-surface-2: oklch(0.32504 0 0);
   --fs-line: oklch(0.32431 0.00347 106.592);
   --fs-line-strong: oklch(0.36281 0.00506 106.649);
   --fs-faint: oklch(0.40777 0.00655 106.686);
-  --fs-muted: oklch(0.63654 0.0175 106.887);
+  --fs-muted: oklch(0.73135 0.01693 106.811);
   --fs-fg: oklch(0.80908 0.02469 106.939);
   --fs-strong: oklch(0.80908 0.02469 106.939);
   --fs-accent: oklch(0.58478 0.07807 117.308);
+  --fs-link: oklch(0.73123 0.07837 117.27);
+  --fs-link-underline: oklch(0.62492 0.07746 117.107);
   --fs-c1: oklch(0.58478 0.07807 117.308);
   --fs-c2: oklch(0.58256 0.07495 144.538);
   --fs-c3: oklch(0.60259 0.10596 50.595);
@@ -509,15 +581,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.32437 0.02294 264.182);
-  --fs-surface: oklch(0.32437 0.02294 264.182);
-  --fs-surface-2: oklch(0.33999 0.02267 264.21);
+  --fs-surface: oklch(0.35588 0.02404 265.64);
+  --fs-block: oklch(0.41979 0.02303 265.742);
+  --fs-node: oklch(0.43686 0.02175 261.268);
+  --fs-surface-2: oklch(0.39623 0.02231 261.247);
   --fs-line: oklch(0.3971 0.02177 264.288);
   --fs-line-strong: oklch(0.43812 0.02277 265.764);
   --fs-faint: oklch(0.48456 0.02068 264.362);
-  --fs-muted: oklch(0.69824 0.01882 264.446);
+  --fs-muted: oklch(0.82272 0.01935 265.96);
   --fs-fg: oklch(0.89926 0.01637 262.749);
   --fs-strong: oklch(0.89926 0.01637 262.749);
   --fs-accent: oklch(0.69652 0.05911 248.687);
+  --fs-link: oklch(0.82221 0.05924 247.769);
+  --fs-link-underline: oklch(0.70619 0.05892 248.672);
   --fs-c1: oklch(0.69652 0.05911 248.687);
   --fs-c2: oklch(0.76827 0.0749 131.063);
   --fs-c3: oklch(0.85486 0.08923 84.093);
@@ -533,15 +609,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.21432 0.01769 170.074);
-  --fs-surface: oklch(0.21432 0.01769 170.074);
-  --fs-surface-2: oklch(0.23111 0.01841 165.143);
+  --fs-surface: oklch(0.24717 0.01931 167.225);
+  --fs-block: oklch(0.30862 0.0177 172.793);
+  --fs-node: oklch(0.32797 0.01827 167.988);
+  --fs-surface-2: oklch(0.28824 0.01876 167.677);
   --fs-line: oklch(0.28889 0.01997 150.917);
   --fs-line-strong: oklch(0.33191 0.02193 145.061);
   --fs-faint: oklch(0.38059 0.02669 136.757);
-  --fs-muted: oklch(0.61031 0.04271 117.176);
+  --fs-muted: oklch(0.69592 0.04287 116.711);
   --fs-fg: oklch(0.80651 0.06059 110.842);
   --fs-strong: oklch(0.93003 0.07132 94.404);
   --fs-accent: oklch(0.6125 0.08478 162.767);
+  --fs-link: oklch(0.68668 0.08462 162.704);
+  --fs-link-underline: oklch(0.6125 0.08478 162.767);
   --fs-c1: oklch(0.6125 0.08478 162.767);
   --fs-c2: oklch(0.63712 0.10812 151.881);
   --fs-c3: oklch(0.59964 0.12673 146.952);
@@ -557,15 +637,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.20694 0.05079 253.277);
-  --fs-surface: oklch(0.20694 0.05079 253.277);
-  --fs-surface-2: oklch(0.22722 0.04805 252.689);
+  --fs-surface: oklch(0.23965 0.0498 252.53);
+  --fs-block: oklch(0.30061 0.05098 253.801);
+  --fs-node: oklch(0.31938 0.05093 252.661);
+  --fs-surface-2: oklch(0.28035 0.05007 253.004);
   --fs-line: oklch(0.2954 0.03561 250.674);
   --fs-line-strong: oklch(0.34655 0.02643 248.595);
   --fs-faint: oklch(0.40284 0.01752 238.451);
-  --fs-muted: oklch(0.60567 0.01807 95.36);
+  --fs-muted: oklch(0.68526 0.01755 95.318);
   --fs-fg: oklch(0.90434 0.06853 82.684);
   --fs-strong: oklch(0.90434 0.06853 82.684);
   --fs-accent: oklch(0.8008 0.12551 58.407);
+  --fs-link: oklch(0.8008 0.12551 58.407);
+  --fs-link-underline: oklch(0.8008 0.12551 58.407);
   --fs-c1: oklch(0.59904 0.07842 189.729);
   --fs-c2: oklch(0.55807 0.09556 207.963);
   --fs-c3: oklch(0.69688 0.15557 47.852);
@@ -581,15 +665,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.27233 0.01055 17.818);
-  --fs-surface: oklch(0.27233 0.01055 17.818);
-  --fs-surface-2: oklch(0.28864 0.01038 17.769);
+  --fs-surface: oklch(0.30473 0.01023 17.727);
+  --fs-block: oklch(0.36716 0.00972 17.603);
+  --fs-node: oklch(0.3834 0.011 17.642);
+  --fs-surface-2: oklch(0.34408 0.00989 17.643);
   --fs-line: oklch(0.3529 0.01126 17.697);
   --fs-line-strong: oklch(0.39842 0.01089 17.618);
   --fs-faint: oklch(0.44734 0.01189 17.605);
-  --fs-muted: oklch(0.65332 0.01322 11.167);
+  --fs-muted: oklch(0.75798 0.01387 11.65);
   --fs-fg: oklch(0.89628 0.01454 6.74);
   --fs-strong: oklch(0.89628 0.01454 6.74);
   --fs-accent: oklch(0.74587 0.1312 36.71);
+  --fs-link: oklch(0.77151 0.13126 36.555);
+  --fs-link-underline: oklch(0.74587 0.1312 36.71);
   --fs-c1: oklch(0.74587 0.1312 36.71);
   --fs-c2: oklch(0.83448 0.13538 129.162);
   --fs-c3: oklch(0.86551 0.12516 84.516);
@@ -605,15 +693,19 @@
   color-scheme: light;
 
   --fs-bg: oklch(0.96987 0.01132 71.9);
-  --fs-surface: oklch(0.98657 0.00511 67.765);
-  --fs-surface-2: oklch(0.9554 0.00932 62.584);
+  --fs-surface: oklch(0.93677 0.01142 71.895);
+  --fs-block: oklch(0.87582 0.01161 71.886);
+  --fs-node: oklch(0.85734 0.01167 71.883);
+  --fs-surface-2: oklch(0.89727 0.01154 71.889);
   --fs-line: oklch(0.93405 0.00678 53.443);
   --fs-line-strong: oklch(0.82671 0.01229 313.2);
   --fs-faint: oklch(0.74601 0.02171 298.057);
-  --fs-muted: oklch(0.54385 0.05115 290.141);
+  --fs-muted: oklch(0.46617 0.05153 289.972);
   --fs-fg: oklch(0.45974 0.06292 289.556);
   --fs-strong: oklch(0.45974 0.06292 289.556);
   --fs-accent: oklch(0.6289 0.06607 210.123);
+  --fs-link: oklch(0.45605 0.06654 209.322);
+  --fs-link-underline: oklch(0.55287 0.06599 210.464);
   --fs-c1: oklch(0.6289 0.06607 210.123);
   --fs-c2: oklch(0.49095 0.07699 227.998);
   --fs-c3: oklch(0.66071 0.08489 60.053);
@@ -629,15 +721,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.18435 0.00627 236.946);
-  --fs-surface: oklch(0.18435 0.00627 236.946);
-  --fs-surface-2: oklch(0.20226 0.00614 236.887);
+  --fs-surface: oklch(0.21545 0.00604 236.851);
+  --fs-block: oklch(0.2787 0.00568 236.733);
+  --fs-node: oklch(0.29495 0.0056 236.712);
+  --fs-surface-2: oklch(0.2543 0.00718 248.11);
   --fs-line: oklch(0.26636 0.00574 236.751);
   --fs-line-strong: oklch(0.31495 0.00552 236.69);
   --fs-faint: oklch(0.36937 0.00531 236.643);
-  --fs-muted: oklch(0.60102 0.00391 219.555);
+  --fs-muted: oklch(0.66684 0.0049 214.337);
   --fs-fg: oklch(0.84365 0.00221 197.116);
   --fs-strong: oklch(0.74554 0.01334 236.696);
   --fs-accent: oklch(0.59821 0.01219 234.954);
+  --fs-link: oklch(0.66411 0.01281 231.758);
+  --fs-link-underline: oklch(0.59821 0.01219 234.954);
   --fs-c1: oklch(0.59821 0.01219 234.954);
   --fs-c2: oklch(0.71832 0.00899 236.616);
   --fs-c3: oklch(0.89017 0.00258 228.788);
@@ -653,15 +749,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.22728 0.00382 286.092);
-  --fs-surface: oklch(0.22728 0.00382 286.092);
-  --fs-surface-2: oklch(0.24857 0.00374 286.125);
+  --fs-surface: oklch(0.26112 0.00369 286.141);
+  --fs-block: oklch(0.32185 0.0035 286.201);
+  --fs-node: oklch(0.34144 0.00345 286.216);
+  --fs-surface-2: oklch(0.30195 0.00356 286.185);
   --fs-line: oklch(0.32185 0.0035 286.201);
   --fs-line-strong: oklch(0.37602 0.00337 286.237);
   --fs-faint: oklch(0.43564 0.00324 286.264);
-  --fs-muted: oklch(0.62069 0.00297 286.313);
+  --fs-muted: oklch(0.70961 0.00287 286.326);
   --fs-fg: oklch(0.97071 0.00265 286.35);
   --fs-strong: oklch(1 0 0);
   --fs-accent: oklch(0.78237 0.17106 67.223);
+  --fs-link: oklch(0.78237 0.17106 67.223);
+  --fs-link-underline: oklch(0.78237 0.17106 67.223);
   --fs-c1: oklch(0.76653 0.07029 246.808);
   --fs-c2: oklch(0.78237 0.17106 67.223);
   --fs-c3: oklch(0.85436 0.11343 69.937);
@@ -677,15 +777,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0.22629 0.02137 280.487);
-  --fs-surface: oklch(0.22629 0.02137 280.487);
-  --fs-surface-2: oklch(0.2423 0.02122 276.66);
+  --fs-surface: oklch(0.25904 0.02086 276.786);
+  --fs-block: oklch(0.32113 0.0213 281.373);
+  --fs-node: oklch(0.33975 0.02118 277.762);
+  --fs-surface-2: oklch(0.29983 0.02008 277.023);
   --fs-line: oklch(0.29422 0.02542 281.513);
   --fs-line-strong: oklch(0.33383 0.02829 279.176);
   --fs-faint: oklch(0.37699 0.03082 279.844);
-  --fs-muted: oklch(0.62206 0.04429 275.871);
+  --fs-muted: oklch(0.70787 0.04427 276.312);
   --fs-fg: oklch(0.76659 0.0537 275.492);
   --fs-strong: oklch(0.84557 0.06107 274.763);
   --fs-accent: oklch(0.71898 0.13216 264.202);
+  --fs-link: oklch(0.71898 0.13216 264.202);
+  --fs-link-underline: oklch(0.71898 0.13216 264.202);
   --fs-c1: oklch(0.71898 0.13216 264.202);
   --fs-c2: oklch(0.79526 0.13948 130.136);
   --fs-c3: oklch(0.78387 0.10572 75.428);
@@ -701,15 +805,19 @@
   color-scheme: dark;
 
   --fs-bg: oklch(0 0 0);
-  --fs-surface: oklch(0 0 0);
-  --fs-surface-2: oklch(0 0 0);
+  --fs-surface: oklch(0.0672 0 0);
+  --fs-block: oklch(0.13441 0 0);
+  --fs-node: oklch(0.14958 0 0);
+  --fs-surface-2: oklch(0.10668 0 0);
   --fs-line: oklch(0.12856 0 0);
   --fs-line-strong: oklch(0.20019 0 0);
   --fs-faint: oklch(0.28094 0 0);
-  --fs-muted: oklch(0.56926 0 0);
+  --fs-muted: oklch(0.57951 0 0);
   --fs-fg: oklch(1 0 0);
   --fs-strong: oklch(1 0 0);
   --fs-accent: oklch(0.64341 0 0);
+  --fs-link: oklch(0.64341 0 0);
+  --fs-link-underline: oklch(0.64341 0 0);
   --fs-c1: oklch(0.64341 0 0);
   --fs-c2: oklch(0.77627 0 0);
   --fs-c3: oklch(0.85142 0 0);
@@ -725,8 +833,10 @@
   color-scheme: light;
 
   --fs-bg: oklch(1 0 0);
-  --fs-surface: oklch(1 0 0);
-  --fs-surface-2: oklch(0.97315 0 0);
+  --fs-surface: oklch(0.96715 0 0);
+  --fs-block: oklch(0.90365 0 0);
+  --fs-node: oklch(0.88837 0 0);
+  --fs-surface-2: oklch(0.92797 0 0);
   --fs-line: oklch(0.92797 0 0);
   --fs-line-strong: oklch(0.71871 0 0);
   --fs-faint: oklch(0.55897 0 0);
@@ -734,6 +844,8 @@
   --fs-fg: oklch(0 0 0);
   --fs-strong: oklch(0 0 0);
   --fs-accent: oklch(0.53824 0 0);
+  --fs-link: oklch(0.48193 0 0);
+  --fs-link-underline: oklch(0.53824 0 0);
   --fs-c1: oklch(0.21779 0 0);
   --fs-c2: oklch(0.34846 0 0);
   --fs-c3: oklch(0.40912 0 0);
@@ -1745,15 +1857,19 @@ button.fs-button {
 /* Registered color tokens can transition. The tween runs on <html>, which is what the runtime watches:
    while <html> has a running animation it re-reads tokens every frame, so canvases follow the page. */
 @property --fs-bg { syntax: "<color>"; inherits: true; initial-value: oklch(0.21342 0 0); }
-@property --fs-surface { syntax: "<color>"; inherits: true; initial-value: oklch(0.21342 0 0); }
-@property --fs-surface-2 { syntax: "<color>"; inherits: true; initial-value: oklch(0.23929 0 0); }
+@property --fs-surface { syntax: "<color>"; inherits: true; initial-value: oklch(0.24353 0 0); }
+@property --fs-block { syntax: "<color>"; inherits: true; initial-value: oklch(0.30919 0 0); }
+@property --fs-node { syntax: "<color>"; inherits: true; initial-value: oklch(0.32504 0 0); }
+@property --fs-surface-2 { syntax: "<color>"; inherits: true; initial-value: oklch(0.28502 0 0); }
 @property --fs-line { syntax: "<color>"; inherits: true; initial-value: oklch(0.29716 0 0); }
 @property --fs-line-strong { syntax: "<color>"; inherits: true; initial-value: oklch(0.34846 0 0); }
 @property --fs-faint { syntax: "<color>"; inherits: true; initial-value: oklch(0.44953 0 0); }
-@property --fs-muted { syntax: "<color>"; inherits: true; initial-value: oklch(0.63343 0 0); }
+@property --fs-muted { syntax: "<color>"; inherits: true; initial-value: oklch(0.69275 0 0); }
 @property --fs-fg { syntax: "<color>"; inherits: true; initial-value: oklch(0.94611 0 0); }
 @property --fs-strong { syntax: "<color>"; inherits: true; initial-value: oklch(1 0 0); }
 @property --fs-accent { syntax: "<color>"; inherits: true; initial-value: oklch(0.9851 0 0); }
+@property --fs-link { syntax: "<color>"; inherits: true; initial-value: oklch(0.9851 0 0); }
+@property --fs-link-underline { syntax: "<color>"; inherits: true; initial-value: oklch(0.9851 0 0); }
 @property --fs-good { syntax: "<color>"; inherits: true; initial-value: oklch(0.94611 0 0); }
 @property --fs-bad { syntax: "<color>"; inherits: true; initial-value: oklch(0.63343 0 0); }
 @property --fs-c1 { syntax: "<color>"; inherits: true; initial-value: oklch(0.94611 0 0); }
@@ -1773,6 +1889,8 @@ button.fs-button {
     --fs-bg var(--doc-theme-dur) var(--doc-ease),
     --fs-surface var(--doc-theme-dur) var(--doc-ease),
     --fs-surface-2 var(--doc-theme-dur) var(--doc-ease),
+    --fs-block var(--doc-theme-dur) var(--doc-ease),
+    --fs-node var(--doc-theme-dur) var(--doc-ease),
     --fs-line var(--doc-theme-dur) var(--doc-ease),
     --fs-line-strong var(--doc-theme-dur) var(--doc-ease),
     --fs-faint var(--doc-theme-dur) var(--doc-ease),
@@ -1782,6 +1900,8 @@ button.fs-button {
     --fs-accent var(--doc-theme-dur) var(--doc-ease),
     --fs-good var(--doc-theme-dur) var(--doc-ease),
     --fs-bad var(--doc-theme-dur) var(--doc-ease),
+    --fs-link var(--doc-theme-dur) var(--doc-ease),
+    --fs-link-underline var(--doc-theme-dur) var(--doc-ease),
     --fs-c1 var(--doc-theme-dur) var(--doc-ease),
     --fs-c2 var(--doc-theme-dur) var(--doc-ease),
     --fs-c3 var(--doc-theme-dur) var(--doc-ease),
@@ -1814,8 +1934,18 @@ body {
 
 ::selection { color: var(--fs-surface); background: var(--fs-fg); }
 
-a { color: inherit; text-decoration: underline; text-decoration-color: var(--fs-line-strong); text-underline-offset: 3px; text-decoration-thickness: 1px; transition: text-decoration-color 240ms var(--doc-ease), color 240ms var(--doc-ease); }
-a:hover { text-decoration-color: var(--fs-fg); }
+a,
+a:visited {
+  color: var(--fs-link);
+  text-decoration: underline;
+  text-decoration-color: var(--fs-link-underline);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: auto;
+  transition: text-decoration-color 240ms var(--doc-ease), color 240ms var(--doc-ease);
+}
+a:hover { color: var(--fs-strong); text-decoration-color: currentColor; text-decoration-thickness: 2px; }
 :focus-visible { outline: 2px solid var(--fs-accent); outline-offset: 2px; border-radius: 4px; }
 
 h1, h2, h3 { margin: 0; font-family: var(--doc-font); font-weight: 500; letter-spacing: 0.008em; text-wrap: balance; }
@@ -1826,7 +1956,8 @@ p { margin: 0 0 1rem; text-wrap: pretty; }
 /* Long unbroken strings (commit hashes, URLs) wrap instead of widening the page. */
 p, li, td { overflow-wrap: break-word; }
 ul, ol { margin: 0 0 1rem; padding-left: 1.25rem; }
-li { margin: 0.25rem 0; }
+li { margin: 0.5em 0; }
+:is(ul, ol) :is(ul, ol) > li { margin-block: 0.25em; }
 li::marker { color: var(--fs-faint); }
 strong { font-weight: 600; }
 hr { height: 1px; margin: 3rem 0; background: var(--fs-line); border: 0; }
@@ -1850,7 +1981,12 @@ kbd {
 
 .lede { color: var(--fs-muted); font-size: 1.125rem; line-height: 1.6; }
 .muted { color: var(--fs-muted); }
-.eyebrow { margin: 0 0 0.75rem; color: var(--fs-muted); font-size: 13px; font-weight: 500; letter-spacing: 0.01em; }
+.note, .callout, .formula {
+  padding: 12px 16px;
+  background: var(--fs-block);
+  border: 1px solid var(--fs-line);
+  border-radius: var(--fs-radius-inner, 6px);
+}
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; clip-path: inset(50%); }
 
 /* ---- Layout: a reading column, with figures and code free to break out to a wider one. ---- */
@@ -1942,6 +2078,7 @@ kbd {
   border: 0;
   border-radius: 8px;
   cursor: pointer;
+  text-decoration: none;
   transition: color 240ms var(--doc-ease), background-color 240ms var(--doc-ease), scale 150ms var(--doc-ease);
 }
 .icon-btn::after { position: absolute; inset: -4px; content: ""; }
@@ -2073,7 +2210,7 @@ pre {
   color: var(--fs-fg);
   font: 400 13px/1.65 var(--doc-mono);
   tab-size: 2;
-  background: var(--fs-surface);
+  background: var(--fs-block);
   border: var(--fs-frame-width, 4px) solid var(--doc-frame);
   border-radius: var(--fs-radius, 12px);
   scrollbar-width: thin;
@@ -2082,7 +2219,7 @@ pre {
 /* Shell one-liners wrap instead of scrolling under the copy button; copying still gives one line. */
 pre:has(> code.language-sh) { white-space: pre-wrap; overflow-wrap: anywhere; }
 pre code { font: inherit; }
-.copy-btn { position: absolute; top: 9px; right: 9px; width: 30px; height: 30px; background: var(--fs-surface); border-radius: 6px; }
+.copy-btn { position: absolute; top: 9px; right: 9px; width: 30px; height: 30px; background: var(--fs-block); border-radius: 6px; }
 .copy-btn .ico { transition: opacity 240ms var(--doc-ease), scale 240ms var(--doc-ease); }
 .copy-btn .ico-done, .copy-btn[data-copied] .ico-copy { opacity: 0; scale: 0.5; }
 .copy-btn[data-copied] .ico-done { opacity: 1; scale: 1; }
@@ -2098,7 +2235,7 @@ pre code { font: inherit; }
 /* ---- Tables ---- */
 .table-wrap { margin: 1.25rem 0 1.75rem; overflow-x: auto; }
 table { width: 100%; font-size: 14px; line-height: 1.5; border-collapse: collapse; }
-th { padding: 8px 12px 8px 0; color: var(--fs-muted); font-size: 12px; font-weight: 500; text-align: left; border-bottom: 1px solid var(--fs-line-strong); }
+th { padding: 8px 12px; color: var(--fs-muted); font-size: 12px; font-weight: 500; text-align: left; background: var(--fs-block); border-bottom: 1px solid var(--fs-line-strong); }
 td { padding: 9px 12px 9px 0; vertical-align: top; border-bottom: 1px solid var(--fs-line); }
 td code { white-space: nowrap; }
 @media (max-width: 640px) { td code { white-space: normal; } }
@@ -2504,7 +2641,7 @@ a.card:hover { border-color: var(--fs-line-strong); }
   color: var(--fs-muted);
   font: 400 12.5px/1.6 var(--doc-mono);
   white-space: pre;
-  background: var(--fs-surface);
+  background: var(--fs-block);
   border: var(--fs-frame-width, 4px) solid var(--doc-frame);
   border-radius: var(--fs-radius, 12px);
 }
@@ -2515,6 +2652,7 @@ a.card:hover { border-color: var(--fs-line-strong); }
 /* ---- Credits ---- */
 .prose h2 { font-size: 1.25rem; }
 .prose ul { padding-left: 1.1rem; }
+.prose li > :is(a, b, strong):first-child { font-weight: 500; }
 
 /* ---- Footer ---- */
 .site-foot { border-top: 1px solid var(--fs-line); }
@@ -2529,7 +2667,7 @@ a.card:hover { border-color: var(--fs-line-strong); }
   color: var(--fs-muted);
   font-size: 13px;
 }
-.site-foot a { color: var(--fs-muted); }
+.site-foot a { color: var(--fs-muted); text-decoration: none; }
 .site-foot a:hover { color: var(--fs-fg); }
 .site-foot nav { display: flex; flex-wrap: wrap; gap: 4px 16px; }
 
@@ -2573,7 +2711,6 @@ a.card:hover { border-color: var(--fs-line-strong); }
 </header>
 
 <main class="page guide" id="main">
-  <p class="eyebrow">Example · a paper, explained</p>
   <h1>Strange-loop networks</h1>
   <p class="source">Source: Francois Chaubard, “Strange-Loop Networks (SLNs): A novel class of ‘loopy’ Neural Network Architectures that mimic the cerebral cortex to natively encode self-reflection, hemispheric specialization, and an infinite composition of functions”. This self-published draft is dated June 7, 2024 and is not peer-reviewed · <a href="https://fchaubard.github.io/Strange_Loop_Networks__Using_2_LLMs_to_form_a__strange_loop__to_step_toward_AGI%20(9).pdf">the PDF</a>. The claims are the author's. Every number says where it appears in the draft.</p>
   <p class="lede">Strange-loop networks are a draft architecture in which two language models read each other's output until a stopping rule is met. This guide follows 2534 × 5423 through a writer-and-judge version of the loop, then covers the proposed training methods and their memory cost. The draft is unfinished: the results section says “TODO :)”, Table 1 is blank, and the abstract reports “XX%”.</p>
@@ -2796,6 +2933,24 @@ a.card:hover { border-color: var(--fs-line-strong); }
     out: (t) => 1 - (1 - t) ** 3,
     inOut: (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2),
   };
+  /** Ease one hop from node to node. Linear single-speed travel is intentionally not exposed. */
+  const hop = (u) => ease.inOut(clamp(u));
+  /**
+   * Repeating packet travel on the figure clock. A hop takes 1.25 s, then dwells for 0.15 s at
+   * the destination while fading out. `phase` offsets packets on the same edge without changing speed.
+   */
+  function travel(t, phase = 0, duration = 1.25, dwell = 0.15) {
+    const cycle = Math.max(1e-6, duration + dwell);
+    const cycles = t / cycle + phase;
+    const index = Math.floor(cycles);
+    const elapsed = ((cycles % 1) + 1) % 1 * cycle;
+    const p = clamp(elapsed / Math.max(1e-6, duration));
+    const dwelling = elapsed >= duration;
+    const alpha = dwelling
+      ? 1 - ease.out(clamp((elapsed - duration) / Math.max(1e-6, dwell)))
+      : ease.out(clamp(p / 0.08));
+    return { u: hop(p), alpha, dwelling, index };
+  }
   /** Progress of t through [t0, t1], eased; the building block of declared timelines. */
   const window_ = (t, t0, t1, fn = ease.smooth) => fn(clamp((t - t0) / Math.max(1e-6, t1 - t0)));
   function rng(seed) {
@@ -2810,7 +2965,7 @@ a.card:hover { border-color: var(--fs-line-strong); }
   const gauss = (r) => Math.sqrt(-2 * Math.log(1 - r())) * Math.cos(2 * Math.PI * r());
 
   // ---------- theme tokens ----------
-  const COLOR_TOKENS = ["bg", "surface", "surface-2", "line", "line-strong", "faint", "muted", "fg", "strong", "accent", "good", "bad", "c1", "c2", "c3", "c4", "c5", "c6"];
+  const COLOR_TOKENS = ["bg", "surface", "surface-2", "node", "line", "line-strong", "faint", "muted", "fg", "strong", "accent", "good", "bad", "c1", "c2", "c3", "c4", "c5", "c6"];
   const camel = (s) => s.replace(/-(\w)/g, (_, c) => c.toUpperCase());
   function readTheme(f) {
     // Resolve through a probe inside the figure so per-figure themes and var() chains work in canvas.
@@ -2820,7 +2975,7 @@ a.card:hover { border-color: var(--fs-line-strong); }
       box.hidden = true;
       f.probes = COLOR_TOKENS.map((token) => {
         const probe = document.createElement("span");
-        probe.style.color = `var(--fs-${token})`;
+        probe.style.color = token === "node" ? "var(--fs-node, var(--fs-surface-2))" : `var(--fs-${token})`;
         box.append(probe);
         return probe;
       });
@@ -4397,6 +4552,8 @@ a.card:hover { border-color: var(--fs-line-strong); }
     wake,
     k,
     ease,
+    hop,
+    travel,
     window: window_,
     damp,
     spring,
@@ -4823,25 +4980,92 @@ window.AV_THEMES = [
 
   // ---------- code blocks: live source, highlighting, copy ----------
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  const KEYWORDS = new Set("const let var function return new if else for of in while true false null undefined this typeof await async import export from default class extends".split(" "));
-  /** A small scanner for JS and CSS: comments, strings, numbers, keywords, CSS custom properties. */
-  function highlight(src, lang) {
+  const JS_KEYWORDS = new Set("const let var function return new if else for of in while do switch case break continue true false null undefined this typeof instanceof await async import export from default class extends try catch finally throw yield delete void with get set static".split(" "));
+  const TS_KEYWORDS = new Set([...JS_KEYWORDS, ..."interface type enum namespace declare implements private protected public readonly abstract as satisfies keyof infer unknown never any boolean number string object symbol bigint override".split(" ")]);
+  const PY_KEYWORDS = new Set("and as assert async await break class continue def del elif else except False finally for from global if import in is lambda None nonlocal not or pass raise return True try while with yield match case".split(" "));
+  const SH_KEYWORDS = new Set("if then else elif fi for while until do done case esac function in select time coproc true false".split(" "));
+  const token = (kind, text) => '<span class="tok-' + kind + '">' + esc(text) + "</span>";
+
+  function scan(src, rules) {
     let out = "";
     let i = 0;
-    const css = lang === "css";
     while (i < src.length) {
       const rest = src.slice(i);
-      let m;
-      if ((m = /^\/\*[\s\S]*?(\*\/|$)/.exec(rest)) || (!css && (m = /^\/\/[^\n]*/.exec(rest)))) out += `<span class="tok-c">${esc(m[0])}</span>`;
-      else if ((m = /^("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`)/.exec(rest))) out += `<span class="tok-s">${esc(m[0])}</span>`;
-      else if (css && (m = /^--[\w-]+/.exec(rest))) out += `<span class="tok-p">${esc(m[0])}</span>`;
-      else if (css && (m = /^#[0-9a-fA-F]{3,8}\b/.exec(rest))) out += `<span class="tok-n">${esc(m[0])}</span>`;
-      else if ((m = /^\d+(?:\.\d+)?(?:e-?\d+)?/.exec(rest)) && !/[\w$]/.test(src[i - 1] || "")) out += `<span class="tok-n">${m[0]}</span>`;
-      else if ((m = /^[A-Za-z_$][\w$-]*/.exec(rest))) out += !css && KEYWORDS.has(m[0]) ? `<span class="tok-k">${m[0]}</span>` : esc(m[0]);
-      else { out += esc(src[i]); i += 1; continue; }
-      i += m[0].length;
+      let found = false;
+      for (const [pattern, kind] of rules) {
+        const match = pattern.exec(rest);
+        if (!match) continue;
+        const next = src.slice(i + match[0].length);
+        const resolved = typeof kind === "function" ? kind(match[0], next, i, src) : kind;
+        out += resolved ? token(resolved, match[0]) : esc(match[0]);
+        i += match[0].length;
+        found = true;
+        break;
+      }
+      if (!found) {
+        out += esc(src[i]);
+        i += 1;
+      }
     }
     return out;
+  }
+
+  /** Small, dependency-free tokenizers. Unknown languages use escaped plain text. */
+  function highlight(src, lang) {
+    const name = ({ javascript: "js", typescript: "ts", py: "python", bash: "shell", sh: "shell" })[lang] || lang;
+    const number = [/^(?:0x[\da-f]+|\d+(?:\.\d+)?(?:e[+-]?\d+)?)/i, "n"];
+    const quoted = [/^(?:"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')/, "s"];
+    if (name === "html") return scan(src, [
+      [/^<!--[\s\S]*?(?:-->|$)/, "c"],
+      [/^<!doctype[^>]*>/i, "k"],
+      [/^<\/?[A-Za-z][\w:-]*/, "k"],
+      [/^[A-Za-z_:][\w:.-]*(?=\s*=)/, "p"],
+      quoted,
+      number,
+    ]);
+    if (name === "css") return scan(src, [
+      [/^\/\*[\s\S]*?(?:\*\/|$)/, "c"],
+      quoted,
+      [/^@[A-Za-z-]+/, "k"],
+      [/^--[\w-]+/, "p"],
+      [/^[A-Za-z-]+(?=\s*:)/, "p"],
+      [/^#[\da-f]{3,8}\b/i, "n"],
+      number,
+    ]);
+    if (name === "json") return scan(src, [
+      [/^"(?:[^"\\\n]|\\.)*"/, (_, next) => /^\s*:/.test(next) ? "p" : "s"],
+      [/^(?:true|false|null)\b/, "k"],
+      [/^-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/i, "n"],
+    ]);
+    if (name === "python") return scan(src, [
+      [/^#[^\n]*/, "c"],
+      [/^(?:"""[\s\S]*?(?:"""|$)|'''[\s\S]*?(?:'''|$))/, "s"],
+      quoted,
+      [/^@[A-Za-z_][\w.]*/, "p"],
+      number,
+      [/^[A-Za-z_]\w*/, (word) => PY_KEYWORDS.has(word) ? "k" : null],
+    ]);
+    if (name === "shell") return scan(src, [
+      [/^#[^\n]*/, "c"],
+      quoted,
+      [/^\$(?:\{[^}]+\}|[A-Za-z_]\w*|[?#@*!$0-9-])/, "p"],
+      [/^--?[\w-]+/, "p"],
+      number,
+      [/^[A-Za-z_][\w-]*/, (word, _, at, source) =>
+        SH_KEYWORDS.has(word) || /(?:^|[\n;|&]\s*)$/.test(source.slice(0, at)) ? "k" : null
+      ],
+    ]);
+    if (name === "js" || name === "ts" || name === "tsx") {
+      const words = name === "js" ? JS_KEYWORDS : TS_KEYWORDS;
+      return scan(src, [
+        [/^\/\*[\s\S]*?(?:\*\/|$)/, "c"],
+        [/^\/\/[^\n]*/, "c"],
+        [/^(?:"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|\x60(?:[^\x60\\]|\\.)*\x60)/, "s"],
+        number,
+        [/^[A-Za-z_$][\w$]*/, (word) => words.has(word) ? "k" : (name !== "js" && /^[A-Z]/.test(word) ? "p" : null)],
+      ]);
+    }
+    return esc(src);
   }
   function dedent(text) {
     const lines = text.replace(/^\s*\n/, "").replace(/\s+$/, "").split("\n");
@@ -4861,8 +5085,9 @@ window.AV_THEMES = [
     pre.replaceChildren(code);
   });
   document.querySelectorAll("pre > code").forEach((code) => {
-    const lang = /language-(\w+)/.exec(code.className)?.[1];
-    if (lang === "js" || lang === "css" || lang === "html") code.innerHTML = lang === "html" ? code.innerHTML : highlight(code.textContent, lang);
+    let lang = /language-([^\s]+)/.exec(code.className)?.[1];
+    if (!lang) { lang = "plain"; code.classList.add("language-plain"); }
+    code.innerHTML = highlight(code.textContent, lang);
     const pre = code.parentElement;
     if (pre.parentElement.classList.contains("code")) return;
     const wrap = document.createElement("div");
@@ -4964,25 +5189,25 @@ function flowFigure(id, { meta, layouts, edges, returns = [], steps, params, H =
       z.text.setAttribute("x", c.x + c.w - 12); z.text.setAttribute("y", c.y + c.h - 10); z.text.setAttribute("text-anchor", "end");
     }
   }
-  let phase = 0, current = "";
+  let current = "";
   const onOf = (f) => { const s = steps[f.step].on; return new Set(typeof s === "function" ? s(f) : s); };
   const shown = (f, n) => !n.when || n.when(f);
   return FS.figure(id, {
     height: (w) => { const Lx = w < narrowBelow ? layouts.narrow : layouts.wide; return (w * Lx.box[1]) / Lx.box[0]; },
     steps, params,
     resize(f) { const name = f.w < narrowBelow ? "narrow" : "wide"; if (name !== current) { current = name; layout(name); } },
-    update(f, dt) { phase = (phase + dt * 0.3) % 1; f.dt = dt; },
+    update(f, dt) { f.dt = dt; },
     render(f) {
       const C = f.C, on = onOf(f), e = FS.ease.out(f.stepT);
       placeZones(f);
-      for (const z of zones) { z.rect.setAttribute("fill", C.surface2); z.rect.setAttribute("stroke", C.line); z.rect.setAttribute("opacity", "0.9"); z.text.setAttribute("fill", C.muted); }
+      for (const z of zones) { z.rect.setAttribute("fill", C.node); z.rect.setAttribute("stroke", C.line); z.rect.setAttribute("opacity", "0.9"); z.text.setAttribute("fill", C.muted); }
       for (const key in nodes) {
         const n = nodes[key], hovered = f.hover === key, lit = on.has(key), vis = shown(f, n);
         const target = !vis ? 0 : lit ? 1 : C.dim;
         n.alpha = f.stepT < 1 ? FS.lerp(n.alpha, target, e) : target;
         n.g.setAttribute("opacity", hovered && vis ? 1 : n.alpha.toFixed(3));
         n.g.style.pointerEvents = vis ? "" : "none";
-        n.rect.setAttribute("fill", pill && lit && f.step ? C.fg : C.surface);
+        n.rect.setAttribute("fill", pill && lit && f.step ? C.fg : C.node);
         n.rect.setAttribute("stroke", hovered ? C.accent : lit && f.step ? C.fg : C.lineStrong);
         n.rect.setAttribute("stroke-width", hovered ? 1.5 : 1);
         const ink = pill && lit && f.step ? C.surface : C.fg;
@@ -4995,10 +5220,11 @@ function flowFigure(id, { meta, layouts, edges, returns = [], steps, params, H =
         p.alpha = f.stepT < 1 ? FS.lerp(p.alpha, target, e) : target;
         p.path.setAttribute("stroke", C.muted); p.path.setAttribute("stroke-width", C.edge); p.path.setAttribute("opacity", p.alpha.toFixed(3));
         p.dots.forEach((dot, j) => {
-          const u = (phase + j / 3 + i * 0.13) % 1, pt = p.path.getPointAtLength(u * p.length);
+          const travel = FS.travel(f.t, j / 3 + i * 0.13);
+          const pt = p.path.getPointAtLength(travel.u * p.length);
           dot.setAttribute("cx", pt.x.toFixed(1)); dot.setAttribute("cy", pt.y.toFixed(1));
           dot.setAttribute("fill", active && f.step ? C.accent : C.fg);
-          dot.setAttribute("opacity", (p.alpha * Math.sin(Math.PI * u) * (active ? 1 : 0.5)).toFixed(3));
+          dot.setAttribute("opacity", (p.alpha * travel.alpha * (active ? 1 : 0.5)).toFixed(3));
         });
       });
     },
