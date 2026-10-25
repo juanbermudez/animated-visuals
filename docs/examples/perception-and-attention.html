@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Perception and attention · Animated Visuals</title>
-<meta name="description" content="How sight, touch, hearing and speech reach the brain, how the cortex tunes its own input, and why attending to one sense dims the others: the six walkthroughs of Juan Bermudez's open-source 3D brain guide, as seven 2D figures.">
+<meta name="description" content="How vision, touch, hearing and speech reach the brain, how the cortex sends feedback to the thalamus, and how attending to one sense changes sensory responses across the six walkthroughs of an open-source 3D brain guide, shown as seven 2D figures.">
 <script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="../site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2577,12 +2577,12 @@ a.card:hover { border-color: var(--fs-line-strong); }
 
 <main class="page guide" id="main">
   <p class="eyebrow">Example · an open-source guide, in 2D</p>
-  <h1>How your senses reach the brain, and how attention picks among them</h1>
-  <p class="source">A 2D visual guide to <a href="https://github.com/juanbermudez/perception-and-attention">Perception &amp; Attention</a>, Juan Bermudez's open-source review of human perception and attention on a 3D brain (MIT). Every fact and number comes from its six walkthroughs and the papers they cite. Built with Animated Visuals.</p>
-  <p class="lede">You're looking for a friend in a crowd. Faces, voices, a hand on yours: it all arrives at once, and the brain can't process all of it in detail. This guide follows each sense from the body to the cortex, then shows the two ways the brain controls its own input: the cortex adjusting its relays, and attention choosing what to favour. The last figure is the original's small attention model, which you can push yourself.</p>
+  <h1>Perception and attention</h1>
+  <p class="source">A 2D visual guide to <a href="https://github.com/juanbermudez/perception-and-attention">Perception &amp; Attention</a>, Juan Bermudez's open-source review of human perception and attention on a 3D brain (MIT). The figures cover its six walkthroughs. Every fact and number comes from the guide or the papers it cites. Built with Animated Visuals.</p>
+  <p class="lede">Perception carries information from the eyes, skin and ears through specialized routes to the brain. This guide uses finding a friend in a crowd to connect vision, touch, hearing and speech with two forms of control, feedback from the cortex and attention networks. It ends with a model showing how giving one sense priority reduces the others without switching them off.</p>
 
-  <h2>Vision: split, crossed and relayed before the cortex sees it</h2>
-  <p>Your eyes scan the crowd. In the <span data-fs-ref="fig-vision:retinaL">retina</span>, rods and cones absorb light and local circuits compare neighbouring points, so what leaves the eye mostly reports contrast and change. At the <span data-fs-ref="fig-vision:chiasm">optic chiasm</span> the fibres are regrouped: everything in the right half of what you see goes to the left hemisphere, from both eyes. The <span data-fs-ref="fig-vision:lgn">LGN</span> in the thalamus relays the signal to <span data-fs-ref="fig-vision:v1">V1</span>, and two streams leave from there: one to recognize your friend's face, one to reach out and wave.</p>
+  <h2>Vision</h2>
+  <p>Vision separates and crosses signals before relaying them to the cortex. In the crowd example, your eyes scan for a friend's face. In the <span data-fs-ref="fig-vision:retinaL">retina</span>, rods and cones absorb light and local circuits compare neighbouring points, so what leaves the eye mostly reports contrast and change. At the <span data-fs-ref="fig-vision:chiasm">optic chiasm</span>, fibres are regrouped so everything in the right half of what you see goes to the left hemisphere, from both eyes. The <span data-fs-ref="fig-vision:lgn">LGN</span> in the thalamus relays the signal to <span data-fs-ref="fig-vision:v1">V1</span>. Two streams leave from there, one to recognize your friend's face and one to guide a wave.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-vision-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-vision-title">The eye's image is relayed, then split in two</h3><span class="fs-status">Fig. 1 · schematic route</span></header>
     <div class="fs-stage"><svg id="fig-vision" viewBox="0 0 960 364" role="img" aria-label="Flow: left and right retina feed the optic chiasm, then the LGN, then V1. From V1 a dorsal stream runs to area MT and parietal cortex, and a ventral stream runs to V2 and V4, then to IT cortex and the category areas for faces, places, bodies and words."></svg></div>
@@ -2591,12 +2591,12 @@ a.card:hover { border-color: var(--fs-line-strong); }
       <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-vision" aria-hidden="true"></span><button type="button" data-fs="fig-vision prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-vision next" aria-label="Next step">Next</button><button type="button" data-fs="fig-vision play">Pause</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-vision:caption" aria-live="polite"></p>
-    <p class="fs-caption">The route and regions of the original's vision walkthrough, one step per region, each with its key fact; the species is named where it isn't human. Positions are schematic and packet speed is illustrative. Hover a region for what it is.</p>
+    <p class="fs-caption">This schematic follows the regions in the source's vision walkthrough, one step per region, with the species named where the data are not human. Positions and packet speed are illustrative; hover a region for its description.</p>
   </figure>
-  <p>The classic evidence for two streams is a patient known as D.F. With damage to her ventral stream, she could not report how a slot was oriented, yet could post a card through it accurately. Goodale and Milner concluded that her intact dorsal stream guided the movement; critics argue the streams are less independent than this case suggests. One more detail the steps skip: in the LGN of anaesthetised monkeys, the fastest motion-channel responses came about 10 ms before the fastest detail-channel ones.</p>
+  <p>Evidence for two streams includes a patient known as D.F. With damage to her ventral stream, she could not report how a slot was oriented, yet could post a card through it accurately. Goodale and Milner concluded that her intact dorsal stream guided the movement; critics argue the streams are less independent than this case suggests. In the LGN of anaesthetised monkeys, the fastest motion-channel responses came about 10 ms before the fastest detail-channel ones.</p>
 
-  <h2>Touch: two routes that cross at different levels</h2>
-  <p>Your friend grabs your right hand. That touch rises on the right side of the spinal cord and only crosses over in the <span data-fs-ref="fig-touch:dcn">medulla</span>; then the <span data-fs-ref="fig-touch:vpl">thalamus</span> relays it to <span data-fs-ref="fig-touch:s1">S1</span>, the body map in your left hemisphere. If someone steps on your foot at the same moment, the pain takes a different road: it crosses straight away, in the <span data-fs-ref="fig-touch:dh">dorsal horn</span> of the spinal cord, and reaches the <span data-fs-ref="fig-touch:pi">posterior insula</span> and the <span data-fs-ref="fig-touch:cing">cingulate cortex</span> as well as S1 and S2.</p>
+  <h2>Touch</h2>
+  <p>Touch and pain follow two separate routes that cross at different levels. In the crowd example, your friend grabs your right hand. That touch rises on the right side of the spinal cord and crosses in the <span data-fs-ref="fig-touch:dcn">medulla</span>. The <span data-fs-ref="fig-touch:vpl">thalamus</span> then relays it to <span data-fs-ref="fig-touch:s1">S1</span>, the body map in your left hemisphere. If someone steps on your foot at the same moment, the pain crosses in the <span data-fs-ref="fig-touch:dh">dorsal horn</span> of the spinal cord and reaches the <span data-fs-ref="fig-touch:pi">posterior insula</span> and the <span data-fs-ref="fig-touch:cing">cingulate cortex</span> as well as S1 and S2.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-touch-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-touch-title">Touch and pain cross at different levels</h3><span class="fs-status">Fig. 2 · schematic route</span></header>
     <div class="fs-stage"><svg id="fig-touch" viewBox="0 0 960 322" role="img" aria-label="Flow: touch and position cross at the medulla relay, pain and temperature cross at the dorsal horn; both reach the thalamus (VPL). From there touch goes to S1, then parietal cortex and S2; pain goes to S1, S2, the posterior insula and the cingulate cortex."></svg></div>
@@ -2605,12 +2605,12 @@ a.card:hover { border-color: var(--fs-line-strong); }
       <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-touch" aria-hidden="true"></span><button type="button" data-fs="fig-touch prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-touch next" aria-label="Next step">Next</button><button type="button" data-fs="fig-touch play">Pause</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-touch:caption" aria-live="polite"></p>
-    <p class="fs-caption">Drawn for the right side of the body reaching the left hemisphere, as in the original. The thalamus box stands for the VPL and the neighbouring nuclei where pain fibres end; positions are schematic and packet speed is illustrative.</p>
+    <p class="fs-caption">This schematic follows signals from the right side of the body to the left hemisphere, as in the source. The thalamus box includes the VPL and neighbouring nuclei where pain fibres end; positions and packet speed are illustrative.</p>
   </figure>
   <p>Surgeons rely on that separation. Destroying the pain route with a heat probe high in the neck, on the side opposite the pain, relieves severe one-sided cancer pain: in a study of 19 such patients, pain, temperature and itch on the painful side were lost or greatly reduced, while the threshold for detecting light touch did not change. Whether any cortical area responds to pain alone is still debated.</p>
 
-  <h2>Hearing: the two ears meet in the brainstem</h2>
-  <p>Someone calls your name from your left. The sound reaches your left ear a fraction earlier, and a little louder, because your head blocks some of it from the right. Each <span data-fs-ref="fig-hearing:cochL">cochlea</span> sorts it by frequency, and the two ears first meet in the <span data-fs-ref="fig-hearing:olive">superior olive</span>, which compares those differences to place the voice. From there the route climbs through the <span data-fs-ref="fig-hearing:ic">inferior colliculus</span> and the <span data-fs-ref="fig-hearing:mgn">MGN</span> to <span data-fs-ref="fig-hearing:a1">auditory cortex</span>, where a front stream helps work out what the sound is and a back stream where it came from.</p>
+  <h2>Hearing</h2>
+  <p>Signals from the two ears first meet in the brainstem. In the crowd example, someone calls your name from your left. The sound reaches your left ear a fraction earlier and a little louder because your head blocks some of it from the right. Each <span data-fs-ref="fig-hearing:cochL">cochlea</span> sorts sound by frequency. The two ears first meet in the <span data-fs-ref="fig-hearing:olive">superior olive</span>, which compares their timing and loudness to place the voice. From there, the route climbs through the <span data-fs-ref="fig-hearing:ic">inferior colliculus</span> and the <span data-fs-ref="fig-hearing:mgn">MGN</span> to <span data-fs-ref="fig-hearing:a1">auditory cortex</span>. A front stream helps identify the sound, and a back stream helps locate it.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-hearing-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-hearing-title">The two ears first meet in the brainstem</h3><span class="fs-status">Fig. 3 · schematic route</span></header>
     <div class="fs-stage"><svg id="fig-hearing" viewBox="0 0 960 310" role="img" aria-label="Flow: the left and right cochlea each feed their own cochlear nuclei; both feed the superior olive, then the inferior colliculus, the MGN and auditory cortex, then the belt and parabelt, which feed a what stream and a where stream. Return curves run from auditory cortex to the colliculus, to the olive and back to both cochleae."></svg></div>
@@ -2623,10 +2623,10 @@ a.card:hover { border-color: var(--fs-line-strong); }
   </figure>
   <p>The route also runs backwards. Feedback fibres from the olive reduce the cochlea's amplification of quiet and moderate sounds; in animals this helps the auditory nerve signal brief sounds in background noise and protects the ear from loud noise. Whether attention does this in people is open: one study measured sounds emitted by the ear, and in the first 15 listeners they were 5.4 dB weaker during visual attention than during auditory attention, while the next 15 showed no effect.</p>
 
-  <h2>Speech: one stream for meaning, one for saying it</h2>
-  <p>You shout your friend's name back. The word you heard reaches <span data-fs-ref="fig-speech:a1">auditory cortex</span> and the <span data-fs-ref="fig-speech:stg">superior temporal gyrus</span>. A ventral stream links the sounds to <span data-fs-ref="fig-speech:meaning">meaning</span>, in both hemispheres; a dorsal stream, mainly on the left, maps them through <span data-fs-ref="fig-speech:spt">area Spt</span> and <span data-fs-ref="fig-speech:broca">Broca's area</span> to the <span data-fs-ref="fig-speech:motor">motor cortex</span> that moves your lips and tongue. In normal speech these regions are active at the same time and exchange signals both ways; the steps follow the order of repeating a word.</p>
+  <h2>Speech</h2>
+  <p>Speech uses one stream for meaning and one for producing words. In the crowd example, you shout your friend's name back. The word you heard reaches <span data-fs-ref="fig-speech:a1">auditory cortex</span> and the <span data-fs-ref="fig-speech:stg">superior temporal gyrus</span>. A ventral stream links the sounds to <span data-fs-ref="fig-speech:meaning">meaning</span> in both hemispheres. A dorsal stream, mainly on the left, maps them through <span data-fs-ref="fig-speech:spt">area Spt</span> and <span data-fs-ref="fig-speech:broca">Broca's area</span> to the <span data-fs-ref="fig-speech:motor">motor cortex</span> that moves your lips and tongue. In normal speech, these regions are active at the same time and exchange signals both ways. The steps follow the order of repeating a word.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-speech-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-speech-title">Speech splits into meaning and movement</h3><span class="fs-status">Fig. 4 · schematic route</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-speech-title">Speech separates meaning from movement</h3><span class="fs-status">Fig. 4 · schematic route</span></header>
     <div class="fs-stage"><svg id="fig-speech" viewBox="0 0 960 250" role="img" aria-label="Flow: auditory cortex feeds the speech-sound area of the superior temporal gyrus, which feeds meaning networks (the ventral stream) and area Spt; Spt feeds Broca's area, which feeds speech motor cortex. A return curve from motor cortex to auditory cortex stands for hearing your own voice."></svg></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-speech:step"></span>
@@ -2635,53 +2635,53 @@ a.card:hover { border-color: var(--fs-line-strong); }
     <p class="fs-step-text" data-fs-out="fig-speech:caption" aria-live="polite"></p>
     <p class="fs-caption">A simplified dual-stream model with left-hemisphere regions only. The curve from motor cortex back to auditory cortex stands for hearing your own voice; packet speed is illustrative.</p>
   </figure>
-  <p>Broca's area is less settled than its fame suggests. Some groups place speech planning there; others point to the middle precentral gyrus, higher up and further back. In a study of 134 stroke survivors, damage to Broca's area did not predict lasting speech problems; damage to the white matter deeper in, above the insula, did.</p>
+  <p>Broca's area's role in speech remains debated. Some groups place speech planning there; others point to the middle precentral gyrus, higher up and further back. In a study of 134 stroke survivors, damage to Broca's area did not predict lasting speech problems; damage to the white matter deeper in, above the insula, did.</p>
 
-  <h2>The cortex tunes its own input</h2>
-  <p>Here is the surprising part: the thalamus is not a passive relay. Of the synapses on one LGN relay cell in cats, only about 7% come from the eye, and about 30% come from <span data-fs-ref="fig-loop:l6">layer 6</span> of the cortex, the very place the relay sends its output. That feedback doesn't change what the cell responds to; it changes how strongly. Through the <span data-fs-ref="fig-loop:trn">TRN</span>, a thin shell of inhibitory cells, the same feedback can also turn the relay down. A second output, from <span data-fs-ref="fig-loop:l5">layer 5</span>, drives the <span data-fs-ref="fig-loop:pulvinar">pulvinar</span>, which carries signals from one cortical area to another beside the direct connections.</p>
+  <h2>Feedback from the cortex to the thalamus</h2>
+  <p>The cortex sends feedback to the thalamus to adjust incoming signals. Of the synapses on one LGN relay cell in cats, only about 7% come from the eye, and about 30% come from <span data-fs-ref="fig-loop:l6">layer 6</span> of the cortex, which receives the relay's output. That feedback changes how strongly the cell responds while preserving which inputs drive it. Through the <span data-fs-ref="fig-loop:trn">TRN</span>, a thin shell of inhibitory cells, the same feedback can also reduce the relay response. A second output, from <span data-fs-ref="fig-loop:l5">layer 5</span>, drives the <span data-fs-ref="fig-loop:pulvinar">pulvinar</span>, which carries signals from one cortical area to another beside the direct connections.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-loop-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-loop-title">The cortex turns its own input up and down</h3><span class="fs-status">Fig. 5 · cat and mouse data</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-loop-title">Cortical feedback adjusts thalamic relay strength</h3><span class="fs-status">Fig. 5 · cat and mouse data</span></header>
     <div class="fs-stage"><svg id="fig-loop" viewBox="0 0 960 410" role="img" aria-label="Mechanism: the retina drives an LGN relay cell, which sends its output to layer 4 of V1. Layer 6 sends feedback that excites the relay cell and, through a branch, the inhibitory TRN, which inhibits it. Layer 5 drives the pulvinar, which relays to higher visual areas beside V1's direct route, and branches to the brainstem. A bar shows the relay cell's synapses: eye 7%, cortex, brainstem and inhibitory cells about 30% each."></svg></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-loop:step"></span>
       <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-loop" aria-hidden="true"></span><button type="button" data-fs="fig-loop prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-loop next" aria-label="Next step">Next</button><button type="button" data-fs="fig-loop play">Pause</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-loop:caption" aria-live="polite"></p>
-    <p class="fs-caption">The synapse shares are cat data; the turn-down and turn-up steps are mouse slices and awake mice; the layer 5 test is in mice. Line thickness, packet rate and layer depths are illustrative.</p>
+    <p class="fs-caption">The synapse shares come from cats; the turn-down and turn-up steps come from mouse slices and awake mice; the layer 5 test comes from mice. Line thickness, packet rate and layer depths are illustrative.</p>
   </figure>
-  <p>Attention uses this gate. In monkeys, attention raises LGN responses and lowers TRN responses, and the same thalamic circuit produces sleep spindles, a brain rhythm of light (non-REM) sleep. The caveat, from the original: the switch between turning the relay down and up was shown in the mouse touch thalamus, not measured in human vision, and in cats and monkeys the evidence for the layer 5 route is mainly anatomical.</p>
+  <p>Attention also changes this circuit. In monkeys, attention raises LGN responses and lowers TRN responses, and the same thalamic circuit produces sleep spindles, a brain rhythm of light (non-REM) sleep. The source notes that the switch between reducing and increasing the relay response was shown in the mouse touch thalamus, not measured in human vision, and that in cats and monkeys the evidence for the layer 5 route is mainly anatomical.</p>
 
-  <h2>Attention: many areas set priorities</h2>
-  <p>Back to the crowd. You're holding a goal, find your friend, in <span data-fs-ref="fig-networks:pfc">prefrontal cortex</span>, which with the <span data-fs-ref="fig-networks:fef">frontal eye fields</span> and <span data-fs-ref="fig-networks:parietal">parietal cortex</span> favours the features and places that match it. Then someone shouts behind you, and the temporoparietal junction (<span data-fs-ref="fig-networks:tpj">TPJ</span>) and the <span data-fs-ref="fig-networks:insula">salience network</span> pull attention toward the surprise. Underneath, the <span data-fs-ref="fig-networks:lc">locus coeruleus</span> affects how alert you are, and the <span data-fs-ref="fig-networks:sc">superior colliculus</span> and <span data-fs-ref="fig-networks:pulvinar">pulvinar</span> help select and coordinate. It all acts on <span data-fs-ref="fig-networks:sensory">sensory cortex</span>, where responses to what you attend go up and the rest go down.</p>
+  <h2>Attention networks</h2>
+  <p>Attention networks set priorities and change activity in sensory cortex. In the crowd example, <span data-fs-ref="fig-networks:pfc">prefrontal cortex</span> holds the goal of finding your friend. The <span data-fs-ref="fig-networks:fef">frontal eye fields</span> and <span data-fs-ref="fig-networks:parietal">parietal cortex</span> favour features and places that match it. If someone shouts behind you, the temporoparietal junction (<span data-fs-ref="fig-networks:tpj">TPJ</span>) and the <span data-fs-ref="fig-networks:insula">salience network</span> direct attention toward the sound. The <span data-fs-ref="fig-networks:lc">locus coeruleus</span> affects alertness, while the <span data-fs-ref="fig-networks:sc">superior colliculus</span> and <span data-fs-ref="fig-networks:pulvinar">pulvinar</span> help select and coordinate. These areas affect <span data-fs-ref="fig-networks:sensory">sensory cortex</span>, where responses to attended signals increase and other responses decrease.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-networks-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-networks-title">Many areas set priorities, and all act on sensory cortex</h3><span class="fs-status">Fig. 6 · schematic</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-networks-title">Attention networks change sensory cortex</h3><span class="fs-status">Fig. 6 · schematic</span></header>
     <div class="fs-stage"><svg id="fig-networks" viewBox="0 0 960 372" role="img" aria-label="Network: prefrontal cortex, the frontal eye fields and parietal cortex on the top row; the anterior insula, the cingulate cortex and the right TPJ in the middle; the locus coeruleus, the superior colliculus and the pulvinar at the bottom. Links connect them to each other and to sensory cortex for vision, hearing and touch."></svg></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-networks:step"></span>
       <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-networks" aria-hidden="true"></span><button type="button" data-fs="fig-networks prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-networks next" aria-label="Next step">Next</button><button type="button" data-fs="fig-networks play">Pause</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-networks:caption" aria-live="polite"></p>
-    <p class="fs-caption">Links show that areas interact, not traced fibres or a fixed sequence. All of these regions exist on both sides; the TPJ is drawn as the right one, where the network is stronger.</p>
+    <p class="fs-caption">The links are schematic and show interactions among areas rather than traced fibres or a fixed sequence. All of these regions exist on both sides; the TPJ is drawn as the right one, where the network is stronger.</p>
   </figure>
-  <p>Unattended signals are weakened, not erased: they are still processed and can still draw attention. That is what the last figure is about.</p>
+  <p>Unattended signals become weaker but remain available for processing and can still draw attention.</p>
 
-  <h2>Why favouring one sense dims the others</h2>
-  <p>The original guide models this with one equation, a simplified form of the normalization model of attention (Reynolds and Heeger, 2009). Each sense's response is its input times its attention gain, divided by a shared total: <code>R = A·E / (σ + Σ A·E)</code>, with σ = 1. Give one sense more gain and the shared total grows, so every other sense's share shrinks. Nothing is switched off.</p>
-  <p>Searching the crowd, you give vision priority. At a gain of <span data-fs-scrub="fig-norm:gain"></span>, <span data-fs-out="fig-norm:name"></span> response rises from <span data-fs-out="fig-norm:base"></span> to <span data-fs-out="fig-norm:prio"></span>, and each other sense falls to <span data-fs-out="fig-norm:other"></span>: lower, but not zero. Drag the number, or the dot in the figure.</p>
+  <h2>The normalization model</h2>
+  <p>The normalization model shows how attention gain changes the response of each sense. The source uses one equation, a simplified form of the model from Reynolds and Heeger (2009). Each sense's response is its input times its attention gain, divided by a shared total: <code>R = A·E / (σ + Σ A·E)</code>, with σ = 1. Increasing one sense's gain increases the shared total and reduces every other sense's share without switching it off.</p>
+  <p>In the crowd example, vision has priority. At a gain of <span data-fs-scrub="fig-norm:gain"></span>, <span data-fs-out="fig-norm:name"></span> response rises from <span data-fs-out="fig-norm:base"></span> to <span data-fs-out="fig-norm:prio"></span>, and each other sense falls to <span data-fs-out="fig-norm:other"></span>, lower but not zero. Drag the number or the dot in the figure.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-norm-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-norm-title">Favouring one sense dims the others, never to zero</h3><span class="fs-status">Fig. 7 · illustrative model</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-norm-title">Priority for one sense lowers others, never to zero</h3><span class="fs-status">Fig. 7 · illustrative model</span></header>
     <div class="fs-stage"><canvas id="fig-norm" role="img" aria-label="Three senses, vision, touch and sound, each with an attention gain from 1× to 3× and a response bar. Below, the shared total: sigma plus each sense's gain times input. Raising one sense's gain lengthens its response bar and the total, and shortens the other two bars without emptying them."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-norm:summary"></span>
       <div class="fs-controls"><div data-fs-param="fig-norm:priority"></div></div>
     </div>
-    <p class="fs-caption">Computed live with the equation and constants of the original's model (σ = 1, gain from 1× to 3×); the numbers are illustrative, not measurements. Turn senses off in settings.</p>
+    <p class="fs-caption">The values are computed live with the equation and constants of the source model (σ = 1, gain from 1× to 3×) and are illustrative model outputs rather than measurements. Turn senses off in settings.</p>
   </figure>
-  <p>Two limits, both stated in the original. The published model describes competition between stimuli inside visual cortex, where the total is weighted by distance in space and feature; pooling three senses in one total is an illustration. In human imaging, attending to one sense does raise activity in its sensory cortex and lower it in the others, but it is not established that normalization causes this. For scale: in monkeys with a single stimulus in view, attention raised responses by about 26% in V4 and 8% in V1, and effects are larger when several stimuli compete.</p>
+  <p>The source states two limits. The published model describes competition between stimuli inside visual cortex, where the total is weighted by distance in space and feature; pooling three senses in one total is an illustration. In human imaging, attending to one sense does raise activity in its sensory cortex and lower it in the others, but it is not established that normalization causes this. For scale, in monkeys with a single stimulus in view, attention raised responses by about 26% in V4 and 8% in V1, and effects are larger when several stimuli compete.</p>
 
   <details class="verified">
     <summary>Checked against the source</summary>
-    <p>The source is the original guide's content (<code>src/content/pathways.ts</code>, <code>region-guides.ts</code>, <code>sources.ts</code>), its model (<code>src/model/attention.ts</code>) and its fact-check notes (<code>docs/science-factcheck.md</code>), at commit <code>8fd7194</code>. Each number below is from the step named, with the paper the original cites for it.</p>
+    <p>The check uses the original guide's content (<code>src/content/pathways.ts</code>, <code>region-guides.ts</code>, <code>sources.ts</code>), its model (<code>src/model/attention.ts</code>) and its fact-check notes (<code>docs/science-factcheck.md</code>), at commit <code>8fd7194</code>. The list below links each number to the named step and the paper cited by the source.</p>
     <ul>
       <li><b>Vision.</b> 96 million photoreceptors, about 1 million ganglion cells (0.7 to 1.5 million): step “Light becomes neural signals” (Curcio et al. 1990; Curcio &amp; Allen 1990). About half the fibres cross, 53% from one count: “Fibres cross at the optic chiasm” (a single 78-year-old subject, per the fact-check). About 80% and 10% of ganglion cells to the parvocellular and magnocellular layers, about 10 ms earlier magnocellular responses (monkeys): “Parallel channels in the LGN” (Perry et al. 1984; Maunsell et al. 1999). The inverted V1 map: “Primary visual cortex”. D.F.: “Two streams leave V1” (Goodale &amp; Milner 1992; critique, Schenk &amp; McIntosh 2010). Frozen tea: “Motion in area MT”. Optic ataxia: “Location and action”. About 100 IT neurons over 12.5 ms (monkeys): “Object recognition” (Hung et al. 2005). Distorted faces: “Areas for faces, places, bodies and words”.</li>
       <li><b>Touch.</b> 35–75 m/s and 0.4–1.4 m/s: “Touch and position: up the dorsal columns”. Right hand in the left thalamus: “Relay in the VPL”. Penfield: “Primary somatosensory cortex”. S1 and S2 removals (macaques): “Secondary somatosensory cortex”. Cordotomy in 19 patients: “Pain and temperature cross in the spinal cord” (Marshall et al. 2019). 4,160 stimulations in 164 patients, 1.4% painful: “Posterior insula” (Mazzola et al. 2012). Hypnosis: “Cingulate cortex” (Rainville et al. 1997).</li>
@@ -5104,7 +5104,7 @@ function routedFigure(id, { meta, layouts, edges, steps, narrowBelow = 560, extr
   const meta = {
     retinaL: { label: "Left retina", sub: "light to signals", tip: tip("Retina", "A thin layer of neural tissue at the back of the eye. Rods and cones absorb light; ganglion cells send the result to the brain.") },
     retinaR: { label: "Right retina", sub: "the other eye", tip: tip("Right retina", "Its half nearest the nose sends fibres that cross at the chiasm; its outer half sends fibres that stay on the same side.") },
-    chiasm: { label: "Optic chiasm", sub: "about half cross", tip: tip("Optic chiasm", "Where the two optic nerves meet, just above the pituitary gland. After it, fibres are grouped by side of the visual field, not by eye.") },
+    chiasm: { label: "Optic chiasm", sub: "about half cross", tip: tip("Optic chiasm", "Where the two optic nerves meet, above the pituitary gland. After it, fibres are grouped by side of the visual field rather than by eye.") },
     lgn: { label: "LGN", sub: "thalamus relay", tip: tip("LGN", "The lateral geniculate nucleus, the visual relay of the thalamus. Its layers keep the two eyes and three channels apart.") },
     v1: { label: "V1", sub: "visual cortex", tip: tip("Primary visual cortex", "Receives most of the LGN's output, at the back of the brain along the calcarine sulcus. Many neurons prefer edges at one orientation.") },
     mt: { label: "Area MT", sub: "motion", tip: tip("Area MT (V5)", "A visual area specialized for motion, where the occipital and temporal lobes meet. Most neurons prefer one direction and speed.") },
@@ -5124,16 +5124,16 @@ function routedFigure(id, { meta, layouts, edges, steps, narrowBelow = 560, extr
     { a: "v2v4", b: "cat", wide: "x", narrow: "right" },
   ];
   const steps = [
-    { on: Object.keys(meta), caption: "Both eyes feed the optic chiasm, the LGN relays to V1, and two streams leave V1. Step through the route." },
-    { on: ["retinaL", "retinaR"], caption: "Light becomes signals in the retina. About 96 million photoreceptors feed roughly 1 million ganglion cells (0.7 to 1.5 million, depending on the person)." },
+    { on: Object.keys(meta), caption: "Signals from both eyes meet at the optic chiasm, pass through the LGN to V1, then split into two streams that leave V1." },
+    { on: ["retinaL", "retinaR"], caption: "In the retina, about 96 million photoreceptors turn light into signals that feed roughly 1 million ganglion cells (0.7 to 1.5 million, depending on the person)." },
     { on: ["retinaL", "retinaR", "chiasm"], caption: "About half the fibres cross at the chiasm (commonly cited as 53%, from one detailed count), so each hemisphere gets the opposite half of the visual field." },
-    { on: ["chiasm", "lgn"], caption: "The LGN keeps three channels apart. In monkeys, about 80% of ganglion cells feed its detail-and-colour layers and about 10% its motion layers." },
-    { on: ["lgn", "v1"], caption: "V1 holds a map of the visual field, with far more room for the centre of gaze. The map is inverted: the upper field lies below the calcarine sulcus." },
-    { on: ["v1", "mt", "v2v4"], caption: "Two streams leave V1: a ventral one through V2 and V4 for what things are, a dorsal one through MT for where they are and how to act." },
-    { on: ["v1", "mt"], caption: "MT is specialized for motion. A patient with damage to this region on both sides found pouring tea difficult: the liquid appeared frozen." },
-    { on: ["mt", "parietal"], caption: "Parietal cortex combines what you see with where your eyes and body are. Damage here can cause optic ataxia: you see an object but reach for it inaccurately." },
-    { on: ["v1", "v2v4", "it"], caption: "Features grow more complex along the ventral stream, up to objects in IT. In monkeys, about 100 IT neurons over 12.5 ms told which object was shown." },
-    { on: ["v2v4", "cat"], caption: "Some areas prefer faces, places, bodies or written words. Stimulating one patient's face area distorted the faces of people in the room; other objects looked normal." },
+    { on: ["chiasm", "lgn"], caption: "The LGN keeps three channels apart; in monkeys, about 80% of ganglion cells feed its detail-and-colour layers and about 10% feed its motion layers." },
+    { on: ["lgn", "v1"], caption: "V1 maps the visual field with far more room for the centre of gaze, and its inverted map places the upper field below the calcarine sulcus." },
+    { on: ["v1", "mt", "v2v4"], caption: "Two streams leave V1, a ventral one through V2 and V4 for what things are, and a dorsal one through MT for where they are and how to act." },
+    { on: ["v1", "mt"], caption: "MT specializes in motion; a patient with damage to this region on both sides found pouring tea difficult because the liquid appeared frozen." },
+    { on: ["mt", "parietal"], caption: "Parietal cortex combines what you see with the position of your eyes and body, and damage here can cause optic ataxia, in which you see an object but reach for it inaccurately." },
+    { on: ["v1", "v2v4", "it"], caption: "Features grow more complex along the ventral stream up to objects in IT, and in monkeys, activity from about 100 IT neurons over 12.5 ms identified which object was shown." },
+    { on: ["v2v4", "cat"], caption: "Some areas prefer faces, places, bodies or written words; stimulating one patient's face area distorted the faces of people in the room while other objects looked normal." },
   ];
   flowFigure("fig-vision", { meta, layouts, edges, steps, regions: [{ keys: ["mt", "parietal"], label: "Dorsal: where, how" }, { keys: ["v2v4", "it", "cat"], label: "Ventral: what" }] });
 })();
@@ -5146,7 +5146,7 @@ function routedFigure(id, { meta, layouts, edges, steps, narrowBelow = 560, extr
     vpl: { label: "Thalamus (VPL)", sub: "body relay", tip: tip("VPL", "The thalamic relay for touch and position from the body. Pain fibres also end in neighbouring thalamic nuclei, which share this one box here.") },
     s1: { label: "S1", sub: "body map", tip: tip("Primary somatosensory cortex", "On the postcentral gyrus: a map of the opposite side of the body, made of four strips (areas 3a, 3b, 1 and 2).") },
     parietal: { label: "Parietal cortex", sub: "touch guides action", tip: tip("Posterior parietal cortex", "Combines touch with vision and body position to track where objects are relative to the body, for reaching and grasping.") },
-    s2: { label: "S2", sub: "both hands, pain too", tip: tip("Secondary somatosensory cortex", "On the upper bank of the lateral sulcus, just below S1. It processes touch from both sides of the body and responds to pain.") },
+    s2: { label: "S2", sub: "both hands, pain too", tip: tip("Secondary somatosensory cortex", "On the upper bank of the lateral sulcus, below S1. It processes touch from both sides of the body and responds to pain.") },
     pi: { label: "Posterior insula", sub: "pain, temperature", tip: tip("Posterior insula", "Deep in the lateral sulcus: a main cortical target of the pain and temperature route, with a rough map of the body.") },
     cing: { label: "Cingulate cortex", sub: "how bad it feels", tip: tip("Anterior cingulate cortex", "On the inner surface of the frontal lobe. Its activity follows how unpleasant pain feels, and rises with conflict and errors.") },
   };
@@ -5162,15 +5162,15 @@ function routedFigure(id, { meta, layouts, edges, steps, narrowBelow = 560, extr
     { a: "vpl", b: "cing", wide: "x", narrow: "left" },
   ];
   const steps = [
-    { on: Object.keys(meta), caption: "Touch and position cross in the medulla, pain and temperature in the spinal cord; both then pass the thalamus. So each hemisphere feels mainly the opposite side of the body." },
-    { on: ["dcn"], caption: "Touch and position fibres rise on the same side and cross in the medulla. They conduct at about 35–75 m/s; the thin fibres for burning pain at about 0.4–1.4 m/s." },
-    { on: ["dcn", "vpl"], caption: "The crossed fibres reach the VPL, the thalamus's relay for touch from the body. So your right hand is represented in the left thalamus and left cortex." },
-    { on: ["vpl", "s1"], caption: "S1 maps the opposite side of the body, with far more room for the hands, lips and tongue. Penfield mapped it by stimulating awake patients during epilepsy surgery." },
+    { on: Object.keys(meta), caption: "Touch and position cross in the medulla while pain and temperature cross in the spinal cord, and both then pass through the thalamus so each hemisphere feels mainly the opposite side of the body." },
+    { on: ["dcn"], caption: "Touch and position fibres rise on the same side and cross in the medulla, conducting at about 35–75 m/s, while the thin fibres for burning pain conduct at about 0.4–1.4 m/s." },
+    { on: ["dcn", "vpl"], caption: "The crossed fibres reach the VPL, the thalamus's relay for touch from the body, so your right hand is represented in the left thalamus and left cortex." },
+    { on: ["vpl", "s1"], caption: "S1 maps the opposite side of the body, with far more room for the hands, lips and tongue, as Penfield showed by stimulating awake patients during epilepsy surgery." },
     { on: ["s1", "parietal"], caption: "Parietal cortex combines touch with vision and body position to track where objects are relative to the body, for reaching and grasping." },
-    { on: ["s1", "s2"], caption: "S2 responds to touch on both hands. In macaques, removing part of S1 left the matching part of S2 silent to touch; removing S2 left S1 unchanged." },
-    { on: ["dh"], caption: "Pain and temperature cross in the spinal cord, near where they enter. So damage to one half of the cord removes fine touch on that side and pain on the other." },
-    { on: ["dh", "vpl", "s1", "s2", "pi"], caption: "Pain signals reach S1, S2 and the posterior insula. Of 4,160 cortical stimulations in 164 patients, only 1.4% evoked pain, all in the posterior insula or next to it." },
-    { on: ["vpl", "cing"], caption: "Cingulate activity follows how unpleasant pain feels. When hypnosis changed unpleasantness but not intensity, the cingulate cortex changed and S1 did not." },
+    { on: ["s1", "s2"], caption: "S2 responds to touch on both hands; in macaques, removing part of S1 left the matching part of S2 silent to touch, while removing S2 left S1 unchanged." },
+    { on: ["dh"], caption: "Pain and temperature cross in the spinal cord near where they enter, so damage to one half of the cord removes fine touch on that side and pain on the other." },
+    { on: ["dh", "vpl", "s1", "s2", "pi"], caption: "Pain signals reach S1, S2 and the posterior insula; of 4,160 cortical stimulations in 164 patients, only 1.4% evoked pain, all in the posterior insula or next to it." },
+    { on: ["vpl", "cing"], caption: "Cingulate activity follows how unpleasant pain feels, and when hypnosis changed unpleasantness but not intensity, the cingulate cortex changed while S1 did not." },
   ];
   flowFigure("fig-touch", { meta, layouts, edges, steps });
 })();
@@ -5210,16 +5210,16 @@ function routedFigure(id, { meta, layouts, edges, steps, narrowBelow = 560, extr
     { a: "olive", b: "cochR", wide: "left", narrow: "right" },
   ];
   const steps = [
-    { on: Object.keys(meta), caption: "Both ears feed brainstem relays that compare them, then the MGN relays to auditory cortex. The outer curves carry signals back down to the ears." },
-    { on: ["cochL", "cochR"], caption: "Each cochlea sorts sound by frequency: high near its base, low near its tip. It has about 3,500 inner hair cells, and in humans lost hair cells do not regrow." },
+    { on: Object.keys(meta), caption: "Both ears feed brainstem relays that compare them before the MGN relays to auditory cortex, and the outer curves show signals returning to the ears." },
+    { on: ["cochL", "cochR"], caption: "Each cochlea sorts high frequencies near its base and low frequencies near its tip, has about 3,500 inner hair cells, and does not regrow lost hair cells in humans." },
     { on: ["cochL", "cochR", "cnL", "cnR"], caption: "Each auditory nerve ends in the cochlear nuclei on its own side, where different cell types pick out timing, loudness and frequency content." },
-    { on: ["cnL", "cnR", "olive"], caption: "The superior olive is the first place the two ears meet. It compares arrival time and loudness; people can detect timing differences of about 10 microseconds." },
+    { on: ["cnL", "cnR", "olive"], caption: "The superior olive is the first place the two ears meet, comparing arrival time and loudness while people can detect timing differences of about 10 microseconds." },
     { on: ["olive", "ic"], caption: "Nearly every rising route stops at the inferior colliculus, which combines timing, loudness and frequency and helps turn the eyes and head toward a sound." },
-    { on: ["ic", "mgn"], caption: "The MGN is the hearing relay of the thalamus. Like the LGN, it receives large feedback projections from the cortex it sends to." },
-    { on: ["mgn", "a1"], caption: "Auditory cortex keeps the cochlea's frequency map. Routes cross at several levels, so damage to one side rarely causes deafness in one ear." },
-    { on: ["a1", "belt"], caption: "The belt and parabelt prefer complex sounds such as noise bands, sweeps and calls. In monkeys, the core feeds eight proposed belt areas." },
-    { on: ["belt", "what", "where"], caption: "A front stream helps identify sounds, a back stream helps locate them. Of 15 patients with right-side damage, four recognized sounds but could not locate them; three did the reverse." },
-    { on: ["a1", "ic", "olive", "cochL", "cochR"], caption: "Fibres from the olive turn down the cochleae's amplification. In chinchillas watching lights, responses to ignored clicks fell by up to 4 dB; in people the evidence is mixed." },
+    { on: ["ic", "mgn"], caption: "The MGN is the hearing relay of the thalamus and, like the LGN, receives large feedback projections from the cortex it sends to." },
+    { on: ["mgn", "a1"], caption: "Auditory cortex keeps the cochlea's frequency map, and because routes cross at several levels, damage to one side rarely causes deafness in one ear." },
+    { on: ["a1", "belt"], caption: "The belt and parabelt prefer complex sounds such as noise bands, sweeps and calls, and in monkeys, the core feeds eight proposed belt areas." },
+    { on: ["belt", "what", "where"], caption: "A front stream helps identify sounds while a back stream helps locate them; of 15 patients with right-side damage, four recognized sounds but could not locate them, and three did the reverse." },
+    { on: ["a1", "ic", "olive", "cochL", "cochR"], caption: "Fibres from the olive reduce the cochleae's amplification; in chinchillas watching lights, responses to ignored clicks fell by up to 4 dB, while in people the evidence is mixed." },
   ];
   flowFigure("fig-hearing", { meta, layouts, edges, returns, steps });
 })();
@@ -5241,12 +5241,12 @@ function routedFigure(id, { meta, layouts, edges, steps, narrowBelow = 560, extr
   const edges = [["a1", "stg"], ["stg", "meaning"], ["stg", "spt"], ["spt", "broca"], ["broca", "motor"]];
   const returns = [{ a: "motor", b: "a1", wide: "top", narrow: "right" }];
   const steps = [
-    { on: Object.keys(meta), caption: "A ventral stream links speech sounds to meaning; a dorsal stream, mainly on the left, links them to the movements that say them. The order follows repeating a word." },
-    { on: ["a1"], caption: "Speech reaches auditory cortex like any sound. The superior temporal gyrus nearby starts responding almost as early, so the two work partly in parallel." },
-    { on: ["a1", "stg", "meaning"], caption: "The superior temporal gyrus responds to features of speech sounds. When two people speak at once, its activity mainly follows the one you attend to." },
-    { on: ["stg", "spt"], caption: "Area Spt links a word's sound to the movements that say it. Damage around it is associated with conduction aphasia: fluent speech, but trouble repeating what is heard." },
+    { on: Object.keys(meta), caption: "A ventral stream links speech sounds to meaning, while a dorsal stream, mainly on the left, links them to the movements that say them in the order used to repeat a word." },
+    { on: ["a1"], caption: "Speech reaches auditory cortex like any sound, and the nearby superior temporal gyrus starts responding almost as early, so the two work partly in parallel." },
+    { on: ["a1", "stg", "meaning"], caption: "The superior temporal gyrus responds to features of speech sounds, and when two people speak at once, its activity mainly follows the one you attend to." },
+    { on: ["stg", "spt"], caption: "Area Spt links a word's sound to the movements that say it, and damage around it is associated with conduction aphasia, with fluent speech but trouble repeating what is heard." },
     { on: ["spt", "broca"], caption: "In seven patients repeating words, Broca's area became active soon after the word was heard, well before speaking, and went largely quiet once speaking began." },
-    { on: ["broca", "motor", "a1"], caption: "Motor cortex moves the lips, jaw, tongue and larynx, and you hear yourself to correct errors. A 0.2 s delay made 17 fluent speakers stumble two to three times as often." },
+    { on: ["broca", "motor", "a1"], caption: "Motor cortex moves the lips, jaw, tongue and larynx while hearing your own voice helps correct errors; a 0.2 s delay made 17 fluent speakers stumble two to three times as often." },
   ];
   flowFigure("fig-speech", { meta, layouts, edges, returns, steps });
 })();
@@ -5369,15 +5369,15 @@ function routedFigure(id, { meta, layouts, edges, steps, narrowBelow = 560, extr
     },
   };
   const steps = [
-    { on: Object.keys(meta), caption: "Two kinds of output go back down from V1: layer 6 adjusts how much the LGN passes on; layer 5 drives the pulvinar, a second relay." },
-    { on: ["retina", "lgn"], edges: ["eye"], share: "eye", caption: "The retina's inputs are drivers: they carry the picture the relay passes on. Yet in cats only about 7% of a relay cell's synapses come from the retina." },
-    { on: ["lgn", "l4", "l23", "l5", "l6"], edges: ["up", "spreadUp", "spreadDown"], caption: "LGN axons arrive mainly in layer 4 of V1, the main input layer. Activity then spreads to the other layers; layers 5 and 6 send output back down." },
-    { on: ["l6", "lgn"], edges: ["l6lgn"], share: "cortex", caption: "Layer 6 excites the relay cells. It is a modulator: it changes how strongly they respond to the retina. It supplies about 30% of their synapses, four times the retina's share (cats)." },
+    { on: Object.keys(meta), caption: "Two kinds of output return from V1, with layer 6 adjusting how much the LGN passes on and layer 5 driving the pulvinar, a second relay." },
+    { on: ["retina", "lgn"], edges: ["eye"], share: "eye", caption: "The retina's inputs are drivers that carry the picture the relay passes on, although in cats only about 7% of a relay cell's synapses come from the retina." },
+    { on: ["lgn", "l4", "l23", "l5", "l6"], edges: ["up", "spreadUp", "spreadDown"], caption: "LGN axons arrive mainly in layer 4 of V1, the main input layer, before activity spreads to the other layers and layers 5 and 6 send output back down." },
+    { on: ["l6", "lgn"], edges: ["l6lgn"], share: "cortex", caption: "Layer 6 excites the relay cells and changes how strongly they respond to the retina, while supplying about 30% of their synapses, four times the retina's share (cats)." },
     { on: ["l6", "trn", "lgn"], edges: ["l6lgn", "l6trn", "trnlgn"], share: "inhib", rates: { l6lgn: 0.35, l6trn: 0.35, trnlgn: 0.35 }, badges: { l6: "slow", lgn: "relay output down" },
-      caption: "The same axons branch to the TRN, which inhibits the relay. In slices of mouse touch thalamus, slow layer 6 activity mainly reduced relay activity." },
+      caption: "The same axons branch to the TRN, which inhibits the relay, and in slices of mouse touch thalamus, slow layer 6 activity mainly reduced relay activity." },
     { on: ["l6", "trn", "lgn"], edges: ["l6lgn", "l6trn", "trnlgn"], share: "inhib", rates: { l6lgn: 2.4, l6trn: 2.4, trnlgn: 2.4 }, badges: { l6: "≈10 pulses/s", lgn: "relay output up" },
-      caption: "At around 10 pulses per second, the same feedback increased relay activity. A 2024 study in awake mice found a similar switch as layer 6 activity rose." },
-    { on: ["l5", "pulvinar", "higher", "brain", "l23"], edges: ["l5pul", "pulhigh", "direct", "l5brain"], caption: "Layer 5 drives the pulvinar, which relays to higher visual areas beside V1's direct route. In mice, blocking this route impaired a whisker texture task." },
+      caption: "At around 10 pulses per second, the same feedback increased relay activity, and a 2024 study in awake mice found a similar switch as layer 6 activity rose." },
+    { on: ["l5", "pulvinar", "higher", "brain", "l23"], edges: ["l5pul", "pulhigh", "direct", "l5brain"], caption: "Layer 5 drives the pulvinar, which relays to higher visual areas beside V1's direct route, and in mice, blocking this route impaired a whisker texture task." },
   ];
   routedFigure("fig-loop", { meta, layouts, edges, steps, extra });
 })();
@@ -5459,18 +5459,18 @@ function routedFigure(id, { meta, layouts, edges, steps, narrowBelow = 560, extr
   };
   const steps = [
     { on: Object.keys(meta), caption: (f) => (f.w < 560
-      ? "Goal-driven areas, areas that react to surprises and importance, and areas for arousal and routing all act on sensory cortex. Links show interaction, not an order."
-      : "Goal-driven areas (top row), areas that react to surprises and importance (middle), and arousal and routing (bottom) all act on sensory cortex. Links show interaction, not an order.") },
-    { on: ["pfc"], edges: [], caption: "Prefrontal cortex holds the goal, such as finding a friend in a crowd. Visual areas get more active while people wait at an attended spot, before anything appears." },
-    { on: ["pfc", "fef"], edges: ["pfc-fef"], caption: "The frontal eye fields move the eyes and can shift attention without moving them. In monkeys, weak stimulation here improved attention only at the matching location." },
-    { on: ["fef", "parietal", "sensory"], edges: ["fef-par", "sen-par"], caption: "Parietal cortex keeps a priority map: where things are and how much each matters right now. With the eye fields, it forms the dorsal attention network." },
-    { on: ["sensory", "tpj", "fef"], edges: ["sen-tpj", "tpj-fef"], caption: "Something unexpected but relevant engages the TPJ and frontal areas, mainly on the right, to move attention. Whether it triggers the shift or updates afterwards is debated." },
+      ? "Goal-driven areas, areas that respond to surprise and importance, and areas for arousal and routing all act on sensory cortex; the links show interaction rather than an order."
+      : "Goal-driven areas (top row), areas that respond to surprise and importance (middle), and arousal and routing areas (bottom) all act on sensory cortex; the links show interaction rather than an order.") },
+    { on: ["pfc"], edges: [], caption: "Prefrontal cortex holds a goal such as finding a friend in a crowd, and visual areas become more active while people wait at an attended spot before anything appears." },
+    { on: ["pfc", "fef"], edges: ["pfc-fef"], caption: "The frontal eye fields move the eyes and can shift attention without moving them, and in monkeys, weak stimulation here improved attention only at the matching location." },
+    { on: ["fef", "parietal", "sensory"], edges: ["fef-par", "sen-par"], caption: "Parietal cortex keeps a priority map of where things are and how much each matters right now, and with the eye fields, it forms the dorsal attention network." },
+    { on: ["sensory", "tpj", "fef"], edges: ["sen-tpj", "tpj-fef"], caption: "Something unexpected but relevant engages the TPJ and frontal areas, mainly on the right, to move attention, although whether it triggers the shift or updates afterwards is debated." },
     { on: ["insula"], edges: [], caption: "The anterior insula and the cingulate cortex form the salience network, which responds to events that matter now: a sudden change in a sound, sight or touch, or pain." },
-    { on: ["insula", "cingulate", "pfc"], edges: ["ins-cin", "cin-pfc"], caption: "The cingulate cortex is active on conflicting trials, like naming the ink colour of RED printed in blue, and may signal prefrontal cortex to raise control next time." },
-    { on: ["cingulate", "lc", "pfc", "sensory"], edges: ["cin-lc", "lc-pfc", "lc-sen"], caption: "The locus coeruleus supplies noradrenaline to the cortex. In monkeys, its neurons burst about 90 ms after a rare target, roughly 200 ms before the response." },
-    { on: ["fef", "parietal", "sc"], edges: ["fef-sc", "par-sc"], caption: "The superior colliculus holds a map of space. In monkeys, silencing part of it made them largely ignore that part of the field when a conflicting distractor appeared elsewhere." },
-    { on: ["sc", "parietal", "pulvinar"], edges: ["sc-pul", "par-pul"], caption: "The pulvinar links visual areas. In monkeys, its activity synchronized connected visual areas according to where the animal was attending." },
-    { on: ["pulvinar", "fef", "parietal", "sensory"], edges: ["pul-sen", "fef-sen", "par-sen"], caption: "In sensory cortex, attention raises responses to the attended item and lowers others. In monkeys with one stimulus in view: about 26% in V4 and 8% in V1." },
+    { on: ["insula", "cingulate", "pfc"], edges: ["ins-cin", "cin-pfc"], caption: "The cingulate cortex is active during conflicting trials, such as naming the ink colour of RED printed in blue, and may signal prefrontal cortex to increase control next time." },
+    { on: ["cingulate", "lc", "pfc", "sensory"], edges: ["cin-lc", "lc-pfc", "lc-sen"], caption: "The locus coeruleus supplies noradrenaline to the cortex, and in monkeys, its neurons burst about 90 ms after a rare target, roughly 200 ms before the response." },
+    { on: ["fef", "parietal", "sc"], edges: ["fef-sc", "par-sc"], caption: "The superior colliculus holds a map of space, and in monkeys, silencing part of it made them largely ignore that part of the field when a conflicting distractor appeared elsewhere." },
+    { on: ["sc", "parietal", "pulvinar"], edges: ["sc-pul", "par-pul"], caption: "The pulvinar links visual areas, and in monkeys, its activity synchronized connected visual areas according to where the animal was attending." },
+    { on: ["pulvinar", "fef", "parietal", "sensory"], edges: ["pul-sen", "fef-sen", "par-sen"], caption: "In sensory cortex, attention raises responses to the attended item and lowers others; in monkeys with one stimulus in view, responses rose by about 26% in V4 and 8% in V1." },
   ];
   routedFigure("fig-networks", { meta, layouts, edges, steps });
 })();
@@ -5594,7 +5594,7 @@ function routedFigure(id, { meta, layouts, edges, steps, narrowBelow = 560, extr
       const others = SENSES.filter((s) => s.id !== who && shown[s.id]);
       f.api.out("summary", `${SENSES.map((s) => `${s.name} ${fmt(Mt.R[s.id])}`).join(" · ")} · total ${Mt.pool.toFixed(1)}`);
       f.api.out("prio", fmt(Mt.R[who]));
-      f.api.out("other", others.length ? fmt(Mt.R[others[0].id]) : "—");
+      f.api.out("other", others.length ? fmt(Mt.R[others[0].id]) : "none");
       f.api.out("base", fmt(Mt.base));
       f.api.out("name", `${name.toLowerCase()}'s`);
     },
