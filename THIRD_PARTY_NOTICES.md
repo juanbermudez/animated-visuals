@@ -4,7 +4,7 @@ Animated Visuals is MIT-licensed (see `LICENSE`). It builds on other people's wo
 
 ## Inspiration and adapted ideas
 
-- **diagram-design** by Cathryn Lavery ([github.com/cathrynlavery/diagram-design](https://github.com/cathrynlavery/diagram-design), MIT). The catalog of 27 diagram types and the semantic patterns in `references/diagram-types.md` follow its taxonomy; our guidance adds the motion and interaction layer. Its README shaped this one. For static, branded diagrams, use that skill.
+- **diagram-design** by Cathryn Lavery ([github.com/cathrynlavery/diagram-design](https://github.com/cathrynlavery/diagram-design), MIT). The catalog of 27 diagram types and the 7 semantic patterns in `references/diagram-types.md` follow its taxonomy; our guidance adds the motion and interaction layer. Its README shaped this one. For static, branded diagrams, use that skill.
 - **pmndrs `math`** (MIT, Poimandres) and the `math` agent skill: the data-oriented approach to geometry and simulation that `references/webgl.md` points to.
 - **pmndrs `gpgpu-curl-noise-dof`** example (MIT, Poimandres): the per-point depth-of-field idea; `assets/react/FocusField.tsx` is an independent implementation.
 - **Alex Zhang's blog figures** (alexzhang13.github.io): patterns studied, not copied; see `references/alex-zhang-notes.md`. No code from those posts is included.
@@ -16,9 +16,9 @@ Animated Visuals is MIT-licensed (see `LICENSE`). It builds on other people's wo
 
 ## Libraries the guidance works with (not bundled)
 
-- **Motion** (`motion`, formerly Framer Motion, MIT) for React sites.
 - **nivo** (MIT) for standard charts.
-- **three.js**, **react-three-fiber** and **drei** (MIT) for WebGL scenes.
+- **three.js**, **react-three-fiber**, **drei** and **@react-three/postprocessing** (MIT) for WebGL scenes.
+- **maath** (MIT, Poimandres), the legacy motion-math library `references/webgl.md` and `references/motion.md` compare with pmndrs `math`.
 - **MediaPipe** pose landmarker (Google, Apache-2.0) for tracing a person from footage as geometry only (`references/interaction.md`, "Real people, traced").
 - **Mermaid** (MIT) diagrams can use the "fill" expand mode.
 

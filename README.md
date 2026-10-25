@@ -86,7 +86,15 @@ docs/                    the docs site (GitHub Pages)
 
 ## Credits
 
-Built on the work of others: Cathryn Lavery's [diagram-design](https://github.com/cathrynlavery/diagram-design) (the diagram catalog and the shape of this README), the [Omarchy](https://github.com/basecamp/omarchy) theme palettes and their original authors (Catppuccin, Everforest, Flexoki, Gruvbox, Kanagawa, Nord, Rosé Pine, Tokyo Night), pmndrs `math` and its examples, Vercel Labs' [Konsistent](https://github.com/vercel-labs/konsistent), and the libraries the guidance works with (Motion, nivo, three.js, react-three-fiber, MediaPipe, Mermaid). Details and licenses in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Built on other people's work. The full list, with licenses, is in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+- **Inspiration**: [diagram-design](https://github.com/cathrynlavery/diagram-design) by [Cathryn Lavery](https://github.com/cathrynlavery) (MIT). Its 27 diagram types and 7 semantic patterns are the taxonomy in [references/diagram-types.md](references/diagram-types.md), and its approach to diagrams and its README shaped this skill; this one adds motion and interaction.
+- **Theme palettes**: [Omarchy](https://github.com/basecamp/omarchy) (MIT, Basecamp/37signals and contributors), pinned at commit [`81fd2d2`](https://github.com/basecamp/omarchy/tree/81fd2d23ca6e3462183a4dc8360de3113fa8d80c/themes), and the original palette authors: Catppuccin, Everforest, Flexoki, Gruvbox, Kanagawa, Nord, Rosé Pine and Tokyo Night.
+- **Libraries the references work with** (none is bundled): [nivo](https://nivo.rocks) for charts; [three.js](https://threejs.org), [react-three-fiber](https://github.com/pmndrs/react-three-fiber), [drei](https://github.com/pmndrs/drei), [@react-three/postprocessing](https://github.com/pmndrs/react-postprocessing), pmndrs `math` and [maath](https://github.com/pmndrs/maath) for WebGL scenes and motion math; [Mermaid](https://mermaid.js.org) diagrams in the "fill" expand mode; [MediaPipe](https://developers.google.com/edge/mediapipe/solutions/vision/pose_landmarker) pose landmarks for tracing people as geometry.
+- **Linting**: [Konsistent](https://github.com/vercel-labs/konsistent) by Vercel Labs (Apache-2.0), optional, see [references/konsistent.md](references/konsistent.md).
+- **Figures studied**: Alex Zhang's interactive figures ([alexzhang13.github.io](https://alexzhang13.github.io)), the source of [references/alex-zhang-notes.md](references/alex-zhang-notes.md). Patterns only; no code from them is included.
+- **Color**: Björn Ottosson's [OKLab](https://bottosson.github.io/posts/oklab/) and the [CSS Color 4](https://www.w3.org/TR/css-color-4/) matrices, used to write every theme color in OKLCH.
+- **Fonts** (SIL Open Font License 1.1, from Google Fonts): [Manrope](https://fonts.google.com/specimen/Manrope), [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono), [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono), [Newsreader](https://fonts.google.com/specimen/Newsreader) and [Bricolage Grotesque](https://fonts.google.com/specimen/Bricolage+Grotesque).
 
 ## License
 

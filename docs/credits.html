@@ -39,7 +39,7 @@
 <p>Animated Visuals is MIT-licensed (see <code>LICENSE</code>). It builds on other people's work, credited here. Nothing below is vendored as code unless it says so.</p>
 <h2>Inspiration and adapted ideas</h2>
 <ul>
-  <li><strong>diagram-design</strong> by Cathryn Lavery (<a href="https://github.com/cathrynlavery/diagram-design">github.com/cathrynlavery/diagram-design</a>, MIT). The catalog of 27 diagram types and the semantic patterns in <code>references/diagram-types.md</code> follow its taxonomy; our guidance adds the motion and interaction layer. Its README shaped this one. For static, branded diagrams, use that skill.</li>
+  <li><strong>diagram-design</strong> by Cathryn Lavery (<a href="https://github.com/cathrynlavery/diagram-design">github.com/cathrynlavery/diagram-design</a>, MIT). The catalog of 27 diagram types and the 7 semantic patterns in <code>references/diagram-types.md</code> follow its taxonomy; our guidance adds the motion and interaction layer. Its README shaped this one. For static, branded diagrams, use that skill.</li>
   <li><strong>pmndrs <code>math</code></strong> (MIT, Poimandres) and the <code>math</code> agent skill: the data-oriented approach to geometry and simulation that <code>references/webgl.md</code> points to.</li>
   <li><strong>pmndrs <code>gpgpu-curl-noise-dof</code></strong> example (MIT, Poimandres): the per-point depth-of-field idea; <code>assets/react/FocusField.tsx</code> is an independent implementation.</li>
   <li><strong>Alex Zhang's blog figures</strong> (alexzhang13.github.io): patterns studied, not copied; see <code>references/alex-zhang-notes.md</code>. No code from those posts is included.</li>
@@ -52,9 +52,9 @@
 </ul>
 <h2>Libraries the guidance works with (not bundled)</h2>
 <ul>
-  <li><strong>Motion</strong> (<code>motion</code>, formerly Framer Motion, MIT) for React sites.</li>
   <li><strong>nivo</strong> (MIT) for standard charts.</li>
-  <li><strong>three.js</strong>, <strong>react-three-fiber</strong> and <strong>drei</strong> (MIT) for WebGL scenes.</li>
+  <li><strong>three.js</strong>, <strong>react-three-fiber</strong>, <strong>drei</strong> and <strong>@react-three/postprocessing</strong> (MIT) for WebGL scenes.</li>
+  <li><strong>maath</strong> (MIT, Poimandres), the legacy motion-math library <code>references/webgl.md</code> and <code>references/motion.md</code> compare with pmndrs <code>math</code>.</li>
   <li><strong>MediaPipe</strong> pose landmarker (Google, Apache-2.0) for tracing a person from footage as geometry only (<code>references/interaction.md</code>, &quot;Real people, traced&quot;).</li>
   <li><strong>Mermaid</strong> (MIT) diagrams can use the &quot;fill&quot; expand mode.</li>
 </ul>
