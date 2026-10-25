@@ -2,7 +2,7 @@
 
 **An agent skill for interactive and animated figures.**
 
-An agent skill for Claude Code, Codex and other coding agents. It builds explorable charts, stepped mechanism diagrams, animated architecture flows, timelines you can scrub, particle fields and WebGL scenes for papers, articles, explainers and sites. Every figure proves one claim, runs on one clock, can be driven by code, and is checked in a real browser before it ships.
+Use it with Claude Code, Codex and other coding agents. It builds explorable charts, stepped mechanism diagrams, animated architecture flows, timelines you can scrub, particle fields and WebGL scenes for papers, articles, explainers and sites. Every figure proves one claim, runs on one clock, can be driven by code, and is checked in a real browser before it ships.
 
 [Docs and live examples](https://juanbermudez.github.io/animated-visuals/) · [Diagram types](references/diagram-types.md) · [Credits](THIRD_PARTY_NOTICES.md)
 
