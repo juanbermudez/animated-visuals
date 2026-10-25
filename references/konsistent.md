@@ -1,6 +1,6 @@
 # Optional: lint figures with Konsistent
 
-[Konsistent](https://github.com/vercel-labs/konsistent) (Vercel Labs, Apache-2.0) checks the structure of a TypeScript codebase: which files exist and what they export and import. This skill ships a small convention pack (`konsistent/animated-visual.json`) that turns its figure rules into checks, so a project's figures stay consistent when many people and agents add them.
+[Konsistent](https://github.com/vercel-labs/konsistent) (Vercel Labs, Apache-2.0) checks the structure of a TypeScript codebase: which files exist and what they export and import. This skill ships a small convention pack (`konsistent/animated-visuals.json`) that turns its figure rules into checks, so a project's figures stay consistent when many people and agents add them.
 
 It is optional. Offer it once, when a project has (or is about to have) three or more figures in a React or TypeScript codebase. Don't install anything without the user's yes.
 
@@ -20,14 +20,14 @@ Visual rules that are not structural (11px minimum text, tokens instead of hex c
 
 1. Ask: "Want me to add Konsistent so every figure has to declare its claim, status, sources and tips?"
 2. Install: `pnpm add -D konsistent` (or npm or bun).
-3. Copy `konsistent/animated-visual.json` from this skill into the project at `konsistent/animated-visual.json`, and `assets/react/figure-meta.ts` next to the project's figures.
+3. Copy `konsistent/animated-visuals.json` from this skill into the project at `konsistent/animated-visuals.json`, and `assets/react/figure-meta.ts` next to the project's figures.
 4. Add `konsistent.json` at the project root, with paths for the project's layout:
 
 ```json
 {
   "$schema": "node_modules/konsistent/konsistent.schema.json",
   "version": "v1",
-  "conventionSources": { "av": "./konsistent/animated-visual.json" },
+  "conventionSources": { "av": "./konsistent/animated-visuals.json" },
   "conventions": [
     { "use": "av/figure-declares-meta", "paths": ["components/figures/{figure}.tsx", "!components/figures/FigurePlate.tsx"] },
     { "use": "av/figure-declares-tips", "paths": ["components/figures/{figure}.tsx", "!components/figures/FigurePlate.tsx"] },

@@ -1,6 +1,6 @@
 # Credits and third-party notices
 
-Animated Visual is MIT-licensed (see `LICENSE`). It builds on other people's work, credited here. Nothing below is vendored as code unless it says so.
+Animated Visuals is MIT-licensed (see `LICENSE`). It builds on other people's work, credited here. Nothing below is vendored as code unless it says so.
 
 ## Inspiration and adapted ideas
 

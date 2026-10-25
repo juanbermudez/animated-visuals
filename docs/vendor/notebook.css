@@ -1,0 +1,65 @@
+/* Alternate register: the lab notebook (from the "Conscious Micro-Epochs" paper guide).
+   Monochrome with an amber focus signal, mono type inside figures, uppercase plate heads,
+   square corners. Apply with data-fs-theme="notebook" (dark) or "notebook-light". */
+
+[data-fs-theme="notebook"],
+[data-fs-theme="notebook-light"] {
+  --fs-font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --fs-font-body: "Newsreader", Georgia, serif;
+  --fs-font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --fs-font-figure: var(--fs-font-mono);
+  --fs-size-title: 11.5px;
+  --fs-weight-title: 500;
+  --fs-head-case: uppercase;
+  --fs-head-tracking: 0.08em;
+  --fs-size-caption: 12.5px;
+  --fs-radius: 0px;
+  --fs-radius-inner: 0px;
+  --fs-radius-control: 2px;
+  --fs-control-size: 32px;
+}
+
+[data-fs-theme="notebook"] {
+  color-scheme: dark;
+  --fs-bg: #0b0b0b;
+  --fs-surface: #121212;
+  --fs-surface-2: #1b1b1b;
+  --fs-line: #2b2b2b;
+  --fs-line-strong: #3a3a3a;
+  --fs-faint: #545452;
+  --fs-muted: #9c9c98;
+  --fs-fg: #e9e9e6;
+  --fs-strong: #ffffff;
+  --fs-accent: #e8c26b;
+  --fs-c1: #e9e9e6;
+  --fs-c2: #9c9c98;
+  --fs-c3: #6f6f6c;
+  --fs-c4: #c9c9c5;
+  --fs-c5: #85857f;
+  --fs-c6: #545452;
+  --fs-good: #e9e9e6;
+  --fs-bad: #9c9c98;
+}
+
+[data-fs-theme="notebook-light"] {
+  color-scheme: light;
+  --fs-bg: #f6f6f3;
+  --fs-surface: #ededea;
+  --fs-surface-2: #e3e3df;
+  --fs-line: #cfcfca;
+  --fs-line-strong: #b8b8b2;
+  --fs-faint: #a4a49f;
+  --fs-muted: #5c5c58;
+  --fs-fg: #161616;
+  --fs-strong: #000000;
+  --fs-accent: #a8741a;
+  --fs-c1: #161616;
+  --fs-c2: #5c5c58;
+  --fs-c3: #85857f;
+  --fs-c4: #3a3a37;
+  --fs-c5: #6f6f6c;
+  --fs-c6: #a4a49f;
+  --fs-good: #161616;
+  --fs-bad: #5c5c58;
+  --fs-shadow: 0 2px 6px rgb(0 0 0 / 8%), 0 12px 28px -6px rgb(0 0 0 / 16%);
+}

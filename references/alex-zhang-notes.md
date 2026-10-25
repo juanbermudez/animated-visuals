@@ -27,7 +27,7 @@ Source: a teardown of 14 figures in two posts by Alex Zhang (alexzhang13.github.
 - Autoplay without visibility gating; ignoring reduced motion (one video played faster under it).
 - Mixed chart fonts within one post.
 
-## How this maps onto Animated Visual
+## How this maps onto Animated Visuals
 
 | Pattern | Where |
 |---|---|

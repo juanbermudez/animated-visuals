@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Animated Visual Plates</title>
+<title>Animated Visuals Plates</title>
 <meta name="description" content="Starter: themed figure plates with a one-clock runtime, programmable controls, linked prose and four working demos.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,25 +24,35 @@ h2 { margin: 3.5rem 0 0.75rem; font: 500 1.25rem/1.3 var(--fs-font-display); }
 p { margin: 0 0 1rem; }
 .lede { color: var(--fs-muted); font-size: 1.1875rem; }
 .wide { width: min(58rem, 100vw - 32px); margin-inline: calc((min(46rem, 100vw - 48px) - min(58rem, 100vw - 32px)) / 2); }
-.themebar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 28px 0 0; color: var(--fs-muted); font-size: 12px; }
-.themebar select { padding: 6px 8px; color: var(--fs-fg); font: inherit; background: var(--fs-surface); border: 1px solid var(--fs-line); border-radius: 6px; }
-.themebar select:focus-visible { outline: 2px solid var(--fs-accent); outline-offset: 2px; }
+.hint { margin: 28px 0 0; color: var(--fs-muted); font-size: 12px; }
 code { font: 0.875em var(--fs-font-mono); }
+/* Theme menu: an icon button fixed top right opening a shadcn-style DropdownMenu; tokens only, so every theme restyles it. */
+.theme-menu { position: fixed; top: 16px; right: 16px; z-index: 50; font-family: var(--fs-font-body); }
+.theme-trigger { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; color: var(--fs-muted); background: var(--fs-surface); border: var(--fs-border) solid var(--fs-line); border-radius: var(--fs-radius-inner); cursor: pointer; transition: color var(--fs-dur) var(--fs-ease), background-color var(--fs-dur) var(--fs-ease); }
+.theme-trigger:hover, .theme-trigger[aria-expanded="true"] { color: var(--fs-fg); background: var(--fs-surface-2); }
+.theme-trigger:focus-visible { outline: 2px solid var(--fs-accent); outline-offset: 2px; }
+.theme-list { position: absolute; top: calc(100% + 4px); right: 0; width: min(14rem, calc(100vw - 32px)); max-height: min(24rem, calc(100dvh - 76px)); padding: 4px; overflow-y: auto; overscroll-behavior: contain; color: var(--fs-fg); font-size: 14px; line-height: 1.4; background: var(--fs-surface); border: var(--fs-border) solid var(--fs-line); border-radius: var(--fs-radius-inner); box-shadow: var(--fs-shadow); transform-origin: top right; animation: fs-pop-in 160ms var(--fs-ease) both; }
+.theme-list[hidden] { display: none; }
+.theme-label { padding: 6px 8px; color: var(--fs-muted); font-size: var(--fs-size-caption); font-weight: 500; }
+.theme-sep { height: 1px; margin: 4px -4px; background: var(--fs-line); }
+.theme-item { position: relative; display: flex; align-items: center; min-height: 32px; padding: 6px 8px 6px 32px; border-radius: calc(var(--fs-radius-inner) - 2px); outline: none; cursor: default; user-select: none; }
+.theme-item:focus { background: var(--fs-surface-2); }
+.theme-item svg { position: absolute; left: 9px; visibility: hidden; }
+.theme-item[aria-checked="true"] svg { visibility: visible; }
+@media (prefers-reduced-motion: reduce) { .theme-list, .theme-trigger { animation: none; transition: none; } }
 </style>
 </head>
 <body>
+<div class="theme-menu">
+  <button type="button" class="theme-trigger" id="theme-trigger" aria-label="Theme" title="Theme" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-list">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.75a9.25 9.25 0 0 0 0 18.5c.93 0 1.6-.7 1.6-1.57 0-.42-.17-.8-.43-1.08-.27-.28-.42-.64-.42-1.07 0-.88.71-1.58 1.6-1.58h1.9a5.25 5.25 0 0 0 5.25-5.25c0-4.4-4.14-7.95-9.5-7.95Z"/><circle cx="7.5" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="7.25" r="1" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.25" r="1" fill="currentColor" stroke="none"/><circle cx="17" cy="11" r="1" fill="currentColor" stroke="none"/></svg>
+  </button>
+  <div class="theme-list" id="theme-list" role="menu" aria-label="Theme" hidden></div>
+</div>
 <main>
   <h1>Figures that explain by being played with.</h1>
   <p class="lede">Four starter plates on one runtime. Each figure is a function of a clock, a step and a few parameters, so buttons, sliders, words in the text and code all drive it the same way.</p>
-  <div class="themebar">
-    <label for="theme">Theme</label>
-    <select id="theme">
-      <optgroup label="Site"><option value="zef">Zef (default)</option><option value="zef-light">Zef light</option></optgroup>
-      <optgroup label="Registers"><option value="notebook">Lab notebook</option><option value="notebook-light">Lab notebook light</option></optgroup>
-      <optgroup label="Omarchy" id="omarchy-themes"></optgroup>
-    </select>
-    <span>Try <code>FS.get('fig-time').seek(4.8)</code> in the console.</span>
-  </div>
+  <p class="hint">Try <code>FS.get('fig-time').seek(4.8)</code> in the console. Themes are in the palette menu, top right.</p>
 
   <!-- Fig 1: stepped architecture flow in SVG, linked to words in the prose. -->
   <h2>A request moves through the system</h2>
@@ -107,16 +117,102 @@ code { font: 0.875em var(--fs-font-mono); }
 // @inline assets/runtime/fs-runtime.js
 </script>
 <script>
-/* Theme picker: the Omarchy list mirrors themes/omarchy.json. */
+/* Theme menu: a shadcn-style DropdownMenu of radio items. The Omarchy list mirrors themes/omarchy.json. */
 (() => {
   const omarchy = { "catppuccin": "Catppuccin", "catppuccin-latte": "Catppuccin Latte", "ethereal": "Ethereal", "everforest": "Everforest", "flexoki-light": "Flexoki Light", "gruvbox": "Gruvbox", "hackerman": "Hackerman", "kanagawa": "Kanagawa", "last-horizon": "Last Horizon", "lumon": "Lumon", "lupine": "Lupine", "matte-black": "Matte Black", "miasma": "Miasma", "nord": "Nord", "osaka-jade": "Osaka Jade", "retro-82": "Retro 82", "ristretto": "Ristretto", "rose-pine": "Rosé Pine Dawn", "solitude": "Solitude", "starship": "Starship", "tokyo-night": "Tokyo Night", "vantablack": "Vantablack", "white": "White" };
-  const group = document.getElementById("omarchy-themes");
-  for (const [id, name] of Object.entries(omarchy)) group.append(new Option(name, id));
-  const select = document.getElementById("theme");
-  select.addEventListener("change", () => {
-    const value = select.value;
+  const groups = [
+    ["Site", { "zef": "Zef (default)", "zef-light": "Zef light" }],
+    ["Registers", { "notebook": "Lab notebook", "notebook-light": "Lab notebook light" }],
+    ["Omarchy", omarchy],
+  ];
+  const KEY = "fs-theme";
+  const store = {
+    get() { try { return localStorage.getItem(KEY); } catch { return null; } },
+    set(value) { try { localStorage.setItem(KEY, value); } catch { /* private mode: the choice lasts this page only */ } },
+  };
+  function apply(value) {
     if (value === "zef-light") { FS.setTheme(null); FS.setMode("light"); }
     else { FS.setMode(value === "zef" ? "dark" : null); FS.setTheme(value); }
+  }
+  const trigger = document.getElementById("theme-trigger");
+  const menu = document.getElementById("theme-list");
+  const check = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+  groups.forEach(([label, themes], index) => {
+    if (index) menu.insertAdjacentHTML("beforeend", '<div class="theme-sep" role="separator"></div>');
+    const group = document.createElement("div");
+    group.setAttribute("role", "group");
+    group.setAttribute("aria-labelledby", `theme-group-${index}`);
+    group.innerHTML = `<div class="theme-label" id="theme-group-${index}">${label}</div>`;
+    for (const [id, name] of Object.entries(themes)) {
+      const item = document.createElement("div");
+      item.className = "theme-item";
+      item.setAttribute("role", "menuitemradio");
+      item.tabIndex = -1;
+      item.dataset.theme = id;
+      item.innerHTML = check;
+      item.append(name);
+      group.append(item);
+    }
+    menu.append(group);
+  });
+  const items = [...menu.querySelectorAll(".theme-item")];
+  const stored = store.get();
+  let current = items.some((item) => item.dataset.theme === stored) ? stored : matchMedia("(prefers-color-scheme: light)").matches ? "zef-light" : "zef";
+  if (current === stored) apply(current);
+  const sync = () => items.forEach((item) => item.setAttribute("aria-checked", String(item.dataset.theme === current)));
+  sync();
+
+  const isOpen = () => !menu.hidden;
+  function open() {
+    menu.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+    (items.find((item) => item.dataset.theme === current) ?? items[0]).focus();
+  }
+  function close(refocus) {
+    if (!isOpen()) return;
+    menu.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+    if (refocus) trigger.focus();
+  }
+  function choose(item) {
+    current = item.dataset.theme;
+    apply(current);
+    store.set(current);
+    sync();
+    close(true);
+  }
+
+  trigger.addEventListener("click", () => (isOpen() ? close(true) : open()));
+  trigger.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowDown" || isOpen()) return;
+    e.preventDefault();
+    open();
+  });
+  menu.addEventListener("click", (e) => { const item = e.target.closest(".theme-item"); if (item) choose(item); });
+  menu.addEventListener("pointermove", (e) => { const item = e.target.closest(".theme-item"); if (item && item !== document.activeElement) item.focus({ preventScroll: true }); });
+  document.addEventListener("pointerdown", (e) => { if (isOpen() && !e.target.closest(".theme-menu")) close(false); });
+
+  // Type-ahead: letters typed within 500 ms build one query; a single letter cycles through matches.
+  let typed = "", typedAt = 0;
+  menu.addEventListener("keydown", (e) => {
+    const at = items.indexOf(document.activeElement);
+    const move = (i) => items[FS.clamp(i, 0, items.length - 1)].focus();
+    if (e.key === "ArrowDown") move(at + 1);
+    else if (e.key === "ArrowUp") move(at < 0 ? items.length - 1 : at - 1);
+    else if (e.key === "Home") move(0);
+    else if (e.key === "End") move(items.length - 1);
+    else if (e.key === "Enter" || e.key === " ") { if (at >= 0) choose(items[at]); }
+    else if (e.key === "Escape" || e.key === "Tab") close(true);
+    else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      typed = e.timeStamp - typedAt > 500 ? e.key.toLowerCase() : typed + e.key.toLowerCase();
+      typedAt = e.timeStamp;
+      const query = /^(.)\1*$/.test(typed) ? typed[0] : typed;
+      const start = query.length > 1 ? Math.max(at, 0) : at + 1;
+      const order = [...items.slice(start), ...items.slice(0, start)];
+      order.find((item) => item.textContent.toLowerCase().startsWith(query))?.focus();
+    } else return;
+    e.preventDefault();
+    e.stopPropagation();
   });
 })();
 

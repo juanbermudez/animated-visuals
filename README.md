@@ -1,10 +1,10 @@
-# Animated Visual
+# Animated Visuals
 
 **Figures and diagrams that move only to explain, and that readers can touch.**
 
 An agent skill for Claude Code, Codex and other coding agents. It builds explorable charts, stepped mechanism diagrams, animated architecture flows, timelines you can scrub, particle fields and WebGL scenes for papers, articles, explainers and sites. Every figure proves one claim, runs on one clock, can be driven by code, and is checked in a real browser before it ships.
 
-[Docs and live examples](https://juanbermudez.github.io/animated-visual/) · [Diagram types](references/diagram-types.md) · [Credits](THIRD_PARTY_NOTICES.md)
+[Docs and live examples](https://juanbermudez.github.io/animated-visuals/) · [Diagram types](references/diagram-types.md) · [Credits](THIRD_PARTY_NOTICES.md)
 
 ---
 
@@ -21,10 +21,10 @@ All 27 diagram types from [diagram-design](https://github.com/cathrynlavery/diag
 ## Install
 
 ```bash
-git clone https://github.com/juanbermudez/animated-visual ~/.claude/skills/animated-visual
+git clone https://github.com/juanbermudez/animated-visuals ~/.claude/skills/animated-visuals
 ```
 
-For Codex, clone into `~/.codex/skills/animated-visual`. Other agents: point them at `SKILL.md`.
+For Codex, clone into `~/.codex/skills/animated-visuals`. Other agents: point them at `SKILL.md`.
 
 Then ask for a figure: *"Make the reply-time breakdown in section 3 interactive"*, *"Turn this architecture into an animated diagram"*, *"Add a timeline I can scrub for this session log"*.
 

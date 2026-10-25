@@ -1,4 +1,4 @@
-/* Animated Visual runtime. Global `FS` (from the project's first name, Figure Studio). No dependencies.
+/* Animated Visuals runtime. Global `FS` (from the project's first name, Figure Studio). No dependencies.
  *
  * A figure is a pure function of its state: one clock `t` (a timeline or a running process),
  * a discrete `step`, and named `params` that ease toward their targets. Play, scrub, step,
@@ -718,6 +718,8 @@
     });
   }
 
+  /* A step's caption may be a function of the figure (its params or outputs), so it can change with a setting. */
+  const captionOf = (f, s) => (typeof s?.caption === "function" ? s.caption(f) : s?.caption ?? "");
   /* Step captions are stacked in one grid cell, so the box always has the height of the longest
      caption and swapping steps is a crossfade, never a jump. A hidden twin carries the live text. */
   function stackCaptions(f, out) {
@@ -728,7 +730,7 @@
       out.removeAttribute("aria-live");
       const items = steps.map((s) => {
         const span = document.createElement("span");
-        span.textContent = s.caption ?? "";
+        span.textContent = captionOf(f, s);
         span.setAttribute("aria-hidden", "true");
         out.append(span);
         return span;
@@ -739,8 +741,8 @@
       out.append(live);
       out.fsStack = { items, live };
     }
-    out.fsStack.items.forEach((span, i) => { span.toggleAttribute("data-on", i === f.step); });
-    const text = steps[f.step]?.caption ?? "";
+    out.fsStack.items.forEach((span, i) => { span.toggleAttribute("data-on", i === f.step); const c = captionOf(f, steps[i]); if (span.textContent !== c) span.textContent = c; });
+    const text = captionOf(f, steps[f.step]);
     if (out.fsStack.live.textContent !== text) out.fsStack.live.textContent = text;
   }
 

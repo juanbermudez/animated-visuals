@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customize · Animated Visuals</title>
+<meta name="description" content="The Animated Visuals figure spec with live, runnable samples: params, handles, steps, chapters, timeAxis, tips, reserve, expand, events and the FS API. Plus the React assets and writing styles.">
+<script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="zef-light"||t==="zef-dark")r.dataset.fsMode=t.slice(4);else if(t)r.dataset.fsTheme=t}catch(e){}</script>
+<link rel="icon" href="site/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&display=swap">
+<link rel="stylesheet" href="vendor/zef.css">
+<link rel="stylesheet" href="vendor/notebook.css">
+<link rel="stylesheet" href="vendor/omarchy.css">
+<link rel="stylesheet" href="vendor/base.css">
+<link rel="stylesheet" href="site/site.css">
+<script src="vendor/themes.js"></script>
+<script src="vendor/fs-runtime.js"></script>
+<script src="site/site.js" defer></script>
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<header class="site-head">
+  <div class="site-head-inner">
+    <a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 32 32" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="12.5" width="7" height="7" rx="2" stroke-width="1.8"/><rect x="20" y="6.5" width="7" height="7" rx="2" stroke-width="1.8"/><rect x="20" y="18.5" width="7" height="7" rx="2" stroke-width="1.8"/><path d="M12 16c4 0 4-6 8-6M12 16c4 0 4 6 8 6" stroke-width="1.5"/><circle cx="16.2" cy="12.4" r="1.9" fill="currentColor" stroke="none"/></svg>Animated Visuals</a>
+    <nav class="site-nav" aria-label="Main"><a href="gallery.html">Gallery</a><a href="themes.html">Themes</a><a href="customize.html">Customize</a><a href="credits.html">Credits</a></nav>
+    <div class="head-actions">
+      <a class="icon-btn" href="https://github.com/juanbermudez/animated-visuals" aria-label="Source on GitHub"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a>
+      <button class="icon-btn theme-btn" type="button" aria-label="Change theme"></button>
+    </div>
+  </div>
+</header>
+
+<main class="page" id="main">
+  <p class="eyebrow">Customize</p>
+  <h1>One spec per figure</h1>
+  <p class="lede">A figure is <code>FS.figure(id, spec)</code> on a canvas or SVG inside a plate. The spec says how tall it is, what state it has and how to draw that state; the runtime adds the clock, controls, settings, tips, expand and keyboard support. Every sample on this page is the code that runs it.</p>
+
+  <h2 id="plate">The plate</h2>
+  <p>A plate is plain HTML: a head with the claim, a stage with the drawing, an optional toolbar and caption. Controls are attributes, so they need no glue code.</p>
+<pre><code class="language-html">&lt;figure class="fs-plate"&gt;
+  &lt;header class="fs-head"&gt;&lt;h3 class="fs-title"&gt;The claim, as a sentence&lt;/h3&gt;&lt;span class="fs-status"&gt;Illustration&lt;/span&gt;&lt;/header&gt;
+  &lt;div class="fs-stage"&gt;&lt;canvas id="my-fig"&gt;&lt;/canvas&gt;&lt;/div&gt;
+  &lt;div class="fs-toolbar"&gt;
+    &lt;span class="fs-position" data-fs-out="my-fig:t"&gt;&lt;/span&gt;
+    &lt;div class="fs-controls"&gt;&lt;div data-fs-seek="my-fig"&gt;&lt;/div&gt;&lt;button data-fs="my-fig play"&gt;&lt;/button&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;p class="fs-caption"&gt;What is measured or made up, and how to play with it.&lt;/p&gt;
+&lt;/figure&gt;</code></pre>
+  <p>Load <code>themes/base.css</code>, one token layer such as <code>themes/zef.css</code>, and <code>assets/runtime/fs-runtime.js</code>. The standalone starter <code>assets/plate-template.html</code> has all three inlined.</p>
+
+  <h2 id="spec">The spec</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Option</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code>height(w)</code></td><td>The drawing's height in CSS px for a width. Switch layouts at narrow widths instead of shrinking text.</td></tr>
+        <tr><td><code>duration</code>, <code>loop</code></td><td>A timeline of fixed length that plays once to its payoff, or loops. Leave both out for an endless process.</td></tr>
+        <tr><td><code>params</code></td><td>Named values that ease toward their targets. Numbers become sliders, booleans switches, <code>options</code> segmented buttons. They go in the settings popover unless <code>placement: "inline"</code>; <code>hidden: true</code> keeps one out.</td></tr>
+        <tr><td><code>handles</code></td><td>Parts of the drawing the reader drags: <code>get</code>, <code>set</code>, <code>bounds</code>, optional <code>release</code> and <code>radius</code>. Keyboard and touch included; past the bounds they rubber-band and spring back.</td></tr>
+        <tr><td><code>steps</code></td><td>Discrete states with captions. Draw the change from <code>f.from</code> to <code>f.step</code> with <code>f.stepT</code> going 0 to 1.</td></tr>
+        <tr><td><code>chapters</code></td><td>Stops on a timeline, for the arrow keys, chapter buttons and the scrubber's marks.</td></tr>
+        <tr><td><code>timeAxis(f)</code></td><td>Maps time onto the drawing, so the figure itself scrubs: hover to preview, drag, click to jump, flick to coast.</td></tr>
+        <tr><td><code>tips</code>, <code>tipAt</code></td><td>Short explanations for drawn parts, after a hover delay and at once on keyboard focus.</td></tr>
+        <tr><td><code>reserve</code></td><td>The widest text each output can show, so changing numbers never push the layout around.</td></tr>
+        <tr><td><code>expand</code></td><td><code>"fit"</code> (default) scales the plate up to 84% of the viewport with the same layout. <code>"fill"</code> lays it out again at the new width. <code>false</code> removes the button.</td></tr>
+        <tr><td><code>autoplay</code>, <code>keyframe</code>, <code>settle</code></td><td>Whether it starts when scrolled into view, and what a reader with reduced motion sees: a timeline's <code>keyframe</code>, or a process run <code>settle</code> seconds ahead.</td></tr>
+        <tr><td><code>formatTime</code>, <code>stepDuration</code></td><td>How time reads in outputs and the scrubber; how long a step change takes (0.48 s).</td></tr>
+        <tr><td><code>init</code>, <code>update</code>, <code>render</code></td><td>Hooks, plus <code>resize</code>, <code>onParam</code> and <code>onStep</code>. <code>render(f, ctx)</code> draws only from state: <code>f.t</code>, <code>f.step</code>, <code>f.v</code> (eased params), <code>f.hover</code>, <code>f.drag</code>, <code>f.w</code>, <code>f.h</code> and the theme in <code>f.C</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="samples">Samples that run</h2>
+
+  <h3 id="params">params</h3>
+  <p>The one control that is the interaction sits in the toolbar. Everything else lives behind the settings icon in the plate's corner.</p>
+  <div class="demo">
+    <figure class="fs-plate" aria-labelledby="demo-params-title">
+      <header class="fs-head"><h3 class="fs-title" id="demo-params-title">A wave with one knob outside and two inside</h3></header>
+      <div class="fs-stage"><canvas id="demo-params" role="img" aria-label="A sine wave"></canvas></div>
+      <div class="fs-toolbar"><span class="fs-position">More in settings</span><div class="fs-controls"><div class="fs-param-inline" data-fs-param="demo-params:amp"></div></div></div>
+    </figure>
+<script data-show="demo-params">
+{
+  FS.figure("demo-params", {
+    height: () => 150,
+    params: {
+      amp: { value: 0.6, min: 0.1, max: 1, step: 0.05, label: "Height", placement: "inline" },
+      waves: { value: 3, min: 1, max: 8, step: 1, label: "Waves" }, // in the settings popover
+      dots: { value: false, label: "Show samples" },                 // a switch in settings
+    },
+    render(f, c) {
+      const mid = f.h / 2;
+      const y = (x) => mid - Math.sin((x / f.w) * Math.PI * 2 * f.v.waves) * f.v.amp * (mid - 10);
+      c.strokeStyle = f.C.fg;
+      c.lineWidth = f.C.series;
+      c.beginPath();
+      for (let x = 0; x <= f.w; x += 2) x ? c.lineTo(x, y(x)) : c.moveTo(x, y(x));
+      c.stroke();
+      if (!f.params.dots) return;
+      c.fillStyle = f.C.accent;
+      for (let x = 0; x <= f.w; x += 24) { c.beginPath(); c.arc(x, y(x), 3, 0, 7); c.fill(); }
+    },
+  });
+}
+</script>
+<pre data-source="demo-params"></pre>
+  </div>
+
+  <h3 id="handles">handles</h3>
+  <p>If a value has a place in the drawing, the reader drags that place. Drag past the dashed box and let go.</p>
+  <div class="demo">
+    <figure class="fs-plate" aria-labelledby="demo-handle-title">
+      <header class="fs-head"><h3 class="fs-title" id="demo-handle-title">A point that rubber-bands at its bounds</h3></header>
+      <div class="fs-stage"><canvas id="demo-handle" role="img" aria-label="A draggable point inside a dashed box"></canvas></div>
+    </figure>
+<script data-show="demo-handle">
+{
+  const point = { x: 0.65, y: 0.45 }; // as a share of the figure's size
+  FS.figure("demo-handle", {
+    height: () => 180,
+    handles: {
+      point: {
+        label: "Point: drag it, or use the arrow keys",
+        get: (f) => ({ x: point.x * f.w, y: point.y * f.h }),
+        set: (f, x, y) => { point.x = x / f.w; point.y = y / f.h; },
+        bounds: (f) => ({ x0: 24, y0: 24, x1: f.w - 24, y1: f.h - 24 }),
+      },
+    },
+    render(f, c) {
+      const { C } = f;
+      const x = point.x * f.w;
+      const y = point.y * f.h;
+      c.strokeStyle = C.line;
+      c.setLineDash([3, 4]);
+      c.strokeRect(24, 24, f.w - 48, f.h - 48);
+      c.setLineDash([]);
+      const r = f.drag === "point" ? 8 : f.handleHover === "point" ? 7 : 5.5;
+      c.fillStyle = C.surface; c.beginPath(); c.arc(x, y, r + 2, 0, 7); c.fill();
+      c.fillStyle = C.accent; c.beginPath(); c.arc(x, y, r, 0, 7); c.fill();
+      const right = x < f.w - 100;
+      FS.k.label(f, c, `${Math.round(x)}, ${Math.round(y)}`, right ? x + 14 : x - 14, y, { align: right ? "left" : "right" });
+    },
+  });
+}
+</script>
+<pre data-source="demo-handle"></pre>
+  </div>
+
+  <h3 id="steps">steps</h3>
+  <p>Each step changes one thing. Captions stack in one box, so it never changes height.</p>
+  <div class="demo">
+    <figure class="fs-plate" aria-labelledby="demo-steps-title">
+      <header class="fs-head"><h3 class="fs-title" id="demo-steps-title">Three steps, one change each</h3></header>
+      <div class="fs-stage"><canvas id="demo-steps" role="img" aria-label="Three boxes: draft, review, ship"></canvas></div>
+      <div class="fs-toolbar"><span class="fs-position" data-fs-out="demo-steps:step"></span><div class="fs-controls"><span class="fs-dots" data-fs-dots="demo-steps" aria-hidden="true"></span><button type="button" data-fs="demo-steps prev" aria-label="Previous step">Prev</button><button type="button" data-fs="demo-steps next" aria-label="Next step">Next</button></div></div>
+      <p class="fs-step-text" data-fs-out="demo-steps:caption"></p>
+    </figure>
+<script data-show="demo-steps">
+{
+  const names = ["Draft", "Review", "Ship"];
+  FS.figure("demo-steps", {
+    height: () => 104,
+    steps: [
+      { caption: "A draft exists. Nothing else has happened yet." },
+      { caption: "Someone reviews it, and the draft becomes context." },
+      { caption: "It ships. Every step changed exactly one thing." },
+    ],
+    render(f, c) {
+      const { C } = f;
+      const w = (f.w - 40) / 3;
+      const e = FS.ease.out(f.stepT);
+      names.forEach((name, i) => {
+        c.globalAlpha = FS.lerp(i === f.from ? 1 : C.dim, i === f.step ? 1 : C.dim, e);
+        FS.k.rrect(c, i * (w + 20), 24, w, 52, 6);
+        c.strokeStyle = i === f.step ? C.fg : C.lineStrong;
+        c.stroke();
+        FS.k.text(f, c, name, i * (w + 20) + 14, 55, { size: 13, weight: 600, color: C.fg });
+      });
+      c.globalAlpha = 1;
+    },
+  });
+}
+</script>
+<pre data-source="demo-steps"></pre>
+  </div>
+
+  <h3 id="time">chapters and timeAxis</h3>
+  <p>A timeline is a function of one clock. With <code>timeAxis</code>, the drawing is the scrubber; the toolbar scrubber, the arrow buttons and the keys all glide the same clock.</p>
+  <div class="demo">
+    <figure class="fs-plate" aria-labelledby="demo-time-title">
+      <header class="fs-head"><h3 class="fs-title" id="demo-time-title">A six-second clock with two stops</h3></header>
+      <div class="fs-stage"><canvas id="demo-time" role="img" aria-label="A bar that fills as time passes, with a playhead"></canvas></div>
+      <div class="fs-toolbar"><span class="fs-position" data-fs-out="demo-time:t"></span><div class="fs-controls"><button type="button" data-fs="demo-time chapter-prev" aria-label="Previous stop">←</button><div data-fs-seek="demo-time" data-label="Time"></div><button type="button" data-fs="demo-time chapter-next" aria-label="Next stop">→</button><button type="button" data-fs="demo-time play" aria-label="Play"></button></div></div>
+    </figure>
+<script data-show="demo-time">
+{
+  const T = 6;
+  FS.figure("demo-time", {
+    height: () => 112,
+    duration: T,
+    chapters: [{ t: 2, label: "two" }, { t: 4, label: "four" }],
+    formatTime: (t) => `${t.toFixed(1)} s`,
+    timeAxis: (f) => ({ x0: 16, x1: f.w - 16 }), // drag, click or flick across the drawing
+    render(f, c) {
+      const { C } = f;
+      const X = (t) => 16 + (f.w - 32) * (t / T);
+      c.strokeStyle = C.line;
+      for (let t = 0; t <= T; t += 1) {
+        FS.k.line(c, X(t), 16, X(t), 76);
+        FS.k.text(f, c, `${t} s`, X(t), 96, { align: "center" });
+      }
+      FS.k.rrect(c, X(0), 34, Math.max(1, X(f.t) - X(0)), 24, 4);
+      c.fillStyle = C.lineStrong;
+      c.fill();
+      FS.k.hoverTime(f, c, 16, 76, X, (t) => `${t.toFixed(1)} s`);
+      FS.k.playhead(f, c, X(f.t), 16, 76);
+    },
+  });
+}
+</script>
+<pre data-source="demo-time"></pre>
+  </div>
+
+  <h3 id="tips">tips and tipAt</h3>
+  <p>Hover a bar and wait half a second. Once one tip is open, the next opens at once. In HTML or SVG, <code>data-fs-tip</code> does the same with no code.</p>
+  <div class="demo">
+    <figure class="fs-plate" aria-labelledby="demo-tips-title">
+      <header class="fs-head"><h3 class="fs-title" id="demo-tips-title">Parts that explain themselves</h3><span class="fs-status">Illustration</span></header>
+      <div class="fs-stage"><canvas id="demo-tips" role="img" aria-label="Three bars: read, think, write"></canvas></div>
+    </figure>
+<script data-show="demo-tips">
+{
+  const bars = [{ key: "read", v: 0.3 }, { key: "think", v: 0.55 }, { key: "write", v: 0.9 }];
+  FS.figure("demo-tips", {
+    height: () => 128,
+    tips: {
+      read: { title: "Read", body: "Pull in what the task needs. Short here." },
+      think: { title: "Think", body: "Decide what to do. Longer than it looks." },
+      write: { title: "Write", body: "Produce the answer. The longest part of this made-up run." },
+    },
+    tipAt: (f, x, y) => f.state.hits?.find((b) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h)?.key ?? null,
+    render(f, c) {
+      const { C } = f;
+      f.state.hits = bars.map((b, i) => ({ key: b.key, x: 64, y: 12 + i * 38, w: (f.w - 80) * b.v, h: 26 }));
+      for (const h of f.state.hits) {
+        FS.k.text(f, c, h.key, 0, h.y + 17, { size: 12, color: C.fg });
+        FS.k.rrect(c, h.x, h.y, h.w, h.h, 4);
+        c.fillStyle = f.hover === h.key ? C.accent : C.lineStrong; // the part lights at once; the tip waits
+        c.fill();
+      }
+    },
+  });
+}
+</script>
+<pre data-source="demo-tips"></pre>
+  </div>
+
+  <h3 id="reserve">reserve</h3>
+  <p>Drag the slider from 0 to the end. The words after the number stay where they are, because the number keeps the width of its widest value.</p>
+  <div class="demo">
+    <figure class="fs-plate" aria-labelledby="demo-reserve-title">
+      <header class="fs-head"><h3 class="fs-title" id="demo-reserve-title">A number that never moves its neighbors</h3></header>
+      <div class="fs-stage"><canvas id="demo-reserve" role="img" aria-label="A bar whose length follows the count"></canvas></div>
+      <div class="fs-toolbar"><span class="fs-position"><span data-fs-out="demo-reserve:count"></span> in the queue</span><div class="fs-controls"><div class="fs-param-inline" data-fs-param="demo-reserve:n"></div></div></div>
+    </figure>
+<script data-show="demo-reserve">
+{
+  const label = (n) => `${Math.round(n).toLocaleString("en-US")} jobs`;
+  FS.figure("demo-reserve", {
+    height: () => 48,
+    params: { n: { value: 7, min: 0, max: 12480, step: 1, label: "Jobs", placement: "inline", format: (v) => Math.round(v).toLocaleString("en-US") } },
+    reserve: { count: [label(12480)] }, // the widest text this output can show
+    init: (f) => f.api.out("count", label(f.params.n)),
+    onParam: (f) => f.api.out("count", label(f.params.n)),
+    render(f, c) {
+      const share = Math.log10(f.v.n + 1) / Math.log10(12481);
+      FS.k.rrect(c, 0, 14, Math.max(2, (f.w - 2) * share), 20, 4);
+      c.fillStyle = f.C.lineStrong;
+      c.fill();
+    },
+  });
+}
+</script>
+<pre data-source="demo-reserve"></pre>
+  </div>
+
+  <h3 id="expand">expand: fit and fill</h3>
+  <p>Open both from their corners. <b>Fit</b>, the default, scales the plate up and keeps its layout, so proportions never change; the canvas renders at the larger size. <b>Fill</b> lays the figure out again at the wider width, which suits drawings that reflow, like a Mermaid diagram or this grid.</p>
+  <div class="demo">
+  <div class="split">
+    <figure class="fs-plate" aria-labelledby="demo-fit-title">
+      <header class="fs-head"><h3 class="fs-title" id="demo-fit-title">Fit</h3></header>
+      <div class="fs-stage"><canvas id="demo-fit" role="img" aria-label="A grid of dots"></canvas></div>
+    </figure>
+    <figure class="fs-plate" aria-labelledby="demo-fill-title">
+      <header class="fs-head"><h3 class="fs-title" id="demo-fill-title">Fill</h3></header>
+      <div class="fs-stage"><canvas id="demo-fill" role="img" aria-label="A grid of dots that reflows"></canvas></div>
+    </figure>
+  </div>
+  <div class="split-gap"></div>
+<script data-show="demo-expand">
+{
+  const grid = (f, c) => {
+    const cols = Math.floor((f.w - 12) / 24);
+    for (let i = 0; i < cols; i++) for (let j = 0; j < 4; j++) {
+      c.fillStyle = (i + j) % 5 ? f.C.lineStrong : f.C.accent;
+      c.beginPath(); c.arc(12 + i * 24, 14 + j * 22, 4, 0, 7); c.fill();
+    }
+    FS.k.text(f, c, `${cols} columns at ${Math.round(f.w)} px`, 0, 112, { color: f.C.fg });
+  };
+  FS.figure("demo-fit", { height: () => 120, render: grid });                 // "fit" is the default
+  FS.figure("demo-fill", { height: () => 120, expand: "fill", render: grid }); // lays out again when open
+}
+</script>
+<pre data-source="demo-expand"></pre>
+  </div>
+
+  <h3 id="events">Events</h3>
+  <p>Figures report what happens to them. This listens to three figures above; use any of them and watch this line:</p>
+  <p class="log" id="event-log" aria-live="polite">Waiting for an event…</p>
+<script data-show="demo-events">
+{
+  const log = document.getElementById("event-log");
+  FS.get("demo-steps").on("step", (n) => { log.textContent = `demo-steps: step ${n + 1}`; });
+  FS.get("demo-params").on("param", ({ name, value }) => { log.textContent = `demo-params: ${name} = ${+Number(value).toFixed(2)}`; });
+  // Every event is also a bubbling DOM event named fs:<event> on the figure's element.
+  document.getElementById("demo-time").addEventListener("fs:seek", (e) => { log.textContent = `demo-time: seek to ${e.detail.toFixed(2)} s`; });
+}
+</script>
+<div class="demo"><pre data-source="demo-events"></pre></div>
+  <p>The events are <code>play</code>, <code>pause</code>, <code>end</code>, <code>seek</code>, <code>scrub</code>, <code>step</code>, <code>param</code>, <code>reset</code>, <code>hover</code>, <code>dragstart</code>, <code>drag</code>, <code>dragend</code> and <code>expand</code>. <code>on()</code> returns a function that removes the listener.</p>
+
+  <h3 id="api">The FS API</h3>
+  <p>Anything a reader can do, code can do, through the same path. Each button below runs the line on it.</p>
+  <div class="api-buttons" data-api>
+    <button type="button">FS.get("demo-time").seek(4.5, { animate: true })</button>
+    <button type="button">FS.get("demo-time").chapter(-1)</button>
+    <button type="button">FS.get("demo-time").play()</button>
+    <button type="button">FS.get("demo-steps").goto(2)</button>
+    <button type="button">FS.get("demo-params").set({ amp: 1, waves: 6 })</button>
+    <button type="button">FS.get("demo-params").reset()</button>
+    <button type="button">FS.get("demo-params").state()</button>
+    <button type="button">FS.get("demo-fit").expand()</button>
+    <button type="button">FS.list()</button>
+  </div>
+  <p class="api-result" id="api-result" aria-live="polite">Click a line to run it.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Call</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code>play()</code>, <code>pause()</code>, <code>toggle()</code></td><td>Run or hold the clock. A finished timeline replays from the start.</td></tr>
+        <tr><td><code>seek(t, { animate })</code></td><td>Jump to a time, or glide there on a spring that keeps its speed if you retarget.</td></tr>
+        <tr><td><code>chapter(±1)</code></td><td>Glide to the next or previous stop.</td></tr>
+        <tr><td><code>goto(n)</code>, <code>next()</code>, <code>prev()</code></td><td>Move between steps.</td></tr>
+        <tr><td><code>set(name, value)</code></td><td>Change a param; pass an object to set several, and <code>{ instant: true }</code> to skip the ease.</td></tr>
+        <tr><td><code>state()</code>, <code>apply(state)</code></td><td>Read or restore <code>{ t, step, params, playing }</code>: presets, shared links, tests.</td></tr>
+        <tr><td><code>out(name, text)</code></td><td>Write a computed value to every <code>data-fs-out="id:name"</code>, in the figure or the prose.</td></tr>
+        <tr><td><code>hover(key)</code></td><td>Light a part, the same way a linked word does.</td></tr>
+        <tr><td><code>expand()</code>, <code>collapse()</code>, <code>openSettings()</code></td><td>Open the plate full screen or its settings.</td></tr>
+        <tr><td><code>redraw()</code>, <code>dispose()</code></td><td>Ask for a frame; release observers when a page or component goes away.</td></tr>
+        <tr><td><code>FS.get</code>, <code>FS.list</code></td><td>Find figures by id.</td></tr>
+        <tr><td><code>FS.setTheme</code>, <code>FS.setMode</code></td><td>Switch the theme for the page, or pass an element to theme just that one.</td></tr>
+        <tr><td><code>FS.k</code>, <code>FS.ease</code>, <code>FS.rng</code></td><td>The drawing kit (text, labels with halos, hatching, brackets, playheads), easings, a seeded random generator. Also <code>FS.window</code>, <code>FS.spring</code>, <code>FS.rubber</code>, <code>FS.slider</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="prose">Prose that drives a figure</h2>
+  <p>Numbers in a sentence can be the control, and words can point at parts. <span data-fs-ref="demo-curve:plateau">This word</span> lights the plateau. At a smoothing of <span data-fs-scrub="demo-curve:smooth"></span>, the plateau shows up <span data-fs-out="demo-curve:bump"></span> tall instead of <span data-fs-out="demo-curve:rawBump"></span>, and peaks <span data-fs-out="demo-curve:lag"></span> steps late. Drag the number, or focus it and use the arrow keys.</p>
+  <figure class="fs-plate" aria-labelledby="demo-curve-title">
+    <header class="fs-head"><h3 class="fs-title" id="demo-curve-title">Smoothing hides the plateau</h3><span class="fs-status">Simulated, seeded</span></header>
+    <div class="fs-stage"><canvas id="demo-curve" role="img" aria-label="A noisy loss curve with an exponentially smoothed line"></canvas></div>
+    <p class="fs-caption">Made-up training loss with a short stall in the middle. Hover for values; the raw series can be turned off in settings.</p>
+  </figure>
+<pre><code class="language-html">At a smoothing of &lt;span data-fs-scrub="demo-curve:smooth"&gt;&lt;/span&gt;,
+the &lt;span data-fs-ref="demo-curve:plateau"&gt;plateau&lt;/span&gt; shows up
+&lt;span data-fs-out="demo-curve:bump"&gt;&lt;/span&gt; tall.</code></pre>
+  <p>The other bindings: <code>data-fs="id play|next|prev|reset|chapter-next|chapter-prev"</code> on buttons, <code>data-fs-param="id:name"</code> for a slider, <code>data-fs-seek="id"</code> for a scrubber, <code>data-fs-dots="id"</code> for step dots and <code>data-fs-tip</code> for an explanation on any element.</p>
+
+  <h2 id="react">React</h2>
+  <p><code>assets/react/</code> wraps the same runtime, so figures behave the same in a Next.js site. The hook mounts a figure and disposes it on unmount; never set React state per frame.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>File</th><th>What</th></tr></thead>
+      <tbody>
+        <tr><td><code>useFigure.ts</code></td><td><code>useFigure(id, spec)</code> loads the runtime in the browser, mounts the figure and returns its controller.</td></tr>
+        <tr><td><code>FigurePlate.tsx</code></td><td>The plate markup with the <code>data-fs*</code> bindings wired.</td></tr>
+        <tr><td><code>FlowDiagram.tsx</code></td><td>A stepped architecture diagram with packets, two layouts.</td></tr>
+        <tr><td><code>ExplorableLine.tsx</code></td><td>A nivo line chart with one parameter and direct labels.</td></tr>
+        <tr><td><code>FocusField.tsx</code></td><td>A react-three-fiber particle field with a depth-of-field focus pull.</td></tr>
+        <tr><td><code>nivo-theme.ts</code></td><td>A nivo theme on the <code>--fs-*</code> tokens, plus reduced-motion and token hooks.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="code-label">React, not run on this page</p>
+<pre><code class="language-js">"use client";
+import { useFigure } from "./useFigure";
+import { FigurePlate } from "./FigurePlate";
+
+export function Wave() {
+  useFigure("wave", {
+    height: () => 150,
+    params: { amp: { value: 0.6, min: 0.1, max: 1, label: "Height", placement: "inline" } },
+    render(f, c) { /* the same render as the params sample */ },
+  });
+  return (
+    &lt;FigurePlate id="wave" title="A wave you can tune" status="Illustration" params={[{ name: "amp", label: "Height" }]}&gt;
+      &lt;canvas id="wave" /&gt;
+    &lt;/FigurePlate&gt;
+  );
+}</code></pre>
+  <p>Setup, pinned versions and lazy loading are in <a href="https://github.com/juanbermudez/animated-visuals/blob/main/assets/react/README.md"><code>assets/react/README.md</code></a>.</p>
+
+  <h2 id="writing">Writing styles</h2>
+  <p>Every label, caption and tip follows one writing style per page. <b>Practical</b> is the default: plain words, a stance first, a moment the reader has lived. <b>Academic</b> is for papers: formal, numbered, with units, n and uncertainty. Ask for academic and the agent switches.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Practical</th><th>Academic</th></tr></thead>
+      <tbody>
+        <tr><td>Independent actions run at the same time</td><td>Independent actions execute concurrently</td></tr>
+        <tr><td>2.3× longer</td><td>2.28× longer than the concurrent schedule (sum of measured durations)</td></tr>
+        <tr><td>Hover a block to see what it is</td><td>Hover to inspect each component's definition.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Styles are one file each in <a href="https://github.com/juanbermudez/animated-visuals/tree/main/references/writing"><code>references/writing/</code></a>, with the same sections, so adding your own is copying one and filling it in.</p>
+</main>
+
+<footer class="site-foot">
+  <div class="site-foot-inner"><span>Animated Visuals · MIT License · Juan Bermudez</span><nav aria-label="Footer"><a href="https://github.com/juanbermudez/animated-visuals">GitHub</a><a href="credits.html">Credits</a></nav></div>
+</footer>
+<script src="site/customize.js"></script>
+</body>
+</html>

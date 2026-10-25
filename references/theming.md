@@ -27,6 +27,7 @@ In canvas, use `f.C` (`f.C.fg`, `f.C.accent`, `f.C.c[0]`, `f.C.font`, `f.C.dim`,
 ## Switching and overriding
 
 - Page: `FS.setTheme("tokyo-night")`, `FS.setTheme(null)` for the default; `FS.setMode("light" | "dark" | null)` for the zef/notebook light-dark pair. Omarchy themes carry their own mode.
+- Reader-facing picker: theme picker = icon button top-right opening a shadcn-style dropdown; never a select in the hero. Zef light is `FS.setTheme(null)` + `FS.setMode("light")`; Zef is `FS.setMode("dark")` + `FS.setTheme("zef")`; every other theme is `FS.setMode(null)` + `FS.setTheme(id)`. Anatomy, keyboard and persistence: `interaction.md` §4 "Theme picker"; working code in `assets/plate-src.html`.
 - One figure: put `data-fs-theme="nord"` on its `.fs-plate`.
 - Overrides: declare any token after the theme layer, globally or on a plate: `.fs-plate { --fs-radius: 4px; --fs-accent: #ff6a3d; }`.
 - New theme: copy a block from `omarchy.css`, change values, check contrast (muted 4.5:1, accent and categories 3:1).

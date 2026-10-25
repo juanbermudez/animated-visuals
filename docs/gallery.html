@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gallery · Animated Visuals</title>
+<meta name="description" content="Seven live Animated Visuals figures: a data flow with packets, a stepped mechanism, a scrubbable timeline, a chart with a draggable threshold, a state machine, a sequence diagram and a particle field.">
+<script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="zef-light"||t==="zef-dark")r.dataset.fsMode=t.slice(4);else if(t)r.dataset.fsTheme=t}catch(e){}</script>
+<link rel="icon" href="site/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&display=swap">
+<link rel="stylesheet" href="vendor/zef.css">
+<link rel="stylesheet" href="vendor/notebook.css">
+<link rel="stylesheet" href="vendor/omarchy.css">
+<link rel="stylesheet" href="vendor/base.css">
+<link rel="stylesheet" href="site/site.css">
+<script src="vendor/themes.js"></script>
+<script src="vendor/fs-runtime.js"></script>
+<script src="site/site.js" defer></script>
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<header class="site-head">
+  <div class="site-head-inner">
+    <a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 32 32" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="12.5" width="7" height="7" rx="2" stroke-width="1.8"/><rect x="20" y="6.5" width="7" height="7" rx="2" stroke-width="1.8"/><rect x="20" y="18.5" width="7" height="7" rx="2" stroke-width="1.8"/><path d="M12 16c4 0 4-6 8-6M12 16c4 0 4 6 8 6" stroke-width="1.5"/><circle cx="16.2" cy="12.4" r="1.9" fill="currentColor" stroke="none"/></svg>Animated Visuals</a>
+    <nav class="site-nav" aria-label="Main"><a href="gallery.html">Gallery</a><a href="themes.html">Themes</a><a href="customize.html">Customize</a><a href="credits.html">Credits</a></nav>
+    <div class="head-actions">
+      <a class="icon-btn" href="https://github.com/juanbermudez/animated-visuals" aria-label="Source on GitHub"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a>
+      <button class="icon-btn theme-btn" type="button" aria-label="Change theme"></button>
+    </div>
+  </div>
+</header>
+
+<main class="page" id="main">
+  <p class="eyebrow">Gallery</p>
+  <h1>Seven figures, all live</h1>
+  <p class="lede">Each one is a real plate on the runtime, built from made-up data for these docs. Drag, scrub, step and hover them, or open one full screen from its corner. They are scriptable too: try <code>FS.list()</code> in the console.</p>
+  <ul class="toc" aria-label="Figures on this page">
+    <li><a href="#flow">Data flow</a></li>
+    <li><a href="#mechanism">Stepped mechanism</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#threshold">Threshold chart</a></li>
+    <li><a href="#state">State machine</a></li>
+    <li><a href="#sequence">Sequence</a></li>
+    <li><a href="#field">Particle field</a></li>
+  </ul>
+
+  <!-- 1. Data flow with packets -->
+  <h2 id="flow">Too few workers and the queue backs up</h2>
+  <p class="kind"><span>Data flow</span><span>Packets</span><span>A number you can drag</span></p>
+  <p>Jobs arrive in bursts, wait in a queue, and each worker handles one at a time. With <span data-fs-scrub="fig-queue:workers"></span> workers, a job waits up to <span data-fs-out="fig-queue:wait"></span> in the queue, and the last one is done at <span data-fs-out="fig-queue:done"></span>. Drag the number, or the slider under the figure.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-queue-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-queue-title">Too few workers and the queue backs up</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-queue" role="img" aria-label="Jobs travel from producers into a queue, then to one of up to four workers, then to done. Waiting jobs pile up in the queue."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-queue:status"></span>
+      <div class="fs-controls"><div class="fs-param-inline" data-fs-param="fig-queue:workers"></div><button type="button" data-fs="fig-queue play" aria-label="Pause"></button></div>
+    </div>
+    <div class="fs-readouts">
+      <div class="fs-readout"><b data-fs-out="fig-queue:wait"></b><span>longest wait in the queue</span></div>
+      <div class="fs-readout"><b data-fs-out="fig-queue:done"></b><span>until the last job is done</span></div>
+    </div>
+    <p class="fs-caption">Illustrative timing: the same 18 jobs arrive every cycle and each takes 1.8 s. Accent dots are waiting. Hover a box to see what it is.</p>
+  </figure>
+
+  <!-- 2. Stepped mechanism -->
+  <h2 id="mechanism">Bursts pass until the bucket runs dry</h2>
+  <p class="kind"><span>Mechanism</span><span>Steps</span><span>One change per step</span></p>
+  <p>A token bucket is a common way to rate-limit an API. Every request spends a token; tokens come back slowly. Step through one burst with the arrows, the dots, or <kbd>←</kbd> <kbd>→</kbd> on the figure.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-bucket-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-bucket-title">Bursts pass until the bucket runs dry</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><svg id="fig-bucket" role="img" aria-label="Six requests, a bucket of five tokens, and two bins: allowed and turned away."></svg></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-bucket:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-bucket" aria-hidden="true"></span><button type="button" data-fs="fig-bucket prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-bucket next" aria-label="Next step">Next</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-bucket:caption"></p>
+  </figure>
+
+  <!-- 3. Timeline -->
+  <h2 id="timeline">Overlapping tool calls finishes sooner</h2>
+  <p class="kind"><span>Timeline</span><span>Scrub the drawing</span><span>Chapters</span></p>
+  <p>Both runs do the same work. The second starts the fetch while the search is still running, so it answers at <span data-fs-out="fig-time:overlapEnd"></span> instead of <span data-fs-out="fig-time:seqEnd"></span>. Drag across the lanes to move through time; a quick flick coasts.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-time-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-time-title">Overlapping tool calls finishes sooner</h3><span class="fs-chip" id="fig-time-chip" data-fs-out="fig-time:phase" aria-live="polite"></span></header>
+    <div class="fs-stage"><canvas id="fig-time" role="img" aria-label="Two lanes on one time axis; the overlapped run answers earlier"></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-time:t"></span>
+      <div class="fs-controls">
+        <button type="button" data-fs="fig-time chapter-prev" aria-label="Previous event">←</button>
+        <div data-fs-seek="fig-time" data-label="Time"></div>
+        <button type="button" data-fs="fig-time chapter-next" aria-label="Next event">→</button>
+        <button type="button" data-fs="fig-time play" aria-label="Play"></button>
+      </div>
+    </div>
+    <p class="fs-caption">Illustrative timings. Click a moment to jump there, hover a block to see what it is. The chip says what the overlapped run is doing now.</p>
+  </figure>
+
+  <!-- 4. Chart with a draggable threshold -->
+  <h2 id="threshold">Moving the threshold trades misses for false alarms</h2>
+  <p class="kind"><span>Chart</span><span>Draggable threshold</span><span>Settings</span></p>
+  <p>A detector scores every case from 0 to 1 and flags anything at or above a threshold. At a threshold of <span data-fs-scrub="fig-cut:cut"></span>, it catches <span data-fs-out="fig-cut:caught"></span> real problems and raises <span data-fs-out="fig-cut:alarms"></span> false alarms. Drag the line, or the number. How much the two groups overlap is in the figure's settings.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-cut-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-cut-title">Moving the threshold trades misses for false alarms</h3><span class="fs-status">Illustration · seeded</span></header>
+    <div class="fs-stage"><canvas id="fig-cut" role="img" aria-label="Two rows of dots by score, real problems and normal cases, with a vertical threshold line"></canvas></div>
+    <div class="fs-readouts">
+      <div class="fs-readout"><b data-fs-out="fig-cut:caught"></b><span>real problems caught</span></div>
+      <div class="fs-readout"><b data-fs-out="fig-cut:alarms"></b><span>false alarms, of 120 normal cases</span></div>
+      <div class="fs-readout"><b data-fs-out="fig-cut:precision"></b><span>of flags are real problems</span></div>
+    </div>
+    <p class="fs-caption">Made-up scores for 240 cases. Bright dots are mistakes: real problems left of the line, normal cases right of it. The line springs back to 0.50 when you let go near it.</p>
+  </figure>
+
+  <!-- 5. State machine -->
+  <h2 id="state">A request retries twice, then gives up</h2>
+  <p class="kind"><span>State machine</span><span>Fire events</span><span>Guards on the arrows</span></p>
+  <p>A client sends a request. If no reply comes in time, it waits a moment and tries again, up to three tries. Fire the events below and watch where the same event leads depending on how many tries are left. It plays one run on its own first.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-state-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-state-title">A request retries twice, then gives up</h3><span class="fs-chip" data-fs-out="fig-state:now" aria-live="polite"></span></header>
+    <div class="fs-stage"><svg id="fig-state" role="img" aria-label="States idle, sending, waiting, done and failed, with labelled transitions"></svg></div>
+    <div class="event-row" role="group" aria-label="Events">
+      <span>Fire</span>
+      <button type="button" data-event="send">Send</button>
+      <button type="button" data-event="reply">Reply arrives</button>
+      <button type="button" data-event="timeout">Time out</button>
+      <button type="button" data-event="backoff">Backoff ends</button>
+      <button type="button" data-event="reset">Reset</button>
+    </div>
+    <p class="fs-caption">Text in brackets is a guard: the arrow is taken only when it holds. Buttons are off when the event can't happen in the current state.</p>
+  </figure>
+
+  <!-- 6. Sequence diagram -->
+  <h2 id="sequence">A cache miss costs a trip to the database</h2>
+  <p class="kind"><span>Sequence</span><span>Drag the playhead</span><span>Tips</span></p>
+  <p>Time runs down. The API checks the cache first; on a miss it asks the database and saves the answer for next time. Drag the playhead knob on the left, or use the scrubber. Hover a message to see what it carries.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-seq-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-seq-title">A cache miss costs a trip to the database</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><svg id="fig-seq" role="img" aria-label="Sequence diagram: browser, API, cache and database exchange seven messages"></svg></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-seq:t"></span>
+      <div class="fs-controls">
+        <button type="button" data-fs="fig-seq chapter-prev" aria-label="Previous message">←</button>
+        <div data-fs-seek="fig-seq" data-label="Time"></div>
+        <button type="button" data-fs="fig-seq chapter-next" aria-label="Next message">→</button>
+        <button type="button" data-fs="fig-seq play" aria-label="Play"></button>
+      </div>
+    </div>
+    <p class="fs-caption">Illustrative timings: 44 ms end to end, 30 of them in the database. Hatching on the API bar is time spent waiting.</p>
+  </figure>
+
+  <!-- 7. Particle field -->
+  <h2 id="field">A focus pulls in only what is near it</h2>
+  <p class="kind"><span>Particle field</span><span>Draggable focus</span><span>Settings</span></p>
+  <p>Particles follow a smooth flow. Inside the ring they are pulled toward its center; outside it, nothing changes. Drag the ring to move it and its knob to resize it. Strength and field scale are in the settings.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-field-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-field-title">A focus pulls in only what is near it</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-field" role="img" aria-label="Particles drifting along a smooth flow; a ring gathers the particles inside it"></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-field:recruited"></span>
+      <div class="fs-controls"><button type="button" data-fs="fig-field play" aria-label="Pause"></button></div>
+    </div>
+    <p class="fs-caption">Particles follow the curl of a smooth potential, so the flow never piles up or empties. Seeded: every visit starts the same way.</p>
+  </figure>
+
+  <p class="muted">The code for every figure on this page is in <a href="https://github.com/juanbermudez/animated-visuals/blob/main/docs/site/gallery.js"><code>docs/site/gallery.js</code></a>.</p>
+</main>
+
+<footer class="site-foot">
+  <div class="site-foot-inner"><span>Animated Visuals · MIT License · Juan Bermudez</span><nav aria-label="Footer"><a href="https://github.com/juanbermudez/animated-visuals">GitHub</a><a href="credits.html">Credits</a></nav></div>
+</footer>
+<script src="site/gallery.js"></script>
+</body>
+</html>

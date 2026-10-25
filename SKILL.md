@@ -1,9 +1,9 @@
 ---
-name: animated-visual
+name: animated-visuals
 description: Design and build polished, minimal, interactive and animated visualizations and diagrams for papers, articles, explainers and sites — explorable charts (hand-built or nivo), stepped mechanism diagrams, animated system/agent architecture flows, one-clock timelines, particle and flow fields, and WebGL / react-three-fiber scenes with depth-of-field focus. Styles are swappable theme layers (default matches Juan Bermudez's site; lab-notebook register; 23 Omarchy palettes such as Tokyo Night, Catppuccin, Gruvbox, Nord). Every figure is programmable (play, seek, step, set parameters, link prose). Use when asked to visualize data or a paper's findings, explain a mechanism or architecture visually, make a figure interactive or animated, build charts for a React/Next.js site, theme figures, or polish figures that look generic. Not for full lessons (use teach-me) or static branded diagrams with no interaction (diagram-design is faster).
 ---
 
-# Animated Visual
+# Animated Visuals
 
 Every figure proves one claim, is minimal and on-brand, moves only to show a process or lead the eye, can be explored by the reader and driven by code, and is verified in a real browser.
 
@@ -15,7 +15,7 @@ Every figure proves one claim, is minimal and on-brand, moves only to show a pro
 4. **Form and medium.** `references/choosing-form.md` (SVG, canvas, WebGL, nivo).
 5. **Theme.** Inside a host site, map `--fs-*` tokens to its variables (for zef-builder-site use `themes/zef-site-bridge.css`). Otherwise the default `zef` theme matches Juan's site; registers and Omarchy palettes are one attribute away. Never hard-code colors: `references/theming.md`, `references/art-direction.md`.
 6. **Build.**
-   - Standalone page or Artifact: copy `assets/plate-template.html` (themes + `FS` runtime inlined, four working demos: stepped SVG flow with linked prose, one-clock timeline with a physics time scrubber and a computed counterfactual bracket, explorable chart with a scrubbable number and a settings popover, curl-noise field with a draggable, resizable focus). To change shared layers, edit `assets/plate-src.html`, `themes/*` or `assets/runtime/fs-runtime.js` and run `node scripts/build-template.mjs`.
+   - Standalone page or Artifact: copy `assets/plate-template.html` (themes + `FS` runtime inlined, four working demos: stepped SVG flow with linked prose, one-clock timeline with a physics time scrubber and a computed counterfactual bracket, explorable chart with a scrubbable number and a settings popover, curl-noise field with a draggable, resizable focus; theme menu top right). To change shared layers, edit `assets/plate-src.html`, `themes/*` or `assets/runtime/fs-runtime.js` and run `node scripts/build-template.mjs`.
    - React / Next.js: `assets/react/` (see its README): `useFigure`, `FigurePlate`, `FlowDiagram`, `ExplorableLine` (nivo), `FocusField` (R3F).
    - Domain guides: `references/diagram-types.md` (the 27 types and 7 semantic patterns: what moves, what the reader can do), `references/diagrams.md`, `references/charts.md`, `references/webgl.md`, `references/motion.md`.
 7. **Critique, then refine.** Look at the render; name what is weak (clutter, no focal point, unlabeled mark, a number that disagrees, motion that decorates, a control nobody needs). Fix one concern at a time; two passes minimum.
@@ -37,6 +37,7 @@ Every figure proves one claim, is minimal and on-brand, moves only to show a pro
 - Every plate expands nearly full screen with a FLIP animation (runtime default) and closes with ×, Escape or the backdrop.
 - Nothing shifts when values change: stacked step captions keep the tallest height, changing outputs reserve their widest text (`reserve`), state buttons are fixed-size icons.
 - Settings live in the popover behind the plate's settings icon (default `placement: "settings"`); only the control that *is* the interaction sits inline (time scrubber, steps, play, the scrubbable number in the prose).
+- Theme picker = icon button top-right opening a shadcn-style dropdown; never a select in the hero. Grouped radio items with a check, full keyboard, choice saved in `localStorage` (`references/interaction.md` §4; React: real shadcn `DropdownMenu`, `assets/react/README.md`).
 - Sliders are the runtime's physics slider (vertical bar handle, value bubble, rubber band, springy settle, magnet marks, full keyboard), never bare native ranges.
 - One clock for narratives (`render(t)`, scrub, chapters, play once to the payoff); processes loop with Pause; changes ease and are interruptible.
 - Programmable: anything a reader can do, `FS.get(id)` can do (`play`, `seek`, `goto`, `set`, `apply`, `state`), and prose can drive figures (`data-fs-scrub`, `data-fs-ref`).
