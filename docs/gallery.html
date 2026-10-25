@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gallery · Animated Visuals</title>
-<meta name="description" content="Seven live Animated Visuals figures: a data flow with packets, a stepped mechanism, a scrubbable timeline, a chart with a draggable threshold, a state machine, a sequence diagram and a particle field.">
+<meta name="description" content="Every diagram type in Animated Visuals as a live figure: architecture, stacks, flowcharts, swimlanes, sequences, state machines, timelines, Gantt charts, trees, funnels, quadrants, Venn, radar, matrices and charts, each one you can step, scrub or drag.">
 <script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,7 @@
 <script src="vendor/fs-runtime.js"></script>
 <script src="site/site.js" defer></script>
 </head>
-<body>
+<body class="gallery-page">
 <a class="sr-only" href="#main">Skip to content</a>
 <header class="site-head">
   <div class="site-head-inner">
@@ -32,25 +32,222 @@
   </div>
 </header>
 
-<main class="page" id="main">
-  <p class="eyebrow">Gallery</p>
-  <h1>Seven figures, all live</h1>
-  <p class="lede">Each one is a real plate on the runtime, built from made-up data for these docs. Drag, scrub, step and hover them, or open one full screen from its corner. They are scriptable too: try <code>FS.list()</code> in the console.</p>
-  <ul class="toc" aria-label="Figures on this page">
-    <li><a href="#flow">Data flow</a></li>
-    <li><a href="#mechanism">Stepped mechanism</a></li>
-    <li><a href="#timeline">Timeline</a></li>
-    <li><a href="#threshold">Threshold chart</a></li>
-    <li><a href="#state">State machine</a></li>
-    <li><a href="#sequence">Sequence</a></li>
-    <li><a href="#field">Particle field</a></li>
+<main id="main">
+  <div class="gallery-layout">
+    <aside class="types-aside">
+      <button type="button" class="types-toggle" aria-expanded="false" aria-controls="types-nav"><span class="types-toggle-label">Diagram types</span><span class="types-current"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <nav class="types-nav" id="types-nav" aria-label="Diagram types">
+  <span class="types-indicator" aria-hidden="true"></span>
+  <p class="types-group" id="nav-structure">Structure <span>6</span></p>
+  <ul aria-labelledby="nav-structure">
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#high-level-stack">High-level stack</a></li>
+    <li><a href="#it-current-state">IT current-state</a></li>
+    <li><a href="#layer-stack">Layer stack</a></li>
+    <li><a href="#nested">Nested</a></li>
+    <li><a href="#medallion">Medallion</a></li>
   </ul>
-
-  <!-- 1. Data flow with packets -->
-  <h2 id="flow">Too few workers and the queue backs up</h2>
+  <p class="types-group" id="nav-flow-and-process">Flow and process <span>8</span></p>
+  <ul aria-labelledby="nav-flow-and-process">
+    <li><a href="#flowchart">Flowchart</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#swimlane">Swimlane</a></li>
+    <li><a href="#data-flow">Data flow</a></li>
+    <li><a href="#dp-integration">DP integration</a></li>
+    <li><a href="#loop-flywheel">Loop / flywheel</a></li>
+    <li><a href="#sequence">Sequence</a></li>
+    <li><a href="#state-machine">State machine</a></li>
+  </ul>
+  <p class="types-group" id="nav-time">Time <span>2</span></p>
+  <ul aria-labelledby="nav-time">
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#gantt">Gantt</a></li>
+  </ul>
+  <p class="types-group" id="nav-hierarchy">Hierarchy <span>3</span></p>
+  <ul aria-labelledby="nav-hierarchy">
+    <li><a href="#tree">Tree</a></li>
+    <li><a href="#org-chart">Org chart</a></li>
+    <li><a href="#pyramid-funnel">Pyramid / funnel</a></li>
+  </ul>
+  <p class="types-group" id="nav-position-and-comparison">Position and comparison <span>5</span></p>
+  <ul aria-labelledby="nav-position-and-comparison">
+    <li><a href="#quadrant">Quadrant</a></li>
+    <li><a href="#consultant-2x2">Consultant 2×2</a></li>
+    <li><a href="#venn">Venn</a></li>
+    <li><a href="#radar">Radar / spider</a></li>
+    <li><a href="#security-matrix">DP security matrix</a></li>
+  </ul>
+  <p class="types-group" id="nav-data-charts">Data charts <span>3</span></p>
+  <ul aria-labelledby="nav-data-charts">
+    <li><a href="#bar">Bar</a></li>
+    <li><a href="#line">Line</a></li>
+    <li><a href="#scatter">Scatter</a></li>
+  </ul>
+  <p class="types-group" id="nav-more">More</p>
+  <ul aria-labelledby="nav-more">
+    <li><a href="#threshold">Dot plot with a threshold</a></li>
+    <li><a href="#particle-field">Particle field</a></li>
+    <li><a href="#semantic-patterns">Semantic patterns</a></li>
+  </ul>
+</nav>
+    </aside>
+    <div class="gallery-main">
+      <p class="eyebrow">Gallery</p>
+      <h1>Every diagram type, live</h1>
+      <p class="lede">All 27 types from <a href="https://github.com/juanbermudez/animated-visuals/blob/main/references/diagram-types.md"><code>references/diagram-types.md</code></a>, each a real plate on the runtime with made-up data. Step, scrub, drag and hover them, or open one full screen from its corner. They are scriptable too: try <code>FS.list()</code> in the console.</p>
+      <noscript><p>The figures need JavaScript.</p></noscript>
+<h2 class="group-title" id="group-structure">Structure</h2>
+<section class="type" id="architecture" aria-labelledby="architecture-h">
+  <h2 id="architecture-h">Only one service talks to the card network</h2>
+  <p class="kind"><span>Architecture</span><span>Steps</span><span>Hover a service</span></p>
+  <p>A checkout request passes through five services. Step through it with the arrows or <kbd>←</kbd> <kbd>→</kbd> on the figure; hover a service to light every connection it has.</p>
+  <figure class="fs-plate" aria-labelledby="fig-architecture-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-architecture-title">Only one service talks to the card network</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-architecture" role="img" aria-label="Browser, gateway, orders, orders database, inventory, payments and an external card network; packets travel along the connections the current step describes."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-architecture:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-architecture" aria-hidden="true"></span><button type="button" data-fs="fig-architecture prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-architecture next" aria-label="Next step">Next</button><button type="button" data-fs="fig-architecture play" aria-label="Pause"></button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-architecture:caption"></p>
+    <p class="fs-caption">Illustration. Packets run only on the path the step talks about; the rest dims but stays. Tip: the dashed line is our network's edge, and only the gateway sits on it.</p>
+  </figure>
+</section>
+<section class="type" id="high-level-stack" aria-labelledby="high-level-stack-h">
+  <h2 id="high-level-stack-h">Most of a dashboard's 1.2 seconds goes to the query</h2>
+  <p class="kind"><span>High-level stack</span><span>Scrub the time bar</span><span>Chapters</span></p>
+  <p>One event travels from ingest to the screen. Drag across the time bar to follow it; the stack shows which layer it is in, the bar how long each layer took.</p>
+  <figure class="fs-plate" aria-labelledby="fig-stack-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-stack-title">Most of a dashboard's 1.2 seconds goes to the query</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-stack" role="img" aria-label="Four stacked layers, ingest, store, query and show, with a dot climbing them and a time bar split by layer."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-stack:now"></span>
+      <div class="fs-controls">
+        <button type="button" data-fs="fig-stack chapter-prev" aria-label="Previous moment">←</button>
+        <div data-fs-seek="fig-stack" data-label="Time"></div>
+        <button type="button" data-fs="fig-stack chapter-next" aria-label="Next moment">→</button>
+        <button type="button" data-fs="fig-stack play" aria-label="Play"></button>
+      </div>
+    </div>
+    <p class="fs-caption">Illustrative timings: 40, 90, 860 and 210 ms. Tip: hover a layer to see what it does.</p>
+  </figure>
+</section>
+<section class="type" id="it-current-state" aria-labelledby="it-current-state-h">
+  <h2 id="it-current-state-h">Today an order waits overnight before the warehouse sees it</h2>
+  <p class="kind"><span>IT current-state</span><span>Before and after</span><span>Same nodes, morphed</span></p>
+  <p>Switch between today and the target. The same four boxes move into the new layout, so you can see what changed. Order to warehouse: <span data-fs-out="fig-current:trip"></span>.</p>
+  <figure class="fs-plate" aria-labelledby="fig-current-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-current-title">Today an order waits overnight before the warehouse sees it</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-current" role="img" aria-label="Web shop, a middle hand-off, ERP and warehouse; today the middle is a shared folder with waiting orders, in the target it is an order API."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position"><span data-fs-out="fig-current:trip"></span></span>
+      <div class="fs-controls"><div class="fs-param-inline" data-fs-param="fig-current:view"></div></div>
+    </div>
+    <p class="fs-caption">Illustration. Hatched badges are the friction: where orders wait and where they are typed in again. Tip: hover one for the detail.</p>
+  </figure>
+</section>
+<section class="type" id="layer-stack" aria-labelledby="layer-stack-h">
+  <h2 id="layer-stack-h">A one-line file read crosses five layers, and the disk takes almost all the time</h2>
+  <p class="kind"><span>Layer stack</span><span>Scrub the trace</span><span>Real time beside it</span></p>
+  <p>The call goes down to the disk and the answer comes back up. Drag across the trace to follow it. The disk is <span data-fs-out="fig-layers:disk"></span> of the <span data-fs-out="fig-layers:total"></span> total.</p>
+  <figure class="fs-plate" aria-labelledby="fig-layers-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-layers-title">A one-line file read crosses five layers, and the disk takes almost all the time</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-layers" role="img" aria-label="Five layers from app to disk; a trace descends to the disk and climbs back, with bars showing real time per layer."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-layers:t"></span>
+      <div class="fs-controls">
+        <button type="button" data-fs="fig-layers chapter-prev" aria-label="Previous moment">←</button>
+        <div data-fs-seek="fig-layers" data-label="Hop"></div>
+        <button type="button" data-fs="fig-layers chapter-next" aria-label="Next moment">→</button>
+        <button type="button" data-fs="fig-layers play" aria-label="Play"></button>
+      </div>
+    </div>
+    <p class="fs-caption">Illustrative timings for an uncached read. The trace gives every hop the same width so the fast layers stay visible; the bars on the side are to scale. Tip: hover a layer for what it does.</p>
+  </figure>
+</section>
+<section class="type" id="nested" aria-labelledby="nested-h">
+  <h2 id="nested-h">A container runs in a pod, on a node, in a cluster</h2>
+  <p class="kind"><span>Nested</span><span>Zoom one level per step</span><span>Click to zoom in</span></p>
+  <p>Each step zooms one level in. Click the highlighted box or press <kbd>→</kbd> to go in, <kbd>Esc</kbd> or <kbd>←</kbd> to come back out; the path stays pinned at the top.</p>
+  <figure class="fs-plate" aria-labelledby="fig-nested-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-nested-title">A container runs in a pod, on a node, in a cluster</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-nested" role="img" aria-label="Nested boxes: a cluster with three nodes, a node with three pods, a pod with two containers."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-nested:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-nested" aria-hidden="true"></span><button type="button" data-fs="fig-nested prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-nested next" aria-label="Next step">Next</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-nested:caption"></p>
+    <p class="fs-caption">Illustration of a Kubernetes-style setup. Tip: zooming past two levels in one picture loses people, which is why each level is its own step.</p>
+  </figure>
+</section>
+<section class="type" id="medallion" aria-labelledby="medallion-h">
+  <h2 id="medallion-h">12,480 raw rows become 31 daily totals in three tiers</h2>
+  <p class="kind"><span>Medallion</span><span>Steps</span><span>Counts that tick</span></p>
+  <p>Step through the tiers. Each dot is about 104 rows; the bright one is a single row you can follow from bronze to its day in gold.</p>
+  <figure class="fs-plate" aria-labelledby="fig-medallion-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-medallion-title">12,480 raw rows become 31 daily totals in three tiers</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-medallion" role="img" aria-label="Three tiers, bronze, silver and gold; dots move from raw to clean and then into daily bars."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-medallion:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-medallion" aria-hidden="true"></span><button type="button" data-fs="fig-medallion prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-medallion next" aria-label="Next step">Next</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-medallion:caption"></p>
+    <p class="fs-caption">Made-up numbers for one month of sales events. Tip: the counts have units at every tier, still or moving.</p>
+  </figure>
+</section>
+<h2 class="group-title" id="group-flow-and-process">Flow and process</h2>
+<section class="type" id="flowchart" aria-labelledby="flowchart-h">
+  <h2 id="flowchart-h">A refund is automatic only when the order is recent and small</h2>
+  <p class="kind"><span>Flowchart</span><span>Inputs re-route the token</span><span>Untaken branches stay</span></p>
+  <p>Change the order's age or amount and the token walks the rule again. Outcome: <span data-fs-out="fig-flowchart:outcome"></span>.</p>
+  <figure class="fs-plate" aria-labelledby="fig-flowchart-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-flowchart-title">A refund is automatic only when the order is recent and small</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-flowchart" role="img" aria-label="Flowchart: refund request, a decision on order age, a decision on amount, and three outcomes."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position"><span data-fs-out="fig-flowchart:outcome"></span></span>
+      <div class="fs-controls"><button type="button" data-fs="fig-flowchart play" aria-label="Pause"></button></div>
+    </div>
+    <div class="param-row"><div class="param-group"><span class="param-label" aria-hidden="true">Order age</span><div class="fs-param-inline" data-fs-param="fig-flowchart:age"></div></div><div class="param-group"><span class="param-label" aria-hidden="true">Amount</span><div class="fs-param-inline" data-fs-param="fig-flowchart:amount"></div></div></div>
+    <p class="fs-caption">An illustrative policy. The taken branch draws in ink; the others stay dimmed, because they are half the explanation. Tip: hover a decision for why it exists.</p>
+  </figure>
+</section>
+<section class="type" id="process" aria-labelledby="process-h">
+  <h2 id="process-h">Bursts pass until the bucket runs dry</h2>
+  <p class="kind"><span>Process</span><span>Steps</span><span>One change per step</span></p>
+  <p>A token bucket is a common way to rate-limit an API. Every request spends a token; tokens come back slowly. Step through one burst with the arrows, the dots, or <kbd>←</kbd> <kbd>→</kbd> on the figure.</p>
+  <figure class="fs-plate" aria-labelledby="fig-bucket-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-bucket-title">Bursts pass until the bucket runs dry</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><svg id="fig-bucket" role="img" aria-label="Six requests, a bucket of five tokens, and two bins: allowed and turned away."></svg></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-bucket:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-bucket" aria-hidden="true"></span><button type="button" data-fs="fig-bucket prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-bucket next" aria-label="Next step">Next</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-bucket:caption"></p>
+  </figure>
+</section>
+<section class="type" id="swimlane" aria-labelledby="swimlane-h">
+  <h2 id="swimlane-h">A support ticket spends most of its life waiting</h2>
+  <p class="kind"><span>Swimlane</span><span>Scrub</span><span>Hover a lane</span></p>
+  <p>A bug report crosses three teams. Drag across the lanes to follow it. Waiting, hatched, adds up to <span data-fs-out="fig-swimlane:wait"></span>.</p>
+  <figure class="fs-plate" aria-labelledby="fig-swimlane-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-swimlane-title">A support ticket spends most of its life waiting</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-swimlane" role="img" aria-label="Three lanes, customer, support and engineering, with solid work spans and hatched waiting spans over 46 hours."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-swimlane:t"></span>
+      <div class="fs-controls">
+        <button type="button" data-fs="fig-swimlane chapter-prev" aria-label="Previous moment">←</button>
+        <div data-fs-seek="fig-swimlane" data-label="Time"></div>
+        <button type="button" data-fs="fig-swimlane chapter-next" aria-label="Next moment">→</button>
+        <button type="button" data-fs="fig-swimlane play" aria-label="Play"></button>
+      </div>
+    </div>
+    <p class="fs-caption">Illustrative hours. Solid is work, hatched is waiting. Tip: hover a lane to see only its part.</p>
+  </figure>
+</section>
+<section class="type" id="data-flow" aria-labelledby="data-flow-h">
+  <h2 id="data-flow-h">Too few workers and the queue backs up</h2>
   <p class="kind"><span>Data flow</span><span>Packets</span><span>A number you can drag</span></p>
   <p>Jobs arrive in bursts, wait in a queue, and each worker handles one at a time. With <span data-fs-scrub="fig-queue:workers"></span> workers, a job waits up to <span data-fs-out="fig-queue:wait"></span> in the queue, and the last one is done at <span data-fs-out="fig-queue:done"></span>. Drag the number, or the slider under the figure.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-queue-title">
+  <figure class="fs-plate" aria-labelledby="fig-queue-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-queue-title">Too few workers and the queue backs up</h3><span class="fs-status">Illustration</span></header>
     <div class="fs-stage"><canvas id="fig-queue" role="img" aria-label="Jobs travel from producers into a queue, then to one of up to four workers, then to done. Waiting jobs pile up in the queue."></canvas></div>
     <div class="fs-toolbar">
@@ -63,78 +260,40 @@
     </div>
     <p class="fs-caption">Illustrative timing: the same 18 jobs arrive every cycle and each takes 1.8 s. Accent dots are waiting. Hover a box to see what it is.</p>
   </figure>
-
-  <!-- 2. Stepped mechanism -->
-  <h2 id="mechanism">Bursts pass until the bucket runs dry</h2>
-  <p class="kind"><span>Mechanism</span><span>Steps</span><span>One change per step</span></p>
-  <p>A token bucket is a common way to rate-limit an API. Every request spends a token; tokens come back slowly. Step through one burst with the arrows, the dots, or <kbd>←</kbd> <kbd>→</kbd> on the figure.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-bucket-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-bucket-title">Bursts pass until the bucket runs dry</h3><span class="fs-status">Illustration</span></header>
-    <div class="fs-stage"><svg id="fig-bucket" role="img" aria-label="Six requests, a bucket of five tokens, and two bins: allowed and turned away."></svg></div>
+</section>
+<section class="type" id="dp-integration" aria-labelledby="dp-integration-h">
+  <h2 id="dp-integration-h">Every source reaches every consumer through the platform, never directly</h2>
+  <p class="kind"><span>DP integration</span><span>Isolate a source</span><span>Protocols on the edges</span></p>
+  <p>Sources take turns sending one record through the platform to every consumer. Pick a source to isolate its route.</p>
+  <figure class="fs-plate" aria-labelledby="fig-hub-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-hub-title">Every source reaches every consumer through the platform, never directly</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-hub" role="img" aria-label="Three sources on one side, three consumers on the other, a data platform hub between them; packets travel through the hub."></canvas></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-bucket:step"></span>
-      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-bucket" aria-hidden="true"></span><button type="button" data-fs="fig-bucket prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-bucket next" aria-label="Next step">Next</button></div>
+      <span class="fs-position"></span>
+      <div class="fs-controls"><div class="fs-param-inline" data-fs-param="fig-hub:source"></div><button type="button" data-fs="fig-hub play" aria-label="Pause"></button></div>
     </div>
-    <p class="fs-step-text" data-fs-out="fig-bucket:caption"></p>
+    <p class="fs-caption">Illustration. The labels on the connections are each side's protocol. Tip: hover the hub or a source for details.</p>
   </figure>
-
-  <!-- 3. Timeline -->
-  <h2 id="timeline">Overlapping tool calls finishes sooner</h2>
-  <p class="kind"><span>Timeline</span><span>Scrub the drawing</span><span>Chapters</span></p>
-  <p>Both runs do the same work. The second starts the fetch while the search is still running, so it answers at <span data-fs-out="fig-time:overlapEnd"></span> instead of <span data-fs-out="fig-time:seqEnd"></span>. Drag across the lanes to move through time; a quick flick coasts.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-time-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-time-title">Overlapping tool calls finishes sooner</h3><span class="fs-chip" id="fig-time-chip" data-fs-out="fig-time:phase" aria-live="polite"></span></header>
-    <div class="fs-stage"><canvas id="fig-time" role="img" aria-label="Two lanes on one time axis; the overlapped run answers earlier"></canvas></div>
+</section>
+<section class="type" id="loop-flywheel" aria-labelledby="loop-flywheel-h">
+  <h2 id="loop-flywheel-h">A flywheel only speeds up when each turn returns more than it took</h2>
+  <p class="kind"><span>Loop / flywheel</span><span>Drag a station's strength</span><span>The hub accumulates</span></p>
+  <p>Buyers write reviews, reviews lift ranking, ranking brings traffic, traffic brings buyers. Drag review quality: <span data-fs-out="fig-loop:gain"></span>.</p>
+  <figure class="fs-plate" aria-labelledby="fig-loop-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-loop-title">A flywheel only speeds up when each turn returns more than it took</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-loop" role="img" aria-label="Four stations on a loop around a hub called catalog trust; packets circle the loop and a dashed line writes back into the hub."></canvas></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-time:t"></span>
-      <div class="fs-controls">
-        <button type="button" data-fs="fig-time chapter-prev" aria-label="Previous event">←</button>
-        <div data-fs-seek="fig-time" data-label="Time"></div>
-        <button type="button" data-fs="fig-time chapter-next" aria-label="Next event">→</button>
-        <button type="button" data-fs="fig-time play" aria-label="Play"></button>
-      </div>
+      <span class="fs-position"><span data-fs-out="fig-loop:gain"></span></span>
+      <div class="fs-controls"><div class="fs-param-inline" data-fs-param="fig-loop:quality"></div><button type="button" data-fs="fig-loop play" aria-label="Pause"></button></div>
     </div>
-    <p class="fs-caption">Illustrative timings. Click a moment to jump there, hover a block to see what it is. The chip says what the overlapped run is doing now.</p>
+    <p class="fs-caption">A toy model: each turn multiplies trust by 0.6 + 0.8 × quality. Tip: below 50% quality the loop runs down; watch the hub drain.</p>
   </figure>
-
-  <!-- 4. Chart with a draggable threshold -->
-  <h2 id="threshold">Moving the threshold trades misses for false alarms</h2>
-  <p class="kind"><span>Chart</span><span>Draggable threshold</span><span>Settings</span></p>
-  <p>A detector scores every case from 0 to 1 and flags anything at or above a threshold. At a threshold of <span data-fs-scrub="fig-cut:cut"></span>, it catches <span data-fs-out="fig-cut:caught"></span> real problems and raises <span data-fs-out="fig-cut:alarms"></span> false alarms. Drag the line, or the number. How much the two groups overlap is in the figure's settings.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-cut-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-cut-title">Moving the threshold trades misses for false alarms</h3><span class="fs-status">Illustration · seeded</span></header>
-    <div class="fs-stage"><canvas id="fig-cut" role="img" aria-label="Two rows of dots by score, real problems and normal cases, with a vertical threshold line"></canvas></div>
-    <div class="fs-readouts">
-      <div class="fs-readout"><b data-fs-out="fig-cut:caught"></b><span>real problems caught</span></div>
-      <div class="fs-readout"><b data-fs-out="fig-cut:alarms"></b><span>false alarms, of 120 normal cases</span></div>
-      <div class="fs-readout"><b data-fs-out="fig-cut:precision"></b><span>of flags are real problems</span></div>
-    </div>
-    <p class="fs-caption">Made-up scores for 240 cases. Bright dots are mistakes: real problems left of the line, normal cases right of it. The line springs back to 0.50 when you let go near it.</p>
-  </figure>
-
-  <!-- 5. State machine -->
-  <h2 id="state">A request retries twice, then gives up</h2>
-  <p class="kind"><span>State machine</span><span>Fire events</span><span>Guards on the arrows</span></p>
-  <p>A client sends a request. If no reply comes in time, it waits a moment and tries again, up to three tries. Fire the events below and watch where the same event leads depending on how many tries are left. It plays one run on its own first.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-state-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-state-title">A request retries twice, then gives up</h3><span class="fs-chip" data-fs-out="fig-state:now" aria-live="polite"></span></header>
-    <div class="fs-stage"><svg id="fig-state" role="img" aria-label="States idle, sending, waiting, done and failed, with labelled transitions"></svg></div>
-    <div class="event-row" role="group" aria-label="Events">
-      <span>Fire</span>
-      <button type="button" data-event="send">Send</button>
-      <button type="button" data-event="reply">Reply arrives</button>
-      <button type="button" data-event="timeout">Time out</button>
-      <button type="button" data-event="backoff">Backoff ends</button>
-      <button type="button" data-event="reset">Reset</button>
-    </div>
-    <p class="fs-caption">Text in brackets is a guard: the arrow is taken only when it holds. Buttons are off when the event can't happen in the current state.</p>
-  </figure>
-
-  <!-- 6. Sequence diagram -->
-  <h2 id="sequence">A cache miss costs a trip to the database</h2>
+</section>
+<section class="type" id="sequence" aria-labelledby="sequence-h">
+  <h2 id="sequence-h">A cache miss costs a trip to the database</h2>
   <p class="kind"><span>Sequence</span><span>Drag the playhead</span><span>Tips</span></p>
   <p>Time runs down. The API checks the cache first; on a miss it asks the database and saves the answer for next time. Drag the playhead knob on the left, or use the scrubber. Hover a message to see what it carries.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-seq-title">
+  <figure class="fs-plate" aria-labelledby="fig-seq-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-seq-title">A cache miss costs a trip to the database</h3><span class="fs-status">Illustration</span></header>
     <div class="fs-stage"><svg id="fig-seq" role="img" aria-label="Sequence diagram: browser, API, cache and database exchange seven messages"></svg></div>
     <div class="fs-toolbar">
@@ -148,12 +307,231 @@
     </div>
     <p class="fs-caption">Illustrative timings: 44 ms end to end, 30 of them in the database. Hatching on the API bar is time spent waiting.</p>
   </figure>
-
-  <!-- 7. Particle field -->
-  <h2 id="field">A focus pulls in only what is near it</h2>
+</section>
+<section class="type" id="state-machine" aria-labelledby="state-machine-h">
+  <h2 id="state-machine-h">A request retries twice, then gives up</h2>
+  <p class="kind"><span>State machine</span><span>Fire events</span><span>Guards on the arrows</span></p>
+  <p>A client sends a request. If no reply comes in time, it waits a moment and tries again, up to three tries. Fire the events below and watch where the same event leads depending on how many tries are left. It plays one run on its own first.</p>
+  <figure class="fs-plate" aria-labelledby="fig-state-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-state-title">A request retries twice, then gives up</h3><span class="fs-chip" data-fs-out="fig-state:now" aria-live="polite"></span></header>
+    <div class="fs-stage"><svg id="fig-state" role="img" aria-label="States idle, sending, waiting, done and failed, with labelled transitions"></svg></div>
+    <div class="event-row" role="group" aria-label="Events">
+      <span>Fire</span>
+      <button type="button" data-event="send">Send</button>
+      <button type="button" data-event="reply">Reply arrives</button>
+      <button type="button" data-event="timeout">Time out</button>
+      <button type="button" data-event="backoff">Backoff ends</button>
+      <button type="button" data-event="reset">Reset</button>
+    </div>
+    <p class="fs-caption">Text in brackets is a guard: the arrow is taken only when it holds. Buttons are off when the event can't happen in the current state.</p>
+  </figure>
+</section>
+<h2 class="group-title" id="group-time">Time</h2>
+<section class="type" id="timeline" aria-labelledby="timeline-h">
+  <h2 id="timeline-h">Overlapping tool calls finishes sooner</h2>
+  <p class="kind"><span>Timeline</span><span>Scrub the drawing</span><span>Chapters</span></p>
+  <p>Both runs do the same work. The second starts the fetch while the search is still running, so it answers at <span data-fs-out="fig-time:overlapEnd"></span> instead of <span data-fs-out="fig-time:seqEnd"></span>. Drag across the lanes to move through time; a quick flick coasts.</p>
+  <figure class="fs-plate" aria-labelledby="fig-time-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-time-title">Overlapping tool calls finishes sooner</h3><span class="fs-chip" id="fig-time-chip" data-fs-out="fig-time:phase" aria-live="polite"></span></header>
+    <div class="fs-stage"><canvas id="fig-time" role="img" aria-label="Two lanes on one time axis; the overlapped run answers earlier"></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-time:t"></span>
+      <div class="fs-controls">
+        <button type="button" data-fs="fig-time chapter-prev" aria-label="Previous event">←</button>
+        <div data-fs-seek="fig-time" data-label="Time"></div>
+        <button type="button" data-fs="fig-time chapter-next" aria-label="Next event">→</button>
+        <button type="button" data-fs="fig-time play" aria-label="Play"></button>
+      </div>
+    </div>
+    <p class="fs-caption">Illustrative timings. Click a moment to jump there, hover a block to see what it is. The chip says what the overlapped run is doing now.</p>
+  </figure>
+</section>
+<section class="type" id="gantt" aria-labelledby="gantt-h">
+  <h2 id="gantt-h">Testing waits for the slower build, so that build sets the launch date</h2>
+  <p class="kind"><span>Gantt</span><span>Drag a duration</span><span>Critical path</span></p>
+  <p>Drag the end of either build bar, or run the builds one after the other. Launch: <span data-fs-out="fig-gantt:launch"></span>.</p>
+  <figure class="fs-plate" aria-labelledby="fig-gantt-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-gantt-title">Testing waits for the slower build, so that build sets the launch date</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-gantt" role="img" aria-label="Gantt chart of design, two builds, test and launch over 20 days, with the critical path highlighted."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position"><span data-fs-out="fig-gantt:launch"></span></span>
+      <div class="fs-controls"><div class="param-group"><span class="param-label" aria-hidden="true">Builds</span><div class="fs-param-inline" data-fs-param="fig-gantt:order"></div></div></div>
+    </div>
+    <p class="fs-caption">Illustrative durations in working days. The critical path is in the accent; hatched time is a task waiting for the slower one. Tip: the bar ends have a grip; arrows move a day.</p>
+  </figure>
+</section>
+<h2 class="group-title" id="group-hierarchy">Hierarchy</h2>
+<section class="type" id="tree" aria-labelledby="tree-h">
+  <h2 id="tree-h">Collapsing a folder hides its children and moves nothing else</h2>
+  <p class="kind"><span>Tree</span><span>Collapse and expand</span><span>Grows once on entry</span></p>
+  <p>Click a folder in the tree, or use the buttons, to fold it. Its siblings keep their places.</p>
+  <figure class="fs-plate" aria-labelledby="fig-tree-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-tree-title">Collapsing a folder hides its children and moves nothing else</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-tree" role="img" aria-label="A project folder tree: app with src, tests and docs; src with components and lib."></canvas></div>
+    <div class="event-row" role="group" aria-label="Open" data-toggles="fig-tree">
+      <span>Open</span>
+      <button type="button" data-key="src" aria-pressed="true">src/</button><button type="button" data-key="components" aria-pressed="true">components/</button><button type="button" data-key="lib" aria-pressed="true">lib/</button>
+    </div>
+    <p class="fs-caption">Tip: the layout is computed once for the open tree, so nothing jumps when a branch folds.</p>
+  </figure>
+</section>
+<section class="type" id="org-chart" aria-labelledby="org-chart-h">
+  <h2 id="org-chart-h">A billing question goes across to its owner, not up to the CEO</h2>
+  <p class="kind"><span>Org chart</span><span>Pick a question</span><span>Hover a role</span></p>
+  <p>The agent tags the question and the support lead routes it to the team that owns it. Pick a different question to see the route change.</p>
+  <figure class="fs-plate" aria-labelledby="fig-org-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-org-title">A billing question goes across to its owner, not up to the CEO</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-org" role="img" aria-label="An org chart with a CEO, two VPs and four leads and agents; a dashed route goes from the support agent to the owning lead."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position"></span>
+      <div class="fs-controls"><div class="param-group"><span class="param-label" aria-hidden="true">Question about</span><div class="fs-param-inline" data-fs-param="fig-org:question"></div></div><button type="button" data-fs="fig-org play" aria-label="Pause"></button></div>
+    </div>
+    <p class="fs-caption">Roles, not names. Solid lines are reporting lines; the dashed one is a hand-off. Tip: hover a role for what it owns and who it escalates to.</p>
+  </figure>
+</section>
+<section class="type" id="pyramid-funnel" aria-labelledby="pyramid-funnel-h">
+  <h2 id="pyramid-funnel-h">Half the visitors leave at sign-up, more than at any other stage</h2>
+  <p class="kind"><span>Funnel</span><span>Drag a rate</span><span>Widths to scale</span></p>
+  <p>People flow down; at each stage some leave sideways. Drag the sign-up rate and watch the bottom: <span data-fs-out="fig-funnel:pay"></span>.</p>
+  <figure class="fs-plate" aria-labelledby="fig-funnel-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-funnel-title">Half the visitors leave at sign-up, more than at any other stage</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-funnel" role="img" aria-label="A funnel of five stages from 10,000 visits to payments, with dots draining down and leaving at each stage."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position"><span data-fs-out="fig-funnel:pay"></span></span>
+      <div class="fs-controls"><div class="fs-param-inline" data-fs-param="fig-funnel:signup"></div><button type="button" data-fs="fig-funnel play" aria-label="Pause"></button></div>
+    </div>
+    <p class="fs-caption">Made-up rates. Bar widths are proportional to the counts. Tip: hover the sign-up stage.</p>
+  </figure>
+</section>
+<h2 class="group-title" id="group-position-and-comparison">Position and comparison</h2>
+<section class="type" id="quadrant" aria-labelledby="quadrant-h">
+  <h2 id="quadrant-h">Only some ideas are quick wins; drag one to re-score it</h2>
+  <p class="kind"><span>Quadrant</span><span>Drag an item</span><span>One word per axis</span></p>
+  <p>Six ideas scored on impact and effort. Drag any of them, by mouse, touch or arrow keys; the quick wins are listed under the figure.</p>
+  <figure class="fs-plate" aria-labelledby="fig-quadrant-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-quadrant-title">Only some ideas are quick wins; drag one to re-score it</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-quadrant" role="img" aria-label="An impact by effort quadrant with six ideas plotted as dots."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-quadrant:quick"></span></div>
+    <p class="fs-caption">Illustrative scores. Tip: quick wins are bright; hover a quadrant for what it means.</p>
+  </figure>
+</section>
+<section class="type" id="consultant-2x2" aria-labelledby="consultant-2x2-h">
+  <h2 id="consultant-2x2-h">Fast adoption under loose rules puts us in a land grab</h2>
+  <p class="kind"><span>Consultant 2×2</span><span>Two assumptions</span><span>A marker that moves</span></p>
+  <p>Move the two assumptions and the marker moves between scenarios. We are in: <span data-fs-out="fig-2x2:cell"></span>.</p>
+  <figure class="fs-plate" aria-labelledby="fig-2x2-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-2x2-title">Fast adoption under loose rules puts us in a land grab</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-2x2" role="img" aria-label="A two by two matrix of scenarios, adoption against regulation, with a we-are-here marker."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-2x2:cell"></span></div>
+    <div class="param-row"><div class="fs-param-inline" data-fs-param="fig-2x2:adoption"></div><div class="fs-param-inline" data-fs-param="fig-2x2:regulation"></div></div>
+    <p class="fs-caption">Illustrative scenarios. The cell names carry the argument. Tip: hover a cell for what it means for us.</p>
+  </figure>
+</section>
+<section class="type" id="venn" aria-labelledby="venn-h">
+  <h2 id="venn-h">Only 14 of 90 customers are in all three groups</h2>
+  <p class="kind"><span>Venn</span><span>Toggle a set</span><span>Hover a region</span></p>
+  <p>Each dot is a customer. Turn a group off and its members drop to the regions they are left in. In all three: <span data-fs-out="fig-venn:all"></span>.</p>
+  <figure class="fs-plate" aria-labelledby="fig-venn-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-venn-title">Only 14 of 90 customers are in all three groups</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-venn" role="img" aria-label="Three overlapping circles, uses the app, pays and wrote a review, with 90 customers as dots in their regions."></canvas></div>
+    <div class="event-row" role="group" aria-label="Groups" data-toggles="fig-venn">
+      <span>Groups</span>
+      <button type="button" data-key="app" aria-pressed="true">Uses the app</button><button type="button" data-key="pays" aria-pressed="true">Pays</button><button type="button" data-key="review" aria-pressed="true">Wrote a review</button>
+    </div>
+    <p class="fs-caption">Made-up customers. Circles are not area-proportional. Tip: hover a region for its count.</p>
+  </figure>
+</section>
+<section class="type" id="radar" aria-labelledby="radar-h">
+  <h2 id="radar-h">Plan B is cheaper, and behind on everything else</h2>
+  <p class="kind"><span>Radar</span><span>Compare</span><span>Drag a vertex</span></p>
+  <p>Plan A against another plan on five axes, bigger is better on each. Drag any of Plan A's points to ask what if.</p>
+  <figure class="fs-plate" aria-labelledby="fig-radar-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-radar-title">Plan B is cheaper, and behind on everything else</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-radar" role="img" aria-label="A five-axis radar chart comparing Plan A with Plan B or Plan C, with values at the vertices."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position"></span>
+      <div class="fs-controls"><div class="param-group"><span class="param-label" aria-hidden="true">Compare with</span><div class="fs-param-inline" data-fs-param="fig-radar:other"></div></div></div>
+    </div>
+    <p class="fs-caption">Illustrative scores out of 10. Values are written at the vertices because the shape alone hides magnitude. Tip: price is scored so that cheaper is bigger.</p>
+  </figure>
+</section>
+<section class="type" id="security-matrix" aria-labelledby="security-matrix-h">
+  <h2 id="security-matrix-h">Only admins can delete; analysts read everything and change nothing</h2>
+  <p class="kind"><span>DP security matrix</span><span>Pick a role</span><span>Filter by permission</span></p>
+  <p>A lookup table of who can read, write and delete what. Pick a role to light its column, or a permission to fade every cell without it.</p>
+  <figure class="fs-plate" aria-labelledby="fig-matrix-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-matrix-title">Only admins can delete; analysts read everything and change nothing</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-matrix" role="img" aria-label="A matrix of five components by four roles with read, write and delete permissions."></canvas></div>
+    <div class="param-row"><div class="param-group"><span class="param-label" aria-hidden="true">Role</span><div class="fs-param-inline" data-fs-param="fig-matrix:role"></div></div><div class="param-group"><span class="param-label" aria-hidden="true">Can</span><div class="fs-param-inline" data-fs-param="fig-matrix:perm"></div></div></div>
+    <p class="fs-caption">Illustrative permissions. Nothing moves by default: a matrix is for looking things up. Tip: hover a cell for what the letters mean.</p>
+  </figure>
+</section>
+<h2 class="group-title" id="group-data-charts">Data charts</h2>
+<section class="type" id="bar" aria-labelledby="bar-h">
+  <h2 id="bar-h">Three of seven regions missed the target this year</h2>
+  <p class="kind"><span>Bar</span><span>Drag the target</span><span>Switch year</span></p>
+  <p>Drag the target line, or switch to last year. Below a target of <span data-fs-out="fig-bar:target"></span>: <span data-fs-out="fig-bar:miss"></span> regions.</p>
+  <figure class="fs-plate" aria-labelledby="fig-bar-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-bar-title">Three of seven regions missed the target this year</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-bar" role="img" aria-label="Bar chart of sales in seven regions with a horizontal target line."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position"><span data-fs-out="fig-bar:miss"></span></span>
+      <div class="fs-controls"><div class="fs-param-inline" data-fs-param="fig-bar:year"></div></div>
+    </div>
+    <p class="fs-caption">Made-up sales in thousands of units. Bars start at zero. Tip: hatched bars are below the line.</p>
+  </figure>
+</section>
+<section class="type" id="line" aria-labelledby="line-h">
+  <h2 id="line-h">Weekly sign-ups doubled after the price change</h2>
+  <p class="kind"><span>Line</span><span>Scrub</span><span>Direct labels</span></p>
+  <p>Drag across the chart to reveal the weeks. Before the change: <span data-fs-out="fig-line:before"></span> a week on average; after: <span data-fs-out="fig-line:after"></span> (<span data-fs-out="fig-line:ratio"></span>).</p>
+  <figure class="fs-plate" aria-labelledby="fig-line-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-line-title">Weekly sign-ups doubled after the price change</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-line" role="img" aria-label="Line chart of weekly sign-ups for 26 weeks, this year against last year, with a price change at week 13."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-line:t"></span>
+      <div class="fs-controls">
+        <button type="button" data-fs="fig-line chapter-prev" aria-label="Previous moment">←</button>
+        <div data-fs-seek="fig-line" data-label="Week"></div>
+        <button type="button" data-fs="fig-line chapter-next" aria-label="Next moment">→</button>
+        <button type="button" data-fs="fig-line play" aria-label="Play"></button>
+      </div>
+    </div>
+    <p class="fs-caption">Made-up, seeded data. This year is in ink, last year in gray. Tip: hover the chart for the value at a week.</p>
+  </figure>
+</section>
+<section class="type" id="scatter" aria-labelledby="scatter-h">
+  <h2 id="scatter-h">One outlier is enough to tilt a fitted line</h2>
+  <p class="kind"><span>Scatter</span><span>Drag an outlier</span><span>Slope on the plot</span></p>
+  <p>Drag the hollow point and the fit follows. Slope without it: <span data-fs-out="fig-scatter:base"></span>; with it: <span data-fs-out="fig-scatter:slope"></span>.</p>
+  <figure class="fs-plate" aria-labelledby="fig-scatter-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-scatter-title">One outlier is enough to tilt a fitted line</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-scatter" role="img" aria-label="Scatter plot of score against hours of practice with a fitted line and one draggable outlier."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position">slope <span data-fs-out="fig-scatter:slope"></span></span></div>
+    <p class="fs-caption">Made-up, seeded data; least-squares fit. The dashed line is the fit without the outlier. Tip: arrow keys move the outlier too.</p>
+  </figure>
+</section>
+<h2 class="group-title" id="group-more">More figures</h2>
+<section class="type" id="threshold" aria-labelledby="threshold-h">
+  <h2 id="threshold-h">Moving the threshold trades misses for false alarms</h2>
+  <p class="kind"><span>Dot plot</span><span>Draggable threshold</span><span>Settings</span></p>
+  <p>A detector scores every case from 0 to 1 and flags anything at or above a threshold. At a threshold of <span data-fs-scrub="fig-cut:cut"></span>, it catches <span data-fs-out="fig-cut:caught"></span> real problems and raises <span data-fs-out="fig-cut:alarms"></span> false alarms. Drag the line, or the number. How much the two groups overlap is in the figure's settings.</p>
+  <figure class="fs-plate" aria-labelledby="fig-cut-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-cut-title">Moving the threshold trades misses for false alarms</h3><span class="fs-status">Illustration · seeded</span></header>
+    <div class="fs-stage"><canvas id="fig-cut" role="img" aria-label="Two rows of dots by score, real problems and normal cases, with a vertical threshold line"></canvas></div>
+    <div class="fs-readouts">
+      <div class="fs-readout"><b data-fs-out="fig-cut:caught"></b><span>real problems caught</span></div>
+      <div class="fs-readout"><b data-fs-out="fig-cut:alarms"></b><span>false alarms, of 120 normal cases</span></div>
+      <div class="fs-readout"><b data-fs-out="fig-cut:precision"></b><span>of flags are real problems</span></div>
+    </div>
+    <p class="fs-caption">Made-up scores for 240 cases. Bright dots are mistakes: real problems left of the line, normal cases right of it. The line springs back to 0.50 when you let go near it.</p>
+  </figure>
+</section>
+<section class="type" id="particle-field" aria-labelledby="particle-field-h">
+  <h2 id="particle-field-h">A focus pulls in only what is near it</h2>
   <p class="kind"><span>Particle field</span><span>Draggable focus</span><span>Settings</span></p>
   <p>Particles follow a smooth flow. Inside the ring they are pulled toward its center; outside it, nothing changes. Drag the ring to move it and its knob to resize it. Strength and field scale are in the settings.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-field-title">
+  <figure class="fs-plate" aria-labelledby="fig-field-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-field-title">A focus pulls in only what is near it</h3><span class="fs-status">Illustration</span></header>
     <div class="fs-stage"><canvas id="fig-field" role="img" aria-label="Particles drifting along a smooth flow; a ring gathers the particles inside it"></canvas></div>
     <div class="fs-toolbar">
@@ -162,13 +540,39 @@
     </div>
     <p class="fs-caption">Particles follow the curl of a smooth potential, so the flow never piles up or empties. Seeded: every visit starts the same way.</p>
   </figure>
-
-  <p class="muted">The code for every figure on this page is in <a href="https://github.com/juanbermudez/animated-visuals/blob/main/docs/site/gallery.js"><code>docs/site/gallery.js</code></a>.</p>
+</section>
+<section class="type" id="semantic-patterns" aria-labelledby="semantic-patterns-h">
+  <h2 id="semantic-patterns-h">Semantic patterns start from a behavior, then borrow a layout</h2>
+  <p>When behavior, state or risk is the point, start from the pattern and use its nearest type as the layout. What moves and what the reader can do for each one is in <a href="https://github.com/juanbermudez/animated-visuals/blob/main/references/diagram-types.md#8-semantic-patterns"><code>references/diagram-types.md</code></a>.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pattern</th><th>Nearest type</th></tr></thead>
+      <tbody>
+        <tr><td>Fan-in queue / bottleneck</td><td><a href="#data-flow">Data flow</a></td></tr>
+        <tr><td>Stage framework with semantic slots</td><td><a href="#process">Process</a></td></tr>
+        <tr><td>Unstructured input → structured artifact</td><td><a href="#data-flow">Data flow</a></td></tr>
+        <tr><td>Paired policy-evaluation traces</td><td><a href="#flowchart">Flowchart</a></td></tr>
+        <tr><td>Secure paved road</td><td><a href="#architecture">Architecture</a></td></tr>
+        <tr><td>Governance / control catalog</td><td><a href="#layer-stack">Layer stack</a></td></tr>
+        <tr><td>Compensating security layers</td><td><a href="#layer-stack">Layer stack</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+      <p class="muted">The code for every figure is in <a href="https://github.com/juanbermudez/animated-visuals/tree/main/docs/site"><code>docs/site/gallery*.js</code></a>.</p>
+    </div>
+  </div>
 </main>
 
 <footer class="site-foot">
   <div class="site-foot-inner"><span>Animated Visuals · MIT License · Juan Bermudez</span><nav aria-label="Footer"><a href="https://github.com/juanbermudez/animated-visuals">GitHub</a><a href="credits.html">Credits</a></nav></div>
 </footer>
 <script src="site/gallery.js"></script>
+<script src="site/gallery-kit.js"></script>
+<script src="site/gallery-structure.js"></script>
+<script src="site/gallery-flow.js"></script>
+<script src="site/gallery-position.js"></script>
+<script src="site/gallery-charts.js"></script>
+<script src="site/gallery-nav.js"></script>
 </body>
 </html>

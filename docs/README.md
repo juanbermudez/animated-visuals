@@ -33,7 +33,7 @@ Don't edit anything in `vendor/` or between those markers by hand; the next sync
 | Path | What |
 |---|---|
 | `index.html` | What it is, install, a live hero figure |
-| `gallery.html` + `site/gallery.js` | Seven live figures: data flow, stepped mechanism, timeline, threshold chart, state machine, sequence, particle field |
+| `gallery.html` + `site/gallery*.js` | A live figure for each of the 27 diagram types in `references/diagram-types.md`, with a sidebar grouped as there, plus a dot plot, a particle field and the semantic patterns. `gallery-kit.js` holds the shared canvas helpers, `gallery-nav.js` the sidebar; the figures are split by group (`gallery-structure.js`, `gallery-flow.js`, `gallery-position.js`, `gallery-charts.js`; the first seven are in `gallery.js`) |
 | `themes.html` + `site/themes.js` | Every theme as a card with live swatches and a live figure, searchable and filtered by mode and family (kept in the URL), the token table, writing a theme, bridging to a site |
 | `customize.html` + `site/customize.js` | The figure spec, runnable samples (each code block shows the script that runs next to it), the FS API, React assets, writing styles |
 | `credits.html` | Credits, rendered from `THIRD_PARTY_NOTICES.md` |
