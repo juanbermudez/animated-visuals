@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Start the tool calls before the model finishes the code · Animated Visuals</title>
-<meta name="description" content="A visual guide to Alex L. Zhang's speculative programmatic tool calling (sPTC): a throwaway copy runs the half-written program, starts the safe tool calls early, and the real program finds the answers waiting. Five live figures and the post's measured numbers.">
+<title>Speculative programmatic tool calling · Animated Visuals</title>
+<meta name="description" content="Speculative programmatic tool calling starts safe sub-model calls before a model finishes writing a program. This guide explains the method through one six-line program, five figures, and results from Zhang's post.">
 <script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="../site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2584,22 +2584,22 @@ a.card:hover { border-color: var(--fs-line-strong); }
 
 <main class="page guide" id="main">
   <p class="eyebrow">Example · a blog post, explained</p>
-  <h1>Start the tool calls before the model finishes the code</h1>
+  <h1>Speculative programmatic tool calling</h1>
   <p class="source">A visual guide to Alex L. Zhang, “Speculative Programmatic Tool Calling”, blog post, August 24, 2026 · <a href="https://alexzhang13.github.io/blog/2026/spec-ptc/">the post</a> · <a href="https://github.com/alexzhang13/spec-ptc">the code</a> (MIT). Built with Animated Visuals; every measured number is from the post and says where.</p>
-  <p class="lede">Watch a code-writing agent and you'll notice the wait. The model types out a whole program, and only then does anything run. If line 2 asks a sub-model three questions, those questions sit there, fully written, while the model types the next four lines. Speculative programmatic tool calling (sPTC, Zhang's name for it) starts them right away. This guide follows one six-line program from the first token to the answer.</p>
+  <p class="lede">Speculative programmatic tool calling (sPTC, Zhang's term) starts safe sub-model calls while a model is still writing the program that contains them. This guide follows one six-line program where line 2 starts three sub-model calls before the model finishes writing. Afterward, you can explain how the throwaway copy carries their answers into the final run and when the method can save time.</p>
 
-  <h2>The program we'll follow</h2>
-  <p>Zhang tested the trick on a Recursive Language Model (RLM), a harness where the main model never reads the long input directly. The input sits in a Python variable called <code>context</code>, the model writes code against it in a REPL (a Python session that keeps its variables from one cell to the next), and <code>llm_query</code> asks a smaller sub-model one question. His benchmark, OOLONG, asks for this kind of work: label a long list of items, then count the labels (its paper calls it classification and counting in context). Here is one cell the model might write.</p>
+  <h2>The example program</h2>
+  <p>Zhang tested the method on a Recursive Language Model (RLM), a harness where the main model never reads the long input directly. The input sits in a Python variable called <code>context</code>. The model writes code against it in a REPL, a Python session that keeps its variables from one cell to the next. <code>llm_query</code> makes one sub-model call. His benchmark, OOLONG, asks the model to label a long list of items and then count the labels. Its paper calls this classification and counting in context. The example below is one cell the model might write.</p>
   <div class="code"><pre><code class="language-python">chunks = context.split("\n\n")                             # 1  plain code
-labels = [llm_query("Label: " + c) for c in chunks[:3]]    # 2  three sub-calls
+labels = [llm_query("Label: " + c) for c in chunks[:3]]    # 2  three sub-model calls
 tally = llm_query("Count the labels: " + str(labels))      # 3  needs line 2
 notes = read_file("notes.txt")                             # 4  reads a file
 review = llm_query("Compare with my notes: " + notes)      # 5  needs line 4
 print(tally, review)                                       # 6</code></pre></div>
   <p>Five sub-model calls and one file read. The three label calls don't depend on each other. The tally needs all three labels. The review needs the file. Every figure below runs on these six lines.</p>
 
-  <h2>Calls start while the model is still writing</h2>
-  <p>Without speculation, the harness waits for the last line, then runs the cell top to bottom. Line 2 calls the sub-model three times in a row, because each call blocks until it returns. With speculation, the <span data-fs-ref="fig-turn:label">three label calls</span> start the moment line 2 is complete, all at once, and the <span data-fs-ref="fig-turn:tally">tally</span> starts as soon as they come back, while the model is still writing. If each sub-call takes <span data-fs-scrub="fig-turn:call"></span>, the answer arrives at <span data-fs-out="fig-turn:specEnd"></span> instead of <span data-fs-out="fig-turn:plainEnd"></span>. Drag the number.</p>
+  <h2>How calls start early</h2>
+  <p>Without speculation, the harness waits for the last line and then runs the cell from top to bottom. Line 2 makes three sub-model calls in a row because each one blocks until it returns. With speculation, the <span data-fs-ref="fig-turn:label">three label calls</span> start together when line 2 is complete. The <span data-fs-ref="fig-turn:tally">tally</span> starts as soon as they return, while the model is still writing. Set each sub-model call to <span data-fs-scrub="fig-turn:call"></span> by dragging the number. The answer arrives at <span data-fs-out="fig-turn:specEnd"></span> instead of <span data-fs-out="fig-turn:plainEnd"></span>.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-turn-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-turn-title">Calls start while the model is still writing</h3><span class="fs-status">Fig. 1 · simulated</span></header>
     <div class="fs-stage"><canvas id="fig-turn" role="img" aria-label="One turn on one clock. Top lane: the model writes text, then six lines of code. Middle lane, without speculation: after writing ends, three label calls run one after another, then the tally, the file read and the review. Bottom lane, with speculation: the three label calls start together when line 2 is complete, the tally starts when they return, and after writing ends only the file read and the review remain, so the answer comes much sooner."></canvas></div>
@@ -2613,29 +2613,29 @@ print(tally, review)                                       # 6</code></pre></div
       </div>
     </div>
     <p class="fs-step-text readout" data-fs-out="fig-turn:summary" aria-live="polite"></p>
-    <p class="fs-caption">Simulated timings for one turn: the writing speed, where each line ends and how long each call takes are illustrative, not from the post. Drag across the lanes to move through the turn, hover a block to see what it is; call length and writing speed are in settings.</p>
+    <p class="fs-caption">Fig. 1 simulates one turn; its writing speed, line endings, and call lengths are illustrative, not from the post. Drag across the lanes to move through the turn, and hover over a block to identify it; call length and writing speed are in settings.</p>
   </figure>
-  <p>The saving has two parts, and the post names both. One is overlap: calls run during the writing instead of after it. The other is what Zhang calls a naive JIT compiler (a compiler that rewrites code while it runs): blocking calls that don't depend on each other run at the same time, even though the code wrote them one after another. In this turn, <span data-fs-out="fig-turn:atOnce"></span> of the saving comes from running the labels at once and <span data-fs-out="fig-turn:overlap"></span> from overlapping with the writing.</p>
+  <p>The post describes two sources of savings. First, calls run during the writing instead of after it. Second, independent blocking calls run at the same time even when the code lists them one after another. Zhang calls this a naive JIT compiler, a compiler that rewrites code while it runs. In this turn, <span data-fs-out="fig-turn:atOnce"></span> of the saving comes from running the labels at once and <span data-fs-out="fig-turn:overlap"></span> from overlapping with the writing.</p>
 
-  <h2>A throwaway copy runs the half-written program</h2>
-  <p>To start line 3's call early you need line 3's input, and that input is line 2's output. So the harness keeps a <span data-fs-ref="fig-shadow:copy">shadow copy</span>: a deep copy of the program's variables that runs each line as soon as it's complete. In the copy, a tool call doesn't wait. It starts in the background and leaves a promise, a placeholder that fills in when the answer arrives. Each call is filed under its inputs in a <span data-fs-ref="fig-shadow:store">store of early calls</span>, so the <span data-fs-ref="fig-shadow:real">real program</span> can find it later.</p>
-  <p>The copy never touches the real variables, and it's thrown away at the end of the turn. Zhang keeps the two apart on purpose: the model may write broken code or stop in the middle of a call, and the real program should run the cell as one unit or not at all.</p>
+  <h2>The throwaway copy</h2>
+  <p>Line 3's sub-model call needs line 3's input, which depends on line 2's output. The harness therefore keeps a <span data-fs-ref="fig-shadow:copy">shadow copy</span>, a deep copy of the program's variables that runs each line as soon as it is complete. In the copy, a sub-model call starts in the background and leaves a promise, a placeholder that fills in when the answer arrives. Each call is filed under its inputs in a <span data-fs-ref="fig-shadow:store">store of early calls</span>. The <span data-fs-ref="fig-shadow:real">real program</span> can find the answer there later.</p>
+  <p>The copy never changes the real variables, and it is thrown away at the end of the turn. Zhang separates the two because the model may write broken code or stop in the middle of a call. The real program still runs the cell as one unit or not at all.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-shadow-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-shadow-title">A throwaway copy runs ahead; the real program waits</h3><span class="fs-status">Fig. 2 · the mechanism</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-shadow-title">The copy runs ahead while the real program waits</h3><span class="fs-status">Fig. 2 · mechanism</span></header>
     <div class="fs-stage"><svg id="fig-shadow" viewBox="0 0 960 420" role="img" aria-label="Four panels. The program as written so far, line by line. The shadow copy's variables, filling in as each line completes. The store of early calls: three label calls, then the tally, each running, then ready. The real program, which waits until writing ends, then runs the whole cell and finds four answers already there; the file read and the review run the normal way."></svg></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-shadow:step"></span>
       <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-shadow" aria-hidden="true"></span><button type="button" data-fs="fig-shadow prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-shadow next" aria-label="Next step">Next</button></div>
     </div>
     <p class="fs-step-text" data-fs-out="fig-shadow:caption" aria-live="polite"></p>
-    <p class="fs-caption">The mechanism on the worked program, with the prompts shortened to “…”. I ran these six lines through Zhang's library: four calls started during the stream, and the real run found four answers and made one call itself. Step through with the buttons or the arrow keys.</p>
+    <p class="fs-caption">This figure shows the mechanism on the worked program, with the prompts shortened to “…”. I ran these six lines through Zhang's library, where four calls started during the stream and the real run found four answers before making one call itself; step through with the buttons or arrow keys.</p>
   </figure>
 
-  <h2>It only starts what it can prove is safe</h2>
-  <p>Running half-written code is only fine if nothing it does can leak out. The post's rule has two parts. Tools are declared up front: <code>@spec.tool(speculatable=True, pure=True)</code> marks a tool that may run early and has no side effects, and a tool without those flags, like <code>read_file</code> here, never runs early. Ordinary functions that reach outside the program, like <code>open</code>, are marked unsafe too. Then any call whose inputs depend on something unsafe is not started.</p>
-  <p>Two details keep it honest. Calls are matched by their inputs and by how many times they occur, so five identical calls for a majority vote get five separate answers, not one answer reused five times. And a started call can still be <span data-fs-ref="fig-life:thrown">thrown away</span>: if the real program never asks for it, its answer is dropped. Pick a call and step through its life.</p>
+  <h2>Which calls can start early</h2>
+  <p>Half-written code can run only when its effects cannot leave the copy. The post uses two rules. First, tools are declared up front. <code>@spec.tool(speculatable=True, pure=True)</code> marks a tool that may run early and has no side effects. A tool without those flags, such as <code>read_file</code> here, never runs early. Ordinary functions that reach outside the program, such as <code>open</code>, are also unsafe. Second, a call does not start when any of its inputs depend on something unsafe.</p>
+  <p>Calls are matched by their inputs and by how many times they occur. Five identical calls for a majority vote therefore receive five separate answers instead of reusing one answer five times. A started call can still be <span data-fs-ref="fig-life:thrown">thrown away</span> when the real program never asks for it. Pick a call and step through its states.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-life-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-life-title">Every call is handed over, refused or thrown away</h3><span class="fs-status">Fig. 3 · the mechanism</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-life-title">Calls are handed over, refused, or thrown away</h3><span class="fs-status">Fig. 3 · mechanism</span></header>
     <div class="fs-tabbar"><div data-fs-param="fig-life:call" data-label="Which call"></div></div>
     <div class="fs-stage"><svg id="fig-life" viewBox="0 0 960 330" role="img" aria-label="A state machine for one call: line complete, then a check whether its inputs are safe. If yes, it starts early, possibly after waiting for an earlier call's answer. A started call is either handed over when the real program asks for it, or thrown away if it never does. If the inputs are not safe, the call is not started and runs the normal way after writing ends."></svg></div>
     <div class="fs-toolbar">
@@ -2645,31 +2645,31 @@ print(tally, review)                                       # 6</code></pre></div
     <p class="fs-step-text" data-fs-out="fig-life:caption" aria-live="polite"></p>
     <p class="fs-caption">States from the post's design section, matched to the states a call goes through in Zhang's code (started, ready, claimed, thrown away). Pick a call in the tabs, then step through it.</p>
   </figure>
-  <p>Notice what's missing: nothing ever needs rolling back. A wrong guess never reaches the real variables, so the worst a bad guess costs is a sub-call nobody uses. Those add up, though. Zhang's worst case is a serving engine clogged with extra speculative requests, which you control through how aggressive speculation is and how the calls are queued. The copy itself is cheap: per the post, checking the stream costs close to nothing, and the deep copy is small because REPLs tend to hold few large mutable objects.</p>
+  <p>No rollback is needed because a wrong guess never reaches the real variables. The cost of a wrong guess is one unused sub-model call, and those calls can add up. Zhang's worst case is a serving engine clogged with extra speculative requests. This can be controlled through how aggressive speculation is and how the calls are queued. The post says the copy itself is cheap. Checking the stream costs close to nothing, and the deep copy is small because REPLs tend to hold few large mutable objects.</p>
 
-  <h2>When it pays</h2>
-  <p>So how much can it save? In this program the overlap is capped by how long the model keeps writing after line 2, and running at once is capped by how many calls are independent. The gain is biggest when the calls just fit inside the writing: <span data-fs-out="fig-gain:peak"></span>. Past that, the tally finishes after the writing does and the gain settles toward 5 ÷ 3 ≈ 1.67×, because five calls in a row became a chain of three. Drag the line. The band is what the post measured on a real benchmark, and it sits well below this toy's best case.</p>
+  <h2>When speculation saves time</h2>
+  <p>The possible saving depends on two limits. In this program, overlap is capped by how long the model keeps writing after line 2. Running calls at once is capped by how many calls are independent. The gain is largest when the calls fit inside the writing, at <span data-fs-out="fig-gain:peak"></span>. Past that point, the tally finishes after the writing and the gain settles toward 5 ÷ 3 ≈ 1.67× because five calls in a row became a chain of three. Drag the line. The band shows what the post measured on a real benchmark, well below the simulation's best case.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-gain-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-gain-title">The gain peaks when calls just fit inside the writing</h3><span class="fs-status">Fig. 4 · simulated</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-gain-title">The gain peaks when calls fit inside the writing</h3><span class="fs-status">Fig. 4 · simulated</span></header>
     <div class="fs-stage"><canvas id="fig-gain" role="img" aria-label="A chart of speed-up against the length of each sub-call for the worked turn. The full speed-up rises from 1 to a peak where the calls just fit inside the writing, then levels off toward 1.67. A second, dashed curve shows the speed-up from running the calls at once alone. A band from 1 to 1.2 marks what the post measured."></canvas></div>
     <p class="fs-step-text readout" data-fs-out="fig-gain:readout" aria-live="polite"></p>
-    <p class="fs-caption">Computed from the same simulated turn as Fig. 1, not measured; only the band is from the post. Drag the vertical line, or focus it and use the arrow keys; it moves Fig. 1 too.</p>
+    <p class="fs-caption">This figure is computed from the same simulated turn as Fig. 1; only the band comes from the post. Drag the vertical line, or focus it and use the arrow keys; the same control also moves Fig. 1.</p>
   </figure>
 
-  <h2>Measured: 1 to 1.2×, with a wide spread</h2>
-  <p>Zhang measured it on his RLM harness with OOLONG (the trec-coarse split, 132k tokens of context) and OOLONG-Pairs (32k), served by vLLM on a node of eight H100s, using Qwen3-30B-A3B-Instruct. He ran each setting 5 times, at temperature 0.7 and at 0.0 (to cut the run-to-run variance), with 4 and with 8 tasks sharing the same serving engine. His summary: speed-ups of about 1 to 1.2×.</p>
-  <p>The plot behind that summary deserves a careful look. Speculation's mean wall time is lower in all four settings, and the ratio of the means is <span data-fs-out="fig-measured:ratios"></span>, more than his range. But the 95% intervals overlap in every setting. Switch to sub-calls: the speculative runs made more sub-calls in three of the four, so the two sides didn't take the same paths through the tasks, and the bars can't isolate the trick. Quote his 1 to 1.2×; read the bars as “probably faster, not precisely by how much”.</p>
+  <h2>Measured results</h2>
+  <p>Zhang measured the method on his RLM harness with OOLONG, using the trec-coarse split with 132k tokens of context, and OOLONG-Pairs with 32k. vLLM served Qwen3-30B-A3B-Instruct on a node of eight H100s. He ran each setting 5 times at temperature 0.7 and at 0.0 to reduce run-to-run variance, with 4 and with 8 tasks sharing the same serving engine. His summary reports speed-ups of about 1 to 1.2×.</p>
+  <p>The plot gives a less precise picture. Mean wall time with speculation is lower in all four settings, and the ratios of the means are <span data-fs-out="fig-measured:ratios"></span>, above the post's stated range. The 95% intervals overlap in every setting. The speculative runs also made more sub-model calls in three of the four settings, so the two sides took different paths through the tasks. The bars therefore cannot isolate the effect of speculation. The supported summary is 1 to 1.2×, with the bars suggesting that it was probably faster but not showing precisely by how much.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-measured-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-measured-title">Faster on average in every setting, with wide spread</h3><span class="fs-status">Fig. 5 · from the post</span></header>
     <div class="fs-tabbar"><div data-fs-param="fig-measured:metric" data-label="Measure"></div></div>
     <div class="fs-stage"><canvas id="fig-measured" role="img" aria-label="Means and 95% intervals over 5 runs for four settings, temperature 0.0 and 0.7, each with 4 and 8 tasks at once, without and with speculation. Wall time is lower with speculation in all four settings, but every pair of intervals overlaps. Sub-calls are higher with speculation in three of four. Turns per task are about nine to ten either way."></canvas></div>
     <p class="fs-step-text readout" data-fs-out="fig-measured:readout" aria-live="polite"></p>
-    <p class="fs-caption">Means and 95% t-intervals over 5 runs, read off the post's plot by pixel (about ±10 s). Above each pair: the ratio or change between the two means. Hover a mark for its numbers.</p>
+    <p class="fs-caption">Means and 95% t-intervals over 5 runs, read off the post's plot by pixel (about ±10 s). Above each pair is the ratio or change between the two means; hover a mark for its numbers.</p>
   </figure>
-  <p>Why so far below the toy? The toy is one turn whose time is all calls. The benchmark tasks take about nine or ten turns each (the turns tab), 4 or 8 of them share one serving engine, and speculative calls add their own load to it. Zhang is upfront that the speed-up is hard to pin down: it depends on how slow the tools are, how many tokens the model generates, how loaded the serving engine is and which choices the harness makes.</p>
+  <p>The simulated example gains more because it represents one turn whose time is entirely calls. The benchmark tasks take about nine or ten turns each in the turns tab, 4 or 8 tasks share one serving engine, and speculative calls add load to that engine. Zhang says the speed-up is hard to pin down. It depends on tool latency, how many tokens the model generates, serving-engine load, and the choices the harness makes.</p>
 
-  <h2>Where it's worth it</h2>
-  <p>Zhang's own read: the trick earns its keep when the tools are sub-models or sub-agents, because those are slow, and especially with models you run locally, where decoding one main context leaves the hardware waiting on memory and extra calls put it to work. Through a hosted API the only gain is overlap. He expects the bigger long-run win to come from smarter JIT-style tricks that overlap calls with the program's own execution, as harnesses write longer programs.</p>
+  <h2>When to use it</h2>
+  <p>Zhang recommends the method when the tools are slow sub-models or sub-agents. It is especially useful with locally run models, where decoding one main context leaves the hardware waiting on memory and extra calls can put it to work. Through a hosted API, the only gain is overlap. He expects larger long-term gains from JIT-style methods that overlap calls with the program's own execution as harnesses write longer programs.</p>
 
   <details class="verified">
     <summary>Checked against the source</summary>
@@ -2677,8 +2677,8 @@ print(tally, review)                                       # 6</code></pre></div
       <li><b>Source.</b> Alex L. Zhang, “Speculative Programmatic Tool Calling”, blog post, August 24, 2026, <a href="https://alexzhang13.github.io/blog/2026/spec-ptc/">alexzhang13.github.io/blog/2026/spec-ptc</a>. No paper version exists that I could find; alphaXiv lists the same post (2608.spec-ptc), not an arXiv paper. Code: <a href="https://github.com/alexzhang13/spec-ptc">github.com/alexzhang13/spec-ptc</a>, MIT, read at commit 9b78b7d (August 24, 2026). No code or figure from either is copied here; the figures are redrawn.</li>
       <li><b>Benchmark setup</b> (post, “Some Comparison Numbers on RLMs”): OOLONG trec-coarse at 132k and OOLONG-Pairs at 32k; one node of 8×H100 (the post writes “8xH100 80B”) running vLLM; Qwen3-30B-A3B-Instruct (the post's text says “Qwen3-30B-A3B-Instruct-0527”, its plot title “Qwen3-30B-A3B-Instruct”); temperatures 0.7 and 0.0; 5 runs per setting; 4 and 8 concurrent runs on one engine.</li>
       <li><b>1 to 1.2×</b>: the post's sentence under its results plot, “The speed-ups for the RLM are generally on the order of 1-1.2x.” The post does not say how that range was computed.</li>
-      <li><b>Fig. 5 values</b>: read by pixel from the post's plot (<code>spec-plot.png</code>, 2640 × 1518), whose footnote says “Mean over repeats · 95% t-interval · all n=5 units included”. One pixel is about 4 s (temperature 0.0) or 9 s (0.7) of wall time, 5 sub-calls, 0.03 turns. The plotting code clips interval ends at 0. The post publishes no per-run values (the CSV its plotting code reads is not in the repository), so the figure shows means and intervals, not one dot per run. The ratios (1.45×, 1.40×, 1.28×, 1.84×) and the sub-call differences are computed by this guide.</li>
-      <li><b>Simulated</b>: Fig. 1 and Fig. 4. Text before the code takes 4 s, the model writes 16 characters per second at 1× speed, the file read takes 0.2 s, and every sub-call takes the same time (4 s by default). Real calls vary; nothing else contends for the engine. Figs. 2 and 3 show the mechanism, not timings.</li>
+      <li><b>Fig. 5 values</b>: read by pixel from the post's plot (<code>spec-plot.png</code>, 2640 × 1518), whose footnote says “Mean over repeats · 95% t-interval · all n=5 units included”. One pixel is about 4 s (temperature 0.0) or 9 s (0.7) of wall time, 5 sub-model calls, 0.03 turns. The plotting code clips interval ends at 0. The post publishes no per-run values (the CSV its plotting code reads is not in the repository), so the figure shows means and intervals, not one dot per run. The ratios (1.45×, 1.40×, 1.28×, 1.84×) and the sub-model call differences are computed by this guide.</li>
+      <li><b>Simulated</b>: Fig. 1 and Fig. 4. Text before the code takes 4 s, the model writes 16 characters per second at 1× speed, the file read takes 0.2 s, and every sub-model call takes the same time (4 s by default). Real calls vary; nothing else contends for the engine. Figs. 2 and 3 show the mechanism, not timings.</li>
       <li><b>Mechanism checks</b>: I ran the worked program through Zhang's library at 9b78b7d with a fake sub-model. Four calls started during the stream (three labels at once when line 2 closed, the tally after they returned), <code>read_file</code> ran once, in the real run, and the real run had four hits and one miss (the review). A call whose input comes from a tool without the speculative flags is skipped, and later independent calls still start.</li>
       <li><b>One mismatch between post and code</b>: the post's Case 4 comments say a call after an <code>open()</code> line is still “speculated after a”. In the code at 9b78b7d a blocked built-in like <code>open</code> stops the copy for the rest of the turn; I ran the post's Case 4 and the later call was not started early. The worked program uses a tool marked unsafe instead, where post and code agree.</li>
       <li><b>Left out on purpose</b>: “peeking”, where the copy also starts calls from a line that isn't finished yet (a loop body) and takes those bets back if later tokens change them; async tools, the out-of-process daemon and the plugins for other agents; the deterministic program suite in the repository, which the post chose not to report; the related work it cites (Conveyor, Speculative Interaction Agents, AsyncFC).</li>
@@ -5029,7 +5029,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
     formatTime: (t) => `t = ${(t * span()).toFixed(1)} s`,
     timeAxis: (f) => ({ x0: f.w < 560 ? 70 : 128, x1: f.w - 18 }),
     params: {
-      call: { value: 4, min: 0.5, max: 12, step: 0.5, label: "Each sub-call takes", unit: " s", format: (v) => `${v.toFixed(1)} s` },
+      call: { value: 4, min: 0.5, max: 12, step: 0.5, label: "Each sub-model call takes", unit: " s", format: (v) => `${v.toFixed(1)} s` },
       speed: { value: 1, min: 0.5, max: 3, step: 0.25, label: "Writing speed", format: (v) => `${v.toFixed(2)}×` },
     },
     reserve: {
@@ -5170,14 +5170,14 @@ const sec = (s) => `${s.toFixed(1)} s`;
     return ["ran", "3 handed over", "handed over", "reads the file", "calls now", "prints"][i];
   };
   const steps = [
-    { line: -1, caption: "Before the code starts, the harness deep-copies the program's variables. The copy runs ahead; the real program waits." },
-    { line: 0, caption: "Line 1 is complete. It's plain code, so the copy runs it: chunks now holds the parts of the text." },
-    { line: 1, caption: "Line 2 is complete. Its three calls have known inputs, so the copy starts all three at once and gets promises back." },
-    { line: 2, caption: "Line 3 needs labels. The copy waits for the three answers, then starts the tally. The model is still writing." },
-    { line: 3, caption: "Line 4 reads a file. That touches the outside world, so the copy doesn't run it: notes is unknown." },
-    { line: 4, caption: "Line 5 needs notes. Its input is unknown, so the review isn't started early. Meanwhile the tally has come back." },
-    { line: 5, caption: "Writing ends. The copy is thrown away and the real program runs the cell from the top. Four answers are waiting." },
-    { line: 5, caption: "Lines 4 and 5 run the normal way: the file is read for real, and the review calls the sub-model now." },
+    { line: -1, caption: "Before the code starts, the harness deep-copies the program's variables; the copy runs ahead while the real program waits." },
+    { line: 0, caption: "When line 1 is complete, the copy runs its plain code and stores the parts of the text in chunks." },
+    { line: 1, caption: "When line 2 is complete, the copy starts its three known-input calls at once and receives promises." },
+    { line: 2, caption: "Line 3 needs labels, so the copy waits for the three answers and starts the tally while the model keeps writing." },
+    { line: 3, caption: "Line 4 reads a file outside the program, so the copy skips it and leaves notes unknown." },
+    { line: 4, caption: "Line 5 needs the unknown notes, so the review does not start early while the tally finishes." },
+    { line: 5, caption: "When writing ends, the copy is thrown away and the real program starts with four answers waiting." },
+    { line: 5, caption: "Lines 4 and 5 run normally as the real program reads the file and starts the review sub-model call." },
   ];
   const tipsFor = {
     code: ["The program so far", "What the model has written. A line counts once the next one begins; unwritten lines are grey bars."],
@@ -5310,8 +5310,8 @@ const sec = (s) => `${s.toFixed(1)} s`;
       });
       // the real program
       realNote.textContent = L.narrow
-        ? (s < 6 ? "Waits for the whole cell; untouched." : s === 6 ? "Runs the cell; answers are waiting." : "4 of 5 sub-calls were done. 1 runs now.")
-        : (s < 6 ? "Waits for the whole cell. Its variables haven't changed." : s === 6 ? "Runs the cell from the top. Lines 2 and 3 find their answers waiting." : "Four of the five sub-calls were done before it asked. One runs now.");
+        ? (s < 6 ? "Waits for the whole cell; untouched." : s === 6 ? "Runs the cell; answers are waiting." : "4 of 5 sub-model calls were done. 1 runs now.")
+        : (s < 6 ? "Waits for the whole cell. Its variables haven't changed." : s === 6 ? "Runs the cell from the top. Lines 2 and 3 find their answers waiting." : "Four of the five sub-model calls were done before it asked. One runs now.");
       realNote.setAttribute("fill", s < 6 ? C.muted : C.fg);
       realCells.forEach((r, i) => {
         const v = realState(i, s), active = s >= 6 && v && v !== "next";
@@ -5331,7 +5331,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
   const states = {
     closes: { label: "Line complete", sub: "the call can be read", tip: "The harness only reads a call once its line is complete, so it knows the whole call and its inputs." },
     check: { label: "Inputs safe?", sub: "known, no side effects", tip: "The tool must be marked speculatable and pure, and every input must come from code the copy could run safely." },
-    wait: { label: "Waits for inputs", sub: "an earlier early call", tip: "Safe, but an input is still a promise from another early call. The copy waits for it; the model keeps writing." },
+    wait: { label: "Waits for inputs", sub: "an earlier call", tip: "Safe, but an input is still a promise from another early call. The copy waits for it; the model keeps writing." },
     started: { label: "Started early", sub: "a promise, filed by inputs", tip: "Runs in the background. Its answer is filed under its inputs and its occurrence, so repeated identical calls stay separate." },
     claimed: { label: "Handed over", sub: "no new call made", tip: "The real program asks for the same call and gets the filed answer, at once if it is ready, or as soon as it is." },
     thrown: { label: "Thrown away", sub: "nobody asked for it", tip: "The real program never asked: the cell failed, or later code changed the call. Only the copy saw it, so nothing needs undoing." },
@@ -5348,25 +5348,25 @@ const sec = (s) => `${s.toFixed(1)} s`;
   ];
   const CALLS = {
     label: { path: ["closes", "check", "started", "claimed"], at: [-1, 0, 1, 2, 3], caps: [
-      "Line 2 is complete, so the harness can read the call and its input: “Label: ” plus one part of the text.",
+      "Once line 2 is complete, the harness can read the call's input, “Label: ” plus one part of the text.",
       "The input comes from plain code and llm_query is marked safe, so the call can start now.",
-      "It starts in the background, filed under its input. Three such calls, three separate slots.",
-      "The real program reaches line 2, finds the answer filed under the same input, and gets it at once."] },
+      "Each of the three calls starts in the background in a separate slot filed under its input.",
+      "At line 2, the real program finds the answer filed under the same input and receives it at once."] },
     tally: { path: ["closes", "check", "wait", "started", "claimed"], at: [-1, 0, 2, 3, 4], caps: [
-      "Line 3 is complete. Its input is labels, which are still three promises.",
-      "Safe, but not ready: the copy waits for the three labels while the model keeps writing.",
-      "The labels arrive and the tally starts, still before the writing ends.",
-      "The real program reaches line 3. If the tally is still running, it waits for that call, never a new one."] },
+      "The complete line 3 depends on labels, which are still three promises.",
+      "The input is safe but not ready, so the copy waits for the three labels while the model keeps writing.",
+      "When the labels arrive, the tally starts before the writing ends.",
+      "At line 3, the real program waits for the running tally instead of making a new call."] },
     review: { path: ["closes", "check", "normal"], at: [-1, 0, 1, 2, 2], caps: [
-      "Line 5 is complete. Its input is notes, from read_file on line 4.",
-      "read_file touches the outside world, so the copy never ran it. notes is unknown, so the call is not safe.",
-      "Not started. After writing ends, the real program reads the file and makes this call itself.",
-      "That costs a full call after the writing, which is why the review sits at the end of Fig. 1."] },
+      "The complete line 5 depends on notes from read_file on line 4.",
+      "Because read_file touches the outside world, the copy leaves notes unknown and does not start the call.",
+      "After writing ends, the real program reads the file and makes the call itself.",
+      "The full call runs after writing, so the review appears at the end of Fig. 1."] },
     typo: { path: ["closes", "check", "started", "thrown"], at: [-1, 1, 2, 2, 3], caps: [
-      "The same label call as before: line 2 is complete and its input is safe.",
-      "It starts early, as before.",
-      "Then the model ends the cell with a typo. The cell can't run, so nothing ever asks for the label.",
-      "Its answer is thrown away. The real variables never saw it; the cost is one wasted sub-call."] },
+      "The complete line 2 makes the same label call with the same safe input.",
+      "The call starts early again.",
+      "The model ends the cell with a typo, so the cell cannot run and nothing asks for the label.",
+      "The answer is thrown away without reaching the real variables, at the cost of one wasted sub-model call."] },
   };
   const OPTIONS = [{ value: "label", label: "A label call" }, { value: "tally", label: "The tally" }, { value: "review", label: "The review" }, { value: "typo", label: "A typo at the end" }];
   const G = { states: {}, trans: {} };
@@ -5421,7 +5421,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
   FS.figure(ID, {
     height: (w) => (w < 560 ? (w * 430) / 360 : (w * 330) / 960),
     params: { call: { value: "label", label: "Which call", options: OPTIONS, placement: "inline" } },
-    steps: [0, 1, 2, 3, 4].map((i) => ({ caption: (f) => (i === 0 ? "Every call the copy finds goes through these states. Step through to follow this one." : callOf(f).caps[i - 1]) })),
+    steps: [0, 1, 2, 3, 4].map((i) => ({ caption: (f) => (i === 0 ? "Step through the states for the selected call." : callOf(f).caps[i - 1]) })),
     onParam(f) { f.api.goto(1); f.dirty = true; },
     resize(f) { layout(f.w); },
     render(f) {
@@ -5468,14 +5468,14 @@ const sec = (s) => `${s.toFixed(1)} s`;
   const invX = (f, x) => { const g = geo(f); return CMIN + ((x - g.L) / (g.R - g.L)) * (CMAX - CMIN); };
   const tips = {
     band: { title: "Measured range", body: "The post's summary for its RLM benchmark: speed-ups of about 1 to 1.2×. Everything else on this chart is the simulated turn." },
-    full: { title: "With speculation", body: "Plain run time divided by speculative run time, for the worked turn, as each sub-call gets longer." },
-    once: { title: "Running at once only", body: "If the same calls started together only after writing ended: the JIT part of the saving, without any overlap." },
-    peak: { title: "The peak", body: "Where the tally just finishes as writing ends. Shorter calls leave writing time unused; longer ones run past it." },
+    full: { title: "With speculation", body: "Plain run time divided by speculative run time for the worked turn as each sub-model call gets longer." },
+    once: { title: "Running at once only", body: "This curve shows the JIT part of the saving when the calls start together only after writing ends, without overlap." },
+    peak: { title: "The peak", body: "The tally finishes as writing ends. Shorter calls leave writing time unused; longer calls run past it." },
   };
   const fig = FS.figure(ID, {
     height: (w) => (w < 560 ? 280 : 300),
     params: {
-      call: { value: 4, min: CMIN, max: CMAX, step: 0.1, label: "Each sub-call takes", hidden: true },
+      call: { value: 4, min: CMIN, max: CMAX, step: 0.1, label: "Each sub-model call takes", hidden: true },
       speed: { value: 1, min: 0.5, max: 3, step: 0.25, label: "Writing speed", format: (v) => `${v.toFixed(2)}×` },
     },
     reserve: { peak: ["about 9.99× when each call takes 99.9 s"] },
@@ -5483,7 +5483,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
     tipAt: (f, x, y) => f.state.hits?.find((h) => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h)?.kind ?? null,
     handles: {
       line: {
-        label: "Sub-call length: drag or use the arrow keys",
+        label: "Sub-model call length: drag or use the arrow keys",
         radius: 22,
         get: (f) => ({ x: X(f, f.params.call), y: (geo(f).T + geo(f).B) / 2 }),
         set: (f, x) => { const v = invX(f, x); f.state.raw = v; f.api.set("call", FS.clamp(v, CMIN, CMAX), { instant: true }); },
@@ -5504,7 +5504,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
       c.strokeStyle = C.line; c.lineWidth = 1;
       for (let r = 1; r <= yMax(f) + 1e-9; r += 0.5) { FS.k.line(c, g.L, Y(f, r), g.R, Y(f, r)); FS.k.text(f, c, `${r.toFixed(1)}×`, g.L - 8, Y(f, r) + 4, { align: "right", size: 11 }); }
       for (let v = 2; v <= CMAX; v += 2) FS.k.text(f, c, `${v} s`, X(f, v), g.B + 16, { align: "center", size: 11 });
-      FS.k.text(f, c, "length of each sub-call →", g.R, g.B + 32, { align: "right", size: 11 });
+      FS.k.text(f, c, "length of each sub-model call →", g.R, g.B + 32, { align: "right", size: 11 });
       // curves
       const curve = (key, dash, color, width) => {
         c.save(); c.strokeStyle = color; c.lineWidth = width; if (dash) c.setLineDash(dash);
@@ -5540,7 +5540,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
   });
   function outs(f) {
     const r = ratio(f.params.call, f.params.speed), pk = peakOf(f.params.speed);
-    f.api.out("readout", `At ${f.params.call.toFixed(1)} s per call: ${r.full.toFixed(2)}× (${sec(r.saved)} sooner). Running at once alone: ${r.once.toFixed(2)}×.`);
+    f.api.out("readout", `At ${f.params.call.toFixed(1)} s per sub-model call: ${r.full.toFixed(2)}× (${sec(r.saved)} sooner). Running at once alone: ${r.once.toFixed(2)}×.`);
     f.api.out("peak", `about ${pk.r.toFixed(2)}× when each call takes ${sec(pk.c)}`);
   }
   // Figs. 1 and 4 share the call length and the writing speed.
@@ -5559,7 +5559,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
     subcalls: { unit: "", base: [[667, 269, 1050], [694, 315, 1055], [938, 726, 1131], [1182, 531, 1814]], spec: [[1001, 250, 1729], [890, 213, 1553], [1177, 658, 1682], [914, 297, 1516]] },
     turns: { unit: "", base: [[10.3, 9.2, 11.3], [10.4, 9.0, 11.7], [8.8, 7.7, 9.9], [10.0, 9.1, 10.8]], spec: [[10.0, 8.9, 11.0], [8.9, 7.7, 10.0], [9.7, 8.1, 11.2], [10.2, 9.2, 11.0]] },
   };
-  const NAMES = { wall: "Wall time", subcalls: "Sub-calls per task", turns: "Turns per task" };
+  const NAMES = { wall: "Wall time", subcalls: "Sub-model calls per task", turns: "Turns per task" };
   const fmtV = (m, v) => (m === "turns" ? v.toFixed(1) : Math.round(v).toLocaleString("en-US")) + (m === "wall" ? " s" : "");
   const delta = (m, i) => {
     const b = DATA[m].base[i][0], s = DATA[m].spec[i][0];
@@ -5641,7 +5641,7 @@ const sec = (s) => `${s.toFixed(1)} s`;
     const m = f.params.metric, n = CELLS.length, ov = CELLS.filter((_, i) => overlap(m, i)).length;
     const lower = CELLS.filter((_, i) => DATA[m].spec[i][0] < DATA[m].base[i][0]).length;
     const text = m === "wall" ? `Lower with speculation in ${lower} of ${n} settings; the intervals overlap in ${ov} of ${n}.`
-      : m === "subcalls" ? `More sub-calls with speculation in ${n - lower} of ${n} settings; the intervals overlap in ${ov} of ${n}.`
+      : m === "subcalls" ? `More sub-model calls with speculation in ${n - lower} of ${n} settings; the intervals overlap in ${ov} of ${n}.`
       : `About 9 to 10 turns per task either way; the intervals overlap in ${ov} of ${n}.`;
     f.api.out("readout", text);
     const rs = CELLS.map((_, i) => DATA.wall.base[i][0] / DATA.wall.spec[i][0]);

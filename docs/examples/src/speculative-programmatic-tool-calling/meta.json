@@ -1,6 +1,6 @@
 {
-  "title": "Start the tool calls before the model finishes the code",
-  "summary": "Speculative programmatic tool calling, followed through one six-line program: a throwaway copy runs the half-written code, starts the safe calls early, and the real program finds the answers waiting.",
+  "title": "Speculative programmatic tool calling",
+  "summary": "Speculative programmatic tool calling starts safe sub-model calls before the model finishes writing the program. This guide follows the method through one six-line example and Zhang's measured results.",
   "source": {
     "label": "Alex L. Zhang, “Speculative Programmatic Tool Calling”, blog post, August 24, 2026",
     "url": "https://alexzhang13.github.io/blog/2026/spec-ptc/"
