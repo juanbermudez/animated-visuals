@@ -1,6 +1,6 @@
 {
   "title": "Liquid time-constant networks",
-  "summary": "A neuron whose reaction speed is set by its input: drag the input and watch the time constant move, see why the state can't escape its bounds, step the fused solver, and compare the paper's trajectory lengths and benchmarks.",
+  "summary": "Liquid time-constant networks let each neuron's time constant change with its input. This guide uses one touch sensor to explain the bounds, fused solver, trajectory length, benchmark results and limits.",
   "source": { "label": "Hasani, Lechner, Amini, Rus, Grosu, Liquid Time-constant Networks, AAAI 2021", "url": "https://arxiv.org/abs/2006.04439" },
   "order": 20
 }

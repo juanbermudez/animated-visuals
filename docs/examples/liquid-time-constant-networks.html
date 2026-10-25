@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Liquid time-constant networks · Animated Visuals</title>
-<meta name="description" content="A visual guide to Hasani et al., Liquid Time-constant Networks (AAAI 2021): a neuron whose time constant is set by its input, its bounds, the fused solver, trajectory length and the benchmarks, with six live figures.">
+<meta name="description" content="A visual guide to Liquid Time-constant Networks (AAAI 2021), using one neuron and one touch sensor to explain the equation, bounds, fused solver, trajectory length, benchmark results and limits in six figures.">
 <script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="../site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2578,29 +2578,29 @@ a.card:hover { border-color: var(--fs-line-strong); }
 
 <main class="page guide" id="main">
   <p class="eyebrow">Example · a paper, explained</p>
-  <h1>A neuron that speeds up when its input arrives</h1>
+  <h1>Liquid time-constant networks</h1>
   <p class="source">A visual guide to Ramin Hasani, Mathias Lechner, Alexander Amini, Daniela Rus and Radu Grosu, “Liquid Time-constant Networks”, AAAI 2021 · <a href="https://arxiv.org/abs/2006.04439">the paper</a>. Built with Animated Visuals; every number from the paper says which equation, figure or table it comes from, and every simulated figure says so.</p>
-  <p class="lede">Most recurrent networks react at one speed, fixed once training ends. A liquid time-constant network (LTC) lets each neuron's speed depend on what it's hearing right now: fast when a signal arrives, slow when things go quiet. This guide follows one neuron reading one touch sensor, nothing and then a press, through the paper's equation, its two guarantees, its solver, and what all that buys on real data.</p>
+  <p class="lede">A liquid time-constant network (LTC) lets each neuron's time constant change with its current input. This guide uses one neuron connected to one touch sensor to explain the paper's equation, bounds, fused solver, trajectory length, benchmark results and limits. Afterward, you can explain how the input changes the time constant and state.</p>
 
-  <h2>One neuron, one sensor</h2>
-  <p>Picture a neuron wired to a touch sensor. While nobody touches it, the input sits near 0. Press it and the input jumps to 1. The neuron turns that into a smooth internal value, its <span data-fs-ref="fig-neuron:state">state</span>. How quickly the state follows is its <span data-fs-ref="fig-neuron:tau">time constant</span>: roughly the seconds it takes to cover two thirds of the way to where it's heading.</p>
-  <p>In an LTC the time constant isn't a number you set. It comes out of the input. Drag the <span data-fs-ref="fig-neuron:input">input</span> knob at the right edge: press hard and the time constant drops toward 0.20 s, so the state snaps up; let go and it drifts back toward 0.93 s, so the state relaxes slowly.</p>
+  <h2>The example: one neuron and one sensor</h2>
+  <p>A touch sensor produces a value near 0 when untouched and 1 when pressed. The neuron converts that input into a smooth internal value called its <span data-fs-ref="fig-neuron:state">state</span>. Its <span data-fs-ref="fig-neuron:tau">time constant</span> is roughly the seconds needed for the state to cover two thirds of the distance to its new resting value.</p>
+  <p>In an LTC, the input determines the time constant. Drag the <span data-fs-ref="fig-neuron:input">input</span> knob at the right edge. A firm press lowers the time constant toward 0.20 s, so the state rises quickly. Releasing it raises the time constant toward 0.93 s, so the state returns more slowly.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-neuron-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-neuron-title">Press harder and the neuron reacts faster</h3><span class="fs-status">Eq. 1 · simulated</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-neuron-title">A stronger input shortens the time constant</h3><span class="fs-status">Eq. 1 · simulated</span></header>
     <div class="fs-stage"><canvas id="fig-neuron" role="img" aria-label="Three lanes scrolling over the last eight seconds: the input, the neuron's time constant between 0.2 and 1 second, and its state between 0 and 1. When the input rises the time constant falls and the state rises quickly; when the input falls the time constant rises and the state decays slowly."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-neuron:read"></span>
       <div class="fs-controls"><div data-fs-param="fig-neuron:source"></div><button type="button" data-fs="fig-neuron play">Pause</button></div>
     </div>
-    <p class="fs-caption">One LTC neuron from Eq. 1 with τ = 1 s, gate strength W = 4 and target A = 1, solved live with the paper's fused step (Eq. 3); the values are illustrative, not the paper's. Drag the knob on the input lane, or leave it on the press loop.</p>
+    <p class="fs-caption">This illustrative LTC neuron uses Eq. 1 with τ = 1 s, gate strength W = 4 and target A = 1, solved live with the paper's fused step (Eq. 3). Drag the knob on the input lane, or leave it on the press loop.</p>
   </figure>
 
   <h2>The one change from older continuous-time networks</h2>
-  <p>The paper starts from two older ideas. A <strong>neural ODE</strong> lets a small network <em>f</em> set how fast the state changes. A <strong>continuous-time RNN</strong> (CT-RNN) adds a leak, −x/τ, that pulls the state back to rest with one fixed time constant τ. The LTC changes where the input goes. It enters like a synapse on a real nerve cell: a current <em>f</em>·(A − x) that pulls the state toward a target A and grows with the input (Section 1, “Why this specific formulation?”). Multiply that out and you get the paper's Eq. 1:</p>
+  <p>The paper starts from two older ideas. A <strong>neural ODE</strong> lets a small network <em>f</em> set how fast the state changes. A <strong>continuous-time RNN</strong> (CT-RNN) adds a leak, −x/τ, that pulls the state back to rest with one fixed time constant τ. The LTC changes where the input enters. It uses a synaptic current <em>f</em>·(A − x), which pulls the state toward a target A and grows with the input (Section 1, “Why this specific formulation?”). Expanding that current gives the paper's Eq. 1:</p>
   <p class="eq">dx/dt = −[ 1/τ + f(x, I, t, θ) ] · x + f(x, I, t, θ) · A</p>
-  <p>The input now sits inside the bracket that multiplies x, right beside the leak. That bracket sets how fast the state moves, so the time constant the system actually has is τ<sub>sys</sub> = τ / (1 + τ·f). When <em>f</em> is large, τ<sub>sys</sub> is small. Step through the same press for all three.</p>
+  <p>The input now appears inside the bracket that multiplies x, beside the leak. That bracket sets how fast the state moves, so the effective time constant is τ<sub>sys</sub> = τ / (1 + τ·f). When <em>f</em> is large, τ<sub>sys</sub> is small. Use the steps to compare the same press across all three models.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-family-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-family-title">Only the LTC changes speed with its input</h3><span class="fs-status">Eq. 1 · simulated</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-family-title">Only the LTC changes its response speed</h3><span class="fs-status">Eq. 1 · simulated</span></header>
     <div class="fs-stage"><canvas id="fig-family" role="img" aria-label="Four lanes on one eight-second clock: a press from 1 to 3 seconds, then the response of a neural ODE, a CT-RNN and an LTC to it. The neural ODE keeps climbing and never returns; the CT-RNN rises and falls with the same 1 second time constant; the LTC rises in about 0.2 seconds and falls in about 0.93 seconds."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-family:step"></span>
@@ -2610,12 +2610,12 @@ a.card:hover { border-color: var(--fs-line-strong); }
     <p class="fs-caption">Each model gets the same gate f and τ = 1 s; the equations are the paper's (Section 1), the numbers are illustrative. Rise and fall times are measured on the simulated curves: the seconds to cover 63% of the gap to the new resting value.</p>
   </figure>
 
-  <h2>Bounded, however hard you push</h2>
-  <p>A neuron whose speed follows its input sounds like it could run away. Section 4 proves it can't, with two theorems that only need the gate <em>f</em> to be a sigmoid between 0 and 1, scaled by a weight W.</p>
-  <p><strong>Theorem 1</strong> (Eq. 4): the time constant stays between τ/(1 + τW) and τ. Our neuron has τ = 1 s and W = 4, so it lives between 0.20 s and 1 s. <strong>Theorem 2</strong> (Eq. 5): the state stays between min(0, A) and max(0, A). Both forces in Eq. 1 point into that range, the leak toward 0 and the gate toward A, so nothing can push the state out.</p>
-  <p>Feed the neuron a rough, made-up signal and turn its strength up to <span data-fs-scrub="fig-bounds:strength"><span data-fs-out="fig-bounds:strengthText">×10</span></span>. The <span data-fs-ref="fig-bounds:tau">time constant</span> bangs against its floor, and the <span data-fs-ref="fig-bounds:state">state</span> never crosses its envelope. Drag the <span data-fs-ref="fig-bounds:target">target A</span> below zero and the envelope flips with it.</p>
+  <h2>Bounds on the state and the time constant</h2>
+  <p>Section 4 gives two bounds. They require the gate <em>f</em> to be a sigmoid between 0 and 1, scaled by a weight W.</p>
+  <p><strong>Theorem 1</strong> (Eq. 4): the time constant stays between τ/(1 + τW) and τ. Our neuron has τ = 1 s and W = 4, so it remains between 0.20 s and 1 s. <strong>Theorem 2</strong> (Eq. 5): the state stays between min(0, A) and max(0, A). In Eq. 1, the leak pulls toward 0 and the gate pulls toward A, so the state remains in that range.</p>
+  <p>Use the rough, illustrative signal and raise its strength to <span data-fs-scrub="fig-bounds:strength"><span data-fs-out="fig-bounds:strengthText">×10</span></span>. The <span data-fs-ref="fig-bounds:tau">time constant</span> approaches its lower bound, and the <span data-fs-ref="fig-bounds:state">state</span> remains inside its bounds. Drag the <span data-fs-ref="fig-bounds:target">target A</span> below zero to move the state bounds with it.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-bounds-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-bounds-title">Time constant and state stay inside their envelopes</h3><span class="fs-status">Eqs. 4–5 · simulated</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-bounds-title">The time constant and state stay within bounds</h3><span class="fs-status">Eqs. 4–5 · simulated</span></header>
     <div class="fs-stage"><canvas id="fig-bounds" role="img" aria-label="Three lanes over ten seconds of a rough seeded input: the input, the time constant inside an envelope from tau over one plus tau W up to tau, and the state inside an envelope from min of zero and A to max of zero and A. Whatever the input strength, both curves stay inside."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-bounds:read"></span>
@@ -2623,15 +2623,15 @@ a.card:hover { border-color: var(--fs-line-strong); }
     </div>
     <p class="fs-caption">The envelopes are the paper's expressions (Theorems 1 and 2); the input is a seeded random signal and the neuron is the same illustrative one. Drag the target line in the bottom lane; the gate strength W is in settings.</p>
   </figure>
-  <p>A CT-RNN with the same gate is bounded too, but by τ·W·A: its ceiling grows with the weights. The LTC's ceiling is A, whatever W is. The paper also proves LTCs can approximate any smooth dynamical system over a finite stretch of time (Theorem 3, Section 5), the same kind of guarantee CT-RNNs have.</p>
+  <p>A CT-RNN with the same gate is also bounded by τ·W·A, so its upper bound grows with the weights. The LTC's upper bound is A for any W. The paper also proves that LTCs can approximate any smooth dynamical system over a finite stretch of time (Theorem 3, Section 5), the same kind of guarantee CT-RNNs have.</p>
 
-  <h2>A solver step that can't overshoot</h2>
-  <p>Eq. 1 has no neat closed-form answer, so a computer steps it forward in small slices of time, Δt. The paper notes that LTCs are <em>stiff</em>: when the gate is strong the state wants to move fast, and a plain step that follows the current slope (explicit Euler) can shoot past the target. Runge-Kutta solvers cope by taking many tiny steps, which is slow (Section 2).</p>
-  <p>The paper's fused solver uses one trick. For the x that multiplies the bracket in Eq. 1, use the state at the <em>end</em> of the step instead of the start, and keep the start-of-step state inside <em>f</em> (Eq. 2). That makes the step solvable in one line, the paper's Eq. 3:</p>
+  <h2>The fused solver step</h2>
+  <p>Eq. 1 has no closed-form answer in general, so a computer advances it in small time steps of Δt. The paper describes LTCs as <em>stiff</em>: a strong gate can make the state change quickly. A step based on the current slope, called explicit Euler, can overshoot the target. Runge-Kutta solvers handle this by taking many small steps, which is slow (Section 2).</p>
+  <p>The paper's fused solver uses the state at the <em>end</em> of the step for the x that multiplies the bracket in Eq. 1. It keeps the start-of-step state inside <em>f</em> (Eq. 2). The result is the paper's Eq. 3:</p>
   <p class="eq">x(t + Δt) = [ x(t) + Δt · f · A ] / [ 1 + Δt · (1/τ + f) ]</p>
-  <p>Read it as a weighted average of three things: the current state, the target A and rest at 0. An average of numbers between 0 and A stays between 0 and A, so the step can't overshoot, however big Δt gets. Drag the <span data-fs-ref="fig-solver:dt">step size</span> on the time axis and compare.</p>
+  <p>The result is a weighted average of the current state, the target A and rest at 0. An average of numbers between 0 and A stays between 0 and A, so the step cannot overshoot for any Δt. Drag the <span data-fs-ref="fig-solver:dt">step size</span> on the time axis to compare the methods.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-solver-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-solver-title">The fused step stays under the ceiling at any step size</h3><span class="fs-status">Eqs. 2–3 · simulated</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-solver-title">The fused step does not overshoot</h3><span class="fs-status">Eqs. 2–3 · simulated</span></header>
     <div class="fs-stage"><canvas id="fig-solver" role="img" aria-label="The state of the neuron after a press, over two seconds: the exact curve, explicit Euler steps that overshoot the ceiling A equals 1 when the step is large, and fused steps that approach the resting value from below. A bar under the chart splits one fused step into its three weights."></canvas></div>
     <div class="fs-toolbar">
       <span class="fs-position" data-fs-out="fig-solver:step"></span>
@@ -2642,11 +2642,11 @@ a.card:hover { border-color: var(--fs-line-strong); }
   </figure>
   <p>In the paper's experiments each input sample is split into 6 of these fused steps (Algorithm 1 unfolds L steps; Section S5 sets the step to 1/6 of the input sampling period). Training runs plain backpropagation through all of those steps instead of the adjoint method neural ODEs often use: memory grows with the sequence, O(L × T) instead of O(1), but the gradients are accurate (Table 1, Section 3).</p>
 
-  <h2>Longer paths from the same input</h2>
-  <p>How do you measure whether one kind of network can draw more complicated shapes than another? The paper borrows <strong>trajectory length</strong> (Raghu et al. 2017): feed every network the same input, a circle traced once (I₁ = sin t, I₂ = cos t, for t from 0 to 2π), flatten its hidden state to 2D with PCA, and measure the length of the path it draws, like the ink a pen would use. The input circle itself has length 2π ≈ 6.28. A network that turns that circle into a long, tangled path is bending its input more (Section 5.1, Fig. 1).</p>
-  <p>The paper ran this on randomly initialised neural ODEs, CT-RNNs and LTCs, solved with RK45. The numbers below are printed in its Fig. 2. Pick a panel.</p>
+  <h2>Trajectory length</h2>
+  <p>The paper uses <strong>trajectory length</strong> (Raghu et al. 2017) to measure how much each network transforms the same input. The input is a circle traced once (I₁ = sin t, I₂ = cos t, for t from 0 to 2π). The hidden state is reduced to 2D with PCA, then the length of its path is measured. The input circle has length 2π ≈ 6.28. The paper treats a longer resulting path as a more expressive transformation (Section 5.1, Fig. 1).</p>
+  <p>The paper applies this measure to randomly initialised neural ODEs, CT-RNNs and LTCs solved with RK45. Use the tabs to compare the values printed in Fig. 2.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-length-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-length-title">The LTC draws the longest path in 14 of 15 settings</h3><span class="fs-status">Fig. 2 · paper's values</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-length-title">LTC leads trajectory length in 14 of 15 settings</h3><span class="fs-status">Fig. 2 · paper values</span></header>
     <div class="fs-tabbar"><div data-fs-param="fig-length:panel" data-label="Panels of Fig. 2"></div></div>
     <div class="fs-stage"><canvas id="fig-length" role="img" aria-label="Trajectory length on a log scale for a neural ODE, a CT-RNN and an LTC, for the settings of one panel of the paper's Figure 2. In most settings the LTC's path is several times to a thousand times longer; in panel A at layer 3 the neural ODE's is longer."></canvas></div>
     <div class="fs-toolbar">
@@ -2656,10 +2656,10 @@ a.card:hover { border-color: var(--fs-line-strong); }
   </figure>
   <p>Theorems 4 and 5 (Eqs. 7–9) put lower bounds on how this length grows: for all three models it grows exponentially with depth times the number of solver steps, and the LTC's bound carries an extra factor that grows with the size of its hidden state. The paper's reading of its Figs. 2 and 3: the length grows linearly with width, the LTC's grows faster than linearly with the spread of the weights, and in multi-layer tanh and sigmoid networks none of the three grows with depth.</p>
 
-  <h2>On real time series</h2>
-  <p>Longer paths are a hint, not a result. Section 6 trains each model with 32 hidden units on real sequences, five runs each, and reports mean ± standard deviation (Tables 3, 4 and 6; setup in Section S5). Pick what to compare the LTC with; every row is drawn so that better is to the right.</p>
+  <h2>Benchmark results</h2>
+  <p>Trajectory length measures expressivity. Section 6 tests task performance by training each model with 32 hidden units on real sequences for five runs and reporting mean ± standard deviation (Tables 3, 4 and 6; setup in Section S5). Choose a comparison model. Every row places the better result farther to the right.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-bench-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-bench-title">Ahead on four of seven Table 3 tasks, behind on three</h3><span class="fs-status">Tables 3, 4, 6 · paper</span></header>
+    <header class="fs-head"><h3 class="fs-title" id="fig-bench-title">LTC leads in four of seven Table 3 tasks</h3><span class="fs-status">Tables 3, 4, 6 · paper values</span></header>
     <div class="fs-tabbar"><div data-fs-param="fig-bench:versus" data-label="Compare the LTC with"></div></div>
     <div class="fs-stage"><canvas id="fig-bench" role="img" aria-label="Nine rows, one per task, each with its own scale where better is to the right: dots with error bars for LSTM, CT-RNN, neural ODE, CT-GRU and LTC, and a bracket between the LTC and the chosen comparison with the computed difference."></canvas></div>
     <div class="fs-toolbar">
@@ -2667,16 +2667,16 @@ a.card:hover { border-color: var(--fs-line-strong); }
     </div>
     <p class="fs-caption">Means and standard deviations over 5 runs, copied from Tables 3, 4 and 6; each row has its own scale. The bracket and its difference are computed here. Hover a dot for the method and value.</p>
   </figure>
-  <p>The paper says LTCs improve on the others by 5% to 70% in four of seven Table 3 tasks. Against the best other model on each task the gains are smaller: 1.8% on gesture, 0.1% on occupancy, 41% less error on traffic and 6.3% on ozone. Against weaker baselines they're bigger (on gesture the LTC beats the neural ODE by 48%), so the range depends on which baseline you pick. On a second version of the person activity task (Table 5), set up to match Rubanova et al. 2019, the LTC scores 0.882 ± 0.005 against 0.846 ± 0.013 for the best latent ODE.</p>
+  <p>The paper reports improvements of 5% to 70% in four of seven Table 3 tasks, but this range could not be matched to one baseline. Against the best other model on each task, the gains are 1.8% on gesture, 0.1% on occupancy, 41% less error on traffic and 6.3% on ozone. The gains are larger against weaker baselines. On gesture, the LTC beats the neural ODE by 48%. On a second version of the person activity task (Table 5), set up to match Rubanova et al. 2019, the LTC scores 0.882 ± 0.005 against 0.846 ± 0.013 for the best latent ODE.</p>
 
-  <h2>Where it is slower or weaker</h2>
-  <p>The longer paths have a price. Table 2 counts how many solver steps each input sample takes on average, which the paper calls computational depth. The LTC needs far more than the others:</p>
+  <h2>Limits</h2>
+  <p>Table 2 calls the average number of solver steps per input sample <em>computational depth</em>. The LTC uses more steps than the other models:</p>
   <div class="stats">
     <div class="stat"><b>81.01</b><span>solver steps per input for the LTC with Hard-tanh, against 0.61 for the neural ODE: 133× more</span><small>Table 2 · ± 10.05 and ± 0.02</small></div>
     <div class="stat"><b>56.9</b><span>for the LTC with ReLU, against 1.29 for the neural ODE and 4.31 for the CT-RNN</span><small>Table 2 · ReLU row</small></div>
     <div class="stat"><b>7.00</b><span>for the LTC with sigmoid, against 0.56 for the neural ODE: the smallest gap, still 12.5×</span><small>Table 2 · sigmoid row · ± 5.36</small></div>
   </div>
-  <p>The paper says so plainly in Section 8: neural ODEs are “remarkably fast” next to LTCs, and the LTC's expressivity comes “at the expense of elevated time and memory complexity”. Two more limits from the same section:</p>
+  <p>Section 8 says neural ODEs are “remarkably fast” next to LTCs, and that the LTC's expressivity comes “at the expense of elevated time and memory complexity”. It gives two more limits:</p>
   <ul>
     <li><strong>Long-term dependencies.</strong> Like other continuous-time RNNs trained by gradient descent, LTCs suffer from vanishing gradients, so in their current form they're “not the obvious choice” for learning long-range dependencies.</li>
     <li><strong>The solver matters.</strong> They do well with variable-step solvers and the fused solver, but performance is “majorly influenced” when off-the-shelf explicit Euler is used: the overshoot in the solver figure.</li>
@@ -5012,9 +5012,9 @@ function knob(f, c, x, y, key) {
   const WINDOW = 8, PERIOD = 6, PRESS = [1.5, 3.5];
   const loopInput = (t) => { const p = t % PERIOD; return p >= PRESS[0] && p < PRESS[1] ? 1 : 0; };
   const tips = {
-    input: { title: "Input", body: "The touch sensor's reading, 0 for nothing, 1 for a firm press. Drag the knob at the right edge to press it yourself." },
-    tau: { title: "Time constant", body: "τ/(1 + τf) from Eq. 1: about the seconds the state needs to cover two thirds of the way. Strong input, short time constant." },
-    state: { title: "State", body: "The neuron's internal value, x in Eq. 1. It heads for τfA/(1 + τf): 0.07 at rest, 0.80 while pressed." },
+    input: { title: "Input", body: "The touch sensor reads 0 when untouched and 1 for a firm press. Drag the knob at the right edge to set the input." },
+    tau: { title: "Time constant", body: "From Eq. 1, τ/(1 + τf) is roughly the seconds needed for the state to cover two thirds of the distance. A stronger input shortens it." },
+    state: { title: "State", body: "The neuron's internal value, x in Eq. 1. Its resting value is τfA/(1 + τf): 0.07 when untouched and 0.80 while pressed." },
   };
   const geo = (f) => {
     const narrow = narrowOf(f), Lx = narrow ? 96 : 118, R = f.w - (narrow ? 58 : 72);
@@ -5036,7 +5036,7 @@ function knob(f, c, x, y, key) {
   };
   FS.figure("fig-neuron", {
     height: (w) => (w < 560 ? 296 : 270),
-    params: { source: { value: "loop", label: "Input", placement: "inline", options: [{ value: "loop", label: "Press loop" }, { value: "hand", label: "Your hand" }] } },
+    params: { source: { value: "loop", label: "Input", placement: "inline", options: [{ value: "loop", label: "Press loop" }, { value: "hand", label: "Manual input" }] } },
     reserve: { read: ["input 1.00 · gate f 3.93 · time constant 0.93 s · state 0.80"] },
     tips,
     tipAt: (f, x, y) => { const g = geo(f); if (x > g.Lx) return null; const i = g.lanes.findIndex((l) => y >= l.y0 - 6 && y <= l.y1 + 6); return ["input", "tau", "state"][i] ?? null; },
@@ -5136,17 +5136,17 @@ function knob(f, c, x, y, key) {
   const [node, ctrnn, ltc] = MODELS;
   const ratio = ctrnn.rise / ltc.rise;
   const steps = [
-    { lanes: 1, caption: "The touch sensor: nothing, then a press from 1 s to 3 s, then nothing. All three models get exactly this input." },
-    { lanes: 2, caption: `Neural ODE: the input sets the slope directly. Nothing pulls the state back, so it climbs while pressed and stays at ${node.at(END).toFixed(1)}.` },
-    { lanes: 3, caption: `CT-RNN: a leak pulls the state back with a fixed τ = 1 s. It rises in ${ctrnn.rise.toFixed(2)} s and falls in ${ctrnn.fall.toFixed(2)} s: one speed both ways.` },
-    { lanes: 4, caption: `LTC: the gate sits beside the leak. It rises in ${ltc.rise.toFixed(2)} s while pressed and falls in ${ltc.fall.toFixed(2)} s after release.` },
-    { lanes: 4, compare: true, caption: `Same input, same τ: the LTC answers the press ${ratio.toFixed(1)}× faster than the CT-RNN, and lets go almost as slowly.` },
+    { lanes: 1, caption: "The touch sensor is untouched, then pressed from 1 s to 3 s, then untouched again; all three models receive this input." },
+    { lanes: 2, caption: `For the neural ODE, the input sets the slope directly, so the state rises while pressed and remains at ${node.at(END).toFixed(1)} without a leak.` },
+    { lanes: 3, caption: `The CT-RNN uses a fixed τ = 1 s, so it rises in ${ctrnn.rise.toFixed(2)} s and falls in ${ctrnn.fall.toFixed(2)} s.` },
+    { lanes: 4, caption: `For the LTC, the gate changes the time constant, so the state rises in ${ltc.rise.toFixed(2)} s while pressed and falls in ${ltc.fall.toFixed(2)} s after release.` },
+    { lanes: 4, compare: true, caption: `With the same input and τ, the LTC responds to the press ${ratio.toFixed(1)}× faster than the CT-RNN and returns almost as slowly.` },
   ];
   const tips = {
-    lane0: { title: "Input", body: "The press: 0, then 1 from 1 s to 3 s, then 0. Every model below gets it through the same gate f." },
-    lane1: { title: "Neural ODE", body: "The network sets the rate of change directly. No leak, so nothing returns the state to rest." },
-    lane2: { title: "CT-RNN", body: "Adds a leak −x/τ. Its time constant is τ, the same whatever the input does." },
-    lane3: { title: "LTC", body: "Eq. 1: the gate f joins the leak, so the time constant is τ/(1 + τf) and moves with the input." },
+    lane0: { title: "Input", body: "The input is 0, then 1 from 1 s to 3 s, then 0. Every model receives it through the same gate f." },
+    lane1: { title: "Neural ODE", body: "The network sets the rate of change directly. Without a leak, the state does not return to rest." },
+    lane2: { title: "CT-RNN", body: "The leak −x/τ gives the model a fixed time constant τ. The input does not change it." },
+    lane3: { title: "LTC", body: "In Eq. 1, the gate f joins the leak, so the time constant τ/(1 + τf) changes with the input." },
   };
   FS.figure("fig-family", {
     height: (w) => (w < 560 ? 350 : 300),
@@ -5228,10 +5228,10 @@ function knob(f, c, x, y, key) {
     return { narrow, Lx, R, lanes, yIn: (v) => Y(lanes[0], v, -1.1, 1.1), yTau: (v) => Y(lanes[1], v, 0, 1.12), yX: (v) => Y(lanes[2], v, -1.15, 1.15) };
   };
   const tips = {
-    input: { title: "Input", body: "A seeded random signal between −1 and 1, times the strength. At ×1000 the gate flips between fully off and fully on." },
-    tau: { title: "Time constant", body: "Theorem 1 (Eq. 4): between τ/(1 + τW) and τ, because the gate f stays between 0 and W." },
-    state: { title: "State", body: "Theorem 2 (Eq. 5): between min(0, A) and max(0, A), because the leak pulls toward 0 and the gate toward A." },
-    target: { title: "Target A", body: "Where the gate pulls the state, like a synapse's reversal potential. Drag it; below zero the gate pulls the state down." },
+    input: { title: "Input", body: "A seeded random signal between −1 and 1, multiplied by the input strength. At ×1000 the gate switches between fully off and fully on." },
+    tau: { title: "Time constant", body: "Theorem 1 (Eq. 4) places it between τ/(1 + τW) and τ because the gate f stays between 0 and W." },
+    state: { title: "State", body: "Theorem 2 (Eq. 5) places it between min(0, A) and max(0, A) because the leak pulls toward 0 and the gate toward A." },
+    target: { title: "Target A", body: "The gate pulls the state toward this value. Drag it below zero to make the gate pull the state down." },
   };
   FS.figure("fig-bounds", {
     height: (w) => (w < 560 ? 300 : 278),
@@ -5317,19 +5317,19 @@ function knob(f, c, x, y, key) {
   const at = (f) => run(f.params.dt, f.params.W);
   const first = (r) => ({ e: r.euler[1][1], u: r.fused[1][1], x: r.exact(r.euler[1][0]) });
   const steps = [
-    { show: ["exact"], caption: (f) => { const r = at(f); return `Pressed at t = 0, the state heads for ${r.rest.toFixed(2)} with a time constant of ${r.ts.toFixed(2)} s. This curve is the exact answer.`; } },
-    { show: ["exact", "euler"], caption: (f) => { const r = at(f), p = first(r), dt = f.params.dt; return p.e > LTC.A ? `Euler follows the starting slope for a whole Δt = ${dt.toFixed(2)} s: its first step lands at ${p.e.toFixed(2)}, above the ceiling A = 1.` : dt > r.ts ? `At Δt = ${dt.toFixed(2)} s Euler's first step lands at ${p.e.toFixed(2)}, past the resting value ${r.rest.toFixed(2)}, and swings back.` : `With Δt = ${dt.toFixed(2)} s Euler tracks the curve. Drag the step past ${r.ts.toFixed(2)} s and watch it overshoot.`; } },
-    { show: ["exact", "euler", "fused"], caption: (f) => { const r = at(f), p = first(r); return `The fused step's first move lands at ${p.u.toFixed(2)} (exact: ${p.x.toFixed(2)}). It creeps up from below and never passes ${r.rest.toFixed(2)}, at any Δt.`; } },
-    { show: ["exact", "euler", "fused", "mix"], caption: (f) => { const w = at(f).weights.map((v) => Math.round(v * 100)); return `One fused step is a weighted average: ${w[0]}% the current state, ${w[1]}% the target A, ${w[2]}% rest at 0. It can't leave [0, A].`; } },
+    { show: ["exact"], caption: (f) => { const r = at(f); return `After the press at t = 0, the exact curve approaches ${r.rest.toFixed(2)} with a time constant of ${r.ts.toFixed(2)} s.`; } },
+    { show: ["exact", "euler"], caption: (f) => { const r = at(f), p = first(r), dt = f.params.dt; return p.e > LTC.A ? `Euler uses the starting slope across Δt = ${dt.toFixed(2)} s, so its first step lands at ${p.e.toFixed(2)}, above the ceiling A = 1.` : dt > r.ts ? `At Δt = ${dt.toFixed(2)} s, Euler's first step lands at ${p.e.toFixed(2)}, past the resting value ${r.rest.toFixed(2)}, then returns.` : `With Δt = ${dt.toFixed(2)} s, Euler tracks the curve, but a step above ${r.ts.toFixed(2)} s causes overshoot.`; } },
+    { show: ["exact", "euler", "fused"], caption: (f) => { const r = at(f), p = first(r); return `The fused step's first move lands at ${p.u.toFixed(2)} (exact: ${p.x.toFixed(2)}) and approaches ${r.rest.toFixed(2)} from below without passing it at any Δt.`; } },
+    { show: ["exact", "euler", "fused", "mix"], caption: (f) => { const w = at(f).weights.map((v) => Math.round(v * 100)); return `One fused step averages ${w[0]}% of the current state, ${w[1]}% of the target A and ${w[2]}% of rest at 0, which keeps it inside [0, A].`; } },
   ];
   const geo = (f) => {
     const narrow = narrowOf(f), L = narrow ? 34 : 52, R = f.w - (narrow ? 14 : 110), T = narrow ? 30 : 16, B = f.h - (narrow ? 104 : 96);
     return { narrow, L, R, T, B, X: (t) => L + (t / END) * (R - L), Y: (v) => B - ((v + 0.4) / 2.0) * (B - T) };
   };
   const tips = {
-    exact: { title: "Exact", body: "The closed-form answer for a constant gate, rest·(1 − e^(−t/τsys)). What both step rules try to follow." },
-    euler: { title: "Explicit Euler", body: "x + Δt·slope at the start of the step. Cheap, but with a strong gate it overshoots and can blow up." },
-    fused: { title: "Fused step", body: "The paper's Eq. 3: the x outside f is taken at the end of the step. One division, no overshoot." },
+    exact: { title: "Exact", body: "The closed-form answer for a constant gate is rest·(1 − e^(−t/τsys)). Both step rules approximate this curve." },
+    euler: { title: "Explicit Euler", body: "This rule adds Δt times the starting slope to x. With a strong gate, it can overshoot and become unstable." },
+    fused: { title: "Fused step", body: "In the paper's Eq. 3, the x outside f is taken at the end of the step. The result does not overshoot." },
   };
   FS.figure("fig-solver", {
     height: (w) => (w < 560 ? 380 : 340),
