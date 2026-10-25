@@ -54,6 +54,24 @@
     out: (t) => 1 - (1 - t) ** 3,
     inOut: (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2),
   };
+  /** Ease one hop from node to node. Linear single-speed travel is intentionally not exposed. */
+  const hop = (u) => ease.inOut(clamp(u));
+  /**
+   * Repeating packet travel on the figure clock. A hop takes 1.25 s, then dwells for 0.15 s at
+   * the destination while fading out. `phase` offsets packets on the same edge without changing speed.
+   */
+  function travel(t, phase = 0, duration = 1.25, dwell = 0.15) {
+    const cycle = Math.max(1e-6, duration + dwell);
+    const cycles = t / cycle + phase;
+    const index = Math.floor(cycles);
+    const elapsed = ((cycles % 1) + 1) % 1 * cycle;
+    const p = clamp(elapsed / Math.max(1e-6, duration));
+    const dwelling = elapsed >= duration;
+    const alpha = dwelling
+      ? 1 - ease.out(clamp((elapsed - duration) / Math.max(1e-6, dwell)))
+      : ease.out(clamp(p / 0.08));
+    return { u: hop(p), alpha, dwelling, index };
+  }
   /** Progress of t through [t0, t1], eased; the building block of declared timelines. */
   const window_ = (t, t0, t1, fn = ease.smooth) => fn(clamp((t - t0) / Math.max(1e-6, t1 - t0)));
   function rng(seed) {
@@ -68,7 +86,7 @@
   const gauss = (r) => Math.sqrt(-2 * Math.log(1 - r())) * Math.cos(2 * Math.PI * r());
 
   // ---------- theme tokens ----------
-  const COLOR_TOKENS = ["bg", "surface", "surface-2", "line", "line-strong", "faint", "muted", "fg", "strong", "accent", "good", "bad", "c1", "c2", "c3", "c4", "c5", "c6"];
+  const COLOR_TOKENS = ["bg", "surface", "surface-2", "node", "line", "line-strong", "faint", "muted", "fg", "strong", "accent", "good", "bad", "c1", "c2", "c3", "c4", "c5", "c6"];
   const camel = (s) => s.replace(/-(\w)/g, (_, c) => c.toUpperCase());
   function readTheme(f) {
     // Resolve through a probe inside the figure so per-figure themes and var() chains work in canvas.
@@ -78,7 +96,7 @@
       box.hidden = true;
       f.probes = COLOR_TOKENS.map((token) => {
         const probe = document.createElement("span");
-        probe.style.color = `var(--fs-${token})`;
+        probe.style.color = token === "node" ? "var(--fs-node, var(--fs-surface-2))" : `var(--fs-${token})`;
         box.append(probe);
         return probe;
       });
@@ -1655,6 +1673,8 @@
     wake,
     k,
     ease,
+    hop,
+    travel,
     window: window_,
     damp,
     spring,

@@ -72,10 +72,15 @@
           K.text(f, c, name, x + w / 2, L.bottom + 16, { size: 11, align: "center", color: miss ? C.muted : C.fg });
         });
         const held = f.drag === "target" || f.handleHover === "target";
-        c.fillStyle = C.accent;
-        c.fillRect(L.x0, Y(target) - (held ? 1 : 0.5), L.x1 - L.x0, held ? 2 : 1.5);
+        c.save();
+        c.globalAlpha = 0.65;
+        c.setLineDash([5, 4]);
+        c.strokeStyle = C.fg;
+        c.lineWidth = held ? 1.5 : 1.2;
+        K.line(c, L.x0, Y(target), L.x1, Y(target));
+        c.restore();
         dot(c, [L.x1 - 14, Y(target)], held ? 7 : 5.5, C.accent);
-        if (!L.narrow) K.label(f, c, `target ${Math.round(target)}k`, L.x1 + 4, Y(target), { size: 11, color: C.accent });
+        if (!L.narrow) K.label(f, c, `target ${Math.round(target)}k`, L.x1 + 4, Y(target), { size: 11, color: C.fg, alpha: 0.65 });
       },
     });
   }

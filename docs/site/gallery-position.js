@@ -183,82 +183,105 @@
     });
   }
 
-  /* ---------- Funnel: what leaves at each stage ---------- */
+  /* ---------- Funnel: conversion slices with continuous edges ---------- */
   {
     const STAGES = ["Visit", "Sign up", "Add to cart", "Check out", "Pay"];
-    const RATES = (signup) => [1, signup, 0.4, 0.6, 0.83];
+    const RATES = (signup) => [signup, 0.4, 0.6, 0.83];
     const counts = (signup) => {
-      let n = 10000;
-      return RATES(signup).map((r) => (n = Math.round(n * r)));
+      const values = [10000];
+      for (const rate of RATES(signup)) values.push(Math.round(values.at(-1) * rate));
+      return values;
     };
     const r = FS.rng(4);
-    const DROPS = Array.from({ length: 160 }, () => ({ u: r(), x: r() - 0.5, phase: r() }));
+    const PARTICLES = Array.from({ length: 40 }, () => ({ keep: r(), x: r() - 0.5, phase: r() * 5 }));
     let L = null;
     function layout(w) {
       const narrow = w < NARROW;
-      const label = narrow ? 0 : 120;
-      return { narrow, h: narrow ? 330 : 280, x0: label, x1: w - (narrow ? 0 : 110), top: narrow ? 8 : 14, rh: narrow ? 62 : 52 };
+      return narrow
+        ? { narrow, h: 356, x0: 82, x1: w - 56, top: 48, rh: 70 }
+        : { narrow, h: 278, x0: 120, x1: w - 110, top: 34, rh: 56 };
     }
     const fmt = (n) => n.toLocaleString("en-US");
     FS.figure("fig-funnel", {
       height: (w) => layout(w).h,
+      settle: 3,
       params: { signup: { value: 0.5, min: 0.2, max: 0.8, step: 0.05, label: "Sign-up rate", placement: "inline", format: (v) => `${Math.round(v * 100)}%` } },
       reserve: { pay: ["2,656 pay"] },
-      tips: { s1: { title: "Sign up", body: "The biggest drop. Drag the rate under the figure to see how much it moves the bottom." } },
-      tipAt: (f, x, y) => { const i = Math.floor((y - L.top) / L.rh); return i === 1 ? "s1" : null; },
+      tips: { s1: { title: "Sign up", body: "The widest loss is visible in the first slice. Drag the rate under the figure to see how much it moves the bottom." } },
+      tipAt: (f, x, y) => (y >= (f.state.funnelY?.[0] ?? L.top) && y <= (f.state.funnelY?.[1] ?? L.top + L.rh) ? "s1" : null),
       onParam(f) { f.api.out("pay", `${fmt(counts(f.params.signup)[4])} pay`); },
       init(f) { f.api.out("pay", `${fmt(counts(f.params.signup)[4])} pay`); },
       resize(f) { L = layout(f.w); },
       render(f, c) {
         const C = f.C;
         const n = counts(f.v.signup);
+        const rates = RATES(f.v.signup);
         const W = L.x1 - L.x0;
         const cx = L.x0 + W / 2;
-        const wOf = (k) => (W * k) / 10000;
-        STAGES.forEach((name, i) => {
-          const y = L.top + i * L.rh;
-          const h = L.rh - (L.narrow ? 26 : 16);
-          const by = L.narrow ? y + 18 : y;
-          const w = Math.max(3, wOf(n[i]));
-          c.fillStyle = i === 4 ? C.accent : C.fg;
-          c.globalAlpha = i === 4 ? 1 : 0.16 + 0.12 * (4 - i) / 4;
-          K.rrect(c, cx - w / 2, by, w, h, 4);
+        const width = (value) => Math.max(4, (W * value) / n[0]);
+        const rawHeights = n.slice(0, 4).map((_, i) => n[i + 1] / ((width(n[i]) + width(n[i + 1])) / 2));
+        const heightScale = (4 * L.rh) / rawHeights.reduce((sum, value) => sum + value, 0);
+        const ys = [L.top];
+        rawHeights.forEach((value) => ys.push(ys.at(-1) + value * heightScale));
+        f.state.funnelY = ys;
+
+        K.text(f, c, `${STAGES[0]} · ${fmt(n[0])}`, cx, 18, { size: 11, weight: 600, color: C.fg, align: "center" });
+        for (let i = 0; i < 4; i++) {
+          const y0 = ys[i];
+          const y1 = ys[i + 1];
+          const top = width(n[i]);
+          const bottom = width(n[i + 1]);
+          c.beginPath();
+          c.moveTo(cx - top / 2, y0);
+          c.lineTo(cx + top / 2, y0);
+          c.lineTo(cx + bottom / 2, y1);
+          c.lineTo(cx - bottom / 2, y1);
+          c.closePath();
+          c.fillStyle = i === 0 ? C.accent : C.node;
+          c.globalAlpha = i === 0 ? 0.9 : 1;
           c.fill();
           c.globalAlpha = 1;
-          c.strokeStyle = f.hover === "s1" && i === 1 ? C.accent : C.lineStrong;
+          c.strokeStyle = C.surface;
+          c.lineWidth = 2;
           c.stroke();
+          c.strokeStyle = f.hover === "s1" && i === 0 ? C.accent : C.lineStrong;
+          c.lineWidth = f.hover === "s1" && i === 0 ? 1.5 : 1;
+          c.stroke();
+
+          const ty = (y0 + y1) / 2 + 4;
           if (L.narrow) {
-            K.text(f, c, name, 0, y + 12, { size: 11, weight: 600, color: C.fg });
-            K.text(f, c, fmt(n[i]), f.w, y + 12, { size: 11, align: "right", color: C.fg });
+            K.text(f, c, STAGES[i + 1], 0, ty, { size: 11, weight: 600, color: C.fg });
+            K.text(f, c, fmt(n[i + 1]), f.w, ty, { size: 11, align: "right", color: C.fg });
           } else {
-            K.text(f, c, name, 0, y + h / 2 + 4, { size: 12, weight: 600, color: C.fg });
-            K.text(f, c, fmt(n[i]), L.x1 + 12, y + h / 2 + 4, { size: 12, color: C.fg });
-            if (i) K.text(f, c, `−${fmt(n[i - 1] - n[i])}`, L.x1 + 12, y + h / 2 + 18, { size: 11 });
+            K.text(f, c, STAGES[i + 1], 0, ty, { size: 12, weight: 600, color: C.fg });
+            K.text(f, c, fmt(n[i + 1]), L.x1 + 12, ty - 5, { size: 12, color: C.fg });
+            K.text(f, c, `−${fmt(n[i] - n[i + 1])}`, L.x1 + 12, ty + 11, { size: 11 });
           }
-        });
-        // People flowing down; at each stage some leave sideways, in proportion to the drop.
-        const rates = RATES(f.v.signup);
-        for (const d of DROPS) {
-          const s = (f.t * 0.18 + d.phase) % 1;
-          const pos = s * 5;
-          const stage = Math.floor(pos);
-          let alive = 1;
-          for (let i = 1; i <= stage && i < 5; i++) alive *= rates[i];
-          const leaves = stage < 4 && d.u > alive * rates[stage + 1] && d.u <= alive;
-          if (d.u > alive) continue;
-          const frac = pos - stage;
-          const y0 = L.top + stage * L.rh + (L.narrow ? 18 : 0) + 6;
-          let x = cx + d.x * wOf(n[stage]) * 0.8;
-          let y = y0 + frac * L.rh;
-          let a = 0.8;
-          if (leaves && frac > 0.4) {
-            const k = (frac - 0.4) / 0.6;
-            x += Math.sign(d.x || 1) * k * 60;
-            y = y0 + 0.4 * L.rh;
-            a = 0.8 * (1 - k);
+        }
+
+        const cumulative = [];
+        rates.reduce((left, rate) => { cumulative.push(left * rate); return left * rate; }, 1);
+        for (const particle of PARTICLES) {
+          const drop = cumulative.findIndex((remaining) => particle.keep > remaining);
+          const dropAt = drop < 0 ? 4 : drop;
+          const travel = FS.travel(f.t, particle.phase);
+          const layer = ((travel.index % 5) + 5) % 5;
+          if (layer >= 4 || layer > dropAt) continue;
+          const y0 = ys[layer];
+          const y1 = ys[layer + 1];
+          const top = width(n[layer]);
+          const bottom = width(n[layer + 1]);
+          const span = FS.lerp(top, bottom, travel.u);
+          let x = cx + particle.x * span * 0.82;
+          let alpha = travel.alpha * 0.82;
+          if (layer === dropAt) {
+            const leaving = FS.ease.out(FS.clamp((travel.u - 0.55) / 0.45));
+            const edgeX = cx + Math.sign(particle.x || 1) * (span / 2 + 8);
+            x = FS.lerp(x, edgeX, leaving);
+            alpha *= 1 - leaving;
           }
-          if (y > L.top + 5 * L.rh) continue;
-          dot(c, [x, y], 2.2, C.fg, a);
+          const y = FS.lerp(y0 + 4, y1 - 4, travel.u);
+          dot(c, [x, y], 2.2, layer === 0 ? C.surface : C.fg, alpha);
         }
       },
     });
@@ -310,7 +333,7 @@
         const names = [["Quick wins", 0, 1], ["Big bets", 0.5, 1], ["Fill-ins", 0, 0.5], ["Money pits", 0.5, 0.5]];
         for (const [name, e, i] of names) {
           const lit = name === "Quick wins";
-          c.fillStyle = lit ? C.surface2 : C.surface;
+          c.fillStyle = C.node;
           c.fillRect(X(e), Y(i), L.s / 2, L.s / 2);
           K.text(f, c, name, X(e) + 10, Y(i) + 18, { size: 12, weight: 600, color: lit ? C.fg : C.muted });
         }
@@ -378,7 +401,7 @@
           const x = L.x + cell.ax * (L.s / 2);
           const y = L.y + cell.ay * (L.s / 2);
           const on = cell === here;
-          c.fillStyle = on ? C.surface2 : C.surface;
+          c.fillStyle = C.node;
           c.fillRect(x, y, L.s / 2, L.s / 2);
           c.strokeStyle = on ? C.fg : C.lineStrong;
           c.lineWidth = on ? 1.5 : 1;
@@ -504,12 +527,11 @@
     }));
   }
 
-  /* ---------- Radar: two plans on five axes, values at the vertices ---------- */
+  /* ---------- Radar: fixed values, selectable comparison series ---------- */
   {
     const AXES = ["Speed", "Price", "Reliability", "Support", "Security"];
     const PLANS = { a: [8, 4, 8, 7, 8], b: [5, 9, 6, 4, 5], c: [7, 6, 9, 8, 6] };
     const NAMES = { a: "Plan A", b: "Plan B", c: "Plan C" };
-    const A = [...PLANS.a];
     let L = null;
     function layout(w) {
       const narrow = w < NARROW;
@@ -520,29 +542,22 @@
       const a = -Math.PI / 2 + (i * 2 * Math.PI) / 5;
       return [L.cx + Math.cos(a) * L.R * (v / 10), L.cy + Math.sin(a) * L.R * (v / 10)];
     };
-    FS.figure("fig-radar", {
+    const fig = FS.figure("fig-radar", {
       height: (w) => layout(w).h,
       params: {
         other: { value: "b", label: "Compare Plan A with", placement: "inline", options: [{ value: "b", label: "Plan B" }, { value: "c", label: "Plan C" }] },
+        showA: { value: true, hidden: true },
+        showOther: { value: true, hidden: true },
         ...Object.fromEntries(AXES.map((_, i) => [`o${i}`, { value: PLANS.b[i], min: 0, max: 10, hidden: true }])),
       },
-      handles: Object.fromEntries(AXES.map((name, i) => [`a${i}`, {
-        label: `Plan A ${name}`,
-        description: "Drag along the axis to ask: what if Plan A scored this?",
-        radius: 12,
-        step: 12,
-        get: () => ({ x: pt(i, A[i])[0], y: pt(i, A[i])[1] }),
-        set: (f, x, y, phase) => {
-          const a = -Math.PI / 2 + (i * 2 * Math.PI) / 5;
-          const v = (((x - L.cx) * Math.cos(a) + (y - L.cy) * Math.sin(a)) / L.R) * 10;
-          A[i] = FS.clamp(phase === "drag" ? v : Math.round(v), 0, 10);
-          f.api.redraw();
-        },
-      }])),
       tips: { price: { title: "Price", body: "Higher is cheaper, so bigger is better on every axis." } },
       tipAt: (f, x, y) => { const p = pt(1, 11.5); return Math.hypot(x - p[0], y - p[1]) < 34 ? "price" : null; },
       onParam(f, name, value) {
-        if (name === "other") PLANS[value].forEach((v, i) => f.api.set(`o${i}`, v));
+        if (name === "other") {
+          PLANS[value].forEach((v, i) => f.api.set("o" + i, v));
+          const label = document.querySelector("[data-toggles=\"fig-radar\"] [data-key=\"showOther\"]");
+          if (label) label.textContent = NAMES[value];
+        }
       },
       resize(f) { L = layout(f.w); },
       render(f, c) {
@@ -574,20 +589,31 @@
           c.lineWidth = lw;
           c.stroke();
         };
-        shape(other, C.muted, 0.08, 1.25);
-        shape(A, C.accent, 0.14, 1.75);
-        // Values at the vertices: radar hides magnitude otherwise.
+        if (f.params.showOther) shape(other, C.muted, 0.08, 1.25);
+        if (f.params.showA) shape(PLANS.a, C.accent, 0.14, 1.75);
         AXES.forEach((_, i) => {
-          const p = pt(i, A[i]);
-          dot(c, p, f.drag === `a${i}` || f.handleHover === `a${i}` ? 6 : 4.5, C.accent);
-          K.label(f, c, A[i].toFixed(A[i] % 1 ? 1 : 0), p[0] + 9, p[1] - 9, { size: 11, color: C.accent });
-          const q = pt(i, other[i]);
-          K.label(f, c, other[i].toFixed(0), q[0] - 9, q[1] + 10, { size: 11, color: C.muted, align: "right" });
+          if (f.params.showA) {
+            const p = pt(i, PLANS.a[i]);
+            dot(c, p, 4.5, C.accent);
+            K.label(f, c, PLANS.a[i].toFixed(0), p[0] + 9, p[1] - 9, { size: 11, color: C.accent });
+          }
+          if (f.params.showOther) {
+            const q = pt(i, other[i]);
+            dot(c, q, 3.5, C.muted);
+            K.label(f, c, other[i].toFixed(0), q[0] - 9, q[1] + 10, { size: 11, color: C.muted, align: "right" });
+          }
         });
-        K.text(f, c, NAMES.a, 0, f.h - 22, { size: 11, weight: 600, color: C.accent });
-        K.text(f, c, NAMES[f.params.other], 0, f.h - 6, { size: 11, weight: 600, color: C.muted });
+        K.text(f, c, NAMES.a, 0, f.h - 22, { size: 11, weight: 600, color: C.accent, alpha: f.params.showA ? 1 : 0.35 });
+        K.text(f, c, NAMES[f.params.other], 0, f.h - 6, { size: 11, weight: 600, color: C.muted, alpha: f.params.showOther ? 1 : 0.35 });
       },
     });
+    const sync = GK.toggles("fig-radar", (key, update) => {
+      const next = !fig.params[key];
+      if (!next && !fig.params[key === "showA" ? "showOther" : "showA"]) return;
+      fig.set(key, next);
+      update(fig.params);
+    });
+    sync(fig.params);
   }
 
   /* ---------- DP security matrix: who can do what ---------- */

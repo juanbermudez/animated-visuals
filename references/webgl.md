@@ -66,7 +66,7 @@ Read theme colors from CSS (`getComputedStyle` on the figure element) into unifo
 
 The example's DOF is a per-point fake, not post-processing: `vDistance = abs(uFocus - (-mvPosition.z))`; out-of-focus points get larger (`gl_PointSize ∝ vDistance * uBlur`) and fainter (`alpha = 1.04 - clamp(vDistance * 1.5, 0, 1)`), round sprites, normal blending, no depth write. Only a selected fraction becomes large bokeh discs; the rest stay 1px dust.
 
-Use it to direct attention: drive `uFocus` with a critically damped spring to the depth of whatever the current step or paragraph is about; context blurs and fades. One uniform, almost free. Promote only the subset that matters (highlighted tokens, active agents) to large discs.
+Use it to direct attention: drive `uFocus` with a critically damped spring to the depth of whatever the current step or paragraph is about; context blurs and fades. One uniform, almost free. Promote only the subset that matters (highlighted tokens, active agents) to large discs. A focus field is worth using only when depth, attention or a sensor field of view is the claim; do not use it as generic particle texture.
 
 For meshes, post-processing DOF (`@react-three/postprocessing` `<DepthOfField focusDistance focusRange bokehScale />`, defaults 3.0 / 2.0 / 1.0, `resolutionScale 0.5`) costs a full-screen pass; prefer the point trick for particle figures.
 

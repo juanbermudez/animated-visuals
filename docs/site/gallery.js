@@ -15,9 +15,9 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
 /* ================= 1. Data flow: a queue in front of workers (canvas) ================= */
 (() => {
   const WORK = 1.8; // seconds a worker spends on one job
-  const HOP_IN = 0.8;
-  const HOP_WORK = 0.45;
-  const HOP_OUT = 0.6;
+  const HOP_IN = 1.2;
+  const HOP_WORK = 1.1;
+  const HOP_OUT = 1.2;
   const SETTLE_IN = 0.3; // a new job slides into its place in the line
   const r = FS.rng(11);
   const departs = [[0.2, 2.2, 7], [5.0, 5.8, 4], [8.4, 10.2, 7]]
@@ -158,7 +158,7 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
       const dots = [];
       for (const j of plan.jobs) {
         if (tl < j.depart) continue;
-        if (tl < j.queued) { dots.push({ p: point(edgeIn, (tl - j.depart) / HOP_IN), wait: false }); continue; }
+        if (tl < j.queued) { dots.push({ p: point(edgeIn, FS.hop((tl - j.depart) / HOP_IN)), wait: false }); continue; }
         if (tl < j.start) {
           // Its place in line, sliding forward as the ones ahead leave.
           let ahead = 0;
@@ -179,11 +179,11 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
         if (tl < j.work) {
           const from = slot(0);
           const b = bez(from, into(L.workers[j.worker], dir), dir);
-          dots.push({ p: point(b, (tl - j.start) / HOP_WORK), wait: false });
+          dots.push({ p: point(b, FS.hop((tl - j.start) / HOP_WORK)), wait: false });
           continue;
         }
         if (tl < j.done) { busy[j.worker] = (tl - j.work) / WORK; continue; }
-        if (tl < j.stored) { dots.push({ p: point(toStore[j.worker], (tl - j.done) / HOP_OUT), wait: false }); continue; }
+        if (tl < j.stored) { dots.push({ p: point(toStore[j.worker], FS.hop((tl - j.done) / HOP_OUT)), wait: false }); continue; }
         stored += 1;
       }
 
@@ -191,7 +191,7 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
       const node = (b, title, sub, o = {}) => {
         c.globalAlpha = o.alpha ?? 1;
         FS.k.rrect(c, b.x, b.y, b.w, b.h, 6);
-        c.fillStyle = C.surface;
+        c.fillStyle = C.node;
         c.fill();
         c.strokeStyle = f.hover === o.key ? C.accent : o.active ? C.fg : C.lineStrong;
         c.lineWidth = f.hover === o.key ? 1.5 : 1;
@@ -378,7 +378,7 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
         const kind = e < 0.5 ? A.req[i].kind : B.req[i].kind;
         const moving = e > 0 && e < 1;
         p.g.setAttribute("transform", `translate(${x.toFixed(1)},${y.toFixed(1)})`);
-        p.rect.setAttribute("fill", C.surface);
+        p.rect.setAttribute("fill", C.node);
         p.rect.setAttribute("stroke", moving ? C.accent : kind === "rejected" ? C.muted : C.lineStrong);
         p.rect.setAttribute("stroke-dasharray", kind === "rejected" ? "3 3" : "none");
         p.socket.setAttribute("cx", 14); p.socket.setAttribute("cy", PH / 2);
@@ -491,138 +491,119 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
   fig.out("overlapEnd", `${overlapEnd.toFixed(1)} s`);
 })();
 
-/* ================= 4. Chart with a draggable threshold (canvas) ================= */
+/* ================= 4. Dot plot with a horizontal threshold (canvas) ================= */
 (() => {
   const r = FS.rng(23);
-  const N = 120;
-  const make = (mu) => Array.from({ length: N }, () => ({ mu, z: FS.gauss(r), j: r() }));
-  const real = make(0.64);
-  const normal = make(0.37);
-  const score = (d, overlap) => FS.clamp(d.mu + 0.115 * overlap * d.z, 0.01, 0.99);
-  const DEFAULT = 0.5;
+  const ITEMS = Array.from({ length: 18 }, (_, i) => ({
+    label: `D${i + 1}`,
+    value: FS.clamp(0.18 + r() * 0.68 + Math.sin(i * 0.9) * 0.06, 0.04, 0.96),
+  }));
+  const DEFAULT = 0.58;
   const MIN = 0.05;
   const MAX = 0.95;
-  const G = { rowA: 64, rowB: 164, band: 22, knobY: 106, top: 36, bottom: 190, axis: 206, h: 236 };
-  const X = (f, s) => 16 + (f.w - 32) * s;
-  const S = (f, x) => (x - 16) / (f.w - 32);
-  let raw = null; // where the line is drawn while it is held or settling (it may rubber-band past the range)
+  let L = null;
+  let raw = null;
   let fromHandle = false;
-
-  function counts(cut, overlap) {
-    const caught = real.filter((d) => score(d, overlap) >= cut).length;
-    const alarms = normal.filter((d) => score(d, overlap) >= cut).length;
-    return { caught, alarms, precision: caught + alarms ? caught / (caught + alarms) : 1 };
-  }
-  function report(f) {
-    const n = counts(f.params.cut, f.params.overlap);
-    f.api.out("caught", `${n.caught} of ${N}`);
-    f.api.out("alarms", String(n.alarms));
-    f.api.out("precision", `${Math.round(n.precision * 100)}%`);
-  }
-  const dotY = (d, row) => row + (d.j - 0.5) * 2 * (G.band - 4);
+  function layout(w) { return { h: 262, x0: w < 560 ? 38 : 46, x1: w - 14, top: 16, bottom: 202, axis: 218 }; }
+  const X = (i) => L.x0 + ((L.x1 - L.x0) * i) / (ITEMS.length - 1);
+  const Y = (value) => L.bottom - (L.bottom - L.top) * value;
+  const valueAt = (y) => 1 - (y - L.top) / (L.bottom - L.top);
+  const flagged = (cut) => ITEMS.filter((item) => item.value >= cut).length;
+  function report(f) { f.api.out("flagged", `${flagged(f.params.cut)} of ${ITEMS.length}`); }
 
   FS.figure("fig-cut", {
-    height: () => G.h,
+    height: (w) => layout(w).h,
     autoplay: false,
     params: {
       cut: { value: DEFAULT, min: MIN, max: MAX, step: 0.01, label: "Threshold", hidden: true, format: (v) => v.toFixed(2) },
-      overlap: { value: 1, min: 0.4, max: 1.8, step: 0.05, label: "Overlap", format: (v) => `${v.toFixed(2)}×` },
     },
     handles: {
       cut: {
-        label: "Threshold: drag sideways or use the arrow keys",
+        label: "Threshold: drag up or down, or use the arrow keys",
         radius: 20,
-        get: (f) => ({ x: X(f, raw ?? f.v.cut), y: G.knobY }),
+        get: (f) => ({ x: L.x1 - 8, y: Y(raw ?? f.v.cut) }),
         set: (f, x, y, phase) => {
-          raw = S(f, x);
+          raw = valueAt(y);
           fromHandle = true;
           f.api.set("cut", Math.round(FS.clamp(raw, MIN, MAX) * 100) / 100, { instant: phase !== "key" });
           fromHandle = false;
           if (phase === "key") raw = null;
         },
-        bounds: (f) => ({ x0: X(f, MIN), y0: G.knobY, x1: X(f, MAX), y1: G.knobY }),
-        // Let go within a few pixels of the default and it springs back to it.
+        bounds: () => ({ x0: L.x1 - 8, y0: Y(MAX), x1: L.x1 - 8, y1: Y(MIN) }),
         release: (f) => {
-          const v = FS.clamp(raw ?? f.params.cut, MIN, MAX);
-          return { x: X(f, Math.abs(X(f, v) - X(f, DEFAULT)) < 6 ? DEFAULT : v), y: G.knobY };
+          const value = FS.clamp(raw ?? f.params.cut, MIN, MAX);
+          const snap = Math.abs(Y(value) - Y(DEFAULT)) < 6 ? DEFAULT : value;
+          return { x: L.x1 - 8, y: Y(snap) };
         },
-        step: 8.6,
+        step: 8,
       },
     },
     tips: {
-      cut: { title: "Threshold", body: "Scores at or above it get flagged. 0.50 here is a starting point, not a tuned value." },
-      missed: { title: "Missed", body: "A real problem that scored below the line, so nobody looks at it." },
-      caught: { title: "Caught", body: "A real problem at or above the line. It gets flagged." },
-      alarm: { title: "False alarm", body: "A normal case at or above the line. Someone checks it for nothing." },
-      clear: { title: "Cleared", body: "A normal case below the line. Correctly left alone." },
+      cut: { title: "Threshold", body: "Dots at or above it are flagged. 0.58 is an illustrative starting point." },
+      flagged: { title: "Flagged", body: "This value is at or above the threshold." },
+      plain: { title: "Not flagged", body: "This value is below the threshold." },
     },
     tipAt(f, x, y) {
-      const cut = f.params.cut;
-      if (Math.abs(x - X(f, raw ?? f.v.cut)) < 8 && y > G.top && y < G.bottom) return "cut";
+      const lineY = Y(raw ?? f.v.cut);
+      if (Math.abs(y - lineY) < 8 && x >= L.x0 && x <= L.x1) return "cut";
       let best = null;
-      let bestD = 49;
-      for (const [rows, row, isReal] of [[real, G.rowA, true], [normal, G.rowB, false]]) {
-        for (const d of rows) {
-          const s = score(d, f.v.overlap);
-          const dx = X(f, s) - x;
-          const dy = dotY(d, row) - y;
-          const dd = dx * dx + dy * dy;
-          if (dd < bestD) { bestD = dd; best = isReal ? (s >= cut ? "caught" : "missed") : s >= cut ? "alarm" : "clear"; }
-        }
-      }
+      let bestD = 64;
+      ITEMS.forEach((item, i) => {
+        const dx = X(i) - x;
+        const dy = Y(item.value) - y;
+        const d = dx * dx + dy * dy;
+        if (d < bestD) { bestD = d; best = item.value >= f.params.cut ? "flagged" : "plain"; }
+      });
       return best;
     },
     init: report,
     onParam(f) { if (!fromHandle) raw = null; report(f); },
+    resize(f) { L = layout(f.w); },
     render(f, c) {
       const C = f.C;
       const cut = f.params.cut;
-      const lineX = X(f, raw ?? f.v.cut);
-      const R = X(f, 1);
-      // Everything right of the line is flagged.
-      c.fillStyle = C.surface2;
-      c.fillRect(lineX, G.top, Math.max(0, R - lineX), G.bottom - G.top);
-      FS.k.text(f, c, "Real problems", 16, G.rowA - G.band - 10, { size: 11, weight: 500, color: C.fg });
-      FS.k.text(f, c, "Normal cases", 16, G.rowB - G.band - 10, { size: 11, weight: 500, color: C.fg });
-      // Axis.
-      c.strokeStyle = C.lineStrong;
-      c.lineWidth = 1;
-      FS.k.line(c, X(f, 0), G.axis, R, G.axis);
-      for (const s of [0, 0.25, 0.5, 0.75, 1]) {
-        FS.k.line(c, X(f, s), G.axis, X(f, s), G.axis + 4);
-        FS.k.text(f, c, s.toFixed(2), X(f, s), G.axis + 18, { size: 11, align: s === 0 ? "left" : s === 1 ? "right" : "center" });
+      for (const value of [0, 0.25, 0.5, 0.75, 1]) {
+        c.fillStyle = C.line;
+        c.fillRect(L.x0, Y(value), L.x1 - L.x0, 1);
+        FS.k.text(f, c, value.toFixed(2), L.x0 - 7, Y(value) + 4, { size: 11, align: "right" });
       }
-      FS.k.text(f, c, "flagged", R, G.axis - 6, { size: 11, align: "right" });
-      // Dots: real problems filled, normal cases hollow. Mistakes in full ink, the rest quiet.
-      const rad = f.w < 560 ? 2.6 : 3.1;
-      for (const [rows, row, isReal] of [[real, G.rowA, true], [normal, G.rowB, false]]) {
-        for (const d of rows) {
-          const s = score(d, f.v.overlap);
-          const wrong = isReal ? s < cut : s >= cut;
-          const x = X(f, s);
-          const y = dotY(d, row);
-          c.globalAlpha = wrong ? 1 : 0.42;
-          c.beginPath();
-          c.arc(x, y, rad, 0, 7);
-          if (isReal) { c.fillStyle = wrong ? C.fg : C.muted; c.fill(); }
-          else { c.strokeStyle = wrong ? C.fg : C.muted; c.lineWidth = 1.2; c.stroke(); }
+      c.fillStyle = C.lineStrong;
+      c.fillRect(L.x0, L.axis, L.x1 - L.x0, 1);
+      ITEMS.forEach((item, i) => {
+        const x = X(i);
+        const y = Y(item.value);
+        const isFlagged = item.value >= cut;
+        c.beginPath();
+        c.arc(x, y, isFlagged ? 4.2 : 3.6, 0, Math.PI * 2);
+        if (isFlagged) {
+          c.fillStyle = C.accent;
+          c.fill();
+        } else {
+          c.fillStyle = C.node;
+          c.fill();
+          c.strokeStyle = C.muted;
+          c.lineWidth = 1.2;
+          c.stroke();
         }
-      }
-      c.globalAlpha = 1;
-      // The line and its knob: thicker while hovered or held.
+        if (i % 3 === 0 || i === ITEMS.length - 1) FS.k.text(f, c, item.label, x, L.axis + 18, { size: 10.5, align: i === 0 ? "left" : i === ITEMS.length - 1 ? "right" : "center" });
+      });
+
+      const lineY = Y(raw ?? f.v.cut);
       const held = f.drag === "cut";
       const hot = held || f.handleHover === "cut" || f.hover === "cut";
-      c.strokeStyle = C.accent;
-      c.lineWidth = held ? 2.25 : hot ? 1.75 : 1.25;
-      FS.k.line(c, lineX, G.top, lineX, G.bottom);
+      c.save();
+      c.globalAlpha = 0.65;
+      c.setLineDash([5, 4]);
+      c.strokeStyle = C.fg;
+      c.lineWidth = held ? 1.5 : 1.2;
+      FS.k.line(c, L.x0, lineY, L.x1, lineY);
+      c.restore();
       const knob = held ? 7 : hot ? 6 : 4.5;
       c.fillStyle = C.surface;
-      c.beginPath(); c.arc(lineX, G.knobY, knob + 2, 0, 7); c.fill();
+      c.beginPath(); c.arc(L.x1 - 8, lineY, knob + 2, 0, Math.PI * 2); c.fill();
       c.fillStyle = C.accent;
-      c.beginPath(); c.arc(lineX, G.knobY, knob, 0, 7); c.fill();
-      const text = `threshold ${cut.toFixed(2)}`;
-      const right = lineX + 12 + 92 < R;
-      FS.k.label(f, c, text, right ? lineX + 12 : lineX - 12, G.knobY, { align: right ? "left" : "right", color: C.accent, halo: C.surface });
+      c.beginPath(); c.arc(L.x1 - 8, lineY, knob, 0, Math.PI * 2); c.fill();
+      FS.k.label(f, c, `threshold ${cut.toFixed(2)}`, L.x1, lineY - 12, { align: "right", color: C.fg, alpha: 0.65, halo: C.surface });
     },
   });
 })();
@@ -631,7 +612,7 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
 (() => {
   const svg = document.getElementById("fig-state");
   const make = svgMaker(svg);
-  const MOVE = 0.7;
+  const MOVE = 1.1;
   const TRIES = 3;
   const NAMES = { idle: "Idle", sending: "Sending", waiting: "Waiting", done: "Done", failed: "Failed" };
   const TIPS = {
@@ -828,7 +809,7 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
       for (const [key, s] of Object.entries(states)) {
         const current = key === m.state;
         const hovered = f.hover === key;
-        s.rect.setAttribute("fill", current ? C.fg : C.surface);
+        s.rect.setAttribute("fill", current ? C.fg : C.node);
         s.rect.setAttribute("stroke", hovered ? C.accent : current ? C.fg : C.lineStrong);
         s.rect.setAttribute("stroke-width", hovered ? 1.5 : 1);
         s.text.setAttribute("fill", current ? C.surface : C.fg);
@@ -837,7 +818,7 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
       histLabel.setAttribute("fill", C.muted);
       hist.forEach((c, i) => {
         const name = recent[i];
-        c.rect.setAttribute("fill", name && i === recent.length - 1 ? C.surface2 : "none");
+        c.rect.setAttribute("fill", name ? C.node : "none");
         c.rect.setAttribute("stroke", name ? C.lineStrong : C.line);
         c.rect.setAttribute("stroke-dasharray", name ? "none" : "2 3");
         c.text.textContent = name ? NAMES[name] : "";
@@ -845,7 +826,7 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
       });
       if (m.move) {
         const e = edges[m.move.edge];
-        const u = FS.ease.inOut(FS.clamp((f.t - m.move.t0) / MOVE));
+        const u = FS.hop((f.t - m.move.t0) / MOVE);
         const p = e.path.getPointAtLength(u * e.length);
         token.setAttribute("cx", p.x.toFixed(1));
         token.setAttribute("cy", p.y.toFixed(1));
@@ -872,7 +853,7 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
     { name: "Cache", tip: "Fast memory for recent answers. Empty for this profile, this time." },
     { name: "Database", tip: "The source of truth. Accurate, but the slowest stop." },
   ];
-  const DRAW = 0.5;
+  const DRAW = 1.0;
   const DURATION = 8;
   const MSGS = [
     { from: 0, to: 1, label: "GET /profile", t: 0.4, row: 0, tip: "The browser asks for the signed-in user's profile." },
@@ -934,7 +915,7 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
   const KEYS = () => [[0, L.y0 - 22], ...MSGS.map((m) => [m.t, rowY(m.row)]), [7.5, rowY(ROWS - 1) + 14], [DURATION, rowY(ROWS - 1) + 22]];
   const yAt = (t) => { const k = KEYS(); for (let i = 1; i < k.length; i++) if (t <= k[i][0]) return FS.lerp(k[i - 1][1], k[i][1], (t - k[i - 1][0]) / (k[i][0] - k[i - 1][0])); return k[k.length - 1][1]; };
   const tAt = (y) => { const k = KEYS(); if (y <= k[0][1]) return 0; for (let i = 1; i < k.length; i++) if (y <= k[i][1]) return FS.lerp(k[i - 1][0], k[i][0], (y - k[i - 1][1]) / (k[i][1] - k[i - 1][1] || 1)); return DURATION; };
-  const progress = (m, t) => FS.clamp((t - m.t) / DRAW);
+  const progress = (m, t) => FS.hop((t - m.t) / DRAW);
 
   const tips = Object.fromEntries(MSGS.map((m, i) => [`m${i}`, { title: m.label, body: m.tip }]));
   FS.figure("fig-seq", {
@@ -982,7 +963,7 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
       const C = f.C;
       const t = f.t;
       heads.forEach((h, i) => {
-        h.rect.setAttribute("fill", C.surface);
+        h.rect.setAttribute("fill", C.node);
         h.rect.setAttribute("stroke", f.hover === `p${i}` ? C.accent : C.lineStrong);
         h.text.setAttribute("fill", C.fg);
         h.line.setAttribute("stroke", C.lineStrong);
@@ -1007,7 +988,7 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
         } else el.wait.setAttribute("height", 0);
       });
       hatchLine.setAttribute("stroke", C.muted);
-      hatchBg.setAttribute("fill", C.surface);
+      hatchBg.setAttribute("fill", C.node);
       msgs.forEach((m, i) => {
         const p = progress(m, t);
         const a = L.xs[m.from];
@@ -1073,14 +1054,13 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
   FS.get("fig-seq").redraw();
 })();
 
-/* ================= 7. Particle field with a draggable, resizable focus (canvas) ================= */
+/* ================= 7. Moving samples inside a sensor field of view (canvas) ================= */
 (() => {
   const r = FS.rng(7);
-  const COUNT = 900;
+  const COUNT = 480;
   const psi = (x, y, t, k) => Math.sin(x * 2.1 * k + t * 0.21) * Math.cos(y * 1.7 * k - t * 0.17) + 0.5 * Math.sin((x + y) * 3.3 * k + t * 0.29);
   const curl = (x, y, t, k, e = 0.002) => [(psi(x, y + e, t, k) - psi(x, y - e, t, k)) / (2 * e), -(psi(x + e, y, t, k) - psi(x - e, y, t, k)) / (2 * e)];
   const P = Array.from({ length: COUNT }, () => { const x = r() * 2; const y = r(); return { x, y, px: x, py: y, age: r() * 6 }; });
-  // The focus lives in field units (x 0..2, y 0..1); handles convert to figure pixels.
   const focus = { x: 1.35, y: 0.5, r: 0.3 };
   const R_MIN = 0.1;
   const R_MAX = 0.45;
@@ -1091,13 +1071,12 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
     height: (w) => Math.round(w / 2),
     settle: 3,
     params: {
-      strength: { value: 1, min: 0, max: 2, step: 0.05, label: "Strength", format: (v) => `${v.toFixed(2)}×` },
-      scale: { value: 1, min: 0.5, max: 2.5, step: 0.05, label: "Field scale", format: (v) => `${v.toFixed(2)}×` },
+      scale: { value: 1, min: 0.5, max: 2.5, step: 0.05, label: "Flow scale", format: (v) => `${v.toFixed(2)}×` },
     },
-    reserve: { recruited: ["900 of 900 particles inside the ring"] },
+    reserve: { visible: [`${COUNT} of ${COUNT} samples in view`] },
     handles: {
       center: {
-        label: "Focus: drag or use arrow keys to move it",
+        label: "Sensor view: drag or use arrow keys to move it",
         radius: (f) => focus.r * unit(f),
         get: (f) => ({ x: focus.x * unit(f), y: focus.y * unit(f) }),
         set: (f, x, y) => { focus.x = x / unit(f); focus.y = y / unit(f); },
@@ -1105,7 +1084,7 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
         step: 12,
       },
       edge: {
-        label: "Focus radius: drag or use arrow keys to resize",
+        label: "Field-of-view radius: drag or use arrow keys to resize",
         radius: 14,
         get: (f) => ({ x: (focus.x + focus.r * DIAG) * unit(f), y: (focus.y - focus.r * DIAG) * unit(f) }),
         set: (f, x, y) => { focus.r = FS.rubber(Math.hypot(x / unit(f) - focus.x, y / unit(f) - focus.y), R_MIN, R_MAX, 0.08); },
@@ -1114,25 +1093,27 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
         step: 6,
       },
     },
+    tips: {
+      view: { title: "Sensor field of view", body: "Bright samples are inside the ring. Moving the ring changes what the sensor counts, not how the samples move." },
+    },
+    tipAt(f, x, y) {
+      const s = unit(f);
+      return Math.hypot(x - focus.x * s, y - focus.y * s) <= focus.r * s ? "view" : null;
+    },
     update(f, dt) {
-      const strength = f.v.strength;
       const k = f.v.scale;
       const r2 = focus.r * focus.r;
       inside = 0;
       for (const p of P) {
         const [vx, vy] = curl(p.x, p.y, f.t, k);
-        const dx = focus.x - p.x;
-        const dy = focus.y - p.y;
-        const d2 = dx * dx + dy * dy;
-        const pull = d2 < r2 ? strength * (1 - d2 / r2) * 1.6 : 0;
-        if (d2 < r2) inside++;
+        if ((p.x - focus.x) ** 2 + (p.y - focus.y) ** 2 < r2) inside++;
         p.px = p.x; p.py = p.y;
-        p.x += ((vx * 0.09) / k + dx * pull * 0.6) * dt;
-        p.y += ((vy * 0.09) / k + dy * pull * 0.6) * dt;
+        p.x += (vx * 0.09 * dt) / k;
+        p.y += (vy * 0.09 * dt) / k;
         p.age += dt;
         if (p.x < 0 || p.x > 2 || p.y < 0 || p.y > 1 || p.age > 7) { p.x = p.px = r() * 2; p.y = p.py = r(); p.age = 0; }
       }
-      f.api.out("recruited", `${inside} of ${COUNT} particles inside the ring`);
+      f.api.out("visible", `${inside} of ${COUNT} samples in view`);
     },
     render(f, c) {
       const C = f.C;
@@ -1140,7 +1121,6 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
       const r2 = focus.r * focus.r;
       const active = f.drag !== null || f.handleHover !== null;
       c.lineCap = "round";
-      c.strokeStyle = C.fg;
       for (const pass of [0, 1]) {
         c.beginPath();
         for (const p of P) {
@@ -1150,7 +1130,8 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
           c.moveTo((p.x - (p.x - p.px) * 6) * s, (p.y - (p.y - p.py) * 6) * s);
           c.lineTo(p.x * s, p.y * s);
         }
-        c.globalAlpha = pass ? 0.95 : 0.4;
+        c.globalAlpha = pass ? 0.95 : 0.36;
+        c.strokeStyle = pass ? C.accent : C.muted;
         c.lineWidth = pass ? 1.6 : 1.1;
         c.stroke();
       }
@@ -1163,10 +1144,10 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
       c.beginPath(); c.arc(cx, cy, rr, 0, Math.PI * 2); c.stroke();
       if (f.drag === "edge") { c.setLineDash([3, 3]); c.globalAlpha = 0.6; FS.k.line(c, cx, cy, cx + rr * DIAG, cy - rr * DIAG); c.setLineDash([]); c.globalAlpha = 1; }
       const knob = f.drag === "edge" ? 7 : f.handleHover === "edge" ? 6 : 4.5;
-      c.fillStyle = C.surface; c.beginPath(); c.arc(cx + rr * DIAG, cy - rr * DIAG, knob + 2, 0, 7); c.fill();
-      c.fillStyle = C.accent; c.beginPath(); c.arc(cx + rr * DIAG, cy - rr * DIAG, knob, 0, 7); c.fill();
+      c.fillStyle = C.surface; c.beginPath(); c.arc(cx + rr * DIAG, cy - rr * DIAG, knob + 2, 0, Math.PI * 2); c.fill();
+      c.fillStyle = C.accent; c.beginPath(); c.arc(cx + rr * DIAG, cy - rr * DIAG, knob, 0, Math.PI * 2); c.fill();
       const ly = cy - rr - 12 < 10 ? cy + rr + 14 : cy - rr - 12;
-      FS.k.label(f, c, f.drag === "edge" ? `radius ${focus.r.toFixed(2)}` : "focus", cx, ly, { align: "center", color: C.accent });
+      FS.k.label(f, c, f.drag === "edge" ? `radius ${focus.r.toFixed(2)}` : "sensor view", cx, ly, { align: "center", color: C.accent });
     },
   });
 })();

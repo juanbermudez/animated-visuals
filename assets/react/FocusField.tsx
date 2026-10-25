@@ -6,7 +6,8 @@ import * as THREE from "three";
 
 /**
  * A stateless particle field (position = f(seed, t), so any moment can be shown or scrubbed)
- * with a depth-of-field focus pull as an attention cursor. Out-of-focus points grow and fade;
+ * with a depth-of-field focus pull as an attention cursor. Use this only when depth, attention,
+ * or a sensor field of view is the claim, not as generic particle texture. Out-of-focus points grow and fade;
  * a damped spring moves the focal depth to `focus`. Theme colors come from --fs-* tokens.
  * Mount with next/dynamic(..., { ssr: false }) inside a client component, in an aspect-ratio box.
  */

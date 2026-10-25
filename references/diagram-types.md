@@ -63,7 +63,7 @@ The catalog follows Cathryn Lavery's [diagram-design](https://github.com/cathryn
 |---|---|---|---|---|
 | **Tree** | Parent to children | Branches grow from the root on entry, once | Collapse and expand subtrees with the layout easing to its new shape | Keep node positions stable when siblings collapse |
 | **Org chart** | Ownership and routing | A request routing up and across to whoever owns it | Click a person or team to see what they own and who they escalate to | Names are data: use roles in public figures |
-| **Pyramid / funnel** | Ranked importance, or drop-off between stages | The funnel drains: counts flow down and the loss at each stage is shown as what leaves | Drag a stage's conversion rate and watch the bottom change | Width must be proportional to the number, or say it isn't |
+| **Pyramid / funnel** | Ranked importance, or drop-off between stages | Eased items enter the wide end; the share lost at each continuous trapezoid slice fades at its edge | Drag a stage's conversion rate and watch the bottom change | Adjacent slices share an edge; state whether value controls slice area or flow-axis length |
 
 ## 6. Position and comparison
 
@@ -72,7 +72,7 @@ The catalog follows Cathryn Lavery's [diagram-design](https://github.com/cathryn
 | **Quadrant** | Two-axis positioning (impact × effort) | Items glide to their positions when the weighting changes | Drag an item to re-score it; drag the axis split | One word at each axis end; no midpoint labels |
 | **Consultant 2×2** | Named scenarios in a matrix | The current scenario cell lights; a marker moves as assumptions change | Two sliders (one per axis) moving a "we are here" marker | The cells' names carry the argument; keep them short |
 | **Venn** | Set overlap | Members drop into regions when sets are toggled | Toggle a set; hover a region to list its members and the count | Area-proportional only if you say so |
-| **Radar / spider** | Multi-axis comparison of a few things | The shape morphs between subjects | Pick subjects to compare; drag a vertex to ask "what if" | Radar hides magnitude; label values at the vertices |
+| **Radar / spider** | Multi-axis comparison of a few things | The shape morphs between subjects | Pick or toggle subjects to compare; hover vertices for exact values | Plotted values are fixed and never draggable; radar hides magnitude, so label values at the vertices |
 | **DP security matrix** | Who can do what, per role and component | Nothing moves by default; selecting a role sweeps its column | Pick a role or component to highlight its row or column; filter by permission | A matrix is a lookup; animation would slow it down |
 
 ## 7. Data charts
@@ -81,9 +81,9 @@ For charts, `charts.md` owns the details. In short:
 
 | Type | Use it when | What moves | What the reader can do | Watch out |
 |---|---|---|---|---|
-| **Bar** | Comparing categories | Bars grow once on entry; reorder smoothly when the sort or a filter changes | Drag a threshold line; toggle the series | Bars start at zero |
+| **Bar** | Comparing categories | Bars grow once on entry; reorder smoothly when the sort or a filter changes | Drag a threshold parameter; toggle the series | Bars start at zero; target, baseline, goal and average lines are dashed or dotted text color at 0.65 opacity |
 | **Line** | A trend over time | A playhead reveals the line; one series emphasized | Scrub; hover for values; drag a parameter that reshapes a modelled line | Direct end labels, no legend if possible |
-| **Scatter** | Distribution and correlation | Points glide when the encoding changes; the fit line updates live | Brush to select; drag an outlier to see the fit move | Write the slope on the plot |
+| **Scatter / dot plot** | Distribution, correlation or values across ordered items | Points glide only when the encoding or underlying dataset changes; a fit or threshold updates live | Brush to select; drag a horizontal threshold parameter on a dot plot | Never drag a plotted value; write the slope or flagged count on the plot |
 
 ## 8. Semantic patterns
 

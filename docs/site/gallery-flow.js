@@ -16,7 +16,7 @@
       c.globalAlpha *= o.alpha ?? 1;
       c.beginPath();
       c.moveTo(cx, b.y); c.lineTo(b.x + b.w, cy); c.lineTo(cx, b.y + b.h); c.lineTo(b.x, cy); c.closePath();
-      c.fillStyle = C.surface;
+      c.fillStyle = C.node;
       c.fill();
       c.strokeStyle = o.lit ? C.accent : o.active ? C.fg : C.lineStrong;
       c.lineWidth = o.lit ? 1.5 : 1;
@@ -129,7 +129,7 @@
           const start = legT(i) + (i ? 0.4 : 0);
           if (f.t >= start) {
             const pts = link(n[a], n[b]);
-            p = at(pts, FS.ease.inOut(FS.clamp((f.t - start) / 1)));
+            p = at(pts, FS.hop((f.t - start) / 1));
           }
         });
         dot(c, p, 5.5, C.accent);
@@ -266,15 +266,15 @@
         const pick = f.params.source;
         // With "All", the sources take turns, 2.4 s each, so one route is readable at a time.
         const turn = pick === "all" ? SOURCES[Math.floor(f.t / 2.4) % 3][0] : pick;
-        const phase = pick === "all" ? (f.t % 2.4) / 2.4 : (f.t * 0.45) % 1;
+        const phase = (f.t % 2.4) / 2.4;
         const narrow = L.h > 300;
         SOURCES.forEach(([k, name, proto], i) => {
           const pts = link(L.src[i], L.hub, narrow ? "y" : "x");
           const on = k === turn;
           edge(f, c, pts, { alpha: on ? 1 : 0.18, color: on ? C.fg : C.muted });
           if (on) {
-            if (pick === "all") { if (phase < 0.5) dot(c, at(pts, FS.ease.inOut(phase * 2)), 3.5, C.accent); }
-            else packets(f, c, pts, phase, 2);
+            if (pick === "all") { if (phase < 0.5) dot(c, at(pts, FS.hop(phase * 2)), 3.5, C.accent); }
+            else packets(f, c, pts, i * 0.17, 2);
             const m = at(pts, narrow ? 0.5 : 0.12);
             K.label(f, c, proto, m[0] + (narrow ? 6 : 0), m[1] - 10, { size: 11, align: "left", color: C.muted, weight: 400 });
           }
@@ -283,14 +283,14 @@
         CONSUMERS.forEach(([k, name, proto], i) => {
           const pts = link(L.hub, L.dst[i], narrow ? "y" : "x");
           edge(f, c, pts, { alpha: 0.9, arrow: true });
-          if (pick === "all") { if (phase >= 0.5) dot(c, at(pts, FS.ease.inOut((phase - 0.5) * 2)), 3.5, C.accent); }
-          else packets(f, c, pts, (phase + 0.5) % 1, 2);
+          if (pick === "all") { if (phase >= 0.5) dot(c, at(pts, FS.hop((phase - 0.5) * 2)), 3.5, C.accent); }
+          else packets(f, c, pts, 0.5 + i * 0.17, 2);
           const m = at(pts, narrow ? 0.5 : 0.86);
           K.label(f, c, proto, m[0] + (narrow ? 6 : -4), m[1] - (narrow ? 0 : 10), { size: 11, align: narrow ? "left" : "right", color: C.muted, weight: 400 });
           box(f, c, L.dst[i], { title: name });
         });
         // The hub boundary is the claim: the strongest shape on the stage.
-        box(f, c, L.hub, { title: "Data platform", sub: "one copy, one schema", active: true, hot: f.hover === "hub", lw: 2.25, fill: C.surface2 });
+        box(f, c, L.hub, { title: "Data platform", sub: "one copy, one schema", active: true, hot: f.hover === "hub", lw: 2.25, fill: C.node });
       },
     });
   }
@@ -327,14 +327,13 @@
         const p = [L.cx + L.R * Math.cos(ang(1)), L.cy + L.R * Math.sin(ang(1))];
         return Math.hypot(x - p[0], y - p[1]) < 40 ? "s1" : null;
       },
-      init(f) { f.state.level = 0.5; f.state.spin = 0; reportGain(f); },
+      init(f) { f.state.level = 0.5; reportGain(f); },
       update(f, dt) {
         const g = gainOf(f.v.quality);
         f.state.level = FS.clamp(f.state.level + (g - 1) * dt * 0.25, 0.04, 1);
-        f.state.spin += dt * 0.5 * f.state.level * Math.min(1.6, g);
       },
       onParam: reportGain,
-      resize(f) { L = layout(f.w); if (f.state.level == null) { f.state.level = 0.5; f.state.spin = 0; } },
+      resize(f) { L = layout(f.w); if (f.state.level == null) { f.state.level = 0.5; } },
       render(f, c) {
         const C = f.C;
         const { cx, cy, R } = L;
@@ -345,11 +344,13 @@
         c.beginPath();
         c.arc(cx, cy, R, 0, Math.PI * 2);
         c.stroke();
-        // Packets around the loop: as many as the trust level allows, moving as fast as the loop turns.
+        // Packet count shows the loop level; every packet keeps the same readable hop duration.
         const n = 2 + Math.round(level * 10);
         for (let i = 0; i < n; i++) {
-          const a = ang(0) + ((f.state.spin ?? 0) + i / n) * Math.PI * 2;
-          dot(c, [cx + R * Math.cos(a), cy + R * Math.sin(a)], 3, C.accent, 0.35 + 0.65 * level);
+          const travel = FS.travel(f.t, (i * 4) / n);
+          const hop = ((travel.index % 4) + 4) % 4;
+          const a = ang(hop) + travel.u * (Math.PI / 2);
+          dot(c, [cx + R * Math.cos(a), cy + R * Math.sin(a)], 3, C.accent, travel.alpha * (0.35 + 0.65 * level));
         }
         // Hub: fills with what the loop writes back (dashed write-back from Reviews).
         const hr = R * 0.42;
@@ -358,7 +359,7 @@
         c.save();
         c.beginPath();
         c.arc(cx, cy, hr, 0, Math.PI * 2);
-        c.fillStyle = C.surface;
+        c.fillStyle = C.node;
         c.fill();
         c.clip();
         c.fillStyle = C.fg;
@@ -488,7 +489,7 @@
           c.fill();
           c.globalAlpha = 1;
           if (t.key === "api" || t.key === "ui") {
-            c.fillStyle = C.surface;
+            c.fillStyle = C.node;
             c.fillRect(x1 - 4, y + 4, 2, h - 8);
           }
           const after = f.state.slack && f.state.slack.y === y ? f.state.slack.x + f.state.slack.w : x1;

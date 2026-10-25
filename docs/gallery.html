@@ -86,7 +86,7 @@
   <p class="types-group" id="nav-more">More</p>
   <ul aria-labelledby="nav-more">
     <li><a href="#threshold">Dot plot with a threshold</a></li>
-    <li><a href="#particle-field">Particle field</a></li>
+    <li><a href="#particle-field">Sensor field of view</a></li>
     <li><a href="#semantic-patterns">Semantic patterns</a></li>
   </ul>
 </nav>
@@ -400,7 +400,7 @@
       <span class="fs-position"><span data-fs-out="fig-funnel:pay"></span></span>
       <div class="fs-controls"><div class="fs-param-inline" data-fs-param="fig-funnel:signup"></div><button type="button" data-fs="fig-funnel play" aria-label="Pause"></button></div>
     </div>
-    <p class="fs-caption">Made-up rates. Bar widths are proportional to the counts. Tip: hover the sign-up stage.</p>
+    <p class="fs-caption">Made-up rates. Each slice is one conversion; its area is proportional to the remaining count, and adjacent slices share an edge. Tip: hover the sign-up slice.</p>
   </figure>
 </section>
 <h2 class="group-title" id="group-position-and-comparison">Position and comparison</h2>
@@ -443,8 +443,8 @@
 </section>
 <section class="type" id="radar" aria-labelledby="radar-h">
   <h2 id="radar-h">Plan B is cheaper, and behind on everything else</h2>
-  <p class="kind"><span>Radar</span><span>Compare</span><span>Drag a vertex</span></p>
-  <p>Plan A against another plan on five axes, bigger is better on each. Drag any of Plan A's points to ask what if.</p>
+  <p class="kind"><span>Radar</span><span>Compare</span><span>Toggle a series</span></p>
+  <p>Plan A against another plan on five axes, bigger is better on each. The plotted values stay fixed; use the legend to show or hide either series.</p>
   <figure class="fs-plate" aria-labelledby="fig-radar-title">
     <header class="fs-head"><h3 class="fs-title" id="fig-radar-title">Plan B is cheaper, and behind on everything else</h3><span class="fs-status">Illustration</span></header>
     <div class="fs-stage"><canvas id="fig-radar" role="img" aria-label="A five-axis radar chart comparing Plan A with Plan B or Plan C, with values at the vertices."></canvas></div>
@@ -452,7 +452,8 @@
       <span class="fs-position"></span>
       <div class="fs-controls"><div class="param-group"><span class="param-label" aria-hidden="true">Compare with</span><div class="fs-param-inline" data-fs-param="fig-radar:other"></div></div></div>
     </div>
-    <p class="fs-caption">Illustrative scores out of 10. Values are written at the vertices because the shape alone hides magnitude. Tip: price is scored so that cheaper is bigger.</p>
+    <div class="event-row" role="group" aria-label="Series" data-toggles="fig-radar"><span>Series</span><button type="button" data-key="showA" aria-pressed="true">Plan A</button><button type="button" data-key="showOther" aria-pressed="true">Plan B</button></div>
+    <p class="fs-caption">Illustrative scores out of 10. The values are fixed and written at the vertices because the shape alone hides magnitude. Tip: price is scored so that cheaper is bigger.</p>
   </figure>
 </section>
 <section class="type" id="security-matrix" aria-labelledby="security-matrix-h">
@@ -513,32 +514,30 @@
 </section>
 <h2 class="group-title" id="group-more">More figures</h2>
 <section class="type" id="threshold" aria-labelledby="threshold-h">
-  <h2 id="threshold-h">Moving the threshold trades misses for false alarms</h2>
+  <h2 id="threshold-h">Dot plot with a threshold</h2>
   <p class="kind"><span>Dot plot</span><span>Draggable threshold</span><span>Settings</span></p>
-  <p>A detector scores every case from 0 to 1 and flags anything at or above a threshold. At a threshold of <span data-fs-scrub="fig-cut:cut"></span>, it catches <span data-fs-out="fig-cut:caught"></span> real problems and raises <span data-fs-out="fig-cut:alarms"></span> false alarms. Drag the line, or the number. How much the two groups overlap is in the figure's settings.</p>
+  <p>Eighteen daily values are plotted by day. Drag the horizontal threshold, or use the arrow keys, to flag values above it: <span data-fs-out="fig-cut:flagged"></span>.</p>
   <figure class="fs-plate" aria-labelledby="fig-cut-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-cut-title">Moving the threshold trades misses for false alarms</h3><span class="fs-status">Illustration · seeded</span></header>
-    <div class="fs-stage"><canvas id="fig-cut" role="img" aria-label="Two rows of dots by score, real problems and normal cases, with a vertical threshold line"></canvas></div>
+    <header class="fs-head"><h3 class="fs-title" id="fig-cut-title">Dot plot with a threshold</h3><span class="fs-status">Illustration · seeded</span></header>
+    <div class="fs-stage"><canvas id="fig-cut" role="img" aria-label="A dot plot of eighteen daily values with a draggable horizontal threshold line"></canvas></div>
     <div class="fs-readouts">
-      <div class="fs-readout"><b data-fs-out="fig-cut:caught"></b><span>real problems caught</span></div>
-      <div class="fs-readout"><b data-fs-out="fig-cut:alarms"></b><span>false alarms, of 120 normal cases</span></div>
-      <div class="fs-readout"><b data-fs-out="fig-cut:precision"></b><span>of flags are real problems</span></div>
+      <div class="fs-readout"><b data-fs-out="fig-cut:flagged"></b><span>daily values flagged</span></div>
     </div>
-    <p class="fs-caption">Made-up scores for 240 cases. Bright dots are mistakes: real problems left of the line, normal cases right of it. The line springs back to 0.50 when you let go near it.</p>
+    <p class="fs-caption">Illustrative, seeded daily values. Accent dots are above the threshold; plain dots are below it. The dashed line springs back to 0.58 when you let go near it.</p>
   </figure>
 </section>
 <section class="type" id="particle-field" aria-labelledby="particle-field-h">
-  <h2 id="particle-field-h">A focus pulls in only what is near it</h2>
-  <p class="kind"><span>Particle field</span><span>Draggable focus</span><span>Settings</span></p>
-  <p>Particles follow a smooth flow. Inside the ring they are pulled toward its center; outside it, nothing changes. Drag the ring to move it and its knob to resize it. Strength and field scale are in the settings.</p>
+  <h2 id="particle-field-h">Sensor field of view</h2>
+  <p class="kind"><span>Moving samples</span><span>Draggable field of view</span><span>Settings</span></p>
+  <p>Moving samples cross a sensor's field of view. The ring shows how many are visible; drag it to move the sensor and drag its knob to resize the view. Flow scale is in the settings.</p>
   <figure class="fs-plate" aria-labelledby="fig-field-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-field-title">A focus pulls in only what is near it</h3><span class="fs-status">Illustration</span></header>
-    <div class="fs-stage"><canvas id="fig-field" role="img" aria-label="Particles drifting along a smooth flow; a ring gathers the particles inside it"></canvas></div>
+    <header class="fs-head"><h3 class="fs-title" id="fig-field-title">Sensor field of view</h3><span class="fs-status">Illustration</span></header>
+    <div class="fs-stage"><canvas id="fig-field" role="img" aria-label="Moving samples crossing a sensor field, with a draggable and resizable field-of-view ring"></canvas></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-field:recruited"></span>
+      <span class="fs-position" data-fs-out="fig-field:visible"></span>
       <div class="fs-controls"><button type="button" data-fs="fig-field play" aria-label="Pause"></button></div>
     </div>
-    <p class="fs-caption">Particles follow the curl of a smooth potential, so the flow never piles up or empties. Seeded: every visit starts the same way.</p>
+    <p class="fs-caption">Illustrative, seeded samples. The ring is the sensor's field of view; moving it changes the visible count, not the samples' motion.</p>
   </figure>
 </section>
 <section class="type" id="semantic-patterns" aria-labelledby="semantic-patterns-h">
