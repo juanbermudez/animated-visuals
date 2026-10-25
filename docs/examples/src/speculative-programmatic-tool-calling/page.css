@@ -1,0 +1,10 @@
+/* The guide's own furniture: the key under Fig. 1 and the readout lines that wrap on a phone. */
+.guide .key { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 0 20px 12px; color: var(--fs-muted); font-size: 12px; line-height: 1.4; }
+.guide .key span { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.guide .key i { display: inline-block; flex: none; }
+.guide .key .sw-call { width: 18px; height: 11px; border: 1px solid var(--fs-line); border-radius: 2px; background: repeating-linear-gradient(135deg, var(--fs-muted) 0 1px, var(--fs-surface-2) 1px 5px); }
+.guide .key .sw-file { width: 4px; height: 13px; border-radius: 1px; background: var(--fs-fg); }
+.guide .key .sw-answer { width: 10px; height: 10px; border-radius: 50%; background: var(--fs-accent); }
+.guide .key .sw-start { width: 0; height: 14px; border-left: 1px dashed var(--fs-muted); }
+.guide .fs-step-text.readout { min-height: 1.5em; }
+@media (max-width: 560px) { .guide .fs-step-text.readout { min-height: 3em; } }
