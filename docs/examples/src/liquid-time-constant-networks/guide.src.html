@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liquid time-constant networks · Animated Visuals</title>
+<meta name="description" content="A visual guide to Hasani et al., Liquid Time-constant Networks (AAAI 2021): a neuron whose time constant is set by its input, its bounds, the fused solver, trajectory length and the benchmarks, with six live figures.">
+<!--__EARLY_THEME__-->
+<link rel="icon" href="../site/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!--__FONTS__-->
+<style>
+/*__THEMES__*/
+/*__SITE_CSS__*/
+/*__EXAMPLES_CSS__*/
+/*__PAGE_CSS__*/
+</style>
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<!--__SITE_HEAD__-->
+
+<main class="page guide" id="main">
+  <p class="eyebrow">Example · a paper, explained</p>
+  <h1>A neuron that speeds up when its input arrives</h1>
+  <p class="source">A visual guide to Ramin Hasani, Mathias Lechner, Alexander Amini, Daniela Rus and Radu Grosu, “Liquid Time-constant Networks”, AAAI 2021 · <a href="https://arxiv.org/abs/2006.04439">the paper</a>. Built with Animated Visuals; every number from the paper says which equation, figure or table it comes from, and every simulated figure says so.</p>
+  <p class="lede">Most recurrent networks react at one speed, fixed once training ends. A liquid time-constant network (LTC) lets each neuron's speed depend on what it's hearing right now: fast when a signal arrives, slow when things go quiet. This guide follows one neuron reading one touch sensor, nothing and then a press, through the paper's equation, its two guarantees, its solver, and what all that buys on real data.</p>
+
+  <h2>One neuron, one sensor</h2>
+  <p>Picture a neuron wired to a touch sensor. While nobody touches it, the input sits near 0. Press it and the input jumps to 1. The neuron turns that into a smooth internal value, its <span data-fs-ref="fig-neuron:state">state</span>. How quickly the state follows is its <span data-fs-ref="fig-neuron:tau">time constant</span>: roughly the seconds it takes to cover two thirds of the way to where it's heading.</p>
+  <p>In an LTC the time constant isn't a number you set. It comes out of the input. Drag the <span data-fs-ref="fig-neuron:input">input</span> knob at the right edge: press hard and the time constant drops toward 0.20 s, so the state snaps up; let go and it drifts back toward 0.93 s, so the state relaxes slowly.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-neuron-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-neuron-title">Press harder and the neuron reacts faster</h3><span class="fs-status">Eq. 1 · simulated</span></header>
+    <div class="fs-stage"><canvas id="fig-neuron" role="img" aria-label="Three lanes scrolling over the last eight seconds: the input, the neuron's time constant between 0.2 and 1 second, and its state between 0 and 1. When the input rises the time constant falls and the state rises quickly; when the input falls the time constant rises and the state decays slowly."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-neuron:read"></span>
+      <div class="fs-controls"><div data-fs-param="fig-neuron:source"></div><button type="button" data-fs="fig-neuron play">Pause</button></div>
+    </div>
+    <p class="fs-caption">One LTC neuron from Eq. 1 with τ = 1 s, gate strength W = 4 and target A = 1, solved live with the paper's fused step (Eq. 3); the values are illustrative, not the paper's. Drag the knob on the input lane, or leave it on the press loop.</p>
+  </figure>
+
+  <h2>The one change from older continuous-time networks</h2>
+  <p>The paper starts from two older ideas. A <strong>neural ODE</strong> lets a small network <em>f</em> set how fast the state changes. A <strong>continuous-time RNN</strong> (CT-RNN) adds a leak, −x/τ, that pulls the state back to rest with one fixed time constant τ. The LTC changes where the input goes. It enters like a synapse on a real nerve cell: a current <em>f</em>·(A − x) that pulls the state toward a target A and grows with the input (Section 1, “Why this specific formulation?”). Multiply that out and you get the paper's Eq. 1:</p>
+  <p class="eq">dx/dt = −[ 1/τ + f(x, I, t, θ) ] · x + f(x, I, t, θ) · A</p>
+  <p>The input now sits inside the bracket that multiplies x, right beside the leak. That bracket sets how fast the state moves, so the time constant the system actually has is τ<sub>sys</sub> = τ / (1 + τ·f). When <em>f</em> is large, τ<sub>sys</sub> is small. Step through the same press for all three.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-family-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-family-title">Only the LTC changes speed with its input</h3><span class="fs-status">Eq. 1 · simulated</span></header>
+    <div class="fs-stage"><canvas id="fig-family" role="img" aria-label="Four lanes on one eight-second clock: a press from 1 to 3 seconds, then the response of a neural ODE, a CT-RNN and an LTC to it. The neural ODE keeps climbing and never returns; the CT-RNN rises and falls with the same 1 second time constant; the LTC rises in about 0.2 seconds and falls in about 0.93 seconds."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-family:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-family" aria-hidden="true"></span><button type="button" data-fs="fig-family prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-family next" aria-label="Next step">Next</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-family:caption" aria-live="polite"></p>
+    <p class="fs-caption">Each model gets the same gate f and τ = 1 s; the equations are the paper's (Section 1), the numbers are illustrative. Rise and fall times are measured on the simulated curves: the seconds to cover 63% of the gap to the new resting value.</p>
+  </figure>
+
+  <h2>Bounded, however hard you push</h2>
+  <p>A neuron whose speed follows its input sounds like it could run away. Section 4 proves it can't, with two theorems that only need the gate <em>f</em> to be a sigmoid between 0 and 1, scaled by a weight W.</p>
+  <p><strong>Theorem 1</strong> (Eq. 4): the time constant stays between τ/(1 + τW) and τ. Our neuron has τ = 1 s and W = 4, so it lives between 0.20 s and 1 s. <strong>Theorem 2</strong> (Eq. 5): the state stays between min(0, A) and max(0, A). Both forces in Eq. 1 point into that range, the leak toward 0 and the gate toward A, so nothing can push the state out.</p>
+  <p>Feed the neuron a rough, made-up signal and turn its strength up to <span data-fs-scrub="fig-bounds:strength"><span data-fs-out="fig-bounds:strengthText">×10</span></span>. The <span data-fs-ref="fig-bounds:tau">time constant</span> bangs against its floor, and the <span data-fs-ref="fig-bounds:state">state</span> never crosses its envelope. Drag the <span data-fs-ref="fig-bounds:target">target A</span> below zero and the envelope flips with it.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-bounds-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-bounds-title">Time constant and state stay inside their envelopes</h3><span class="fs-status">Eqs. 4–5 · simulated</span></header>
+    <div class="fs-stage"><canvas id="fig-bounds" role="img" aria-label="Three lanes over ten seconds of a rough seeded input: the input, the time constant inside an envelope from tau over one plus tau W up to tau, and the state inside an envelope from min of zero and A to max of zero and A. Whatever the input strength, both curves stay inside."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-bounds:read"></span>
+      <div class="fs-controls"><div data-fs-param="fig-bounds:strength"></div></div>
+    </div>
+    <p class="fs-caption">The envelopes are the paper's expressions (Theorems 1 and 2); the input is a seeded random signal and the neuron is the same illustrative one. Drag the target line in the bottom lane; the gate strength W is in settings.</p>
+  </figure>
+  <p>A CT-RNN with the same gate is bounded too, but by τ·W·A: its ceiling grows with the weights. The LTC's ceiling is A, whatever W is. The paper also proves LTCs can approximate any smooth dynamical system over a finite stretch of time (Theorem 3, Section 5), the same kind of guarantee CT-RNNs have.</p>
+
+  <h2>A solver step that can't overshoot</h2>
+  <p>Eq. 1 has no neat closed-form answer, so a computer steps it forward in small slices of time, Δt. The paper notes that LTCs are <em>stiff</em>: when the gate is strong the state wants to move fast, and a plain step that follows the current slope (explicit Euler) can shoot past the target. Runge-Kutta solvers cope by taking many tiny steps, which is slow (Section 2).</p>
+  <p>The paper's fused solver uses one trick. For the x that multiplies the bracket in Eq. 1, use the state at the <em>end</em> of the step instead of the start, and keep the start-of-step state inside <em>f</em> (Eq. 2). That makes the step solvable in one line, the paper's Eq. 3:</p>
+  <p class="eq">x(t + Δt) = [ x(t) + Δt · f · A ] / [ 1 + Δt · (1/τ + f) ]</p>
+  <p>Read it as a weighted average of three things: the current state, the target A and rest at 0. An average of numbers between 0 and A stays between 0 and A, so the step can't overshoot, however big Δt gets. Drag the <span data-fs-ref="fig-solver:dt">step size</span> on the time axis and compare.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-solver-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-solver-title">The fused step stays under the ceiling at any step size</h3><span class="fs-status">Eqs. 2–3 · simulated</span></header>
+    <div class="fs-stage"><canvas id="fig-solver" role="img" aria-label="The state of the neuron after a press, over two seconds: the exact curve, explicit Euler steps that overshoot the ceiling A equals 1 when the step is large, and fused steps that approach the resting value from below. A bar under the chart splits one fused step into its three weights."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-solver:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-solver" aria-hidden="true"></span><button type="button" data-fs="fig-solver prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-solver next" aria-label="Next step">Next</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-solver:caption" aria-live="polite"></p>
+    <p class="fs-caption">Same illustrative neuron, input held pressed from t = 0. The exact curve is the closed-form answer for a constant gate; the two step rules are Euler and the paper's Eq. 3. Drag the step marker on the time axis; W is in settings.</p>
+  </figure>
+  <p>In the paper's experiments each input sample is split into 6 of these fused steps (Algorithm 1 unfolds L steps; Section S5 sets the step to 1/6 of the input sampling period). Training runs plain backpropagation through all of those steps instead of the adjoint method neural ODEs often use: memory grows with the sequence, O(L × T) instead of O(1), but the gradients are accurate (Table 1, Section 3).</p>
+
+  <h2>Longer paths from the same input</h2>
+  <p>How do you measure whether one kind of network can draw more complicated shapes than another? The paper borrows <strong>trajectory length</strong> (Raghu et al. 2017): feed every network the same input, a circle traced once (I₁ = sin t, I₂ = cos t, for t from 0 to 2π), flatten its hidden state to 2D with PCA, and measure the length of the path it draws, like the ink a pen would use. The input circle itself has length 2π ≈ 6.28. A network that turns that circle into a long, tangled path is bending its input more (Section 5.1, Fig. 1).</p>
+  <p>The paper ran this on randomly initialised neural ODEs, CT-RNNs and LTCs, solved with RK45. The numbers below are printed in its Fig. 2. Pick a panel.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-length-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-length-title">The LTC draws the longest path in 14 of 15 settings</h3><span class="fs-status">Fig. 2 · paper's values</span></header>
+    <div class="fs-tabbar"><div data-fs-param="fig-length:panel" data-label="Panels of Fig. 2"></div></div>
+    <div class="fs-stage"><canvas id="fig-length" role="img" aria-label="Trajectory length on a log scale for a neural ODE, a CT-RNN and an LTC, for the settings of one panel of the paper's Figure 2. In most settings the LTC's path is several times to a thousand times longer; in panel A at layer 3 the neural ODE's is longer."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-length:read"></span>
+    </div>
+    <p class="fs-caption">Every value is printed in the paper's Fig. 2 above its panel (one network per setting). The dashed line is the input circle's length, 2π, for scale. Hover a dot for its exact value.</p>
+  </figure>
+  <p>Theorems 4 and 5 (Eqs. 7–9) put lower bounds on how this length grows: for all three models it grows exponentially with depth times the number of solver steps, and the LTC's bound carries an extra factor that grows with the size of its hidden state. The paper's reading of its Figs. 2 and 3: the length grows linearly with width, the LTC's grows faster than linearly with the spread of the weights, and in multi-layer tanh and sigmoid networks none of the three grows with depth.</p>
+
+  <h2>On real time series</h2>
+  <p>Longer paths are a hint, not a result. Section 6 trains each model with 32 hidden units on real sequences, five runs each, and reports mean ± standard deviation (Tables 3, 4 and 6; setup in Section S5). Pick what to compare the LTC with; every row is drawn so that better is to the right.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-bench-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-bench-title">Ahead on four of seven Table 3 tasks, behind on three</h3><span class="fs-status">Tables 3, 4, 6 · paper</span></header>
+    <div class="fs-tabbar"><div data-fs-param="fig-bench:versus" data-label="Compare the LTC with"></div></div>
+    <div class="fs-stage"><canvas id="fig-bench" role="img" aria-label="Nine rows, one per task, each with its own scale where better is to the right: dots with error bars for LSTM, CT-RNN, neural ODE, CT-GRU and LTC, and a bracket between the LTC and the chosen comparison with the computed difference."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-bench:read"></span>
+    </div>
+    <p class="fs-caption">Means and standard deviations over 5 runs, copied from Tables 3, 4 and 6; each row has its own scale. The bracket and its difference are computed here. Hover a dot for the method and value.</p>
+  </figure>
+  <p>The paper says LTCs improve on the others by 5% to 70% in four of seven Table 3 tasks. Against the best other model on each task the gains are smaller: 1.8% on gesture, 0.1% on occupancy, 41% less error on traffic and 6.3% on ozone. Against weaker baselines they're bigger (on gesture the LTC beats the neural ODE by 48%), so the range depends on which baseline you pick. On a second version of the person activity task (Table 5), set up to match Rubanova et al. 2019, the LTC scores 0.882 ± 0.005 against 0.846 ± 0.013 for the best latent ODE.</p>
+
+  <h2>Where it is slower or weaker</h2>
+  <p>The longer paths have a price. Table 2 counts how many solver steps each input sample takes on average, which the paper calls computational depth. The LTC needs far more than the others:</p>
+  <div class="stats">
+    <div class="stat"><b>81.01</b><span>solver steps per input for the LTC with Hard-tanh, against 0.61 for the neural ODE: 133× more</span><small>Table 2 · ± 10.05 and ± 0.02</small></div>
+    <div class="stat"><b>56.9</b><span>for the LTC with ReLU, against 1.29 for the neural ODE and 4.31 for the CT-RNN</span><small>Table 2 · ReLU row</small></div>
+    <div class="stat"><b>7.00</b><span>for the LTC with sigmoid, against 0.56 for the neural ODE: the smallest gap, still 12.5×</span><small>Table 2 · sigmoid row · ± 5.36</small></div>
+  </div>
+  <p>The paper says so plainly in Section 8: neural ODEs are “remarkably fast” next to LTCs, and the LTC's expressivity comes “at the expense of elevated time and memory complexity”. Two more limits from the same section:</p>
+  <ul>
+    <li><strong>Long-term dependencies.</strong> Like other continuous-time RNNs trained by gradient descent, LTCs suffer from vanishing gradients, so in their current form they're “not the obvious choice” for learning long-range dependencies.</li>
+    <li><strong>The solver matters.</strong> They do well with variable-step solvers and the fused solver, but performance is “majorly influenced” when off-the-shelf explicit Euler is used: the overshoot in the solver figure.</li>
+  </ul>
+  <p>And in Table 3 itself, three of seven tasks favour another model: activity recognition (neural ODE, 97.26% against 95.67%), sequential MNIST (LSTM, 98.41% against 97.57%) and power (CT-GRU, 0.586 against 0.642 squared error).</p>
+
+  <details class="verified">
+    <summary>Checked against the source</summary>
+    <ul>
+      <li><strong>Equations.</strong> Eq. 1 (state equation), τ<sub>sys</sub> = τ/(1 + τf) (Section 1), Eqs. 2–3 (fused step), Algorithm 1, Eq. 4 (Theorem 1), Eq. 5 (Theorem 2), trajectory length l(I) = ∫‖dI/dt‖dt with the circular input (Section 5.1), Eqs. 7–9 (Theorems 4–5), as written in the paper. The CT-RNN and neural ODE equations are the ones in Section 1.</li>
+      <li><strong>Fig. 2 (trajectory length).</strong> All 45 values in the trajectory-length figure are read from the labels printed above the panels of the paper's Fig. 2 (A: layers 1–3, Hard-tanh, depth 3; B: σ<sub>w</sub>² = 1, 2, 4, Hard-tanh, depth 1; C: width 100 and 200, ReLU, depth 1; D: layers 1–5, depth 5; E: width 100 and 200, Hard-tanh, depth 1; all RK45, width 100, σ<sub>w</sub>² = 2 and σ<sub>b</sub>² = 1 unless varied). Panel D's label says “tanh” while the caption says “logistic-sigmoid”; the guide follows the panel and says so.</li>
+      <li><strong>Tables 3, 4, 6 (benchmarks).</strong> Means and standard deviations as printed. Table 4 has a latent ODE where Table 3 has a neural ODE; the guide shows it in the same column and says so. Table 5 (0.882 ± 0.005 against 0.846 ± 0.013) and Table 2 (computational depth) are quoted in the prose. Ratios (133×, 12.5×), percentage gains (1.8%, 0.1%, 41%, 6.3%, 48%) and the brackets are computed here from those tables.</li>
+      <li><strong>Setup numbers.</strong> 32 hidden units, 5 runs, ODE step 1/6 of the input sampling period (Section S5, Table S1); O(L × T) against O(1) memory (Table 1).</li>
+      <li><strong>Simulated.</strong> The neuron in the first four figures is illustrative: τ = 1 s, W = 4, A = 1, and a gate f = W·sigmoid(8·(I − 0.5)) that depends only on the input. Its numbers (time constant 0.20 s to 0.93 s, resting state 0.07, pressed state 0.80, the Euler and fused values) are computed from Eq. 1 and Eq. 3 with those values, not reported by the paper. The rough input in the bounds figure is a seeded random signal.</li>
+      <li><strong>Left out on purpose.</strong> The proofs (Supplement S1–S4), Theorem 3's construction, Fig. 3's box plots (no numbers are printed for them), the Half-Cheetah setup beyond Table 6, the parameter counts of Table S2, and the wiring of multi-neuron LTC networks: the guide keeps to one neuron so every number can be checked by hand.</li>
+      <li><strong>Not verified.</strong> The paper's “5% to 70%” range could not be matched to a single baseline (see the benchmarks section). No experiment from the paper was re-run.</li>
+    </ul>
+  </details>
+</main>
+
+<!--__SITE_FOOT__-->
+<script>
+/*__RUNTIME__*/
+</script>
+<script>
+/*__THEMES_JS__*/
+/*__SITE_JS__*/
+</script>
+<script>
+/*__FLOW_JS__*/
+/*__GUIDE_JS__*/
+</script>
+</body>
+</html>
