@@ -39,7 +39,7 @@ Never: idle breathing, bounce, wobble, parallax, glow pulses on things that are 
 | Hover and control feedback | 240 ms (`--fs-dur`), `cubic-bezier(0.16, 1, 0.3, 1)` | site soft ease |
 | Parameter change | damped toward the target, λ ≈ 12 (~80 ms) | exponential |
 | Arrow as a gesture | draw 350 ms, hold 1.3 s, fade 450 ms | ease |
-| Packet travel | 2.5-4 s per edge at reading pace | linear in u, faded at both ends by sin(πu) |
+| Packet travel | 1.25 s per hop, then a 0.15 s node dwell | cubic in-out on the hop; fade in at entry and out during the dwell |
 | Counters, sweeps, playheads | as long as the process | linear |
 
 Hold at least 1 s on a new state; 2-3 s after a new sentence appears.
@@ -76,7 +76,7 @@ const damp = (cur, target, lambda, dt) => cur + (target - cur) * (1 - Math.exp(-
 
 ## 4. Patterns
 
-- **Packets on paths (SVG)**: precompute `getTotalLength()`; each frame place a few `<circle>`s at `getPointAtLength(u * length)`, `u += dt * speed`, opacity `sin(πu)` so packets emerge from and dissolve into nodes. 2-4 packets per edge. Inactive edges drop to 0.18 opacity and their packets fade with them.
+- **Packets on paths (SVG)**: precompute `getTotalLength()`; each frame place 2-4 `<circle>`s at `getPointAtLength(FS.travel(f.t, phase).u * length)`. `FS.travel` gives every 1.25 s hop cubic in-out acceleration and deceleration, then a 0.15 s dwell at the destination; packets fade during that dwell before the next hop. Several packets on one edge use fixed phase offsets, never different speeds. Linear single-speed travel is not acceptable. Inactive edges drop to 0.18 opacity and their packets fade with them.
 - **Draw-on**: SVG `stroke-dasharray: L; stroke-dashoffset: L → 0`, or on canvas slice the point array to `round(progress * n)`.
 - **Morph**: keep the same mark identities across states; interpolate positions with `smooth(t)`; never cross-fade two unrelated plots and call it a morph.
 - **Focus pull**: dim context to 0.28-0.45 over 0.45 s, draw an accent ring offset from the target, label the ring, keep the rest moving if it is a running process.

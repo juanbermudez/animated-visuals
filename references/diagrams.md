@@ -24,7 +24,7 @@ Diagrams explain structure and process. Animation adds direction, sequence and l
 
 ## 2. Nodes
 
-- Rect, 6px radius, `--fs-surface` fill, 1px stroke (`--fs-line-strong`; `--fs-fg` when active; `--fs-accent` ring when hovered or linked). Title 13px/600 in the figure font; subline 10.5px muted with the one number that matters ("gate · 4 ms").
+- Rect, 6px radius, `--fs-node` fill with `--fs-surface-2` as its fallback, 1px stroke (`--fs-line-strong`; `--fs-fg` when active; `--fs-accent` ring when hovered or linked). A node, box, panel or card inside a plate must remain a visible color step from the plate. Title 13px/600 in the figure font; subline 10.5px muted with the one number that matters ("gate · 4 ms").
 - Shape encodes kind sparingly: rect = component, rounded pill = data/message, cylinder only for persistent stores, dashed outline = optional or external.
 - Do not put icons in nodes unless the icon is the fastest way to say what the node is.
 
@@ -39,7 +39,7 @@ Diagrams explain structure and process. Animation adds direction, sequence and l
 ## 4. Packets and flow
 
 - 2-4 packets per edge, 3px radius dots, `--fs-fg`; `--fs-accent` on the path that the current step is about.
-- Position by `path.getPointAtLength(u * length)`; advance `u` linearly; fade by `sin(πu)`.
+- Position by `path.getPointAtLength(FS.travel(f.t, phase).u * length)`. Each hop takes 1.25 s, eases in and out with cubic in-out, and dwells for 0.15 s when it ends at a node. Several packets on one edge use fixed phase offsets, not different speeds; linear single-speed travel is not acceptable.
 - Encode relative load by packet count or speed, never by both. Say in the caption that speed is illustrative.
 - A branch that the current case does not take keeps its packets but drops to 0.18 opacity.
 - For many simultaneous flows (hundreds), switch to canvas and draw packets as short streaks along precomputed polylines.

@@ -70,25 +70,25 @@ function flowFigure(id, { meta, layouts, edges, returns = [], steps, params, H =
       z.text.setAttribute("x", c.x + c.w - 12); z.text.setAttribute("y", c.y + c.h - 10); z.text.setAttribute("text-anchor", "end");
     }
   }
-  let phase = 0, current = "";
+  let current = "";
   const onOf = (f) => { const s = steps[f.step].on; return new Set(typeof s === "function" ? s(f) : s); };
   const shown = (f, n) => !n.when || n.when(f);
   return FS.figure(id, {
     height: (w) => { const Lx = w < narrowBelow ? layouts.narrow : layouts.wide; return (w * Lx.box[1]) / Lx.box[0]; },
     steps, params,
     resize(f) { const name = f.w < narrowBelow ? "narrow" : "wide"; if (name !== current) { current = name; layout(name); } },
-    update(f, dt) { phase = (phase + dt * 0.3) % 1; f.dt = dt; },
+    update(f, dt) { f.dt = dt; },
     render(f) {
       const C = f.C, on = onOf(f), e = FS.ease.out(f.stepT);
       placeZones(f);
-      for (const z of zones) { z.rect.setAttribute("fill", C.surface2); z.rect.setAttribute("stroke", C.line); z.rect.setAttribute("opacity", "0.9"); z.text.setAttribute("fill", C.muted); }
+      for (const z of zones) { z.rect.setAttribute("fill", C.node); z.rect.setAttribute("stroke", C.line); z.rect.setAttribute("opacity", "0.9"); z.text.setAttribute("fill", C.muted); }
       for (const key in nodes) {
         const n = nodes[key], hovered = f.hover === key, lit = on.has(key), vis = shown(f, n);
         const target = !vis ? 0 : lit ? 1 : C.dim;
         n.alpha = f.stepT < 1 ? FS.lerp(n.alpha, target, e) : target;
         n.g.setAttribute("opacity", hovered && vis ? 1 : n.alpha.toFixed(3));
         n.g.style.pointerEvents = vis ? "" : "none";
-        n.rect.setAttribute("fill", pill && lit && f.step ? C.fg : C.surface);
+        n.rect.setAttribute("fill", pill && lit && f.step ? C.fg : C.node);
         n.rect.setAttribute("stroke", hovered ? C.accent : lit && f.step ? C.fg : C.lineStrong);
         n.rect.setAttribute("stroke-width", hovered ? 1.5 : 1);
         const ink = pill && lit && f.step ? C.surface : C.fg;
@@ -101,10 +101,11 @@ function flowFigure(id, { meta, layouts, edges, returns = [], steps, params, H =
         p.alpha = f.stepT < 1 ? FS.lerp(p.alpha, target, e) : target;
         p.path.setAttribute("stroke", C.muted); p.path.setAttribute("stroke-width", C.edge); p.path.setAttribute("opacity", p.alpha.toFixed(3));
         p.dots.forEach((dot, j) => {
-          const u = (phase + j / 3 + i * 0.13) % 1, pt = p.path.getPointAtLength(u * p.length);
+          const travel = FS.travel(f.t, j / 3 + i * 0.13);
+          const pt = p.path.getPointAtLength(travel.u * p.length);
           dot.setAttribute("cx", pt.x.toFixed(1)); dot.setAttribute("cy", pt.y.toFixed(1));
           dot.setAttribute("fill", active && f.step ? C.accent : C.fg);
-          dot.setAttribute("opacity", (p.alpha * Math.sin(Math.PI * u) * (active ? 1 : 0.5)).toFixed(3));
+          dot.setAttribute("opacity", (p.alpha * travel.alpha * (active ? 1 : 0.5)).toFixed(3));
         });
       });
     },

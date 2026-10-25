@@ -3,6 +3,7 @@ export type FsColors = {
   bg: string;
   surface: string;
   surface2: string;
+  node: string;
   line: string;
   lineStrong: string;
   faint: string;
@@ -275,6 +276,10 @@ export type FsRuntime = {
     out(t: number): number;
     inOut(t: number): number;
   };
+  /** Cubic in-out progress for one node-to-node hop. */
+  hop(u: number): number;
+  /** A 1.25 s eased hop plus a 0.15 s destination dwell; phase offsets packets without changing speed. */
+  travel(t: number, phase?: number, duration?: number, dwell?: number): { u: number; alpha: number; dwelling: boolean; index: number };
   window(t: number, t0: number, t1: number, fn?: (t: number) => number): number;
   damp(current: number, target: number, lambda: number, dt: number): number;
   spring(

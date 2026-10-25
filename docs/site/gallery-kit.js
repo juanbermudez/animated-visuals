@@ -9,7 +9,7 @@ window.GK = (() => {
     c.save();
     c.globalAlpha *= o.alpha ?? 1;
     K.rrect(c, b.x, b.y, b.w, b.h, o.r ?? 6);
-    c.fillStyle = o.fill || C.surface;
+    c.fillStyle = o.fill || C.node;
     c.fill();
     if (o.dash) c.setLineDash(o.dash);
     c.strokeStyle = o.hot ? C.accent : o.active ? C.fg : C.lineStrong;
@@ -87,13 +87,11 @@ window.GK = (() => {
     c.restore();
   }
 
-  /** n packets spaced evenly along a path, moving with phase (0..1 per lap). */
+  /** n packets on one path, sharing one hop duration and separated by fixed phase offsets. */
   function packets(f, c, pts, phase, n = 3, o = {}) {
     for (let i = 0; i < n; i++) {
-      const u = (phase + i / n) % 1;
-      // Fade in and out at the ends so packets never pop.
-      const a = Math.min(1, u * 6, (1 - u) * 6);
-      dot(c, at(pts, u), o.r || 3, o.color || f.C.accent, a);
+      const travel = FS.travel(f.t, phase + i / n);
+      dot(c, at(pts, travel.u), o.r || 3, o.color || f.C.accent, travel.alpha);
     }
   }
 

@@ -78,7 +78,7 @@
         c.stroke();
         c.restore();
         K.text(f, c, "Our network", L.wall.x + 10, L.wall.y + 16, { size: 11, color: C.muted });
-        for (const [a, b] of EDGES) {
+        for (const [edgeIndex, [a, b]] of EDGES.entries()) {
           const key = `${a}-${b}`;
           const hovered = f.hover === a || f.hover === b;
           const on = live.has(key) ? e : was.has(key) ? 1 - e : 0;
@@ -86,7 +86,7 @@
           edge(f, c, P[key], { color: hovered || on > 0.5 ? C.fg : C.muted, alpha, width: on > 0.5 ? 1.4 : C.edge });
           if (live.has(key)) {
             const pts = steps[f.step].back ? [...P[key]].reverse() : P[key];
-            packets(f, c, pts, (f.t * 0.45) % 1, 3, { alpha: e });
+            packets(f, c, pts, edgeIndex * 0.13, 3, { alpha: e });
           }
         }
         for (const k in L.n) {
@@ -240,9 +240,8 @@
           const mid = at(pts, 0.5);
           const text = m < 0.5 ? before : after;
           K.label(f, c, text, mid[0], mid[1] - 10, { size: 11, align: "center", color: C.muted, weight: 400, alpha: Math.abs(m - 0.5) * 2 });
-          // Today: jobs crawl and stop in the folder. Target: they flow.
-          const speed = m < 0.5 ? 0.12 : 0.6;
-          if (m >= 0.5 || i !== 1) packets(f, c, pts, (f.t * speed + i * 0.3) % 1, m < 0.5 ? 1 : 3, { alpha: Math.abs(m - 0.5) * 2 });
+          // Today: one record exposes the manual hand-off. Target: three phase-offset records show continuous flow.
+          if (m >= 0.5 || i !== 1) packets(f, c, pts, i * 0.17, m < 0.5 ? 1 : 3, { alpha: Math.abs(m - 0.5) * 2 });
         });
         for (const k in n) box(f, c, n[k], { title: NAMES[k][m < 0.5 ? 0 : 1][0], sub: NAMES[k][m < 0.5 ? 0 : 1][1], active: k === "mid", hot: f.hover === "mid" && k === "mid" });
         if (m < 0.5) {
@@ -431,7 +430,7 @@
           c.save();
           c.globalAlpha = onPath ? 1 : depth(k) === f.step + 1 && PARENT[k] === focus ? 0.7 : C.dim;
           K.rrect(c, r.x, r.y, r.w, r.h, Math.min(10, r.w / 10));
-          c.fillStyle = k === focus ? C.surface2 : C.surface;
+          c.fillStyle = k === focus ? C.surface2 : C.node;
           c.fill();
           c.strokeStyle = f.hover === k ? C.accent : k === focus ? C.fg : C.lineStrong;
           c.lineWidth = k === focus || f.hover === k ? 1.5 : 1;

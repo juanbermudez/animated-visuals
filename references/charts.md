@@ -19,8 +19,9 @@ Charts carry quantitative claims. Make the claim visible (annotate it), make the
 - **One emphasized series** in `--fs-fg` at the series stroke (1.75px); context series in `--fs-muted` at 1-1.25px or 45-50% opacity.
 - **Uncertainty is shown**, not smoothed away: bands at 12-16% opacity, or error bars 1.45px with 4px caps; value labels above the caps.
 - **Counterfactuals share an axis**; differences are marked (bracket, delta label) and computed from the data.
-- **Name features the claim is about** (a shaded band labeled "plateau", a reference line labeled "chance"), in `--fs-surface-2` / dashed `--fs-line-strong`.
-- **Bars start at zero; dot plots when the range matters more than magnitude.**
+- **Name features the claim is about** (a shaded band labeled "plateau", a reference line labeled "chance"). Bands use `--fs-surface-2`; reference lines are dashed or dotted text color at 0.65 opacity with a small label at the right end, never solid or full-opacity across the data.
+- **Bars start at zero; use dot plots when the range matters more than magnitude.** A threshold on a dot plot runs horizontally across the value axis; dragging it changes the threshold, never the plotted values.
+- **Readers never edit a plotted value.** Handles are for parameters, thresholds and other what-if inputs. Radar vertices, bar heights and data dots stay fixed; a radar legend may toggle series.
 - **Encoding without hue first**: solid vs hatched for two states (hatch on the treatment), dashed for references; hue only for named categories (`--fs-c1..c6`), consistent across the page.
 - **Numbers**: tabular figures, units always, the same rounding in labels, readouts and prose.
 - **Ordered segments** (stacked parts, pipeline stages) use a lightness ramp `--fs-line-strong` → `--fs-muted` → `--fs-fg`, never fg plus accent: in monochrome themes such as the default the accent is ink and two segments become identical.
@@ -72,7 +73,7 @@ Gotchas (from source):
 ## 4. Annotation patterns
 
 - **Callout**: a 3.5px dot on the mark plus a haloed label offset 8px; no leader line if the label sits next to the mark.
-- **Reference line**: dashed `--fs-line-strong`, label at its right end ("chance 10%").
+- **Reference line**: dashed or dotted text color at 0.65 opacity, with a small label at its right end ("chance 10%"); never draw a solid full-opacity target, baseline, goal, average or threshold across the chart.
 - **Region**: a `--fs-surface-2` band behind the data with a label under the axis.
 - **Delta**: a bracket between two values with the computed difference ("1.44× sooner", "−0.13").
 - **Before → after**: ghost the old series at 25% opacity while the new one animates in.

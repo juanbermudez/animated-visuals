@@ -45,16 +45,12 @@ export function FlowDiagram({
   const paths = useRef<(SVGPathElement | null)[]>([]);
   const dots = useRef<(SVGCircleElement | null)[]>([]);
   const alpha = useRef(new Map<string, number>());
-  const phase = useRef(0);
 
   const controller = useFigure(id, {
     height: (w) => (w < 560 ? (w * layouts.narrow.box[1]) / layouts.narrow.box[0] : (w * layouts.wide.box[1]) / layouts.wide.box[0]),
     steps,
     resize(f) {
       setLayoutName(f.w < 560 ? "narrow" : "wide");
-    },
-    update(_, dt) {
-      phase.current = (phase.current + dt * 0.3) % 1;
     },
     render(f: FsFigureState) {
       const C = f.C;
@@ -87,12 +83,12 @@ export function FlowDiagram({
         for (let k = 0; k < PACKETS; k++) {
           const dot = dots.current[i * PACKETS + k];
           if (!dot) continue;
-          const u = (phase.current + k / PACKETS + i * 0.13) % 1;
-          const point = path.getPointAtLength(u * length);
+          const travel = window.FS!.travel(f.t, k / PACKETS + i * 0.13);
+          const point = path.getPointAtLength(travel.u * length);
           dot.setAttribute("cx", point.x.toFixed(1));
           dot.setAttribute("cy", point.y.toFixed(1));
           dot.setAttribute("fill", active && f.step ? C.accent : C.fg);
-          dot.setAttribute("opacity", (next * Math.sin(Math.PI * u)).toFixed(3));
+          dot.setAttribute("opacity", (next * travel.alpha).toFixed(3));
         }
       });
     },
@@ -158,7 +154,7 @@ export function FlowDiagram({
                 width={w}
                 height={NODE_H}
                 rx={6}
-                fill="var(--fs-surface)"
+                fill="var(--fs-node, var(--fs-surface-2))"
               />
               <text x={x + 14} y={y + 20} fontSize={13} fontWeight={600} fill="var(--fs-fg)">
                 {node.label}
