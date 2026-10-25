@@ -7,7 +7,7 @@ Styles are layers that can be swapped or overridden without touching figure code
 | Layer | File | Owns |
 |---|---|---|
 | Tokens: default | `themes/default.css` | monochrome, ink accent, Manrope, JetBrains Mono, 12px frames, 240 ms soft easing; dark default, light via `data-fs-mode="light"` or system preference |
-| Tokens: notebook | `themes/notebook.css` | the Notebook theme (mono figure text, uppercase heads, square corners, amber focus) as `notebook` / `notebook-light` |
+| Tokens: notebook | `themes/notebook.css` | the Notebook theme (mono figure text, uppercase heads, the shared 12 / 6 / 4px radius scale, amber focus) as `notebook` / `notebook-light` |
 | Tokens: Omarchy | `themes/omarchy.css` (generated) | 23 palettes from Omarchy's theme `colors.toml` files, as `data-fs-theme="<id>"` |
 | Structure | `themes/base.css` | plate, head, stage, toolbar, controls, params, dots, captions, readouts, scrubbable numbers, linked words, live highlight, phase chip; tokens only |
 | Page | the page's own CSS | layout around figures |
@@ -16,7 +16,25 @@ The standalone template inlines all four (`scripts/build-template.mjs`).
 
 ## Token contract
 
-Colors: `--fs-bg`, `--fs-surface` (plate), `--fs-surface-2` (hover/raised), `--fs-line`, `--fs-line-strong`, `--fs-faint`, `--fs-muted` (≥ 4.5:1 on the page), `--fs-fg`, `--fs-strong`, `--fs-accent` (focus; ≥ 3:1 on the surface), `--fs-c1`…`--fs-c6` (categories, each ≥ 3:1), `--fs-good`, `--fs-bad`.
+Colors: `--fs-bg` (page), `--fs-surface` (plate or card), `--fs-block` (code, callout, note, formula or table heading), `--fs-node` (boxes and panels drawn inside a figure), `--fs-surface-2` (raised or hover surface), `--fs-line`, `--fs-line-strong`, `--fs-faint`, `--fs-muted`, `--fs-fg`, `--fs-strong`, `--fs-accent` (focus; ≥ 3:1 on the surface), `--fs-link`, `--fs-link-underline`, `--fs-c1`…`--fs-c6` (categories, each ≥ 3:1), `--fs-good`, `--fs-bad`.
+
+Old figures can read the node fill as `var(--fs-node, var(--fs-surface-2))`. New figures use `--fs-node` directly.
+
+## Four surface steps
+
+Measure the steps on OKLCH lightness:
+
+- `--fs-bg` → `--fs-surface`: ΔL ≥ 0.025.
+- `--fs-bg` → `--fs-block`: ΔL ≥ 0.055.
+- `--fs-surface` → `--fs-node`: ΔL ≥ 0.045.
+- `--fs-surface` → `--fs-surface-2`: ΔL ≥ 0.025.
+- `--fs-node` ↔ `--fs-surface-2`: ΔL ≥ 0.015 when they can touch or sit side by side.
+
+Dark themes make the plate lighter than the page. Light themes may use a lighter or darker plate; use the direction that keeps the palette recognisable. Every surface stays in the page's hue and chroma family. Do not put a gray card on a tinted page.
+
+`--fs-fg`, `--fs-muted` and `--fs-link` reach at least 4.5:1 on the page, plate, block and node. `--fs-link-underline` reaches at least 3:1 there and on the raised surface. Run `node scripts/check-contrast.mjs` after changing a theme.
+
+Links keep their underline at rest: 1px, about 3px from the text. `--fs-link` differs from body text; `--fs-link-underline` may carry the accent when the accent is not readable enough for link text. Visited links look the same as unvisited links.
 
 Type: `--fs-font-body`, `--fs-font-display`, `--fs-font-mono`, `--fs-font-figure` (text inside figures), `--fs-size-title|status|label|tick|caption`, `--fs-weight-title`, `--fs-head-case`, `--fs-head-tracking`.
 
@@ -38,9 +56,9 @@ Every theme color is written as `oklch(L C H)`: lightness from 0 to 1, chroma (0
 - Page: `FS.setTheme("tokyo-night")`, `FS.setTheme(null)` for the default; `FS.setMode("light" | "dark" | null)` for the default light-dark pair. Omarchy themes carry their own mode.
 - Reader-facing picker: theme picker = icon button top-right opening a shadcn-style dropdown; never a select in the hero. Default light is `FS.setTheme(null)` + `FS.setMode("light")`; Default is `FS.setMode("dark")` + `FS.setTheme("default")`; every other theme is `FS.setMode(null)` + `FS.setTheme(id)`. Anatomy, keyboard and persistence: `interaction.md` §4 "Theme picker"; working code in `assets/plate-src.html`.
 - One figure: put `data-fs-theme="nord"` on its `.fs-plate`.
-- Overrides: declare any token after the theme layer, globally or on a plate: `.fs-plate { --fs-radius: 4px; --fs-accent: oklch(0.70393 0.19154 37.126); }`.
-- New theme: copy a block from `omarchy.css`, change values, check contrast (muted 4.5:1, accent and categories 3:1). Write colors in OKLCH; to start from hex, write hex and run `node scripts/hex-to-oklch.mjs <file>`.
-- Inside a host site: map tokens to the site's variables once (`themes/site-bridge.css` is a worked example with placeholder `--site-*` names: `--fs-bg: var(--site-bg)`, `--fs-surface: var(--site-panel)`, `--fs-fg: var(--site-text)`, `--fs-accent: var(--site-accent)`, `--fs-font-body: var(--site-font-body)`, `--fs-radius: var(--site-radius-large)`). The runtime resolves `var()` chains and `color-mix()` through a probe element, so canvas figures follow the site's palettes too.
+- Overrides: declare any token after the theme layer, globally or on a plate: `.fs-plate { --fs-radius: 4px; --fs-node: oklch(0.32504 0 0); --fs-accent: oklch(0.70393 0.19154 37.126); }`.
+- New theme: copy a block from `omarchy.css`, change values, then run `node scripts/check-contrast.mjs` and `node scripts/verify-oklch.mjs`. Write colors in OKLCH; to start from hex, write hex and run `node scripts/hex-to-oklch.mjs <file>`.
+- Inside a host site: map tokens to the site's variables once (`themes/site-bridge.css` is a worked example with placeholder `--site-*` names: page → `--fs-bg`, panel → `--fs-surface`, content block → `--fs-block`, figure box → `--fs-node`, raised panel → `--fs-surface-2`, text → `--fs-fg`, and site link roles → `--fs-link` / `--fs-link-underline`). Map the type and radius tokens in the same layer. The runtime resolves `var()` chains and `color-mix()` through a probe element, so canvas figures follow the site's palettes too.
 
 ## Omarchy palettes
 

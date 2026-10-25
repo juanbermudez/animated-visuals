@@ -4,15 +4,19 @@
 /* Registered color tokens can transition. The tween runs on <html>, which is what the runtime watches:
    while <html> has a running animation it re-reads tokens every frame, so canvases follow the page. */
 @property --fs-bg { syntax: "<color>"; inherits: true; initial-value: oklch(0.21342 0 0); }
-@property --fs-surface { syntax: "<color>"; inherits: true; initial-value: oklch(0.21342 0 0); }
-@property --fs-surface-2 { syntax: "<color>"; inherits: true; initial-value: oklch(0.23929 0 0); }
+@property --fs-surface { syntax: "<color>"; inherits: true; initial-value: oklch(0.24353 0 0); }
+@property --fs-block { syntax: "<color>"; inherits: true; initial-value: oklch(0.30919 0 0); }
+@property --fs-node { syntax: "<color>"; inherits: true; initial-value: oklch(0.32504 0 0); }
+@property --fs-surface-2 { syntax: "<color>"; inherits: true; initial-value: oklch(0.28502 0 0); }
 @property --fs-line { syntax: "<color>"; inherits: true; initial-value: oklch(0.29716 0 0); }
 @property --fs-line-strong { syntax: "<color>"; inherits: true; initial-value: oklch(0.34846 0 0); }
 @property --fs-faint { syntax: "<color>"; inherits: true; initial-value: oklch(0.44953 0 0); }
-@property --fs-muted { syntax: "<color>"; inherits: true; initial-value: oklch(0.63343 0 0); }
+@property --fs-muted { syntax: "<color>"; inherits: true; initial-value: oklch(0.69275 0 0); }
 @property --fs-fg { syntax: "<color>"; inherits: true; initial-value: oklch(0.94611 0 0); }
 @property --fs-strong { syntax: "<color>"; inherits: true; initial-value: oklch(1 0 0); }
 @property --fs-accent { syntax: "<color>"; inherits: true; initial-value: oklch(0.9851 0 0); }
+@property --fs-link { syntax: "<color>"; inherits: true; initial-value: oklch(0.9851 0 0); }
+@property --fs-link-underline { syntax: "<color>"; inherits: true; initial-value: oklch(0.9851 0 0); }
 @property --fs-good { syntax: "<color>"; inherits: true; initial-value: oklch(0.94611 0 0); }
 @property --fs-bad { syntax: "<color>"; inherits: true; initial-value: oklch(0.63343 0 0); }
 @property --fs-c1 { syntax: "<color>"; inherits: true; initial-value: oklch(0.94611 0 0); }
@@ -32,6 +36,8 @@
     --fs-bg var(--doc-theme-dur) var(--doc-ease),
     --fs-surface var(--doc-theme-dur) var(--doc-ease),
     --fs-surface-2 var(--doc-theme-dur) var(--doc-ease),
+    --fs-block var(--doc-theme-dur) var(--doc-ease),
+    --fs-node var(--doc-theme-dur) var(--doc-ease),
     --fs-line var(--doc-theme-dur) var(--doc-ease),
     --fs-line-strong var(--doc-theme-dur) var(--doc-ease),
     --fs-faint var(--doc-theme-dur) var(--doc-ease),
@@ -41,6 +47,8 @@
     --fs-accent var(--doc-theme-dur) var(--doc-ease),
     --fs-good var(--doc-theme-dur) var(--doc-ease),
     --fs-bad var(--doc-theme-dur) var(--doc-ease),
+    --fs-link var(--doc-theme-dur) var(--doc-ease),
+    --fs-link-underline var(--doc-theme-dur) var(--doc-ease),
     --fs-c1 var(--doc-theme-dur) var(--doc-ease),
     --fs-c2 var(--doc-theme-dur) var(--doc-ease),
     --fs-c3 var(--doc-theme-dur) var(--doc-ease),
@@ -73,8 +81,18 @@ body {
 
 ::selection { color: var(--fs-surface); background: var(--fs-fg); }
 
-a { color: inherit; text-decoration: underline; text-decoration-color: var(--fs-line-strong); text-underline-offset: 3px; text-decoration-thickness: 1px; transition: text-decoration-color 240ms var(--doc-ease), color 240ms var(--doc-ease); }
-a:hover { text-decoration-color: var(--fs-fg); }
+a,
+a:visited {
+  color: var(--fs-link);
+  text-decoration: underline;
+  text-decoration-color: var(--fs-link-underline);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: auto;
+  transition: text-decoration-color 240ms var(--doc-ease), color 240ms var(--doc-ease);
+}
+a:hover { color: var(--fs-strong); text-decoration-color: currentColor; text-decoration-thickness: 2px; }
 :focus-visible { outline: 2px solid var(--fs-accent); outline-offset: 2px; border-radius: 4px; }
 
 h1, h2, h3 { margin: 0; font-family: var(--doc-font); font-weight: 500; letter-spacing: 0.008em; text-wrap: balance; }
@@ -85,7 +103,8 @@ p { margin: 0 0 1rem; text-wrap: pretty; }
 /* Long unbroken strings (commit hashes, URLs) wrap instead of widening the page. */
 p, li, td { overflow-wrap: break-word; }
 ul, ol { margin: 0 0 1rem; padding-left: 1.25rem; }
-li { margin: 0.25rem 0; }
+li { margin: 0.5em 0; }
+:is(ul, ol) :is(ul, ol) > li { margin-block: 0.25em; }
 li::marker { color: var(--fs-faint); }
 strong { font-weight: 600; }
 hr { height: 1px; margin: 3rem 0; background: var(--fs-line); border: 0; }
@@ -109,7 +128,12 @@ kbd {
 
 .lede { color: var(--fs-muted); font-size: 1.125rem; line-height: 1.6; }
 .muted { color: var(--fs-muted); }
-.eyebrow { margin: 0 0 0.75rem; color: var(--fs-muted); font-size: 13px; font-weight: 500; letter-spacing: 0.01em; }
+.note, .callout, .formula {
+  padding: 12px 16px;
+  background: var(--fs-block);
+  border: 1px solid var(--fs-line);
+  border-radius: var(--fs-radius-inner, 6px);
+}
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; clip-path: inset(50%); }
 
 /* ---- Layout: a reading column, with figures and code free to break out to a wider one. ---- */
@@ -201,6 +225,7 @@ kbd {
   border: 0;
   border-radius: 8px;
   cursor: pointer;
+  text-decoration: none;
   transition: color 240ms var(--doc-ease), background-color 240ms var(--doc-ease), scale 150ms var(--doc-ease);
 }
 .icon-btn::after { position: absolute; inset: -4px; content: ""; }
@@ -332,7 +357,7 @@ pre {
   color: var(--fs-fg);
   font: 400 13px/1.65 var(--doc-mono);
   tab-size: 2;
-  background: var(--fs-surface);
+  background: var(--fs-block);
   border: var(--fs-frame-width, 4px) solid var(--doc-frame);
   border-radius: var(--fs-radius, 12px);
   scrollbar-width: thin;
@@ -341,7 +366,7 @@ pre {
 /* Shell one-liners wrap instead of scrolling under the copy button; copying still gives one line. */
 pre:has(> code.language-sh) { white-space: pre-wrap; overflow-wrap: anywhere; }
 pre code { font: inherit; }
-.copy-btn { position: absolute; top: 9px; right: 9px; width: 30px; height: 30px; background: var(--fs-surface); border-radius: 6px; }
+.copy-btn { position: absolute; top: 9px; right: 9px; width: 30px; height: 30px; background: var(--fs-block); border-radius: 6px; }
 .copy-btn .ico { transition: opacity 240ms var(--doc-ease), scale 240ms var(--doc-ease); }
 .copy-btn .ico-done, .copy-btn[data-copied] .ico-copy { opacity: 0; scale: 0.5; }
 .copy-btn[data-copied] .ico-done { opacity: 1; scale: 1; }
@@ -357,7 +382,7 @@ pre code { font: inherit; }
 /* ---- Tables ---- */
 .table-wrap { margin: 1.25rem 0 1.75rem; overflow-x: auto; }
 table { width: 100%; font-size: 14px; line-height: 1.5; border-collapse: collapse; }
-th { padding: 8px 12px 8px 0; color: var(--fs-muted); font-size: 12px; font-weight: 500; text-align: left; border-bottom: 1px solid var(--fs-line-strong); }
+th { padding: 8px 12px; color: var(--fs-muted); font-size: 12px; font-weight: 500; text-align: left; background: var(--fs-block); border-bottom: 1px solid var(--fs-line-strong); }
 td { padding: 9px 12px 9px 0; vertical-align: top; border-bottom: 1px solid var(--fs-line); }
 td code { white-space: nowrap; }
 @media (max-width: 640px) { td code { white-space: normal; } }
@@ -763,7 +788,7 @@ a.card:hover { border-color: var(--fs-line-strong); }
   color: var(--fs-muted);
   font: 400 12.5px/1.6 var(--doc-mono);
   white-space: pre;
-  background: var(--fs-surface);
+  background: var(--fs-block);
   border: var(--fs-frame-width, 4px) solid var(--doc-frame);
   border-radius: var(--fs-radius, 12px);
 }
@@ -774,6 +799,7 @@ a.card:hover { border-color: var(--fs-line-strong); }
 /* ---- Credits ---- */
 .prose h2 { font-size: 1.25rem; }
 .prose ul { padding-left: 1.1rem; }
+.prose li > :is(a, b, strong):first-child { font-weight: 500; }
 
 /* ---- Footer ---- */
 .site-foot { border-top: 1px solid var(--fs-line); }
@@ -788,6 +814,6 @@ a.card:hover { border-color: var(--fs-line-strong); }
   color: var(--fs-muted);
   font-size: 13px;
 }
-.site-foot a { color: var(--fs-muted); }
+.site-foot a { color: var(--fs-muted); text-decoration: none; }
 .site-foot a:hover { color: var(--fs-fg); }
 .site-foot nav { display: flex; flex-wrap: wrap; gap: 4px 16px; }

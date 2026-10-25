@@ -16,10 +16,11 @@ The look, and the rules that keep it honest. The default register is calm and mo
 
 ## 1. The default register
 
-- Dark first (`#191919` page and plate, `#ededed` ink, Radix-style gray ramp); light is `#f2f2f2` page with white plates and `#111` ink. Values live in `themes/default.css`.
+- Dark first (`#191919` page, a lighter plate, `#ededed` ink, Radix-style gray ramp); light is `#f2f2f2` with a near-white plate and `#111` ink. Values live in `themes/default.css`.
 - The accent is ink, not color. Emphasis comes from contrast and dimming: the subject is full-strength `--fs-fg`/`--fs-strong`, context drops to `--fs-dim` (0.28). Under an Omarchy theme the same token becomes the theme's accent hue.
 - Manrope for everything, including text inside figures; JetBrains Mono for code and data identifiers only.
 - Soft frames: 1px `--fs-line` border, 12px outer radius, 6px inner radius, no shadows.
+- Four surfaces stay in one hue family: page (`--fs-bg`), plate or card (`--fs-surface`), unframed content block (`--fs-block`) and figure box (`--fs-node`). The plate differs subtly from the page; the block differs more because it has no frame; a node always differs from the plate. `--fs-surface-2` is raised from the plate, never a substitute for the page step.
 - A line on one side only (the bar of a callout, the active marker of a nav or sidebar, a selected row) sits on a flat edge: either that side has no radius, or the line is a square-cornered `::before` bar inside the straight part of the edge. Never a one-sided `border-*` or inset shadow on a rounded box: it follows the curve and looks broken.
 - Motion is soft and short: 240 ms, `cubic-bezier(0.16, 1, 0.3, 1)`; step transitions ~0.48 s.
 
@@ -43,6 +44,8 @@ Figures break out of the 46rem reading column to ~58rem on wide screens; on phon
 - Nothing under 10px at the rendered width; 11px minimum for anything the reader must read on a phone. If a `viewBox` would scale text below that, switch layouts.
 - Never stretch text: no `preserveAspectRatio="none"` on SVG with text.
 - Changing numbers use `tabular-nums` and fixed widths.
+- Prose and caption links use `--fs-link` plus a 1px `--fs-link-underline`, offset about 3px. Hover strengthens the line or color. Visited links do not change color.
+- Prose list items have 0.45–0.6em between peers; nested lists are tighter. When an item starts with a linked, bold or strong name, that name is 500–560 weight, never 700.
 
 ## 4. Encoding without color
 
@@ -58,7 +61,7 @@ States are encoded so figures survive grayscale, print, color-blindness and the 
 
 - Hairlines 1px (`--fs-line`) for grids and frames; connectors `--fs-stroke-edge` (1.1px, `--fs-muted`); primary series `--fs-stroke-series` (1.75px, `--fs-fg`); secondary series 1-1.25px muted.
 - One arrowhead: 7px, ±24°, filled. Arrows that describe a moment are gestures (draw in ~350 ms, hold, fade).
-- Nodes: `--fs-surface` fill, 1px `--fs-line-strong` stroke (`--fs-fg` when active), 6px radius.
+- Nodes: `var(--fs-node, var(--fs-surface-2))` fill, 1px `--fs-line-strong` stroke (`--fs-fg` when active), 6px radius.
 - Label marks directly; legends are a fallback. Labels over marks get a 4px halo in the plate color.
 - Grids: 3-4 horizontal lines at round values; no axis spine.
 
@@ -82,7 +85,7 @@ States are encoded so figures survive grayscale, print, color-blindness and the 
 | Look | Theme | When |
 |---|---|---|
 | Default | `default`, `default-light` | anything that should read calm and monochrome |
-| Notebook | `notebook`, `notebook-light` | paper explainers: mono figure text, uppercase heads, square plates, amber focus |
+| Notebook | `notebook`, `notebook-light` | paper explainers: mono figure text, uppercase heads, shared rounded frames, amber focus |
 | Omarchy palettes | `tokyo-night`, `catppuccin`, `gruvbox`, `nord`, `rose-pine`, … (23) | reader-selected themes, terminal-flavored pages, matching a product's palette |
 | Specimen (3D) | any theme + `webgl.md` | point clouds and fields: black stage, rim-lit sprites, depth of field to direct focus |
 

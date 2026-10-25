@@ -1,6 +1,6 @@
 /* Notebook theme, for paper explainers.
    Monochrome with an amber focus signal, mono type inside figures, uppercase plate heads,
-   square corners. Apply with data-fs-theme="notebook" (dark) or "notebook-light". */
+   and the shared 12 / 6 / 4px radius scale. Apply with data-fs-theme="notebook" (dark) or "notebook-light". */
 
 [data-fs-theme="notebook"],
 [data-fs-theme="notebook-light"] {
@@ -13,9 +13,9 @@
   --fs-head-case: uppercase;
   --fs-head-tracking: 0.08em;
   --fs-size-caption: 12.5px;
-  --fs-radius: 0px;
-  --fs-radius-inner: 0px;
-  --fs-radius-control: 2px;
+  --fs-radius: 12px;
+  --fs-radius-inner: 6px;
+  --fs-radius-control: 4px;
   --fs-control-size: 32px;
 }
 
@@ -23,6 +23,8 @@
   color-scheme: dark;
   --fs-bg: oklch(0.14958 0 0);
   --fs-surface: oklch(0.1822 0 0);
+  --fs-block: oklch(0.24353 0 0);
+  --fs-node: oklch(0.26032 0 0);
   --fs-surface-2: oklch(0.22213 0 0);
   --fs-line: oklch(0.28908 0 0);
   --fs-line-strong: oklch(0.34846 0 0);
@@ -31,6 +33,8 @@
   --fs-fg: oklch(0.93318 0.00401 106.477);
   --fs-strong: oklch(1 0 0);
   --fs-accent: oklch(0.8294 0.11461 86.247);
+  --fs-link: oklch(0.8294 0.11461 86.247);
+  --fs-link-underline: oklch(0.8294 0.11461 86.247);
   --fs-c1: oklch(0.93318 0.00401 106.477);
   --fs-c2: oklch(0.69155 0.00575 106.549);
   --fs-c3: oklch(0.54075 0.00459 106.552);
@@ -44,15 +48,19 @@
 [data-fs-theme="notebook-light"] {
   color-scheme: light;
   --fs-bg: oklch(0.97231 0.00397 106.473);
-  --fs-surface: oklch(0.94527 0.00399 106.476);
-  --fs-surface-2: oklch(0.91471 0.00537 106.505);
+  --fs-surface: oklch(0.93923 0.004 106.476);
+  --fs-block: oklch(0.87831 0.00407 106.483);
+  --fs-node: oklch(0.85984 0.00409 106.485);
+  --fs-surface-2: oklch(0.89975 0.00404 106.481);
   --fs-line: oklch(0.85309 0.00682 106.543);
   --fs-line-strong: oklch(0.78086 0.00836 106.592);
   --fs-faint: oklch(0.71722 0.00712 106.578);
-  --fs-muted: oklch(0.47347 0.00631 106.638);
+  --fs-muted: oklch(0.46269 0.00635 106.645);
   --fs-fg: oklch(0.20019 0 0);
   --fs-strong: oklch(0 0 0);
   --fs-accent: oklch(0.59813 0.11763 75.11);
+  --fs-link: oklch(0.47057 0.1031 68.243);
+  --fs-link-underline: oklch(0.56402 0.11762 75.415);
   --fs-c1: oklch(0.20019 0 0);
   --fs-c2: oklch(0.47347 0.00631 106.638);
   --fs-c3: oklch(0.61487 0.00887 106.658);
