@@ -7,7 +7,7 @@ Styles are layers that can be swapped or overridden without touching figure code
 | Layer | File | Owns |
 |---|---|---|
 | Tokens: default | `themes/default.css` | monochrome, ink accent, Manrope, JetBrains Mono, 12px frames, 240 ms soft easing; dark default, light via `data-fs-mode="light"` or system preference |
-| Tokens: registers | `themes/notebook.css` | the lab-notebook register (mono figure text, uppercase heads, square corners, amber focus) as `notebook` / `notebook-light` |
+| Tokens: notebook | `themes/notebook.css` | the Notebook theme (mono figure text, uppercase heads, square corners, amber focus) as `notebook` / `notebook-light` |
 | Tokens: Omarchy | `themes/omarchy.css` (generated) | 23 palettes from Omarchy's theme `colors.toml` files, as `data-fs-theme="<id>"` |
 | Structure | `themes/base.css` | plate, head, stage, toolbar, controls, params, dots, captions, readouts, scrubbable numbers, linked words, live highlight, phase chip; tokens only |
 | Page | the page's own CSS | layout around figures |

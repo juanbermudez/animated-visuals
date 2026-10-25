@@ -10,7 +10,7 @@ The look, and the rules that keep it honest. The default register is calm and mo
 5. Strokes, marks, labels
 6. Density and focus
 7. Data honesty
-8. Other registers
+8. Other themes
 
 ---
 
@@ -76,12 +76,12 @@ States are encoded so figures survive grayscale, print, color-blindness and the 
 - Show uncertainty; do not smooth away the noise that is the point.
 - No decorative gradients, 3D on 2D quantities, or animation that changes what a quantity appears to be.
 
-## 8. Other registers
+## 8. Other themes
 
-| Register | Theme | When |
+| Look | Theme | When |
 |---|---|---|
 | Default | `default`, `default-light` | anything that should read calm and monochrome |
-| Lab notebook | `notebook`, `notebook-light` | paper explainers: mono figure text, uppercase heads, square plates, amber focus (from the "Conscious Micro-Epochs" guide) |
+| Notebook | `notebook`, `notebook-light` | paper explainers: mono figure text, uppercase heads, square plates, amber focus |
 | Omarchy palettes | `tokyo-night`, `catppuccin`, `gruvbox`, `nord`, `rose-pine`, … (23) | reader-selected themes, terminal-flavored pages, matching a product's palette |
 | Specimen (3D) | any theme + `webgl.md` | point clouds and fields: black stage, rim-lit sprites, depth of field to direct focus |
 

@@ -41,9 +41,8 @@ import {
 import { loadFigureRuntime } from "@/components/figures/useFigure";
 
 const GROUPS: [string, [string, string][]][] = [
-  ["Site", [["default", "Default"], ["default-light", "Default light"]]],
-  ["Registers", [["notebook", "Lab notebook"], ["notebook-light", "Lab notebook light"]]],
-  ["Omarchy", [["tokyo-night", "Tokyo Night"], ["catppuccin", "Catppuccin"], ["nord", "Nord"]]],
+  ["Dark", [["default", "Default"], ["notebook", "Notebook"], ["tokyo-night", "Tokyo Night"], ["catppuccin", "Catppuccin"], ["nord", "Nord"]]],
+  ["Light", [["default-light", "Default Light"], ["notebook-light", "Notebook Light"], ["catppuccin-latte", "Catppuccin Latte"]]],
 ];
 
 async function apply(id: string) {

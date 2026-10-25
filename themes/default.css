@@ -81,7 +81,7 @@
   --fs-font-body: "Manrope", system-ui, sans-serif;
   --fs-font-display: "Manrope", system-ui, sans-serif;
   --fs-font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
-  /* Text inside figures (labels, ticks, captions). The notebook register switches this to mono. */
+  /* Text inside figures (labels, ticks, captions). The notebook theme switches this to mono. */
   --fs-font-figure: var(--fs-font-body);
   --fs-size-title: 14px;
   --fs-weight-title: 600;

@@ -93,7 +93,7 @@
   --fs-font-body: "Manrope", system-ui, sans-serif;
   --fs-font-display: "Manrope", system-ui, sans-serif;
   --fs-font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
-  /* Text inside figures (labels, ticks, captions). The notebook register switches this to mono. */
+  /* Text inside figures (labels, ticks, captions). The notebook theme switches this to mono. */
   --fs-font-figure: var(--fs-font-body);
   --fs-size-title: 14px;
   --fs-weight-title: 600;
@@ -120,7 +120,7 @@
 }
 /* ---- end themes/default.css ---- */
 /* ---- themes/notebook.css ---- */
-/* Alternate register: the lab notebook (from the "Conscious Micro-Epochs" paper guide).
+/* Notebook theme, for paper explainers.
    Monochrome with an amber focus signal, mono type inside figures, uppercase plate heads,
    square corners. Apply with data-fs-theme="notebook" (dark) or "notebook-light". */
 
@@ -3516,13 +3516,11 @@ code { font: 0.875em var(--fs-font-mono); }
 /* ---- end assets/runtime/fs-runtime.js ---- */
 </script>
 <script>
-/* Theme menu: a shadcn-style DropdownMenu of radio items. The Omarchy list mirrors themes/omarchy.json. */
+/* Theme menu: a shadcn-style DropdownMenu of radio items, grouped by mode. The Omarchy names mirror themes/omarchy.json. */
 (() => {
-  const omarchy = { "catppuccin": "Catppuccin", "catppuccin-latte": "Catppuccin Latte", "ethereal": "Ethereal", "everforest": "Everforest", "flexoki-light": "Flexoki Light", "gruvbox": "Gruvbox", "hackerman": "Hackerman", "kanagawa": "Kanagawa", "last-horizon": "Last Horizon", "lumon": "Lumon", "lupine": "Lupine", "matte-black": "Matte Black", "miasma": "Miasma", "nord": "Nord", "osaka-jade": "Osaka Jade", "retro-82": "Retro 82", "ristretto": "Ristretto", "rose-pine": "Rosé Pine Dawn", "solitude": "Solitude", "starship": "Starship", "tokyo-night": "Tokyo Night", "vantablack": "Vantablack", "white": "White" };
   const groups = [
-    ["Site", { "default": "Default", "default-light": "Default light" }],
-    ["Registers", { "notebook": "Lab notebook", "notebook-light": "Lab notebook light" }],
-    ["Omarchy", omarchy],
+    ["Dark", { "default": "Default", "notebook": "Notebook", "catppuccin": "Catppuccin", "ethereal": "Ethereal", "everforest": "Everforest", "gruvbox": "Gruvbox", "hackerman": "Hackerman", "kanagawa": "Kanagawa", "last-horizon": "Last Horizon", "lumon": "Lumon", "matte-black": "Matte Black", "miasma": "Miasma", "nord": "Nord", "osaka-jade": "Osaka Jade", "retro-82": "Retro 82", "ristretto": "Ristretto", "solitude": "Solitude", "starship": "Starship", "tokyo-night": "Tokyo Night", "vantablack": "Vantablack" }],
+    ["Light", { "default-light": "Default Light", "notebook-light": "Notebook Light", "catppuccin-latte": "Catppuccin Latte", "flexoki-light": "Flexoki Light", "lupine": "Lupine", "rose-pine": "Rosé Pine Dawn", "white": "White" }],
   ];
   const KEY = "fs-theme";
   const store = {

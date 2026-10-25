@@ -30,8 +30,8 @@ const omarchy = JSON.parse(readFileSync(join(root, "themes/omarchy.json"), "utf8
 const themes = [
   { id: "default-light", attr: "default-light", name: "Default Light", mode: "light", family: "default" },
   { id: "default", attr: "default", name: "Default", mode: "dark", family: "default" },
-  { id: "notebook-light", attr: "notebook-light", name: "Notebook Light", mode: "light", family: "register" },
-  { id: "notebook", attr: "notebook", name: "Notebook", mode: "dark", family: "register" },
+  { id: "notebook-light", attr: "notebook-light", name: "Notebook Light", mode: "light", family: "notebook" },
+  { id: "notebook", attr: "notebook", name: "Notebook", mode: "dark", family: "notebook" },
   ...Object.entries(omarchy.themes).map(([id, t]) => ({ id, attr: id, name: t.name, mode: t.mode, family: "omarchy" })),
 ];
 writeFileSync(

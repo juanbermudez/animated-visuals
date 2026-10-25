@@ -19,14 +19,14 @@ window.AV_THEMES = [
   "attr": "notebook-light",
   "name": "Notebook Light",
   "mode": "light",
-  "family": "register"
+  "family": "notebook"
  },
  {
   "id": "notebook",
   "attr": "notebook",
   "name": "Notebook",
   "mode": "dark",
-  "family": "register"
+  "family": "notebook"
  },
  {
   "id": "catppuccin-latte",

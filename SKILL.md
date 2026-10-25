@@ -1,6 +1,6 @@
 ---
 name: animated-visuals
-description: Design and build polished, minimal, interactive and animated visualizations and diagrams for papers, articles, explainers and sites — explorable charts (hand-built or nivo), stepped mechanism diagrams, animated system/agent architecture flows, one-clock timelines, particle and flow fields, and WebGL / react-three-fiber scenes with depth-of-field focus. Styles are swappable theme layers (a calm monochrome default, a lab notebook and 23 Omarchy palettes such as Tokyo Night, Catppuccin, Gruvbox, Nord). Every figure is programmable (play, seek, step, set parameters, link prose). Use when asked to visualize data or a paper's findings, explain a mechanism or architecture visually, make a figure interactive or animated, build charts for a React/Next.js site, theme figures, or polish figures that look generic. Not for full lessons (use teach-me) or static branded diagrams with no interaction (diagram-design is faster).
+description: Design and build polished, minimal, interactive and animated visualizations and diagrams for papers, articles, explainers and sites — explorable charts (hand-built or nivo), stepped mechanism diagrams, animated system/agent architecture flows, one-clock timelines, particle and flow fields, and WebGL / react-three-fiber scenes with depth-of-field focus. Styles are swappable themes (Default, Notebook and 23 Omarchy palettes such as Tokyo Night, Catppuccin, Gruvbox, Nord). Every figure is programmable (play, seek, step, set parameters, link prose). Use when asked to visualize data or a paper's findings, explain a mechanism or architecture visually, make a figure interactive or animated, build charts for a React/Next.js site, theme figures, or polish figures that look generic. Not for full lessons (use teach-me) or static branded diagrams with no interaction (diagram-design is faster).
 ---
 
 # Animated Visuals
@@ -51,7 +51,7 @@ Every figure proves one claim, is minimal and on-brand, moves only to show a pro
 | `references/writing/` | writing styles (practical default, academic on request) and how to add one |
 | `references/interaction.md` | finding the interaction, the ladder, patterns, controls (handles, sliders, settings, timeline surface, tips, expand, stable layout, buttons), feel, the `FS` API, input parity, anti-patterns |
 | `references/theming.md` | layers, token contract, switching/overriding, Omarchy palettes and contrast, host-site bridges |
-| `references/art-direction.md` | the default register, plate anatomy, type, encoding, strokes, density, data honesty, other registers |
+| `references/art-direction.md` | the default register, plate anatomy, type, encoding, strokes, density, data honesty, other themes |
 | `references/choosing-form.md` | claim → form, medium, delivery target |
 | `references/diagram-types.md` | the 27 diagram types and 7 semantic patterns (after diagram-design), each with what moves, what the reader can do, and the trap |
 | `references/diagrams.md` | layout, nodes, connectors, packets, stepping, state machines, responsive re-layout |

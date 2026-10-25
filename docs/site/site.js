@@ -77,9 +77,8 @@
     input = panel.querySelector("input");
     list = panel.querySelector(".tp-list");
     const groups = [
-      ["Default", THEMES.filter((t) => t.family === "default")],
-      ["Light themes", THEMES.filter((t) => t.family !== "default" && t.mode === "light")],
-      ["Dark themes", THEMES.filter((t) => t.family !== "default" && t.mode === "dark")],
+      ["Light themes", THEMES.filter((t) => t.mode === "light")],
+      ["Dark themes", THEMES.filter((t) => t.mode === "dark")],
     ];
     for (const [label, items] of groups) {
       const group = document.createElement("div");
