@@ -90,7 +90,7 @@ ${gallery.match(/<header class="site-head">[\s\S]*?<\/header>/)[0]}
 <main class="page" id="main">
   <p class="eyebrow">Examples</p>
   <h1>Guides built with the skill</h1>
-  <p class="lede">Each guide explains one paper or idea with live figures on the runtime, written claims-first and checked against its source. Open one, change the theme from the palette button, and try <code>FS.list()</code> in the console. The sources are under <code>docs/examples/src/</code>.</p>
+  <p class="lede">Each guide explains one paper or idea with live figures and is checked against its source. Open one, change the theme from the palette button, and try <code>FS.list()</code> in the console. The sources are under <code>docs/examples/src/</code>.</p>
   <div class="cards">
 ${cards}
   </div>
