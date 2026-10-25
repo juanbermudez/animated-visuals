@@ -6,15 +6,19 @@
 [data-fs-theme="default"] {
   color-scheme: dark;
   --fs-bg: oklch(0.21342 0 0);
-  --fs-surface: oklch(0.21342 0 0);
-  --fs-surface-2: oklch(0.23929 0 0);
+  --fs-surface: oklch(0.24353 0 0);
+  --fs-block: oklch(0.30919 0 0);
+  --fs-node: oklch(0.32504 0 0);
+  --fs-surface-2: oklch(0.28502 0 0);
   --fs-line: oklch(0.29716 0 0);
   --fs-line-strong: oklch(0.34846 0 0);
   --fs-faint: oklch(0.44953 0 0);
-  --fs-muted: oklch(0.63343 0 0);
+  --fs-muted: oklch(0.69275 0 0);
   --fs-fg: oklch(0.94611 0 0);
   --fs-strong: oklch(1 0 0);
   --fs-accent: oklch(0.9851 0 0);
+  --fs-link: oklch(0.9851 0 0);
+  --fs-link-underline: oklch(0.9851 0 0);
   /* Achromatic categories: tell them apart by texture and labels too. */
   --fs-c1: oklch(0.94611 0 0);
   --fs-c2: oklch(0.75721 0 0);
@@ -31,15 +35,19 @@
 [data-fs-theme="default-light"] {
   color-scheme: light;
   --fs-bg: oklch(0.96115 0 0);
-  --fs-surface: oklch(1 0 0);
-  --fs-surface-2: oklch(0.94912 0 0);
+  --fs-surface: oklch(0.99405 0 0);
+  --fs-block: oklch(0.86686 0 0);
+  --fs-node: oklch(0.91279 0 0);
+  --fs-surface-2: oklch(0.95514 0 0);
   --fs-line: oklch(0.91279 0 0);
   --fs-line-strong: oklch(0.83591 0 0);
   --fs-faint: oklch(0.76676 0 0);
-  --fs-muted: oklch(0.53128 0 0);
+  --fs-muted: oklch(0.47119 0 0);
   --fs-fg: oklch(0.17764 0 0);
   --fs-strong: oklch(0 0 0);
   --fs-accent: oklch(0.17764 0 0);
+  --fs-link: oklch(0.21779 0 0);
+  --fs-link-underline: oklch(0.17764 0 0);
   --fs-c1: oklch(0.17764 0 0);
   --fs-c2: oklch(0.40912 0 0);
   --fs-c3: oklch(0.57951 0 0);
@@ -55,15 +63,19 @@
   :root:not([data-fs-mode]):not([data-fs-theme]) {
     color-scheme: light;
     --fs-bg: oklch(0.96115 0 0);
-    --fs-surface: oklch(1 0 0);
-    --fs-surface-2: oklch(0.94912 0 0);
+    --fs-surface: oklch(0.99405 0 0);
+    --fs-block: oklch(0.86686 0 0);
+    --fs-node: oklch(0.91279 0 0);
+    --fs-surface-2: oklch(0.95514 0 0);
     --fs-line: oklch(0.91279 0 0);
     --fs-line-strong: oklch(0.83591 0 0);
     --fs-faint: oklch(0.76676 0 0);
-    --fs-muted: oklch(0.53128 0 0);
+    --fs-muted: oklch(0.47119 0 0);
     --fs-fg: oklch(0.17764 0 0);
     --fs-strong: oklch(0 0 0);
     --fs-accent: oklch(0.17764 0 0);
+    --fs-link: oklch(0.21779 0 0);
+    --fs-link-underline: oklch(0.17764 0 0);
     --fs-c1: oklch(0.17764 0 0);
     --fs-c2: oklch(0.40912 0 0);
     --fs-c3: oklch(0.57951 0 0);
