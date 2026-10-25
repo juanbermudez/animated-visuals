@@ -89,6 +89,34 @@
     <li><a href="#particle-field">Particle field</a></li>
     <li><a href="#semantic-patterns">Semantic patterns</a></li>
   </ul>
+  <p class="types-group" id="nav-structure-coverage">Structure coverage <span>3</span></p>
+  <ul aria-labelledby="nav-structure-coverage">
+    <li><a href="#er-data-model">ER / data model</a></li>
+    <li><a href="#high-level-platform">High-level platform</a></li>
+    <li><a href="#medallion-five-tier">Five-tier medallion</a></li>
+  </ul>
+  <p class="types-group" id="nav-flow-time-coverage">Flow and time coverage <span>3</span></p>
+  <ul aria-labelledby="nav-flow-time-coverage">
+    <li><a href="#role-data-flow">Role-scoped data flow</a></li>
+    <li><a href="#process-multi-actor">Multi-actor process</a></li>
+    <li><a href="#event-timeline">Event timeline</a></li>
+  </ul>
+  <p class="types-group" id="nav-pattern-coverage">Semantic patterns <span>6</span></p>
+  <ul aria-labelledby="nav-pattern-coverage">
+    <li><a href="#pattern-stage">Stage framework</a></li>
+    <li><a href="#pattern-artifact">Structured artifact</a></li>
+    <li><a href="#pattern-policy">Policy traces</a></li>
+    <li><a href="#pattern-road">Secure paved road</a></li>
+    <li><a href="#pattern-governance">Control catalog</a></li>
+    <li><a href="#pattern-layers">Security layers</a></li>
+  </ul>
+  <p class="types-group" id="nav-primitives">Primitives <span>4</span></p>
+  <ul aria-labelledby="nav-primitives">
+    <li><a href="#primitive-callout">Attached callout</a></li>
+    <li><a href="#primitive-icons">Icons</a></li>
+    <li><a href="#primitive-sketch">Sketch treatment</a></li>
+    <li><a href="#primitive-terminal">Terminal / log</a></li>
+  </ul>
 </nav>
     </aside>
     <div class="gallery-main">
@@ -558,6 +586,186 @@
       </tbody>
     </table>
   </div>
+</section>
+<h2 class="group-title" id="group-structure-coverage">Structure coverage</h2>
+<section class="type" id="er-data-model" aria-labelledby="er-data-model-h">
+  <h2 id="er-data-model-h">One order joins one customer to two products</h2>
+  <p class="kind"><span>ER / data model</span><span>Trace a query</span><span>Cardinality stays visible</span></p>
+  <p>A four-entity order model keeps keys and relationship counts visible. Scrub the query to follow one order from its customer to the products it contains.</p>
+  <figure class="fs-plate" aria-labelledby="fig-er-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-er-title">One order joins one customer to two products</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-er" role="img" aria-label="Customers, orders, order items and products with key fields and one-to-many relationships; a query trace moves across three relationships."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-er:t"></span><div class="fs-controls"><button type="button" data-fs="fig-er chapter-prev" aria-label="Previous moment">←</button><div data-fs-seek="fig-er" data-label="Query"></div><button type="button" data-fs="fig-er chapter-next" aria-label="Next moment">→</button><button type="button" data-fs="fig-er play" aria-label="Play"></button></div></div>
+    <p class="fs-caption">Illustrative order schema. Primary and foreign keys stay printed while the active query path moves.</p>
+  </figure>
+</section>
+<section class="type" id="high-level-platform" aria-labelledby="high-level-platform-h">
+  <h2 id="high-level-platform-h">Every dashboard record passes through one governed store</h2>
+  <p class="kind"><span>High-level stack</span><span>Scrub one record</span><span>Cross-cutting controls</span></p>
+  <p>One record moves from two sources through ingest, storage and query to a dashboard. Identity and observability span the platform instead of appearing as extra pipeline steps.</p>
+  <figure class="fs-plate" aria-labelledby="fig-platform-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-platform-title">Every dashboard record passes through one governed store</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-platform" role="img" aria-label="Two sources feed ingest, governed object storage, a query engine and a dashboard, with identity and observability spanning the platform."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-platform:t"></span><div class="fs-controls"><button type="button" data-fs="fig-platform chapter-prev" aria-label="Previous moment">←</button><div data-fs-seek="fig-platform" data-label="Record"></div><button type="button" data-fs="fig-platform chapter-next" aria-label="Next moment">→</button><button type="button" data-fs="fig-platform play" aria-label="Play"></button></div></div>
+    <p class="fs-caption">Illustrative platform. The two cross-cutting bars are controls, not stages in the record path.</p>
+  </figure>
+</section>
+<section class="type" id="medallion-five-tier" aria-labelledby="medallion-five-tier-h">
+  <h2 id="medallion-five-tier-h">Five storage tiers separate quality from retention</h2>
+  <p class="kind"><span>Medallion</span><span>Five tiers</span><span>Step through one row</span></p>
+  <p>A commerce row moves from raw storage through anonymized, staging and aggregated tiers before archive. Step forward to keep the same row in view.</p>
+  <figure class="fs-plate" aria-labelledby="fig-medallion-five-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-medallion-five-title">Five storage tiers separate quality from retention</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-medallion-five" role="img" aria-label="Five storage tiers called raw, anonymized, staging, aggregated and archive, with one row traced across the tiers."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-medallion-five:step"></span><div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-medallion-five" aria-hidden="true"></span><button type="button" data-fs="fig-medallion-five prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-medallion-five next" aria-label="Next step">Next</button></div></div><p class="fs-step-text" data-fs-out="fig-medallion-five:caption"></p>
+    <p class="fs-caption">Illustrative row counts and retention periods. The archive is dashed because it is a lifecycle destination, not the next quality level.</p>
+  </figure>
+</section>
+<h2 class="group-title" id="group-flow-time-coverage">Flow and time coverage</h2>
+<section class="type" id="role-data-flow" aria-labelledby="role-data-flow-h">
+  <h2 id="role-data-flow-h">Each pipeline stage names who owns the hand-off</h2>
+  <p class="kind"><span>Data flow</span><span>Four roles</span><span>Scrub one record</span></p>
+  <p>A source owner, platform team, data team and analyst each receive and leave a named payload. Scrub one record to see where responsibility changes.</p>
+  <figure class="fs-plate" aria-labelledby="fig-role-data-flow-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-role-data-flow-title">Each pipeline stage names who owns the hand-off</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-role-data-flow" role="img" aria-label="A five-stage data pipeline across source owner, platform, data and analyst roles, with one record moving through named hand-offs."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-role-data-flow:t"></span><div class="fs-controls"><button type="button" data-fs="fig-role-data-flow chapter-prev" aria-label="Previous moment">←</button><div data-fs-seek="fig-role-data-flow" data-label="Record"></div><button type="button" data-fs="fig-role-data-flow chapter-next" aria-label="Next moment">→</button><button type="button" data-fs="fig-role-data-flow play" aria-label="Play"></button></div></div>
+    <p class="fs-caption">Illustrative pipeline. Role bands explain ownership; they are not extra processing stages.</p>
+  </figure>
+</section>
+<section class="type" id="process-multi-actor" aria-labelledby="process-multi-actor-h">
+  <h2 id="process-multi-actor-h">One order crosses four owners before it closes</h2>
+  <p class="kind"><span>Process</span><span>Four owners</span><span>Inputs and outputs</span></p>
+  <p>Customer, support, warehouse and finance each own part of the same order. Step through the hand-offs; every step names the payload it receives and leaves.</p>
+  <figure class="fs-plate" aria-labelledby="fig-process-owners-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-process-owners-title">One order crosses four owners before it closes</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-process-owners" role="img" aria-label="A six-step order process across customer, support, warehouse and finance lanes, with input and output payloads."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-process-owners:step"></span><div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-process-owners" aria-hidden="true"></span><button type="button" data-fs="fig-process-owners prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-process-owners next" aria-label="Next step">Next</button></div></div><p class="fs-step-text" data-fs-out="fig-process-owners:caption"></p>
+    <p class="fs-caption">Illustrative workflow. Empty lane cells stay empty; the active hand-off is the only accented connector.</p>
+  </figure>
+</section>
+<section class="type" id="event-timeline" aria-labelledby="event-timeline-h">
+  <h2 id="event-timeline-h">The launch slips when testing starts after code freeze</h2>
+  <p class="kind"><span>Timeline</span><span>Honest spacing</span><span>Scrub events</span></p>
+  <p>Five milestones sit at their real day offsets. Drag the timeline to see which events have happened and where the ten-day testing delay enters.</p>
+  <figure class="fs-plate" aria-labelledby="fig-event-line-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-event-line-title">The launch slips when testing starts after code freeze</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-event-line" role="img" aria-label="Five product launch milestones across 42 days with a ten-day delay between code freeze and testing."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-event-line:t"></span><div class="fs-controls"><button type="button" data-fs="fig-event-line chapter-prev" aria-label="Previous moment">←</button><div data-fs-seek="fig-event-line" data-label="Day"></div><button type="button" data-fs="fig-event-line chapter-next" aria-label="Next moment">→</button><button type="button" data-fs="fig-event-line play" aria-label="Play"></button></div></div>
+    <p class="fs-caption">Illustrative dates. Unequal intervals use unequal spacing; the dashed marker shows the original launch target.</p>
+  </figure>
+</section>
+<h2 class="group-title" id="group-pattern-coverage">Semantic pattern coverage</h2>
+<section class="type" id="pattern-stage" aria-labelledby="pattern-stage-h">
+  <h2 id="pattern-stage-h">Every stage answers the same four questions</h2>
+  <p class="kind"><span>Stage framework</span><span>Stable slots</span><span>Steps</span></p>
+  <p>Discovery, design, build and launch each show the same question, input, control and output slots. Step through stages without changing the grid.</p>
+  <figure class="fs-plate" aria-labelledby="fig-stage-slots-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-stage-slots-title">Every stage answers the same four questions</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-stage-slots" role="img" aria-label="Four stages in columns and four semantic slots in rows, with one stage highlighted at a time."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-stage-slots:step"></span><div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-stage-slots" aria-hidden="true"></span><button type="button" data-fs="fig-stage-slots prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-stage-slots next" aria-label="Next step">Next</button></div></div><p class="fs-step-text" data-fs-out="fig-stage-slots:caption"></p>
+    <p class="fs-caption">Illustrative product lifecycle. An em dash is an explicit empty slot, not missing data.</p>
+  </figure>
+</section>
+<section class="type" id="pattern-artifact" aria-labelledby="pattern-artifact-h">
+  <h2 id="pattern-artifact-h">A short request becomes a ticket with one unknown field</h2>
+  <p class="kind"><span>Structured artifact</span><span>Provenance</span><span>Steps</span></p>
+  <p>A loose request is clarified and written into a durable ticket. The summary, priority and owner point back to source phrases; due date stays unknown.</p>
+  <figure class="fs-plate" aria-labelledby="fig-artifact-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-artifact-title">A short request becomes a ticket with one unknown field</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-artifact" role="img" aria-label="A short request on the left maps through clarification into a ticket with summary, priority, owner and unknown due date."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-artifact:step"></span><div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-artifact" aria-hidden="true"></span><button type="button" data-fs="fig-artifact prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-artifact next" aria-label="Next step">Next</button></div></div><p class="fs-step-text" data-fs-out="fig-artifact:caption"></p>
+    <p class="fs-caption">Illustrative request. Provenance lines remain in the still frame, including the unresolved due date.</p>
+  </figure>
+</section>
+<section class="type" id="pattern-policy" aria-labelledby="pattern-policy-h">
+  <h2 id="pattern-policy-h">Two requests first diverge at the data rule</h2>
+  <p class="kind"><span>Paired policy traces</span><span>First divergence</span><span>Steps</span></p>
+  <p>Both requests pass identity and audience. One read continues; one restricted write fails at the data rule and never reaches later checks.</p>
+  <figure class="fs-plate" aria-labelledby="fig-policy-pair-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-policy-pair-title">Two requests first diverge at the data rule</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-policy-pair" role="img" aria-label="Two policy traces across five rules with pass, fail, skipped and not reached states; the first divergence is the data rule."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-policy-pair:step"></span><div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-policy-pair" aria-hidden="true"></span><button type="button" data-fs="fig-policy-pair prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-policy-pair next" aria-label="Next step">Next</button></div></div><p class="fs-step-text" data-fs-out="fig-policy-pair:caption"></p>
+    <p class="fs-caption">Illustrative policy. Status uses words and symbols; the denied trace stops instead of pretending later checks ran.</p>
+  </figure>
+</section>
+<section class="type" id="pattern-road" aria-labelledby="pattern-road-h">
+  <h2 id="pattern-road-h">Unsigned builds stop before production</h2>
+  <p class="kind"><span>Secure paved road</span><span>Allowed and blocked</span><span>One clock</span></p>
+  <p>Choose a signed or unsigned build. Both approach the same trust boundary; only the signed build passes the policy gate and reaches production, while the gate writes an audit event.</p>
+  <figure class="fs-plate" aria-labelledby="fig-paved-road-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-paved-road-title">Unsigned builds stop before production</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-paved-road" role="img" aria-label="A developer build enters a signed pipeline and policy gate before production; an unsigned bypass stops at the boundary and both outcomes are recorded in an audit log."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-paved-road:state"></span><div class="fs-controls"><div class="fs-param-inline" data-fs-param="fig-paved-road:request"></div><button type="button" data-fs="fig-paved-road play" aria-label="Play"></button></div></div>
+    <p class="fs-caption">Illustrative controls. The blocked route visibly ends before the production boundary and both outcomes are labeled.</p>
+  </figure>
+</section>
+<section class="type" id="pattern-governance" aria-labelledby="pattern-governance-h">
+  <h2 id="pattern-governance-h">Controls are easiest to audit at their enforcement surface</h2>
+  <p class="kind"><span>Control catalog</span><span>Pick a surface</span><span>Gaps stay visible</span></p>
+  <p>Authoring, merge, deploy and runtime each own different controls. Pick a surface to isolate who enforces its controls and when.</p>
+  <figure class="fs-plate" aria-labelledby="fig-control-catalog-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-control-catalog-title">Controls are easiest to audit at their enforcement surface</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-control-catalog" role="img" aria-label="Four enforcement surfaces with named controls, enforcement actors, timing and one visible gap."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-control-catalog:state"></span><div class="fs-controls"><div class="fs-param-inline" data-fs-param="fig-control-catalog:surface"></div></div></div>
+    <p class="fs-caption">Illustrative catalog. The gap remains visible when other surfaces dim.</p>
+  </figure>
+</section>
+<section class="type" id="pattern-layers" aria-labelledby="pattern-layers-h">
+  <h2 id="pattern-layers-h">Each security layer reduces risk but none makes it zero</h2>
+  <p class="kind"><span>Compensating layers</span><span>Residual risk</span><span>Steps</span></p>
+  <p>A stolen credential meets identity, policy, runtime and monitoring controls. Step through the same risk as each layer narrows it and passes a remainder on.</p>
+  <figure class="fs-plate" aria-labelledby="fig-security-layers-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-security-layers-title">Each security layer reduces risk but none makes it zero</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-security-layers" role="img" aria-label="Four defensive layers reduce a single risk from 100 illustrative units to 9, with the remaining risk labeled after every layer."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-security-layers:step"></span><div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-security-layers" aria-hidden="true"></span><button type="button" data-fs="fig-security-layers prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-security-layers next" aria-label="Next step">Next</button></div></div><p class="fs-step-text" data-fs-out="fig-security-layers:caption"></p>
+    <p class="fs-caption">Illustrative risk units, not a measured probability. Monitoring detects the remaining risk; it does not prevent it.</p>
+  </figure>
+</section>
+<h2 class="group-title" id="group-primitive-coverage">Primitive coverage</h2>
+<section class="type" id="primitive-callout" aria-labelledby="primitive-callout-h">
+  <h2 id="primitive-callout-h">The note stays attached to the moving release marker</h2>
+  <p class="kind"><span>Attached callout</span><span>Dashed leader</span><span>One clock</span></p>
+  <p>A release marker moves from review to launch. Its note follows the same anchor, so the label never drifts away or crosses the main path.</p>
+  <figure class="fs-plate" aria-labelledby="fig-callout-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-callout-title">The note stays attached to the moving release marker</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-callout" role="img" aria-label="A release marker moves along a three-stage path while a dashed callout leader stays attached."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-callout:t"></span><div class="fs-controls"><button type="button" data-fs="fig-callout chapter-prev" aria-label="Previous moment">←</button><div data-fs-seek="fig-callout" data-label="Release"></div><button type="button" data-fs="fig-callout chapter-next" aria-label="Next moment">→</button><button type="button" data-fs="fig-callout play" aria-label="Play"></button></div></div>
+    <p class="fs-caption">Illustrative release path. The callout is supporting context, so its leader is dashed and translucent.</p>
+  </figure>
+</section>
+<section class="type" id="primitive-icons" aria-labelledby="primitive-icons-h">
+  <h2 id="primitive-icons-h">Icons shorten familiar infrastructure labels</h2>
+  <p class="kind"><span>Icons</span><span>Keyboard selection</span><span>Plain labels</span></p>
+  <p>Choose a familiar infrastructure mark. The icon supports the word beside it and never becomes the only name.</p>
+  <figure class="fs-plate" aria-labelledby="fig-icons-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-icons-title">Icons shorten familiar infrastructure labels</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-icons" role="img" aria-label="A grid of six infrastructure icon specimens with a selected icon, plain name and role."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-icons:state"></span><div class="fs-controls"><div class="fs-param-inline" data-fs-param="fig-icons:icon"></div></div></div>
+    <p class="fs-caption">Illustrative icon specimens drawn with one outline family. Selection changes focus, not the data.</p>
+  </figure>
+</section>
+<section class="type" id="primitive-sketch" aria-labelledby="primitive-sketch-h">
+  <h2 id="primitive-sketch-h">Sketch treatment changes tone, not geometry</h2>
+  <p class="kind"><span>Sketch treatment</span><span>Seeded</span><span>Text stays exact</span></p>
+  <p>Toggle the working-note treatment. Boxes and connectors gain a small fixed wobble; labels, endpoints and hit targets do not move.</p>
+  <figure class="fs-plate" aria-labelledby="fig-sketch-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-sketch-title">Sketch treatment changes tone, not geometry</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-sketch" role="img" aria-label="The same three-node pipeline in precise and seeded sketch treatments."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-sketch:state"></span><div class="fs-controls"><div class="fs-param-inline" data-fs-param="fig-sketch:sketch"></div></div></div>
+    <p class="fs-caption">Illustrative style option. The wobble is seeded once and does not animate or touch text.</p>
+  </figure>
+</section>
+<section class="type" id="primitive-terminal" aria-labelledby="primitive-terminal-h">
+  <h2 id="primitive-terminal-h">The log ends with the first failed health check</h2>
+  <p class="kind"><span>Terminal / log</span><span>Scrub entries</span><span>Stops at outcome</span></p>
+  <p>A deploy log appends on one clock and stops at the first failed health check. Scrub or step between the named moments.</p>
+  <figure class="fs-plate" aria-labelledby="fig-terminal-log-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-terminal-log-title">The log ends with the first failed health check</h3><span class="fs-status">Illustrative</span></header>
+    <div class="fs-stage"><canvas id="fig-terminal-log" role="img" aria-label="A terminal-style deploy log with six timed lines ending in a failed health check and rollback decision."></canvas></div>
+    <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-terminal-log:t"></span><div class="fs-controls"><button type="button" data-fs="fig-terminal-log chapter-prev" aria-label="Previous moment">←</button><div data-fs-seek="fig-terminal-log" data-label="Log"></div><button type="button" data-fs="fig-terminal-log chapter-next" aria-label="Next moment">→</button><button type="button" data-fs="fig-terminal-log play" aria-label="Play"></button></div></div>
+    <p class="fs-caption">Illustrative timestamps and commands. Reduced motion shows the complete log with the decisive failure in view.</p>
+  </figure>
 </section>
       <p class="muted">The code for every figure is in <a href="https://github.com/juanbermudez/animated-visuals/tree/main/docs/site"><code>docs/site/gallery*.js</code></a>.</p>
     </div>

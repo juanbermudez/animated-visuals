@@ -1170,3 +1170,449 @@ const inRect = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y +
     },
   });
 })();
+/* ================= Coverage additions: types, semantic patterns, and primitives ================= */
+(() => {
+  const K = FS.k;
+  const fill = (C) => C.node ?? C.surface2;
+  const clamp = FS.clamp;
+  const box = (f, c, b, title, sub = "", o = {}) => {
+    c.save();
+    c.globalAlpha = o.alpha ?? 1;
+    K.rrect(c, b.x, b.y, b.w, b.h, o.r ?? 6);
+    c.fillStyle = o.fill ?? fill(f.C);
+    c.fill();
+    c.strokeStyle = o.hot ? f.C.accent : o.active ? f.C.fg : f.C.lineStrong;
+    c.lineWidth = o.hot ? 1.6 : o.active ? 1.3 : 1;
+    if (o.dash) c.setLineDash(o.dash);
+    c.stroke();
+    c.setLineDash([]);
+    K.text(f, c, title, o.left ? b.x + 10 : b.x + b.w / 2, b.y + (sub ? b.h / 2 - 3 : b.h / 2 + 4), {
+      size: o.size ?? 12, weight: 600, color: o.titleColor ?? f.C.fg, align: o.left ? "left" : "center",
+    });
+    if (sub) K.text(f, c, sub, o.left ? b.x + 10 : b.x + b.w / 2, b.y + b.h / 2 + 13, {
+      size: 10.5, color: f.C.muted, align: o.left ? "left" : "center",
+    });
+    c.restore();
+  };
+  const polyline = (f, c, pts, o = {}) => {
+    c.save();
+    c.globalAlpha = o.alpha ?? 1;
+    c.strokeStyle = o.color ?? f.C.muted;
+    c.lineWidth = o.width ?? f.C.edge;
+    if (o.dash) c.setLineDash(o.dash);
+    c.lineJoin = "round";
+    c.beginPath();
+    pts.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]));
+    c.stroke();
+    c.setLineDash([]);
+    if (o.arrow) {
+      const b = pts[pts.length - 1], a = pts[pts.length - 2];
+      const q = Math.atan2(b[1] - a[1], b[0] - a[0]);
+      c.fillStyle = o.color ?? f.C.muted;
+      c.beginPath();
+      c.moveTo(b[0], b[1]);
+      c.lineTo(b[0] - 7 * Math.cos(q - 0.42), b[1] - 7 * Math.sin(q - 0.42));
+      c.lineTo(b[0] - 7 * Math.cos(q + 0.42), b[1] - 7 * Math.sin(q + 0.42));
+      c.closePath();
+      c.fill();
+    }
+    c.restore();
+  };
+  const along = (pts, u) => {
+    const seg = [];
+    let total = 0;
+    for (let i = 1; i < pts.length; i++) { const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); total += d; }
+    let left = clamp(u) * total;
+    for (let i = 0; i < seg.length; i++) {
+      if (left <= seg[i] || i === seg.length - 1) {
+        const t = seg[i] ? left / seg[i] : 0;
+        return [FS.lerp(pts[i][0], pts[i + 1][0], t), FS.lerp(pts[i][1], pts[i + 1][1], t)];
+      }
+      left -= seg[i];
+    }
+    return pts[pts.length - 1];
+  };
+  const dot = (c, p, color, r = 4) => { c.fillStyle = color; c.beginPath(); c.arc(p[0], p[1], r, 0, 7); c.fill(); };
+  const hit = (b, x, y) => b && x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h;
+  const between = (t, a, b) => FS.ease.inOut(clamp((t - a) / (b - a || 1)));
+
+  /* ER / data model */
+  (() => {
+    let L;
+    const names = ["customer", "order", "item", "product"];
+    const defs = {
+      customer: ["Customer", ["# id", "email"]],
+      order: ["Order", ["# id", "→ customer_id", "placed_at"]],
+      item: ["Order item", ["# id", "→ order_id", "→ product_id", "qty"]],
+      product: ["Product", ["# id", "name", "price"]],
+    };
+    const layout = (w) => {
+      if (w >= 620) return { h: 300, customer:{x:8,y:24,w:150,h:92}, order:{x:w*.34,y:24,w:170,h:108}, item:{x:w*.34,y:180,w:170,h:108}, product:{x:w-158,y:180,w:150,h:92} };
+      return { h: 490, customer:{x:8,y:16,w:w-16,h:78}, order:{x:8,y:126,w:w-16,h:92}, item:{x:8,y:250,w:w-16,h:108}, product:{x:8,y:390,w:w-16,h:86} };
+    };
+    const center = (b) => [b.x + b.w/2, b.y + b.h/2];
+    const edge = (a,b) => Math.abs(center(a)[0]-center(b)[0]) > Math.abs(center(a)[1]-center(b)[1])
+      ? [[a.x+a.w,a.y+a.h/2],[b.x,b.y+b.h/2]]
+      : [[a.x+a.w/2,a.y+a.h],[b.x+b.w/2,b.y]];
+    const rels = [["customer","order","1","many"],["order","item","1","many"],["item","product","many","1"]];
+    FS.figure("fig-er", {
+      height:(w)=>layout(w).h, duration:6.4, keyframe:6.4,
+      chapters:[{t:1.4,label:"customer"},{t:3.3,label:"items"},{t:5.3,label:"products"}],
+      formatTime:(t)=>t<2.2?"customer":t<4.2?"order items":"products",
+      timeAxis:(f)=>({x0:12,x1:f.w-12,t1:6.4}),
+      tips:{cardinality:{title:"Cardinality",body:"One customer has many orders; every order item points to one product."}},
+      tipAt:(f,x,y)=>y>L.h-40?"cardinality":null,
+      resize(f){L=layout(f.w);},
+      render(f,c){
+        const paths=rels.map(([a,b])=>edge(L[a],L[b]));
+        paths.forEach((p,i)=>{polyline(f,c,p,{color:f.C.lineStrong,arrow:true}); const m=along(p,.5); K.label(f,c,rels[i][2]+" → "+rels[i][3],m[0],m[1]-9,{align:"center",size:10,halo:f.C.surface});});
+        names.forEach((k)=>{
+          const [title,fields]=defs[k], b=L[k], active=(f.t<2.2&&["order","customer"].includes(k))||(f.t>=2.2&&f.t<4.2&&["order","item"].includes(k))||(f.t>=4.2&&["item","product"].includes(k));
+          box(f,c,b,title,"",{active,left:true});
+          fields.forEach((s,i)=>K.text(f,c,s,b.x+10,b.y+38+i*15,{size:10,color:s.startsWith("#")||s.startsWith("→")?f.C.muted:f.C.fg}));
+        });
+        const phases=[[0,2.2,paths[0]],[2.2,4.2,paths[1]],[4.2,6.4,paths[2]]];
+        for(const [a,b,p] of phases) if(f.t>=a&&f.t<=b) dot(c,along(p,between(f.t,a,b)),f.C.accent,4.5);
+        K.text(f,c,"# primary key · → foreign key",8,L.h-10,{size:10,color:f.C.muted});
+      }
+    });
+  })();
+
+  /* High-level governed platform */
+  (() => {
+    let L;
+    const layout=(w)=>{
+      if(w>=650){const y=92, bw=Math.min(118,(w-72)/5); return {h:286,nodes:[{x:4,y,w:bw,h:54},{x:4,y:y+72,w:bw,h:54},{x:w*.23,y:y+36,w:bw,h:58},{x:w*.46,y:y+36,w:bw,h:58},{x:w*.68,y:y+36,w:bw,h:58},{x:w-bw-4,y:y+36,w:bw,h:58}],bars:[{x:w*.2,y:12,w:w*.76,h:28},{x:w*.2,y:246,w:w*.76,h:28}]};}
+      return {h:526,nodes:[{x:8,y:8,w:(w-24)/2,h:50},{x:16+(w-24)/2,y:8,w:(w-24)/2,h:50},...Array.from({length:4},(_,i)=>({x:34,y:100+i*82,w:w-68,h:56}))],bars:[{x:8,y:72,w:w-16,h:22},{x:8,y:450,w:w-16,h:24}]};
+    };
+    const labels=[["App events","stream"],["CRM","daily export"],["Ingest","validate"],["Object store","governed"],["Query","SQL"],["Dashboard","metrics"]];
+    FS.figure("fig-platform",{
+      height:(w)=>layout(w).h,duration:8,keyframe:8,chapters:[{t:1,label:"source"},{t:2.7,label:"ingest"},{t:4.4,label:"store"},{t:6,label:"query"},{t:7.5,label:"dashboard"}],
+      formatTime:(t)=>["source","ingest","store","query","dashboard"][Math.min(4,Math.floor(t/1.7))],
+      timeAxis:(f)=>({x0:12,x1:f.w-12,t1:8}),
+      tips:{controls:{title:"Cross-cutting controls",body:"Identity and observability apply across stages; a record does not pass through them as pipeline steps."}},
+      tipAt:(f,x,y)=>L.bars.some(b=>hit(b,x,y))?"controls":null,
+      resize(f){L=layout(f.w);},
+      render(f,c){
+        box(f,c,L.bars[0],"Identity","roles · policy",{fill:fill(f.C),dash:[4,3]});
+        box(f,c,L.bars[1],"Observability","logs · lineage",{fill:fill(f.C),dash:[4,3]});
+        labels.forEach((v,i)=>box(f,c,L.nodes[i],v[0],v[1],{active:i===3}));
+        const links=[];
+        links.push([[L.nodes[0].x+L.nodes[0].w,L.nodes[0].y+L.nodes[0].h/2],[L.nodes[2].x,L.nodes[2].y+L.nodes[2].h/2]]);
+        links.push([[L.nodes[1].x+L.nodes[1].w,L.nodes[1].y+L.nodes[1].h/2],[L.nodes[2].x,L.nodes[2].y+L.nodes[2].h/2]]);
+        for(let i=2;i<5;i++) links.push([[L.nodes[i].x+L.nodes[i].w,L.nodes[i].y+L.nodes[i].h/2],[L.nodes[i+1].x,L.nodes[i+1].y+L.nodes[i+1].h/2]]);
+        if(f.w<650){links.length=0; links.push([[L.nodes[0].x+L.nodes[0].w/2,L.nodes[0].y+L.nodes[0].h],[L.nodes[2].x+L.nodes[2].w/2,L.nodes[2].y]]); links.push([[L.nodes[1].x+L.nodes[1].w/2,L.nodes[1].y+L.nodes[1].h],[L.nodes[2].x+L.nodes[2].w/2,L.nodes[2].y]]); for(let i=2;i<5;i++)links.push([[L.nodes[i].x+L.nodes[i].w/2,L.nodes[i].y+L.nodes[i].h],[L.nodes[i+1].x+L.nodes[i+1].w/2,L.nodes[i+1].y]]);}
+        links.forEach(p=>polyline(f,c,p,{color:f.C.muted,arrow:true}));
+        const route=[links[0],...links.slice(2)], part=Math.min(route.length-1,Math.floor(f.t/2)), u=FS.ease.inOut((f.t-part*2)/2);
+        dot(c,along(route[part],u),f.C.accent,4.5);
+      }
+    });
+  })();
+
+  /* Five-tier medallion */
+  (() => {
+    let L;
+    const tiers=[["Raw","48k rows"],["Anonymized","44k rows"],["Staging","39k rows"],["Aggregated","31 daily totals"],["Archive","31 snapshots"]];
+    const steps=tiers.map((t,i)=>({caption:["Land the source rows without rewriting them.","Mask identifiers while keeping join keys.","Validate and join rows into a working table.","Aggregate the clean rows into daily totals.","Retain closed snapshots under lifecycle policy."][i]}));
+    const layout=(w)=>w>=680?{h:224,b:tiers.map((_,i)=>({x:i*(w/5)+4,y:72,w:w/5-12,h:92}))}:{h:458,b:tiers.map((_,i)=>({x:16,y:12+i*86,w:w-32,h:66}))};
+    FS.figure("fig-medallion-five",{
+      height:(w)=>layout(w).h,steps,stepDuration:.75,
+      tips:{archive:{title:"Archive",body:"Retention is a lifecycle destination. It is not a sixth transformation step."}},
+      tipAt:(f,x,y)=>hit(L.b[4],x,y)?"archive":null,
+      resize(f){L=layout(f.w);},
+      render(f,c){
+        for(let i=0;i<4;i++){const a=L.b[i],b=L.b[i+1],p=f.w>=680?[[a.x+a.w,a.y+a.h/2],[b.x,b.y+b.h/2]]:[[a.x+a.w/2,a.y+a.h],[b.x+b.w/2,b.y]];polyline(f,c,p,{color:i===f.step-1?f.C.accent:f.C.muted,arrow:true,dash:i===3?[4,3]:null});}
+        tiers.forEach((v,i)=>box(f,c,L.b[i],v[0],v[1],{active:i===f.step,dash:i===4?[4,3]:null}));
+        const from=L.b[Math.max(0,f.from)],to=L.b[f.step],e=FS.ease.inOut(f.stepT),a=[from.x+from.w/2,from.y+from.h*.78],b=[to.x+to.w/2,to.y+to.h*.78];
+        dot(c,[FS.lerp(a[0],b[0],e),FS.lerp(a[1],b[1],e)],f.C.accent,4.5);
+      }
+    });
+  })();
+
+  /* Multi-actor process */
+  (() => {
+    let L;
+    const work=[
+      ["Customer","Place","cart → order"],["Support","Verify","order → cleared"],["Warehouse","Allocate","cleared → pick list"],
+      ["Warehouse","Pack","pick list → shipment"],["Finance","Capture","shipment → receipt"],["Customer","Close","receipt → closed"],
+    ];
+    const steps=work.map((x)=>({caption:x[0]+" owns "+x[1].toLowerCase()+": "+x[2]+"."}));
+    const layout=(w)=>{
+      if(w>=700){const cw=(w-8)/6;return{h:286,b:work.map((x,i)=>({x:i*cw+4,y:56+["Customer","Support","Warehouse","Finance"].indexOf(x[0])*52,w:cw-10,h:42})),wide:true};}
+      return{h:454,b:work.map((x,i)=>({x:82,y:8+i*72,w:w-90,h:54})),wide:false};
+    };
+    FS.figure("fig-process-owners",{
+      height:(w)=>layout(w).h,steps,stepDuration:.72,
+      tips:{handoff:{title:"Handoff",body:"The active connector crosses to the next owner and carries the named payload."}},
+      tipAt:(f,x,y)=>x<82?"handoff":null,
+      resize(f){L=layout(f.w);},
+      render(f,c){
+        const roles=["Customer","Support","Warehouse","Finance"];
+        if(L.wide)roles.forEach((r,i)=>K.text(f,c,r,4,82+i*52,{size:10,weight:600,color:f.C.muted}));
+        work.forEach((v,i)=>{const b=L.b[i];box(f,c,b,v[1],v[2],{active:i===f.step,size:11});if(!L.wide)K.text(f,c,v[0],4,b.y+b.h/2+4,{size:10,weight:600,color:f.C.muted});if(i<work.length-1){const n=L.b[i+1],p=L.wide?[[b.x+b.w,b.y+b.h/2],[(b.x+b.w+n.x)/2,b.y+b.h/2],[(b.x+b.w+n.x)/2,n.y+n.h/2],[n.x,n.y+n.h/2]]:[[b.x+b.w/2,b.y+b.h],[n.x+n.w/2,n.y]];polyline(f,c,p,{color:i===f.step-1?f.C.accent:f.C.muted,arrow:true,alpha:i<f.step?1:.35});}});
+      }
+    });
+  })();
+
+  /* Honest event timeline */
+  (() => {
+    const events=[["Brief",0],["Design",4],["Code freeze",16],["Testing",26],["Launch",42]];
+    FS.figure("fig-event-line",{
+      height:()=>218,duration:42,keyframe:42,chapters:events.map(e=>({t:e[1],label:e[0]})),formatTime:(t)=>"day "+Math.round(t),
+      timeAxis:(f)=>({x0:26,x1:f.w-22,t1:42}),
+      tips:{delay:{title:"Testing delay",body:"Testing starts ten days after code freeze; the spacing is proportional to that wait."}},
+      tipAt:(f,x,y)=>y>55&&y<145?"delay":null,
+      render(f,c){
+        const X=(d)=>26+(f.w-48)*d/42,y=102;
+        c.strokeStyle=f.C.lineStrong;c.lineWidth=1;K.line(c,X(0),y,X(42),y);
+        c.save();c.globalAlpha=.55;c.strokeStyle=f.C.muted;c.setLineDash([4,4]);K.line(c,X(32),36,X(32),166);c.restore();
+        K.text(f,c,"original target",X(32),28,{size:10,align:"center",color:f.C.muted});
+        c.save();c.globalAlpha=.16;c.fillStyle=f.C.accent;c.fillRect(X(16),62,X(26)-X(16),80);c.restore();
+        events.forEach(([name,d],i)=>{const on=f.t>=d;dot(c,[X(d),y],on?f.C.accent:f.C.muted,on?5:3.5);const above=i%2===0;K.text(f,c,name,X(d),above?78:132,{size:10.5,weight:on?600:500,align:i===0?"left":i===events.length-1?"right":"center",color:on?f.C.fg:f.C.muted});K.text(f,c,"day "+d,X(d),above?64:148,{size:10,align:i===0?"left":i===events.length-1?"right":"center",color:f.C.muted});});
+        K.playhead(f,c,X(f.t),50,158);
+      }
+    });
+  })();
+
+  /* Role-scoped data flow */
+  (() => {
+    let L;
+    const stages=[
+      ["Capture","Source owner","event"],["Ingest","Platform","validated row"],["Transform","Data team","clean row"],
+      ["Publish","Data team","metric"],["Use","Analyst","decision"],
+    ];
+    const roles=["Source owner","Platform","Data team","Analyst"];
+    const route=()=>L.boxes.map(b=>[b.x+b.w/2,b.y+b.h/2]);
+    FS.figure("fig-role-data-flow",{
+      height:(w)=>w<650?488:286,duration:8,keyframe:8,
+      chapters:stages.map((s,i)=>({t:i*2,label:s[0]})),formatTime:(t)=>stages[Math.min(4,Math.floor(t/2))][0],
+      timeAxis:(f)=>({x0:18,x1:f.w-18,t1:8}),
+      tips:{owner:{title:"Owner at the hand-off",body:"Each stage names the role responsible and the payload passed forward."}},
+      tipAt:(f,x,y)=>L.boxes.some(b=>hit(b,x,y))?"owner":null,
+      resize(f){
+        if(f.w>=650){const gap=12,bw=(f.w-16-gap*4)/5,boxes=stages.map((s,i)=>({x:8+i*(bw+gap),y:86,w:bw,h:78}));L={boxes,bands:[{x:boxes[0].x,y:28,w:boxes[0].w,h:28},{x:boxes[1].x,y:28,w:boxes[1].w,h:28},{x:boxes[2].x,y:28,w:boxes[3].x+boxes[3].w-boxes[2].x,h:28},{x:boxes[4].x,y:28,w:boxes[4].w,h:28}]};}
+        else L={boxes:stages.map((s,i)=>({x:78,y:22+i*88,w:f.w-94,h:64})),bands:roles.map((r,i)=>({x:4,y:22+i*110,w:64,h:26}))};
+      },
+      render(f,c){
+        if(f.w>=650)roles.forEach((r,i)=>{const b=L.bands[i];c.save();c.globalAlpha=.12;c.fillStyle=f.C.accent;c.fillRect(b.x,b.y,b.w-4,b.h);c.restore();K.text(f,c,r,b.x+b.w/2-2,b.y+18,{size:10,weight:600,align:"center",color:f.C.muted});});
+        stages.forEach((s,i)=>{const b=L.boxes[i];box(f,c,b,s[0],s[2],{active:f.t>=i*2,left:f.w<650,size:f.w<650?11:10.5});if(f.w<650)K.text(f,c,s[1],68,b.y+b.h/2+4,{size:9.5,weight:600,align:"right",color:f.C.muted});});
+        const p=route();for(let i=0;i<p.length-1;i++){const a=L.boxes[i],b=L.boxes[i+1],line=f.w>=650?[[a.x+a.w,a.y+a.h/2],[b.x,b.y+b.h/2]]:[[a.x+a.w/2,a.y+a.h],[b.x+b.w/2,b.y]];polyline(f,c,line,{color:f.C.muted,arrow:true});}
+        const part=Math.min(3,Math.floor(f.t/2)),u=between(f.t,part*2,(part+1)*2),a=p[part],b=p[part+1];dot(c,[FS.lerp(a[0],b[0],u),FS.lerp(a[1],b[1],u)],f.C.accent,4.5);
+      }
+    });
+  })();
+
+  /* Stage framework */
+  (() => {
+    let L;
+    const cols=["Discover","Design","Build","Launch"], rows=["Question","Input","Control","Output"];
+    const vals=[["Need?","Problem","Scope","Brief"],["Shape?","Brief","Review","Spec"],["Works?","Spec","Tests","Release"],["Used?","Release","Guard","Signal"]];
+    const steps=cols.map((x)=>({caption:x+" keeps the same question, input, control and output slots."}));
+    FS.figure("fig-stage-slots",{
+      height:(w)=>w<520?326:286,steps,stepDuration:.65,
+      tips:{empty:{title:"Explicit empty slot",body:"An em dash means not applicable. It is not missing content."}},
+      tipAt:(f,x,y)=>x>L.x0&&y>L.y0?"empty":null,
+      resize(f){L={x0:f.w<520?54:78,y0:44,cw:(f.w-(f.w<520?58:82))/4,rh:f.w<520?62:52};},
+      render(f,c){
+        cols.forEach((s,i)=>{K.text(f,c,s,L.x0+(i+.5)*L.cw,26,{size:f.w<520?10:11,weight:600,align:"center",color:i===f.step?f.C.accent:f.C.fg});});
+        rows.forEach((r,j)=>K.text(f,c,r,L.x0-8,L.y0+(j+.5)*L.rh+4,{size:10,weight:600,align:"right",color:f.C.muted}));
+        vals.forEach((col,i)=>col.forEach((v,j)=>{const b={x:L.x0+i*L.cw+3,y:L.y0+j*L.rh+3,w:L.cw-6,h:L.rh-6};box(f,c,b,v,j===1&&i===0?"request":"",{active:i===f.step,size:10});}));
+      }
+    });
+  })();
+
+  /* Unstructured input to artifact */
+  (() => {
+    let L;
+    const steps=[
+      {caption:"Start with the source words, not an invented summary."},{caption:"Ask who owns the work; keep due date unresolved."},
+      {caption:"Map representative phrases to fields with provenance."},{caption:"Save the ticket with the unknown field still explicit."},
+    ];
+    const layout=(w)=>w>=650?{h:286,src:{x:8,y:48,w:w*.34,h:104},ticket:{x:w*.57,y:30,w:w*.41-8,h:198},mid:[w*.48,116]}:{h:430,src:{x:8,y:16,w:w-16,h:92},ticket:{x:8,y:196,w:w-16,h:218},mid:[w/2,156]};
+    FS.figure("fig-artifact",{
+      height:(w)=>layout(w).h,steps,stepDuration:.75,
+      tips:{unknown:{title:"Unknown stays unknown",body:"The request never names a due date, so the durable record does not invent one."}},
+      tipAt:(f,x,y)=>hit(L.ticket,x,y)?"unknown":null,
+      resize(f){L=layout(f.w);},
+      render(f,c){
+        box(f,c,L.src,"“Please fix checkout”","“Billing owns it”",{left:true,active:f.step===0});
+        box(f,c,L.ticket,"Support ticket","durable record",{left:true,active:f.step===3});
+        const fields=[["Summary","Fix checkout"],["Priority","High"],["Owner","Billing"],["Due date","Unknown"]];
+        fields.forEach((v,i)=>{const y=L.ticket.y+62+i*29;K.text(f,c,v[0],L.ticket.x+10,y,{size:10,color:f.C.muted});K.text(f,c,v[1],L.ticket.x+L.ticket.w-10,y,{size:10.5,weight:600,align:"right",color:i===3?f.C.accent:f.C.fg});});
+        if(f.step>=1)K.label(f,c,"Who owns it?",L.mid[0],L.mid[1],{align:"center",size:10.5,halo:f.C.surface});
+        if(f.step>=2){const a=[L.src.x+L.src.w,L.src.y+L.src.h*.65],b=[L.ticket.x,L.ticket.y+120];polyline(f,c,[a,b],{color:f.C.accent,dash:[4,3],arrow:true});}
+        if(f.step>=3)K.label(f,c,"saved",L.ticket.x+L.ticket.w-12,L.ticket.y+L.ticket.h-14,{align:"right",color:f.C.accent});
+      }
+    });
+  })();
+
+  /* Paired policy traces */
+  (() => {
+    let L;
+    const rules=["Identity","Audience","Data rule","Approval","Deploy gate"];
+    const A=["✓ PASS","✓ PASS","✓ PASS","— SKIPPED","✓ PASS"];
+    const B=["✓ PASS","✓ PASS","× FAIL","○ NOT REACHED","○ NOT REACHED"];
+    const steps=rules.map((r,i)=>({caption:i===2?"The data rule is the first divergence: read passes, restricted write fails.":r+" is evaluated in the same order for both requests."}));
+    FS.figure("fig-policy-pair",{
+      height:()=>344,steps,stepDuration:.6,
+      tips:{states:{title:"Four policy states",body:"Pass, fail, skipped and not reached remain distinct in words and symbols."}},
+      tipAt:(f,x,y)=>y>56?"states":null,
+      resize(f){L={left:Math.min(118,f.w*.34),top:58,row:50,col:(f.w-Math.min(118,f.w*.34)-8)/2};},
+      render(f,c){
+        K.text(f,c,"Rule",4,34,{size:10,weight:600,color:f.C.muted});K.text(f,c,"Read",L.left+L.col*.5,34,{size:11,weight:600,align:"center"});K.text(f,c,"Restricted write",L.left+L.col*1.5,34,{size:11,weight:600,align:"center"});
+        rules.forEach((r,i)=>{const y=L.top+i*L.row;K.text(f,c,(i+1)+" · "+r,4,y+25,{size:10.5,weight:i===2?600:500,color:i===2?f.C.accent:f.C.fg});[A[i],B[i]].forEach((s,j)=>{const b={x:L.left+j*L.col+3,y:y+4,w:L.col-6,h:36};box(f,c,b,s,"",{active:i<=f.step,hot:i===2&&j===1,size:f.w<520?9.5:10.5});});});
+        c.save();c.globalAlpha=.55;c.strokeStyle=f.C.accent;c.setLineDash([4,3]);c.strokeRect(L.left-3,L.top+2*L.row,L.col*2+3,44);c.restore();
+        K.text(f,c,"first divergence",f.w-6,L.top+2*L.row-7,{size:10,align:"right",color:f.C.accent});
+      }
+    });
+  })();
+
+  /* Secure paved road */
+  (() => {
+    let L;
+    const layout=(w)=>w>=650?{h:270,b:[{x:8,y:78,w:112,h:54},{x:w*.26,y:78,w:128,h:54},{x:w*.54,y:78,w:128,h:54},{x:w-126,y:78,w:118,h:54}],audit:{x:w*.54+14,y:184,w:100,h:44},boundary:w*.49}:{h:492,b:[{x:28,y:8,w:w-56,h:52},{x:28,y:104,w:w-56,h:52},{x:28,y:224,w:w-56,h:52},{x:28,y:424,w:w-56,h:52}],audit:{x:28,y:326,w:150,h:48},boundary:202};
+    FS.figure("fig-paved-road",{
+      height:(w)=>layout(w).h,duration:5,keyframe:5,loop:false,autoplay:false,
+      params:{request:{value:"signed",options:[{value:"signed",label:"Signed"},{value:"unsigned",label:"Unsigned"}],label:"Build",placement:"inline"}},
+      reserve:{state:["admitted to production","blocked before production"]},
+      tips:{gate:{title:"Privileged gate",body:"Checks signature and policy before anything enters the production boundary."}},
+      tipAt:(f,x,y)=>hit(L.b[2],x,y)?"gate":null,
+      onParam(f){f.api.seek(0);if(!FS.reduced())f.api.play();},
+      resize(f){L=layout(f.w);},
+      render(f,c){
+        const signed=f.params.request==="signed", names=[["Developer","build"],["Pipeline",signed?"signed artifact":"unsigned artifact"],["Policy gate","signature · policy"],["Production","isolated runtime"]];
+        c.save();c.globalAlpha=.55;c.strokeStyle=f.C.muted;c.setLineDash([5,4]);if(f.w>=650)K.line(c,L.boundary,30,L.boundary,L.h-20);else K.line(c,8,L.boundary,f.w-8,L.boundary);c.restore();
+        K.text(f,c,"production boundary",f.w>=650?L.boundary+8:f.w-8,f.w>=650?26:L.boundary-8,{size:10,align:f.w>=650?"left":"right",color:f.C.muted});
+        names.forEach((v,i)=>box(f,c,L.b[i],v[0],v[1],{active:(i===2),dash:i===3?[4,3]:null}));
+        box(f,c,L.audit,"Audit log",signed?"admitted event":"blocked event",{left:f.w<650,size:10.5});
+        polyline(f,c,f.w>=650?[[L.b[2].x+L.b[2].w/2,L.b[2].y+L.b[2].h],[L.audit.x+L.audit.w/2,L.audit.y]]:[[L.b[2].x,L.b[2].y+L.b[2].h/2],[L.audit.x+L.audit.w/2,L.audit.y]],{color:f.C.muted,arrow:true,dash:[4,3],alpha:.55});
+        const links=[];for(let i=0;i<3;i++){const a=L.b[i],b=L.b[i+1],side=L.audit.x+L.audit.w+32;links.push(f.w>=650?[[a.x+a.w,a.y+a.h/2],[b.x,b.y+b.h/2]]:i===2?[[a.x+a.w/2,a.y+a.h],[side,a.y+a.h+24],[side,b.y-24],[b.x+b.w/2,b.y]]:[[a.x+a.w/2,a.y+a.h],[b.x+b.w/2,b.y]]);}
+        links.forEach((p,i)=>polyline(f,c,p,{color:!signed&&i===2?f.C.muted:f.C.fg,arrow:signed||i<2,dash:!signed&&i===2?[4,3]:null,alpha:!signed&&i===2?.35:1}));
+        const stop=signed?3:2,seg=Math.min(stop-1,Math.floor(f.t/(5/stop))),u=between(f.t,seg*(5/stop),(seg+1)*(5/stop));dot(c,along(links[seg],u),f.C.accent,4.5);
+        if(!signed){const b=L.b[2],p=f.w>=650?[b.x+b.w+18,b.y+b.h/2]:[b.x+b.w/2,b.y+b.h+18];K.label(f,c,"× BLOCKED",p[0],p[1],{align:"center",color:f.C.accent,halo:f.C.surface});}
+        f.api.out("state",signed?"admitted to production":"blocked before production");
+      }
+    });
+  })();
+
+  /* Governance catalog */
+  (() => {
+    const surfaces=[
+      ["Authoring",["Schema lint","code · write","Owner note","human · write"]],
+      ["Merge",["Unit tests","platform · merge","Approval","human · merge"]],
+      ["Deploy",["Signed image","platform · deploy","Exception route","human · deploy"]],
+      ["Runtime",["Policy check","code · run","Audit gap","— · run"]],
+    ];
+    FS.figure("fig-control-catalog",{
+      height:(w)=>w<560?442:286,params:{surface:{value:"merge",options:surfaces.map(s=>({value:s[0].toLowerCase(),label:s[0]})),label:"Surface",placement:"inline"}},
+      reserve:{state:surfaces.map(s=>s[0])},
+      tips:{gap:{title:"Visible gap",body:"A missing actor is still part of the audit. Do not style it like an enforced control."}},
+      tipAt:(f,x,y)=>y>f.h-90?"gap":null,
+      render(f,c){
+        const vertical=f.w<560,cw=vertical?f.w-16:(f.w-24)/4;
+        surfaces.forEach((s,i)=>{const active=f.params.surface===s[0].toLowerCase(),b=vertical?{x:8,y:8+i*104,w:cw,h:94}:{x:4+i*(cw+6),y:28,w:cw,h:220};box(f,c,b,s[0],"",{active,left:true});for(let k=0;k<2;k++){const y=b.y+48+k*(vertical?24:66);K.text(f,c,s[1][k*2],b.x+10,y,{size:10.5,weight:600,color:s[1][k*2]==="Audit gap"?f.C.accent:f.C.fg});K.text(f,c,s[1][k*2+1],b.x+b.w-10,y,{size:10,align:"right",color:f.C.muted});}});f.api.out("state",surfaces.find(s=>f.params.surface===s[0].toLowerCase())[0]);
+      }
+    });
+  })();
+
+  /* Compensating layers */
+  (() => {
+    const layers=[["Initial risk",100],["Identity",48],["Policy",21],["Runtime",12],["Monitoring",9]];
+    const steps=layers.map((v,i)=>({caption:i===0?"Start with 100 illustrative risk units.":v[0]+" leaves "+v[1]+" units for the next layer."}));
+    FS.figure("fig-security-layers",{
+      height:()=>304,steps,stepDuration:.7,
+      tips:{residual:{title:"Residual risk",body:"The value narrows but never reaches zero. Monitoring detects; it does not prevent."}},
+      tipAt:(f,x,y)=>y>228?"residual":null,
+      render(f,c){
+        const maxW=f.w-130;
+        layers.forEach((v,i)=>{const y=16+i*52,w=maxW*v[1]/100,b={x:116,y,w:Math.max(28,w),h:38};K.text(f,c,v[0],108,y+24,{size:10.5,weight:600,align:"right",color:i===f.step?f.C.accent:f.C.fg});box(f,c,b,v[1]+" units","",{active:i===f.step,left:true,size:10.5});if(i<layers.length-1)polyline(f,c,[[b.x+Math.min(b.w,34),b.y+b.h],[b.x+Math.min(maxW*layers[i+1][1]/100,34),b.y+52]],{color:f.C.muted,arrow:true,dash:[4,3]});});
+      }
+    });
+  })();
+
+  /* Attached callout */
+  (() => {
+    const pts=(f)=>[[38,156],[f.w*.47,70],[f.w-44,132]];
+    FS.figure("fig-callout",{
+      height:()=>224,duration:5,keyframe:5,chapters:[{t:0,label:"review"},{t:2.5,label:"ready"},{t:5,label:"launch"}],formatTime:(t)=>t<2.5?"review":t<5?"ready":"launch",
+      timeAxis:(f)=>({x0:24,x1:f.w-24,t1:5}),
+      tips:{note:{title:"Attached note",body:"Its leader starts at the release marker's anchor, so the note cannot drift away."}},
+      tipAt:(f,x,y)=>y<70?"note":null,
+      render(f,c){
+        const p=pts(f);polyline(f,c,p,{color:f.C.lineStrong});
+        ["Review","Ready","Launch"].forEach((s,i)=>{dot(c,p[i],f.C.muted,3.5);K.text(f,c,s,p[i][0],p[i][1]+24,{size:10.5,align:i===0?"left":i===2?"right":"center"});});
+        const first=f.t<2.5, u=first?between(f.t,0,2.5):between(f.t,2.5,5),a=first?p[0]:p[1],b=first?p[1]:p[2],m=[FS.lerp(a[0],b[0],u),FS.lerp(a[1],b[1],u)];
+        dot(c,m,f.C.accent,5);
+        const label=[clamp(m[0]+64,118,f.w-86),clamp(m[1]-54,28,112)];
+        polyline(f,c,[m,[label[0]-18,label[1]+8]],{color:f.C.muted,dash:[4,3],alpha:.55});
+        K.label(f,c,"release candidate",label[0],label[1],{align:"center",color:f.C.fg,halo:f.C.surface});
+      }
+    });
+  })();
+
+  /* Icon specimens */
+  (() => {
+    const icons=["database","cloud","shield","terminal","queue","user"];
+    const roles={database:"persistent data",cloud:"external service",shield:"policy boundary",terminal:"command surface",queue:"ordered work",user:"human actor"};
+    const drawIcon=(c,k,x,y,S,color)=>{
+      c.save();c.strokeStyle=color;c.fillStyle=color;c.lineWidth=1.5;c.lineCap="round";c.lineJoin="round";
+      if(k==="database"){c.beginPath();c.ellipse(x,y-9,S*.42,S*.14,0,0,7);c.stroke();c.beginPath();c.moveTo(x-S*.42,y-9);c.lineTo(x-S*.42,y+10);c.ellipse(x,y+10,S*.42,S*.14,0,Math.PI,0,true);c.lineTo(x+S*.42,y-9);c.stroke();}
+      if(k==="cloud"){c.beginPath();c.arc(x-9,y+2,8,Math.PI*.8,Math.PI*1.9);c.arc(x,y-5,11,Math.PI,Math.PI*1.9);c.arc(x+11,y+2,8,Math.PI*1.15,Math.PI*.15);c.lineTo(x-11,y+9);c.stroke();}
+      if(k==="shield"){c.beginPath();c.moveTo(x,y-15);c.lineTo(x+13,y-9);c.lineTo(x+10,y+7);c.quadraticCurveTo(x,y+17,x-10,y+7);c.lineTo(x-13,y-9);c.closePath();c.stroke();}
+      if(k==="terminal"){c.strokeRect(x-16,y-12,32,24);c.beginPath();c.moveTo(x-10,y-4);c.lineTo(x-4,y);c.lineTo(x-10,y+4);c.moveTo(x,y+5);c.lineTo(x+9,y+5);c.stroke();}
+      if(k==="queue"){for(let i=0;i<3;i++)c.strokeRect(x-14+i*4,y-14+i*5,28-i*8,10);}
+      if(k==="user"){c.beginPath();c.arc(x,y-7,7,0,7);c.moveTo(x-13,y+14);c.quadraticCurveTo(x,y,x+13,y+14);c.stroke();}
+      c.restore();
+    };
+    FS.figure("fig-icons",{
+      height:(w)=>w<560?338:224,params:{icon:{value:"database",options:icons.map(x=>({value:x,label:x[0].toUpperCase()+x.slice(1)})),label:"Icon",placement:"inline"}},
+      reserve:{state:icons.map(x=>x+" · "+roles[x])},
+      tips:{label:{title:"Words stay",body:"The icon supports a plain name and role. It never becomes the only label."}},
+      tipAt:(f,x,y)=>y>f.h-48?"label":null,
+      render(f,c){
+        const cols=f.w<560?2:3,cw=f.w/cols,rh=f.w<560?96:92;
+        icons.forEach((k,i)=>{const x=(i%cols+.5)*cw,y=30+Math.floor(i/cols)*rh,active=f.params.icon===k,b={x:(i%cols)*cw+5,y:y-25,w:cw-10,h:70};box(f,c,b,"","",{active});drawIcon(c,k,x,y,34,active?f.C.accent:f.C.fg);K.text(f,c,k,x,y+31,{size:10.5,weight:600,align:"center",color:f.C.fg});});
+        const k=f.params.icon;f.api.out("state",k+" · "+roles[k]);
+      }
+    });
+  })();
+
+  /* Seeded sketch treatment */
+  (() => {
+    const jitter=[[-1,1],[1,-1],[0,1],[-1,0],[1,1],[0,-1]];
+    const pathSketch=(f,c,pts,on)=>{if(!on){polyline(f,c,pts,{color:f.C.muted,arrow:true});return;}for(let pass=0;pass<2;pass++){const q=pts.map((p,i)=>[p[0]+jitter[(i+pass*2)%jitter.length][0]*1.4,p[1]+jitter[(i+pass*2)%jitter.length][1]*1.4]);polyline(f,c,q,{color:f.C.muted,alpha:.55,arrow:pass===0});}};
+    FS.figure("fig-sketch",{
+      height:()=>208,params:{sketch:{value:false,label:"Sketch treatment",placement:"inline",format:(v)=>v?"On":"Off"}},reserve:{state:["precise geometry","seeded sketch treatment"]},
+      tips:{seed:{title:"Seeded once",body:"The same offsets draw every frame. Text and hit targets remain exact."}},
+      tipAt:(f,x,y)=>y>150?"seed":null,
+      render(f,c){
+        const on=!!f.params.sketch,bw=Math.min(126,(f.w-60)/3),bs=[0,1,2].map(i=>({x:10+i*(f.w-20-bw)/2,y:58,w:bw,h:62}));
+        for(let i=0;i<2;i++)pathSketch(f,c,[[bs[i].x+bs[i].w,89],[bs[i+1].x,89]],on);
+        bs.forEach((b,i)=>{if(!on)box(f,c,b,["Input","Transform","Output"][i],["record","validate","report"][i],{active:i===1});else{c.save();for(let pass=0;pass<2;pass++){const d=jitter[(i+pass)%jitter.length];K.rrect(c,b.x+d[0]*1.2,b.y+d[1]*1.2,b.w,b.h,6);c.fillStyle=pass? "transparent":fill(f.C);if(!pass)c.fill();c.strokeStyle=i===1?f.C.accent:f.C.lineStrong;c.globalAlpha=pass?.55:1;c.stroke();}c.restore();K.text(f,c,["Input","Transform","Output"][i],b.x+b.w/2,b.y+28,{size:12,weight:600,align:"center"});K.text(f,c,["record","validate","report"][i],b.x+b.w/2,b.y+45,{size:10.5,align:"center",color:f.C.muted});}});
+        f.api.out("state",on?"seeded sketch treatment":"precise geometry");
+      }
+    });
+  })();
+
+  /* Terminal / log */
+  (() => {
+    const logs=[
+      [0.4,"00:00","build image","OK"],[1.2,"00:06","push artifact","OK"],[2.1,"00:11","start release","OK"],
+      [3.0,"00:18","health check 1","OK"],[4.1,"00:23","health check 2","FAIL"],[5.2,"00:24","rollback queued","STOP"],
+    ];
+    FS.figure("fig-terminal-log",{
+      height:()=>280,duration:6,keyframe:6,chapters:logs.map(x=>({t:x[0],label:x[2]})),formatTime:(t)=>t<4.1?"deploying":"failed · rollback queued",
+      timeAxis:(f)=>({x0:18,x1:f.w-18,t1:6}),
+      tips:{failure:{title:"First failure",body:"The log stops the deploy at the first failed health check and records the rollback decision."}},
+      tipAt:(f,x,y)=>y>170?"failure":null,
+      render(f,c){
+        const b={x:4,y:8,w:f.w-8,h:244};box(f,c,b,"","",{fill:fill(f.C)});
+        c.fillStyle=f.C.surface2;c.fillRect(b.x,b.y,b.w,30);
+        [0,1,2].forEach(i=>dot(c,[b.x+16+i*16,b.y+15],i===0?f.C.accent:f.C.muted,4));
+        K.text(f,c,"deploy.log",b.x+68,b.y+19,{size:10.5,weight:600,color:f.C.fg});
+        logs.forEach((row,i)=>{const show=f.t>=row[0],y=b.y+56+i*28;if(!show)return;const active=i===4;K.text(f,c,row[1],b.x+14,y,{size:10,color:f.C.muted});K.text(f,c,row[2],b.x+70,y,{size:10.5,weight:active?600:500,color:active?f.C.accent:f.C.fg});K.text(f,c,row[3],b.x+b.w-14,y,{size:10,weight:600,align:"right",color:active?f.C.accent:f.C.muted});});
+        if(f.t<logs[logs.length-1][0]){const n=logs.filter(x=>f.t>=x[0]).length,y=b.y+56+n*28;c.fillStyle=f.C.accent;c.fillRect(b.x+70,y-10,7,2);}
+      }
+    });
+  })();
+})();
