@@ -1,6 +1,6 @@
 {
   "title": "Perception and attention",
-  "summary": "The six walkthroughs of an open-source 3D brain guide explain routes for vision, touch, hearing and speech, feedback from the cortex to the thalamus, and attention networks. The 2D figures end with a draggable normalization model showing how priority for one sense reduces the others.",
+  "summary": "Routes for vision, touch, hearing and speech, feedback from the cortex to the thalamus, and the attention networks, from the walkthroughs of an open-source 3D brain guide. Seven figures, ending with a draggable normalization model of how priority for one sense reduces the others.",
   "source": {
     "label": "Juan Bermudez, Perception & Attention (open source, MIT), 2026",
     "url": "https://github.com/juanbermudez/perception-and-attention"
