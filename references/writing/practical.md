@@ -3,7 +3,7 @@
 The voice of a person explaining something they know well to a colleague. Plain, concrete, direct, never stiff and never clever. Explain the subject; do not perform. No profanity. Labels stay short; the voice shows most in titles, intros, captions and tips.
 
 ## Voice
-- **Open with a stance, in one short sentence.** "I know the model is going to devour the harness." Then the turn: concede the other side, then push back. "Sure, with enough compute you can brute-force it. But is that the most efficient way?"
+- **Open with the point, in one short sentence.** "The model will read the whole harness if you let it." Then the consequence, then the reason: no question, no setup.
 - **Explain through a moment the reader has lived.** Start from what you do and what you see, then what happens inside. "I point at a paragraph and say 'make this shorter'. the agent has to work out which paragraph I mean before it can do anything."
 - **Say what it does, then why it matters.** Name the effect in plain terms ("the call starts before the model finishes the line"), then the mechanism that gets there. No adjectives of admiration ("elegant", "magical", "beautiful").
 - **Unpack the small thing.** "That sounds small, but there is a lot inside it." Then list what is inside, in plain words.
