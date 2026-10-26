@@ -30,6 +30,8 @@ listed on `docs/examples.html`; the sources live in `src/<slug>/`.
 ## Rules
 
 - Do not put a label above a heading. The heading stands alone.
+- Nothing sits above a heading: no eyebrow, kicker, overline or numbered label ("02 · The method"). The heading
+  stands alone and says what the section is about.
 - The guide's title is the subject's name or a simplified version of it, 3 to 6 words. Section headings say what the
   section is about. Prose is practical, concise and direct: it explains the subject and never embellishes, jokes or
   teases (`references/writing/practical.md`).

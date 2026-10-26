@@ -44,7 +44,6 @@
     <div class="stat"><b>1.21×</b><span>steeper tuning to the seen face in its epochs than to the suppressed face in its epochs</span><small>Fig. 4c · p = 3×10⁻⁴⁰</small></div>
   </div>
 
-  <p class="kicker">01 · The puzzle</p>
   <h2>Selectivity drops during rivalry</h2>
   <p>Take a cell that fires more for face A than face B when the two are shown one at a time. Its preference can be written as a modulation index, where <i>R</i> is the cell’s average firing rate:</p>
   <div class="formula"><span class="lab">Modulation index</span>MI = (R<sub>A</sub> − R<sub>B</sub>) / (R<sub>A</sub> + R<sub>B</sub>)</div>
@@ -61,7 +60,6 @@
     <p class="fs-caption">Each illustrative dot is one cell and stimulus pair. The dashed line is slope 1 for cells following perception; the solid line is the recorded slope 0.23 (Fig. 1h).</p>
   </figure>
 
-  <p class="kicker">02 · The method</p>
   <h2>Binocular flash suppression</h2>
   <p>To pull apart what is seen from what is shown, the authors used <b>binocular flash suppression</b>. One face (the primed face) is shown to one eye for 1 to 2 seconds. Then a second face is flashed to the other eye. The flashed face takes over perception, and the primed face, still physically there, drops out of awareness.</p>
   <p>They checked this in 14 people with button presses. The flashed face was reported on 82% of rivalry trials, close to the 87% people report for an image with no competitor at all (p = 4×10⁻⁷). Every neural analysis below uses the window from 300 to 1000 ms after the flash, when the flashed face dominates.</p>
@@ -76,7 +74,6 @@
     <p class="fs-caption">Red and cyan anaglyph goggles send a different image to each eye; the monkeys fixated without reporting, so the percept is inferred from the human reports (Fig. 1b). Drag the time slider or step between moments.</p>
   </figure>
 
-  <p class="kicker">03 · The recording</p>
   <h2>The recordings</h2>
   <p>The authors recorded from two macaques with Neuropixels NHP probes. Each probe has a 45 mm shaft with 4,416 contacts, of which 384 record at a time. The recordings covered two face patches in inferotemporal cortex, <b>ML</b> and <b>AM</b>, and two prefrontal regions, <b>PO</b> (orbitofrontal) and <b>PVL</b> (ventrolateral). The patches were located with fMRI. One example trial recorded 429 cells together.</p>
   <p>The monkeys saw 1,500 synthetic faces arranged in 750 rival pairs. Each face is a point in a 50-dimensional face space: 20 shape features and 30 appearance features. Face cells respond roughly as a straight line along one preferred direction in that space. That linear code is what lets the authors read a face back out of the spikes.</p>
@@ -97,7 +94,6 @@
     <div class="stat"><b>19</b><span>sessions over two stimulus sets (1,500 faces; 10 stimuli)</span><small>Methods · 9 + 10 sessions</small></div>
   </div>
 
-  <p class="kicker">04 · The decoder</p>
   <h2>The decoder</h2>
   <p>First, the authors recorded each neuron’s average firing rate for each face when it was shown alone, during priming. That produced two <b>templates</b> per neuron: one for the flashed, seen face and one for the primed, suppressed face. During rivalry, they divided the spikes into 10 ms slices and tested which template more likely produced each slice. With Poisson spiking (spikes arriving at random at a set rate), a log-likelihood ratio scores which template fits better:</p>
   <div class="formula"><span class="lab">Log-likelihood ratio, one 10 ms slice</span>ℓ(t) = Σ<sub>i</sub> n<sub>i</sub>(t) · log(λ<sup>c</sup><sub>i</sub> / λ<sup>s</sup><sub>i</sub>) − (λ<sup>c</sup><sub>i</sub> − λ<sup>s</sup><sub>i</sub>) · Δt</div>
@@ -113,7 +109,6 @@
   </figure>
   <p>In the recordings, during priming (one face on screen) most slices match that face. After the flash the population splits about evenly between the two states, trial after trial (Fig. 2c). For pairs where each face had its own preferring cells, the switching is visible by eye in single-cell rasters (Fig. 2e–g).</p>
 
-  <p class="kicker">05 · Timing</p>
   <h2>How fast the states flip</h2>
   <p>If the labels were noise, the autocorrelation of ℓ would vanish within one 10 ms slice, as it does when the slices are shuffled. In the recordings, ℓ stays correlated for tens of milliseconds. Fitting a two-state switching model to that decay gives a <b>mean dwell of 67 ms</b>. A hidden Markov model, which allows each state to persist, gives median dwells of <b>64 ms</b> for state 1 and <b>59 ms</b> for state 2, stable across a range of bin sizes.</p>
   <p>Each run of one state, a micro-epoch, lasts about 60 ms. Perception in classic binocular rivalry switches about once every two seconds (about 0.5 Hz). The population flips about 30 times faster, while the percept stays put.</p>
@@ -128,7 +123,6 @@
     <p class="fs-caption">The top shows one simulated 2 s trial at real speed: before the flash the population mostly carries the primed face, and after it the two states split evenly. The bottom compares the recorded and shuffled ℓ autocorrelation (schematic of Fig. 2d) and the switches per second for population activity and perception.</p>
   </figure>
 
-  <p class="kicker">06 · State content</p>
   <h2>What each state encodes</h2>
   <p>Because face cells encode faces linearly, a plain linear decoder trained on priming responses (each face shown alone) turns population activity into the 50 face features, and those into a picture. The authors applied that same decoder to rivalry activity three ways.</p>
   <p>Applied to all moments, the decoder returns a blend that matches neither face. Applied only to state 1 moments, it returns the seen face. Applied only to state 2 moments, it returns the <b>suppressed face, in detail</b>, though the animal is not seeing it.</p>
@@ -150,7 +144,6 @@
     <p class="fs-caption">The decoder chose one of 10 faces from a 200 ms window. All-moments and state 1 values are stated in the text; state 2 values are approximate and read off Fig. 2l.</p>
   </figure>
 
-  <p class="kicker">07 · Controls</p>
   <h2>Controls against circular sorting</h2>
   <p>Section 06 has a circular sorting risk. The same spikes decide each slice’s state and then get averaged within that state. This can create an apparent difference without real switching: slices where a cell fired more are sorted one way, and slices where it fired less are sorted the other way. The authors call this <b>circular conditioning bias</b>. Their control lets some neurons decide the state and measures the others.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-circ-title">
@@ -193,7 +186,6 @@
   </div>
   <p>Averaging and uncoordinated pass the first test for the reason Fig. 7 shows, and fail as soon as other neurons decide. Even on the first test, with dwell times matched, the real data beat the averaging model by 8.2 points of explained variance (p = 0.007).</p>
 
-  <p class="kicker">08 · Single cells</p>
   <h2>One cell in both states</h2>
   <p>A face cell’s firing rises as a face moves along the cell’s preferred direction in face space. Order all the rival pairs by the seen face and the cell’s response rises in state 1 and stays flat in state 2. Order them by the suppressed face and the pattern reverses. The same cells change what they encode across the two states. Across 543 cells, gain for the seen face in state 1 and gain for the suppressed face in state 2 correlate at r = 0.90.</p>
   <figure class="fs-plate wide" aria-labelledby="fig-tune-title">
@@ -207,7 +199,6 @@
   </figure>
   <p>The two states are not mirror images. Tuning to the seen face in state 1 is <b>1.21× steeper</b> than tuning to the suppressed face in state 2 (p = 3×10⁻⁴⁰). Mean firing is slightly higher in state 2 (p = 2×10⁻¹⁵). A linear decoder can tell a state 1 moment from a state 2 moment 66% of the time, against 50% chance.</p>
 
-  <p class="kicker">09 · Selectivity</p>
   <h2>Why selectivity looked weak</h2>
   <p>The authors computed each cell’s selectivity separately in each state, with states inferred from the other half of the neurons. In state 1, cells behave as if the seen face were shown alone. In state 2, they behave as if the suppressed face were shown alone. Averaging the two produces the weak positive relationship measured in section 01.</p>
   <p>The remaining positive slope comes from steeper tuning in state 1. Equalizing the gain of the two states before averaging removes that slope.</p>
@@ -222,7 +213,6 @@
     <p class="fs-caption">The illustrative dots use the paper’s slopes and correlations (Fig. 4g: 2,885 cell–stimulus pairs, states inferred from held-out neurons).</p>
   </figure>
 
-  <p class="kicker">10 · Beyond IT</p>
   <h2>Prefrontal cortex</h2>
   <p>Prefrontal cortex does not hold a pure copy of the seen face. Decoding is weaker there overall, but the pattern is the same: state 1 gives the seen face, state 2 gives the suppressed face, and the split survives the held-out-neuron test.</p>
   <div class="tablewrap">
@@ -248,7 +238,6 @@
     <p class="fs-caption">This schematic of weak coordination is slowed 10×. The paper reports the statistics above (Fig. 5e), not a measured agreement rate.</p>
   </figure>
 
-  <p class="kicker">11 · Conclusions</p>
   <h2>What the authors conclude</h2>
   <p>The authors conclude that conscious access requires <b>temporal selection</b> in addition to the regions involved.</p>
   <div class="points">

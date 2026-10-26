@@ -7,8 +7,6 @@
 .guide .sw.supp { background: repeating-linear-gradient(135deg, var(--fs-muted) 0 1px, var(--fs-surface-2) 1px 5px); }
 .guide .formula { margin: 0 0 1rem; padding: 12px 16px; border: 1px solid var(--fs-line); border-radius: 8px; background: var(--fs-surface); font: 500 0.9375rem/1.5 var(--fs-font-mono); overflow-x: auto; }
 .guide .formula .lab { display: block; margin-bottom: 4px; color: var(--fs-muted); font: 600 0.75rem/1.4 var(--fs-font-body); letter-spacing: 0.04em; text-transform: uppercase; }
-.guide .kicker { margin: 3.5rem 0 0.25rem; color: var(--fs-muted); font: 600 0.75rem/1.4 var(--fs-font-mono); letter-spacing: 0.06em; }
-.guide .kicker + h2 { margin-top: 0; }
 .guide table.matrix td { text-align: center; }
 .guide table.matrix th.hl, .guide table.matrix td.hl { background: var(--fs-surface-2); }
 .guide .pass { color: var(--fs-strong); font-weight: 600; }

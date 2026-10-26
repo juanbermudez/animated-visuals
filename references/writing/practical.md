@@ -23,6 +23,9 @@ The voice of a person explaining something they know well to a colleague. Plain,
 - Role names over codenames: "Decide", "Long task", "Reply". A codename appears once, as a secondary label or in a tip.
 - One term per thing across the page. If the legend says "Reply", the caption does not say "speech output".
 
+## Headings
+- Nothing above a heading: no eyebrow, kicker, overline, section number or small label. The heading stands alone.
+
 ## Titles
 - Do not put a label above a heading. The heading stands alone.
 - A guide's title (the page title, the h1, the index card) is the name of the subject or a simplified version of it, 3 to 6 words: "Recursive language models", "Liquid time-constant networks", "Conscious micro-epochs". Not a claim, not a hook.
