@@ -1,0 +1,9 @@
+{
+  "title": "Graph Hopfield Networks",
+  "summary": "How a Graph Hopfield Network pulls each node toward stored memories and its neighbours, worked through on four products, and what the paper measured on nine graphs.",
+  "source": {
+    "label": "Rao, Wa and Athavale, arXiv 2603.03464v1",
+    "url": "https://arxiv.org/abs/2603.03464"
+  },
+  "type": "paper"
+}

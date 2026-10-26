@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graph Hopfield Networks</title>
+<meta name="description" content="How a Graph Hopfield Network stores memories, pulls each node toward them and toward its neighbours, and what the paper measured on real graphs.">
+<style>
+/*__THEMES__*/
+/*__COMPONENTS__*/
+/*__PAGE_CSS__*/
+</style>
+<!--__THEME_SCRIPT__-->
+</head>
+<body>
+<a class="guide-skip" href="#main">Skip to content</a>
+<header class="guide-header">
+  <div class="guide-header-inner">
+    <a class="guide-brand" href="#main">Guide</a>
+    <!--__THEME_PICKER__-->
+  </div>
+</header>
+
+<main class="guide-page" id="main">
+  <h1>Graph Hopfield Networks</h1>
+  <p class="guide-lede">A Graph Hopfield Network classifies the nodes of a graph by moving each node's vector in small steps toward learned memory vectors and toward its neighbours. On Amazon's product graphs, the repeated steps carry most of the accuracy. The memory helps most when part of a node's features are masked.</p>
+  <ul class="guide-context">
+    <li><strong>For:</strong> Engineers who know what a neural network and a graph are.</li>
+    <li><strong>Know first:</strong> Dot products, softmax, and a graph's adjacency matrix.</li>
+    <li><strong>Scope:</strong> The mechanism and the paper's results. Training details, the proofs and code to reproduce the tables are left out.</li>
+    <li><strong>Source:</strong> Rao, Wa and Athavale, <a href="https://arxiv.org/abs/2603.03464">Graph Hopfield Networks</a>, ICLR 2026 workshop on associative memory.</li>
+  </ul>
+
+  <figure class="fs-plate wide" aria-labelledby="fig-hero-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-hero-title">Product C settles toward the cameras</h3><span class="fs-status">Illustrative example</span></header>
+    <div class="fs-stage"><canvas id="fig-hero" role="img" aria-label="Four products linked by purchases and two memory cards; product C's bar fills toward camera over four steps"></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-hero:t"></span>
+      <div class="fs-controls"><button type="button" data-fs="fig-hero play" aria-label="Play or pause"></button></div>
+    </div>
+    <p class="fs-caption">Four products and two memories; each bar is that product's camera weight, its resemblance to the camera memory. Values come from the paper's update rule. Drag along the step track or press play.</p>
+  </figure>
+
+  <section id="problem">
+    <h2>A product with missing features</h2>
+    <p>Amazon Photo is a co-purchase graph. Each node is a product, an edge joins two products bought together, and the task is to predict each product's category.</p>
+    <p>A graph neural network predicts a node's label by mixing its features with its neighbours' features. Most of them lose a lot of accuracy when features go missing.</p>
+    <p>The paper tests this case directly. It masks 50% of the node features on Amazon Photo and measures accuracy again (Table 2). Two standard graph networks, APPNP and GraphSAGE, fall from 92.2% to 65.0% and from 93.9% to 73.3%. GIN is the exception at 91.1%.</p>
+    <p>The worked example below is that situation at toy size. Product C lost its features, so its vector is all zeros. It is bought together with two cameras and one lens, and it has to lean one way.</p>
+  </section>
+
+  <section id="example">
+    <h2>Four products, two memories</h2>
+    <p>Each product is a point in a 2-dimensional feature space. The first coordinate says how camera-like a product is, and the second how lens-like. These values are illustrative, chosen to be small enough to check by hand.</p>
+    <p>There are two memories: a camera memory at (2, 0) and a lens memory at (0, 2). Camera A sits at (1.8, 0.2) and camera B at (1.4, 0.6). Lens D sits at (0.4, 1.6), and product C at (0, 0).</p>
+    <p>Each step moves all four products at once. The settings are the paper's starting values: four steps, β = 1, α = 0.3 and λ = 0.3 (Table 4). The paper learns β, and uses λ = 0.3 only on homophilous graphs. The next three sections explain each symbol.</p>
+    <figure class="fs-plate wide" aria-labelledby="fig-example-title">
+      <header class="fs-head"><h3 class="fs-title" id="fig-example-title">Four steps move C toward the cameras</h3><span class="fs-status">Illustrative example</span></header>
+      <div class="fs-stage"><canvas id="fig-example" role="img" aria-label="Feature space with the camera memory at the right, the lens memory at the top, and four products; C moves from the origin toward the cameras over four steps"></canvas></div>
+      <div class="fs-toolbar">
+        <span class="fs-position" data-fs-out="fig-example:step"></span>
+        <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-example" aria-hidden="true"></span><button type="button" data-fs="fig-example prev" aria-label="Previous step">←</button><button type="button" data-fs="fig-example next" aria-label="Next step">→</button></div>
+      </div>
+      <p class="fs-step-text" data-fs-out="fig-example:caption" aria-live="polite"></p>
+      <div class="fs-readouts">
+        <div class="fs-readout"><b data-fs-out="fig-example:cpos"></b><span>position of product C</span></div>
+        <div class="fs-readout"><b data-fs-out="fig-example:cw"></b><span>C's camera weight</span></div>
+      </div>
+      <p class="fs-caption">Computed with the paper's update rule; the products and memories are illustrative. Step through with the arrows and watch C's trail.</p>
+    </figure>
+    <p>After four steps, C sits at (1.15, 0.85) with a camera weight of 0.65. The camera weight is C's resemblance to the camera memory as a share between 0 and 1; the next section shows how it is computed.</p>
+    <aside class="guide-note"><p>This example leaves out the encoder, the gate and all learning, which the general form describes. Its memories are placed by hand. In the paper they are learned, and a layer holds 64 or 256 learned memories in 64 or 128 dimensions (Table 4).</p></aside>
+  </section>
+
+  <section id="memory-pull">
+    <h2>The memory pull</h2>
+    <p>Each step compares a node with every memory using a dot product. A softmax turns those scores into weights that sum to 1, and the node is pulled toward the weighted blend of memories.</p>
+    <figure class="fs-plate wide" aria-labelledby="fig-retrieval-title">
+      <header class="fs-head"><h3 class="fs-title" id="fig-retrieval-title">A node is pulled toward the memories it resembles</h3><span class="fs-status">Illustrative</span></header>
+      <div class="fs-stage"><canvas id="fig-retrieval" role="img" aria-label="A draggable node in feature space, dashed lines to the two memories weighted by resemblance, and an arrow to their weighted blend"></canvas></div>
+      <div class="fs-readouts">
+        <div class="fs-readout"><b data-fs-out="fig-retrieval:w"></b><span>camera · lens weights</span></div>
+        <div class="fs-readout"><b data-fs-out="fig-retrieval:r"></b><span>blend the node is pulled to</span></div>
+      </div>
+      <p class="fs-caption">The two memories of the worked example. Drag the node and notice the blend move toward the memory it resembles more; sharpness β is in the settings.</p>
+    </figure>
+    <p>This blend is called <strong>retrieval</strong>, and the memories are <strong>stored patterns</strong>. With the stored patterns as the rows of a matrix M, retrieval for a node x is Mᵀ softmax(β M x) (Eq. 2).</p>
+    <p>At C's starting point (0, 0), both dot products are 0. The weights are 0.50 and 0.50, and the blend is (1.00, 1.00), exactly between the memories. Memory alone cannot tell C which way to lean.</p>
+    <p>β is the <strong>inverse temperature</strong>. A larger β sharpens the softmax, so a node is pulled toward its closest stored pattern almost alone. The paper starts β at 1.0 and learns it (Table 4).</p>
+  </section>
+
+  <section id="neighbour-pull">
+    <h2>The neighbour pull</h2>
+    <p>The second pull comes from the graph. Each neighbour pulls C toward itself, scaled down by the degrees of both nodes.</p>
+    <figure class="fs-plate wide" aria-labelledby="fig-graph-title">
+      <header class="fs-head"><h3 class="fs-title" id="fig-graph-title">Neighbours pull C toward themselves</h3><span class="fs-status">Illustrative</span></header>
+      <div class="fs-stage"><canvas id="fig-graph" role="img" aria-label="Product C at the origin with an arrow toward each neighbour and a thicker arrow for their total"></canvas></div>
+      <div class="fs-toolbar">
+        <span class="fs-position">Total on C: <span data-fs-out="fig-graph:g"></span></span>
+        <div class="fs-controls"><div data-fs-param="fig-graph:lambda" data-label="λ"></div></div>
+      </div>
+      <p class="fs-caption">Each neighbour's share and the total pull on C before the first step. Drag λ below zero and notice the total turn into a push.</p>
+    </figure>
+    <p>This is the <strong>graph term</strong>. For a node v it adds −2λ (L X)<sub>v</sub>, where X holds every node's vector as a row. L = I − D<sup>−½</sup> A D<sup>−½</sup> is the normalized Laplacian, built from the adjacency matrix A and the degrees D (Section 2.1).</p>
+    <p>Written out, each neighbour u adds 2λ x<sub>u</sub> / √(d<sub>u</sub> d<sub>v</sub>), and the node's own vector adds −2λ x<sub>v</sub>. C starts at zero, so only the neighbours count at first.</p>
+    <p>At λ = 0.3 the total pull on C is (0.92, 0.75), toward the cameras. Two of C's three neighbours are cameras, so the graph breaks the tie that memory left.</p>
+    <p>λ sets strength and sign. The paper uses λ = 0.3 on homophilous graphs, where linked nodes tend to share a label. It uses λ from −0.1 to 0 on heterophilous graphs, where they tend not to (Appendix A). A negative λ pushes neighbours apart; the paper calls this graph sharpening.</p>
+  </section>
+
+  <section id="update">
+    <h2>One update</h2>
+    <p>An update adds both pulls, then mixes the result with where the node already was. This is the paper's rule (Eq. 2):</p>
+    <div class="guide-formula"><code>x_v ← (1 − α) x_v + α [ Mᵀ softmax(β M x_v) − 2λ (L X)_v ]</code><p>Keep a share of the old vector, and add the same share of the memory blend and the neighbour pull.</p></div>
+    <p>With α = 0.3, a node keeps 70% of its old vector and takes 30% of the two pulls. Every node updates at once from its neighbours' previous positions.</p>
+    <figure class="fs-plate wide" aria-labelledby="fig-update-title">
+      <header class="fs-head"><h3 class="fs-title" id="fig-update-title">One step adds both pulls to C</h3><span class="fs-status">Illustrative, rounded</span></header>
+      <div class="fs-stage"><canvas id="fig-update" role="img" aria-label="C's move from step 1 to step 2 drawn as three arrows placed end to end: keep, memory, neighbours"></canvas></div>
+      <div class="fs-toolbar">
+        <span class="fs-position" data-fs-out="fig-update:step"></span>
+        <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-update" aria-hidden="true"></span><button type="button" data-fs="fig-update prev" aria-label="Previous piece">←</button><button type="button" data-fs="fig-update next" aria-label="Next piece">→</button></div>
+      </div>
+      <p class="fs-step-text" data-fs-out="fig-update:caption" aria-live="polite"></p>
+      <p class="fs-caption">C's move from step 1 to step 2 as a sum; every panel draws its vector from the origin on the same scale. Values are rounded to 2 decimals, so the pieces can miss the total by 0.01.</p>
+    </figure>
+    <p>α is called <strong>damping</strong>: it keeps each move a fraction of the full pull, so nodes approach their targets over several steps instead of jumping.</p>
+    <p>C starts at zero, so its first step is short: 0.3 × [(1.00, 1.00) + (0.92, 0.75)] = (0.58, 0.53).</p>
+  </section>
+
+  <section id="energy">
+    <h2>What each step lowers</h2>
+    <p>Both pulls are slopes of one number. Eq. 1 adds a memory part for every node and one graph part for the whole graph:</p>
+    <div class="guide-formula"><code>E(X) = Σ_v [ −lse(β, M x_v) + ½‖x_v‖² ] + λ tr(Xᵀ L X)</code><p>The memory part is lowest when a node sits near a stored pattern, and the graph part is lowest when neighbours agree.</p></div>
+    <p>Here lse is log-sum-exp, a smooth maximum of β times the dot products, divided by β. The ½‖x<sub>v</sub>‖² part keeps vectors from growing without bound. The trace tr(Xᵀ L X) is a weighted sum of squared differences across edges (Prop. D.1).</p>
+    <p>The update in Eq. 2 is gradient descent on this total, with step size α (Prop. D.2).</p>
+    <figure class="fs-plate wide" aria-labelledby="fig-energy-title">
+      <header class="fs-head"><h3 class="fs-title" id="fig-energy-title">Each step lowers the total</h3><span class="fs-status">Illustrative example</span></header>
+      <div class="fs-stage"><canvas id="fig-energy" role="img" aria-label="Line chart over steps 0 to 4: the total falls, the memory part falls, the graph part falls toward zero"></canvas></div>
+      <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-energy:at"></span></div>
+      <p class="fs-caption">The total and its two parts for the worked example at each step. Hover a step to read its values.</p>
+    </figure>
+    <p>This total is the <strong>energy</strong>. In the example it falls from −4.74 to −7.03 over four steps. The graph part drops from 1.70 to 0.40 as neighbours move closer, and the memory part drops from −6.44 to −7.43.</p>
+    <p>Descent is guaranteed when the step size is below 2 / L<sub>lip</sub>. L<sub>lip</sub> bounds how fast the slope of the energy can change: L<sub>lip</sub> = β‖M‖² / 2 + 1 + 2λ‖L‖ (Corollary D.7). Here ‖L‖ is at most 2 (Corollary D.7), so L<sub>lip</sub> is at most 4.2. The step α = 0.3 is below 2 / 4.2 = 0.48. This guarantee needs no single minimum: each step lowers the energy even when there are several low points.</p>
+    <p>The memory part is what makes this a Hopfield network. Modern Hopfield networks recall a stored pattern by descending this log-sum-exp energy (Ramsauer et al., 2021). The GHN adds the graph part, so recall and smoothing happen in the same steps.</p>
+  </section>
+
+  <section id="general-form">
+    <h2>The general form</h2>
+    <p>A layer runs T steps of Eq. 2 over all nodes at once. In matrix form, with one row per node, it fits in a few lines of NumPy:</p>
+    <pre><code class="language-python">import numpy as np
+
+def softmax(z):
+    e = np.exp(z - z.max(axis=-1, keepdims=True))
+    return e / e.sum(axis=-1, keepdims=True)
+
+def normalized_laplacian(A):
+    s = 1 / np.sqrt(A.sum(axis=1))
+    return np.eye(len(A)) - s[:, None] * A * s[None, :]
+
+def ghn_step(X, M, L, beta=1.0, alpha=0.3, lam=0.3):
+    R = softmax(beta * X @ M.T) @ M  # blend of stored patterns, one row per node
+    G = -2 * lam * (L @ X)           # pull toward neighbours
+    return (1 - alpha) * X + alpha * (R + G)
+
+M = np.array([[2.0, 0.0], [0.0, 2.0]])                          # camera, lens
+X = np.array([[1.8, 0.2], [1.4, 0.6], [0.0, 0.0], [0.4, 1.6]])  # A, B, C, D
+A = np.zeros((4, 4))
+for u, v in [(0, 1), (0, 2), (1, 2), (2, 3)]:
+    A[u, v] = A[v, u] = 1
+L = normalized_laplacian(A)
+for t in range(4):
+    X = ghn_step(X, M, L)
+print(X[2].round(2), softmax(X[2] @ M.T).round(2))  # [1.15 0.85] [0.65 0.35]</code></pre>
+    <p>The three lines of <code>ghn_step</code> are the memory blend, the neighbour pull and the damped mix. Run on the worked example, it prints C's position and weights after four steps.</p>
+    <p>The full model wraps this loop in four more pieces (Sections 2.2 and 2.3, Appendix A):</p>
+    <dl class="guide-definitions">
+      <dt>A gate</dt>
+      <dd>Before each update the blend r<sub>v</sub> is mixed with the node: r̃<sub>v</sub> = g<sub>v</sub> ⊙ r<sub>v</sub> + (1 − g<sub>v</sub>) ⊙ x<sub>v</sub>, with g<sub>v</sub> = σ(W<sub>g</sub>[x<sub>v</sub> ‖ r<sub>v</sub>] + b<sub>g</sub>) (Eq. 3). The bias b<sub>g</sub> starts at 2, so the gate starts near 0.88 and leans on memory.</dd>
+      <dt>Three ways to retrieve</dt>
+      <dd>LSE is the softmax above. LSR replaces it with Epanechnikov weights, which give distant patterns zero weight. Hier(G) routes a node to one of G groups of patterns by their centroids, then retrieves inside that group. The paper uses G = 8.</dd>
+      <dt>A stack</dt>
+      <dd>An encoder maps features to vectors. Then two GHN layers each run T = 4 steps with gating, and a linear classifier predicts the label. Skip connections with weight 0.1, dropout and LayerNorm sit around the layers. The same M scores and blends, so keys and values are tied.</dd>
+      <dt>NoMem</dt>
+      <dd>The paper's main ablation removes the memory part and keeps the damped graph update. It shows how much of the result comes from the steps alone.</dd>
+    </dl>
+    <p>The paper's grid uses 64 or 256 stored patterns and a hidden size of 64 or 128. It uses α = 0.3, T = 4 steps per layer and two layers, λ = 0.3 on homophilous graphs, and learns β from 1.0 (Table 4).</p>
+  </section>
+
+  <section id="results">
+    <h2>Results</h2>
+    <p>The paper classifies nodes on nine graphs. Three are citation networks (Cora, CiteSeer, PubMed), two are Amazon co-purchase graphs (Photo, Computers), and four are heterophilous (Texas, Wisconsin, Cornell, Actor). Each model is tuned per dataset, and results are means over 10 seeds (Section 3.1).</p>
+    <div class="guide-stats">
+      <div class="guide-stat"><strong>94.7%</strong><span>NoMem on Amazon Photo, best in its column</span><small>Table 1</small></div>
+      <div class="guide-stat"><strong>+5.0 points</strong><span>Hier(8) over NoMem with 50% of features masked</span><small>Table 2</small></div>
+      <div class="guide-stat"><strong>81.4%</strong><span>GHN-LSE on Texas, against 78.4% for GPR-GNN, a model built for heterophily</span><small>Table 3</small></div>
+    </div>
+
+    <h3>The steps carry the Amazon results</h3>
+    <p>Every GHN variant beats every baseline on both Amazon graphs, including NoMem (Table 1). NoMem is best on Photo at 94.7%, 0.8 points above GraphSAGE at 93.9%. On Computers it reaches 91.5%, 2.6 points above GIN at 88.9%.</p>
+    <p>GCN, APPNP and MLP are bimodal on Computers. Some seeds reach about 87% and others collapse to about 50%, across the whole tuning grid (Appendix A).</p>
+    <p>The paper concludes that the iterative update itself does much of the work. Photo has 238k edges against Cora's 10.6k, so smoothing alone has plenty of signal there (Section 3.2).</p>
+
+    <h3>Where memory adds accuracy</h3>
+    <p>On the citation graphs, memory beats NoMem by 2.0 points on Cora (Hier(8)), 1.1 points on CiteSeer and 0.9 points on PubMed (LSR). Only on Cora do the two ranges of one standard deviation not overlap; on CiteSeer and PubMed they overlap (Section 3.2). GAT or APPNP still score highest on all three (Table 1).</p>
+    <figure class="fs-plate wide" aria-labelledby="fig-mask-title">
+      <header class="fs-head"><h3 class="fs-title" id="fig-mask-title">Memory pays off when features are masked</h3><span class="fs-status">Table 2 · paper</span></header>
+      <div class="fs-tabbar"><div data-fs-param="fig-mask:kind" data-label="Corruption"></div></div>
+      <div class="fs-stage"><canvas id="fig-mask" role="img" aria-label="Dot plot of ten models on Amazon Photo: clean accuracy and accuracy under the chosen 50% corruption with its standard deviation"></canvas></div>
+      <div class="fs-toolbar"><span class="fs-position">Hier(8) minus NoMem: <span data-fs-out="fig-mask:gap"></span></span></div>
+      <p class="fs-caption">Mean accuracy over 10 seeds on Amazon Photo with 50% corruption; the hollow dot is clean data. Switch the corruption type and compare Hier(8) with NoMem.</p>
+    </figure>
+    <p>With half of Photo's features masked, Hier(8), the best memory variant, keeps 91.9% and NoMem 86.9%, a 5.0 point gap. LSR keeps 91.0% and LSE 89.4%. Under edge drop and feature noise, NoMem matches the memory variants (Table 2), so memory does not protect against every kind of damage.</p>
+    <p>The gate does not explain the gain. In a separate GHN-LSE run on Photo, accuracy falls from 93.6% to 67.9% as masking rises from 0% to 70%. The gate's mean value moves only from 0.727 to 0.723 (Table 10). The paper credits the stored patterns, which carry class-level information that the masked features lack (Appendix C.6).</p>
+    <p>Product C is the extreme case: it lost every feature, so its memory scores tied. The paper masks half the features, which leaves each node something to compare.</p>
+
+    <h3>Heterophilous graphs need λ at or below zero</h3>
+    <p>On Texas, Wisconsin, Cornell and Actor, linked pages often have different labels. Pulling them together hurts: on Wisconsin, GCN scores 55.7% against 82.2% for an MLP, which ignores the edges (Table 3).</p>
+    <figure class="fs-plate wide" aria-labelledby="fig-lambda-title">
+      <header class="fs-head"><h3 class="fs-title" id="fig-lambda-title">More smoothing helps citation graphs and hurts the rest</h3><span class="fs-status">Table 6 · paper</span></header>
+      <div class="fs-stage"><canvas id="fig-lambda" role="img" aria-label="Accuracy against λ from 0 to 1: citation datasets rise then level off, heterophilous datasets fall"></canvas></div>
+      <div class="fs-toolbar"><span class="fs-position">Marker at <span data-fs-out="fig-lambda:at"></span></span></div>
+      <p class="fs-caption">GHN-LSE accuracy at eight values of λ with one default configuration, not per-model tuning. Drag the marker to read every dataset at one λ.</p>
+    </figure>
+    <p>With λ tuned at or below zero, GHN-LSE reaches 81.4% on Texas against 78.4% for GPR-GNN, a model built for heterophily. GPR-GNN leads on Wisconsin, 82.9% to 82.5% (LSR), and on Cornell, 80.3% to 78.9%. These gaps all sit within overlapping standard deviations (Section 3.4).</p>
+    <p>In the single-configuration sweep, a small negative λ beats λ = 0. Texas rises from 74.1% to 78.6% at λ = −0.05, and Wisconsin from 79.8% to 81.8% (Tables 6 and 7). λ = −0.3 does worse than −0.05 on all four datasets.</p>
+    <p>Full versions of Tables 1, 2 and 3 are in the reference section.</p>
+  </section>
+
+  <section id="limits">
+    <h2>Limits</h2>
+    <p>A lower energy does not guarantee a better classification. More steps keep lowering the energy, and they keep pulling neighbours together.</p>
+    <figure class="fs-plate wide" aria-labelledby="fig-steps-title">
+      <header class="fs-head"><h3 class="fs-title" id="fig-steps-title">Extra steps pull the lens into the cameras</h3><span class="fs-status">Illustrative example</span></header>
+      <div class="fs-stage"><canvas id="fig-steps" role="img" aria-label="Camera weight of the four products over 30 steps; lens D crosses one half at step 16"></canvas></div>
+      <div class="fs-toolbar"><span class="fs-position" data-fs-out="fig-steps:at"></span></div>
+      <p class="fs-caption">Camera weight of each product over 30 steps of the worked example. Drag the marker to stop at any step; λ = 0 is in the settings.</p>
+    </figure>
+    <p>In the example, lens D has a camera weight of 0.13 at step 4. It passes 0.50 at step 16 and reaches 0.96 at step 30, while the energy keeps falling to −7.96. When neighbours are pulled this close, their classes blur; this is <strong>over-smoothing</strong>.</p>
+    <p>The paper sees the same pattern. Cora peaks at 81.8% with T = 4 steps and drops to 30.9% at T = 16 steps. Texas and Wisconsin are best at T = 1 (Table 8).</p>
+    <ul class="guide-limits">
+      <li><strong>The theory does not cover the trained models.</strong> The convergence results assume λ ≥ 0. A single, bowl-shaped minimum (strong convexity) needs β‖M‖² below 2 (Appendix D). Trained models exceed 2 on 7 of 9 datasets, up to 35.96 on Photo (Table 11). The paper reports that the four steps still behave stably in every experiment; it does not claim they reach a minimum.</li>
+      <li><strong>No win on clean citation graphs.</strong> GAT and APPNP stay ahead on Cora, CiteSeer and PubMed (Section 4).</li>
+      <li><strong>Small gains over an MLP on heterophilous graphs.</strong> They are often within one standard deviation (Section 4).</li>
+      <li><strong>Memory size matters.</strong> Flat LSE collapses on Photo unless it has 256 stored patterns; LSR is stable with 64 stored patterns at moderate β (Figure 4).</li>
+      <li><strong>Cost.</strong> Retrieval compares every node with every stored pattern, which the paper puts at about 1.5 to 2 times GAT's time per epoch (Section 4).</li>
+      <li><strong>Random corruption only.</strong> The masking and edge-drop tests are random, not adversarial (Section 4).</li>
+      <li><strong>The worked example is a sketch.</strong> It has 2 dimensions, hand-placed memories, no gate and no training. Its β‖M‖² is 4, outside the convex regime like most trained models.</li>
+    </ul>
+  </section>
+
+  <section id="check">
+    <h2>Check yourself</h2>
+    <div class="guide-check" data-guide-check>
+      <p>You rerun the worked example with λ = 0. Where is product C after four steps?</p>
+      <div class="guide-options">
+        <button type="button" data-correct>On the diagonal at (0.76, 0.76), still 0.50 camera<span>With no graph term only memory acts, and C's two memory scores stay equal at every step.</span></button>
+        <button type="button">Near the camera memory<span>Two neighbours are cameras, but with λ = 0 neighbours have no pull.</span></button>
+        <button type="button">Still at (0, 0)<span>The memory blend at (0, 0) is (1.00, 1.00), so C moves toward it even without neighbours.</span></button>
+      </div>
+    </div>
+    <div class="guide-check" data-guide-check>
+      <p>Your graph is dense and its features are clean, like Amazon Photo. What should adding memory to the steps do?</p>
+      <div class="guide-options">
+        <button type="button" data-correct>Change little<span>NoMem scores 94.7% on Photo and LSE 94.5%; smoothing over many edges already carries the signal (Table 1).</span></button>
+        <button type="button">Add several points<span>The 5.0 point gain appears only with 50% of features masked (Table 2).</span></button>
+        <button type="button">Cost several points<span>The memory variants are within 0.5 points of NoMem on Amazon (Section 3.2).</span></button>
+      </div>
+    </div>
+    <div class="guide-check" data-guide-check>
+      <p>You move to Wisconsin, where linked pages usually have different labels. Which change does the paper make?</p>
+      <div class="guide-options">
+        <button type="button" data-correct>Set λ between −0.1 and 0<span>At λ = 0.3 GHN-LSE scores 55.1% on Wisconsin, against 79.8% at λ = 0 (Table 6).</span></button>
+        <button type="button">Raise λ to 1.0 to use more of the graph<span>Accuracy falls to 44.9% at λ = 1.0 (Table 6).</span></button>
+        <button type="button">Run more steps<span>More steps smooth more; Wisconsin is best at T = 1 (Table 8).</span></button>
+      </div>
+    </div>
+    <div class="guide-check" data-guide-check>
+      <p>Every step lowers the energy. Why does the paper stop at T = 4 on Cora instead of running 16 steps?</p>
+      <div class="guide-options">
+        <button type="button" data-correct>Extra steps keep smoothing until classes blur<span>Cora drops from 81.8% at T = 4 to 30.9% at T = 16 (Table 8).</span></button>
+        <button type="button">The energy rises after step 4<span>With a small enough step it keeps falling (Corollary D.7); in the example it falls through step 30.</span></button>
+        <button type="button">The gate turns memory off after step 4<span>The gate is computed from the node and its blend at every step; nothing in Eq. 3 counts steps.</span></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="keep">
+    <h2>What to keep</h2>
+    <p>Product C lost its features, so memory alone left it at 0.50. Its neighbours broke the tie, and four steps moved it to a camera weight of 0.65. The same steps, run too long, would pull lens D into the cameras.</p>
+    <p>The principle: the repeated downhill steps do most of the work. What they descend toward matters most when the graph or the features are weak. The paper's phrase is that iterative energy descent matters more than what you descend on (Section 4).</p>
+    <p>For the derivations, read Section 2 and Appendix D of the <a href="https://arxiv.org/abs/2603.03464">paper</a>. For the memory side on its own, read <a href="https://arxiv.org/abs/2008.02217">Hopfield Networks Is All You Need</a> (Ramsauer et al., 2021).</p>
+  </section>
+
+  <section id="reference">
+    <h2>Reference</h2>
+    <h3>Glossary</h3>
+    <dl class="guide-definitions">
+      <dt>Camera weight</dt><dd>In the worked example, a product's softmax weight on the camera memory, between 0 and 1.</dd>
+      <dt>Stored pattern</dt><dd>One memory vector, a row of M. The paper learns 64 or 256 of them per layer.</dd>
+      <dt>Retrieval</dt><dd>The softmax-weighted blend of stored patterns, Mᵀ softmax(β M x).</dd>
+      <dt>Inverse temperature (β)</dt><dd>Sharpness of the softmax. Larger values pull a node toward its closest stored pattern alone.</dd>
+      <dt>Graph term</dt><dd>The pull −2λ (L X)<sub>v</sub> toward a node's neighbours, from the Laplacian part of the energy.</dd>
+      <dt>Graph weight (λ)</dt><dd>Strength and sign of the graph term. Positive smooths; negative sharpens.</dd>
+      <dt>Damping (α)</dt><dd>The share of the pulls a node takes per step; it keeps 1 − α of its old vector.</dd>
+      <dt>Energy</dt><dd>The total in Eq. 1. Each update is a gradient step that lowers it.</dd>
+      <dt>Gate</dt><dd>A learned per-feature mix of the blend and the node before each update (Eq. 3).</dd>
+      <dt>LSE, LSR, Hier(G)</dt><dd>Softmax retrieval, Epanechnikov retrieval, and grouped retrieval over G groups.</dd>
+      <dt>NoMem</dt><dd>The ablation with no memory part: damped graph updates only.</dd>
+      <dt>Over-smoothing</dt><dd>Neighbours pulled so close that their classes blur.</dd>
+      <dt>Homophilous, heterophilous</dt><dd>Graphs where linked nodes tend to share a label, or tend not to.</dd>
+      <dt>Baselines</dt><dd>GCN, GAT, GraphSAGE, APPNP and GIN are standard graph neural networks that mix neighbour features. MLP uses each node's own features only. GPR-GNN is built for heterophilous graphs (Section 3.1).</dd>
+    </dl>
+
+    <details class="guide-checked" open>
+      <summary>Checked against the source</summary>
+      <ul>
+        <li>Paper: Rao, Wa and Athavale, arXiv 2603.03464v1, 3 March 2026, ICLR 2026 workshop. Equations: Eq. 1 (energy), Eq. 2 (update), Eq. 3 (gate); Prop. D.1, Prop. D.2, Corollary D.7; Sections 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 3.4, 4; Appendix A, Appendix C.6, Appendix D; Figure 4.</li>
+        <li>Illustrative, computed by this guide's code (<a href="check-example.mjs">check-example.mjs</a> prints them): memories (2, 0) and (0, 2); A (1.8, 0.2), B (1.4, 0.6), C (0, 0), D (0.4, 1.6); a 2-dimensional space; four products; C's weights 0.50 and 0.50 and blend (1.00, 1.00) at step 0; pull on C (0.92, 0.75) at λ = 0.3; first step 0.3 × [(1.00, 1.00) + (0.92, 0.75)] = (0.58, 0.53); 70% kept and 30% taken at α = 0.3; after four steps C at (1.15, 0.85) with camera weight 0.65 (0.65 and 0.35 in the code); energy −4.74 to −7.03, graph part 1.70 to 0.40, memory part −6.44 to −7.43; L_lip at most 4.2 and 2 / L_lip = 0.48 with ‖L‖ at most 2; with λ = 0, C at (0.76, 0.76) and 0.50; lens D at 0.13 after step 4, past 0.50 at step 16, 0.96 at step 30, energy −7.96; the limits figure runs 30 steps; the example runs 4 steps; β‖M‖² = 4; weights sum to 1; values rounded to 2 decimals, off by up to 0.01.</li>
+        <li>Paper settings (Table 4, Appendix A): β = 1 (starts at 1.0, learned), α = 0.3, λ = 0.3, T = 4 steps, two layers, G = 8, gate bias 2 (gate near 0.88, Section 2.2), skip weight 0.1, 64 or 256 stored patterns (64 stored patterns or 256), hidden size 64 or 128; heterophilous λ from −0.1 to 0. Results are means over 10 seeds on nine graphs.</li>
+        <li>Table 1: NoMem 94.7% on Photo, LSE 94.5%; GraphSAGE 93.9%, a 0.8 point gap; Computers NoMem 91.5% vs GIN 88.9%, a 2.6 point gap; memory variants within 0.5 points of NoMem on Amazon (Section 3.2); Cora +2.0, CiteSeer +1.1, PubMed +0.9 points over NoMem (Section 3.2). Bimodal seeds near 87% and 50% (Appendix A). Photo 238k edges, Cora 10.6k.</li>
+        <li>Table 2, 50% corruption on Photo: clean APPNP 92.2% and GraphSAGE 93.9%; feature mask APPNP 65.0%, GraphSAGE 73.3%, Hier(8) 91.9%, NoMem 86.9%, a 5.0 point gap, LSR 91.0%, LSE 89.4%, GIN 91.1%.</li>
+        <li>Table 3: GHN-LSE 81.4% on Texas vs GPR-GNN 78.4%; Wisconsin GPR-GNN 82.9% vs LSR 82.5%; Cornell 80.3% vs 78.9%; Wisconsin GCN 55.7% vs MLP 82.2%.</li>
+        <li>Table 6: Wisconsin 79.8% at λ = 0, 55.1% at λ = 0.3, 44.9% at λ = 1.0; eight values of λ. Table 6 and Table 7: λ = 0 gives 74.1% on Texas and 79.8% on Wisconsin; λ = −0.05 gives 78.6% on Texas and 81.8% on Wisconsin; λ = −0.3 lower than −0.05 on all four datasets.</li>
+        <li>Table 8: Cora 81.8% at T = 4 steps and 30.9% at T = 16 steps; Texas and Wisconsin best at T = 1. Table 10: gate 0.727 to 0.723, accuracy 93.6% to 67.9% from 0% to 70% masking. Table 11: β‖M‖² above 2 on 7 of 9 datasets, 35.96 on Photo. Figure 4: flat LSE needs 256 stored patterns on Photo; LSR stable with 64. Section 4: 1.5 to 2 times GAT's time per epoch.</li>
+        <li>Ramsauer et al., 2021, cited by the paper for modern Hopfield retrieval.</li>
+      </ul>
+    </details>
+
+    <h3>Table 1: accuracy on clean graphs</h3>
+    <p class="guide-source">Node classification accuracy (%), mean ± std over 10 seeds, per-model tuning. † marks bimodal results (std above 10). Source: Table 1, p. 3.</p>
+    <div class="guide-table" role="region" aria-label="Table 1: accuracy on clean graphs" tabindex="0">
+      <table>
+        <thead><tr><th>Model</th><th>Cora</th><th>CiteSeer</th><th>PubMed</th><th>Photo</th><th>Computers</th></tr></thead>
+        <tbody>
+          <tr><td>LSE</td><td>82.0 ± 0.6</td><td>70.9 ± 0.8</td><td>77.9 ± 0.4</td><td>94.5 ± 0.3</td><td>91.3 ± 0.2</td></tr>
+          <tr><td>LSR</td><td>82.0 ± 0.6</td><td>70.9 ± 1.0</td><td>78.1 ± 0.4</td><td>94.4 ± 0.2</td><td>91.3 ± 0.4</td></tr>
+          <tr><td>Hier(8)</td><td>82.3 ± 0.4</td><td>70.3 ± 1.1</td><td>77.6 ± 0.8</td><td>94.2 ± 0.2</td><td>91.3 ± 0.2</td></tr>
+          <tr><td>NoMem</td><td>80.3 ± 0.4</td><td>69.8 ± 1.1</td><td>77.2 ± 0.6</td><td>94.7 ± 0.2</td><td>91.5 ± 0.2</td></tr>
+          <tr><td>GCN</td><td>82.2 ± 0.4</td><td>72.2 ± 0.5</td><td>79.4 ± 0.4</td><td>89.6 ± 0.3</td><td>73.7 ± 13.0 †</td></tr>
+          <tr><td>GAT</td><td>82.8 ± 0.8</td><td>72.3 ± 0.6</td><td>78.2 ± 0.4</td><td>92.2 ± 0.3</td><td>87.9 ± 0.6</td></tr>
+          <tr><td>GraphSAGE</td><td>80.2 ± 0.6</td><td>70.5 ± 0.8</td><td>77.9 ± 0.4</td><td>93.9 ± 0.2</td><td>87.4 ± 0.4</td></tr>
+          <tr><td>APPNP</td><td>82.8 ± 0.7</td><td>72.4 ± 0.5</td><td>80.3 ± 0.2</td><td>92.2 ± 0.3</td><td>41.9 ± 13.1 †</td></tr>
+          <tr><td>GIN</td><td>77.5 ± 1.2</td><td>63.8 ± 2.3</td><td>77.6 ± 0.7</td><td>93.0 ± 0.5</td><td>88.9 ± 0.5</td></tr>
+          <tr><td>MLP</td><td>60.0 ± 0.8</td><td>60.6 ± 0.6</td><td>73.4 ± 0.5</td><td>88.5 ± 0.3</td><td>75.4 ± 11.9 †</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Table 2: accuracy under 50% corruption on Amazon Photo</h3>
+    <p class="guide-source">Accuracy (%), mean ± std over 10 seeds, from a separate sweep tuned for robustness, so clean values can differ from Table 1. Source: Table 2, p. 4.</p>
+    <div class="guide-table" role="region" aria-label="Table 2: accuracy under corruption" tabindex="0">
+      <table>
+        <thead><tr><th>Model</th><th>Clean</th><th>Edge drop</th><th>Feature mask</th><th>Feature noise</th></tr></thead>
+        <tbody>
+          <tr><td>LSE</td><td>94.4 ± 0.3</td><td>93.7 ± 0.4</td><td>89.4 ± 1.8</td><td>93.9 ± 0.3</td></tr>
+          <tr><td>LSR</td><td>94.3 ± 0.2</td><td>93.7 ± 0.5</td><td>91.0 ± 2.4</td><td>94.1 ± 0.2</td></tr>
+          <tr><td>Hier(8)</td><td>94.2 ± 0.2</td><td>93.7 ± 0.5</td><td>91.9 ± 1.1</td><td>93.9 ± 0.1</td></tr>
+          <tr><td>NoMem</td><td>94.4 ± 0.3</td><td>94.0 ± 0.5</td><td>86.9 ± 3.1</td><td>94.2 ± 0.3</td></tr>
+          <tr><td>GCN</td><td>89.7 ± 0.3</td><td>89.1 ± 0.5</td><td>81.2 ± 1.5</td><td>89.7 ± 0.3</td></tr>
+          <tr><td>GAT</td><td>92.2 ± 0.3</td><td>91.2 ± 0.5</td><td>81.4 ± 5.0</td><td>92.2 ± 0.2</td></tr>
+          <tr><td>GraphSAGE</td><td>93.9 ± 0.2</td><td>93.0 ± 0.3</td><td>73.3 ± 1.8</td><td>93.6 ± 0.3</td></tr>
+          <tr><td>APPNP</td><td>92.2 ± 0.3</td><td>91.7 ± 0.3</td><td>65.0 ± 1.8</td><td>91.8 ± 0.3</td></tr>
+          <tr><td>GIN</td><td>92.6 ± 0.4</td><td>89.6 ± 0.8</td><td>91.1 ± 0.9</td><td>92.6 ± 0.5</td></tr>
+          <tr><td>MLP</td><td>88.5 ± 0.3</td><td>88.5 ± 0.3</td><td>70.7 ± 0.6</td><td>86.6 ± 0.2</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Table 3: accuracy on heterophilous graphs</h3>
+    <p class="guide-source">Accuracy (%), mean ± std. GPR-GNN values are published results on the same splits, not rerun; Actor was not reported. Source: Table 3, p. 5.</p>
+    <div class="guide-table" role="region" aria-label="Table 3: accuracy on heterophilous graphs" tabindex="0">
+      <table>
+        <thead><tr><th>Model</th><th>Texas</th><th>Wisconsin</th><th>Cornell</th><th>Actor</th></tr></thead>
+        <tbody>
+          <tr><td>LSE</td><td>81.4 ± 1.5</td><td>82.2 ± 0.6</td><td>78.1 ± 3.2</td><td>38.0 ± 0.5</td></tr>
+          <tr><td>LSR</td><td>80.8 ± 1.5</td><td>82.5 ± 1.1</td><td>78.9 ± 1.7</td><td>37.9 ± 0.5</td></tr>
+          <tr><td>Hier(8)</td><td>80.5 ± 3.3</td><td>82.2 ± 1.7</td><td>78.1 ± 2.0</td><td>37.8 ± 0.6</td></tr>
+          <tr><td>NoMem</td><td>80.5 ± 1.7</td><td>82.4 ± 0.9</td><td>78.6 ± 2.4</td><td>38.0 ± 0.7</td></tr>
+          <tr><td>GPR-GNN</td><td>78.4 ± 4.4</td><td>82.9 ± 4.2</td><td>80.3 ± 8.1</td><td>not reported</td></tr>
+          <tr><td>MLP</td><td>80.3 ± 1.8</td><td>82.2 ± 0.6</td><td>73.0 ± 0.0</td><td>37.6 ± 0.4</td></tr>
+          <tr><td>GraphSAGE</td><td>78.4 ± 1.8</td><td>80.0 ± 0.8</td><td>76.2 ± 1.7</td><td>37.0 ± 0.5</td></tr>
+          <tr><td>GCN</td><td>70.3 ± 1.3</td><td>55.7 ± 1.0</td><td>40.3 ± 0.9</td><td>28.8 ± 0.4</td></tr>
+          <tr><td>GAT</td><td>68.6 ± 2.3</td><td>58.0 ± 1.9</td><td>43.8 ± 4.0</td><td>29.4 ± 0.6</td></tr>
+          <tr><td>APPNP</td><td>70.0 ± 1.5</td><td>56.7 ± 1.1</td><td>43.2 ± 3.6</td><td>32.4 ± 0.6</td></tr>
+          <tr><td>GIN</td><td>64.9 ± 0.0</td><td>50.4 ± 1.6</td><td>55.7 ± 6.3</td><td>27.3 ± 0.5</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Sources</h3>
+    <ul>
+      <li>Abinav Rao, Alex Wa and Rishi Athavale. <a href="https://arxiv.org/abs/2603.03464">Graph Hopfield Networks: Energy-Based Node Classification with Associative Memory</a>. arXiv 2603.03464v1, 2026. New Frontiers in Associative Memory workshop at ICLR 2026. Every reported number in this guide comes from this paper.</li>
+      <li>Hubert Ramsauer et al. <a href="https://arxiv.org/abs/2008.02217">Hopfield Networks Is All You Need</a>. ICLR 2021. Modern Hopfield retrieval, cited by the paper.</li>
+      <li>Benjamin Hoover et al. <a href="https://arxiv.org/abs/2506.10801">Dense Associative Memory with Epanechnikov Energy</a>. NeurIPS 2025. The LSR energy, cited by the paper.</li>
+      <li>Oleksandr Shchur et al. <a href="https://arxiv.org/abs/1811.05868">Pitfalls of Graph Neural Network Evaluation</a>. 2018. The Amazon Photo and Computers datasets, cited by the paper.</li>
+      <li>The worked example and its numbers: <a href="check-example.mjs">check-example.mjs</a>, which runs the same code as the figures.</li>
+    </ul>
+    <p class="guide-ai-note">This guide was written with AI and checked against the paper above. The worked example, its values and every figure marked illustrative are the guide's own construction, computed by its code, not results from the paper. Report corrections at <a href="https://github.com/juanbermudez/skills/issues">github.com/juanbermudez/skills/issues</a>.</p>
+  </section>
+</main>
+
+<footer class="guide-footer">Sources and limits are listed in the reference section.</footer>
+<script>
+/*__RUNTIME__*/
+</script>
+<script>
+/*__GUIDE_JS__*/
+</script>
+</body>
+</html>
