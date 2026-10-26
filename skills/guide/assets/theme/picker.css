@@ -1,0 +1,14 @@
+/* Theme picker. Every visual value comes from the active --fs-* theme. */
+.guide-theme-picker { position: relative; z-index: 50; margin-inline-start: auto; font-family: var(--fs-font-body); }
+.guide-theme-trigger { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; color: var(--fs-muted); background: var(--fs-surface); border: var(--fs-border) solid var(--fs-line); border-radius: var(--fs-radius-inner); cursor: pointer; transition: color var(--fs-dur) var(--fs-ease), background-color var(--fs-dur) var(--fs-ease); }
+.guide-theme-trigger:hover, .guide-theme-trigger[aria-expanded="true"] { color: var(--fs-fg); background: var(--fs-surface-2); }
+.guide-theme-trigger:focus-visible { outline: 2px solid var(--fs-accent); outline-offset: 2px; }
+.guide-theme-menu { position: absolute; top: calc(100% + 4px); right: 0; width: min(14rem, calc(100vw - 32px)); max-height: min(24rem, calc(100dvh - 76px)); padding: 4px; overflow-y: auto; overscroll-behavior: contain; color: var(--fs-fg); font-size: 14px; line-height: 1.4; background: var(--fs-surface); border: var(--fs-border) solid var(--fs-line); border-radius: var(--fs-radius-inner); box-shadow: var(--fs-shadow); transform-origin: top right; animation: fs-pop-in 160ms var(--fs-ease) both; }
+.guide-theme-menu[hidden] { display: none; }
+.guide-theme-label { padding: 6px 8px; color: var(--fs-muted); font-size: var(--fs-size-caption); font-weight: 500; }
+.guide-theme-separator { height: 1px; margin: 4px -4px; background: var(--fs-line); }
+.guide-theme-item { position: relative; display: flex; align-items: center; min-height: 32px; padding: 6px 8px 6px 32px; color: var(--fs-fg); border-radius: calc(var(--fs-radius-inner) - 2px); outline: none; cursor: default; user-select: none; }
+.guide-theme-item:focus { background: var(--fs-surface-2); }
+.guide-theme-item svg { position: absolute; left: 9px; visibility: hidden; }
+.guide-theme-item[aria-checked="true"] svg { visibility: visible; }
+@media (prefers-reduced-motion: reduce) { .guide-theme-menu, .guide-theme-trigger { animation: none; transition: none; } }
