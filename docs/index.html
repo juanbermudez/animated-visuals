@@ -18,7 +18,6 @@ p { margin: 0 0 1rem; }
 .card { display: block; padding: 20px 22px; margin: 0 0 14px; color: inherit; text-decoration: none; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
 .card b { display: block; font-weight: 600; margin-bottom: 4px; }
 .card span { color: var(--muted); }
-.card.soon { opacity: 0.7; }
 a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--muted); }
 code { font: 0.875em ui-monospace, SFMono-Regular, Menlo, monospace; }
 footer { margin-top: 3rem; color: var(--muted); font-size: 0.875rem; }
@@ -29,7 +28,7 @@ footer { margin-top: 3rem; color: var(--muted); font-size: 0.875rem; }
   <h1>Skills</h1>
   <p class="lede">Agent skills by Juan Bermudez, for Claude Code, Codex and other agents. Each one has its own site.</p>
   <a class="card" href="animated-visuals/"><b>Animated Visuals</b><span>Interactive, animated figures and diagrams for papers, articles and sites: flows with packets, stepped mechanisms, timelines, explorable charts, 27 themes, and six example guides.</span></a>
-  <div class="card soon"><b>Guide</b><span>Turns a topic, a paper or a codebase into one self-contained explanatory page, built on Animated Visuals. In progress.</span></div>
+  <a class="card" href="guide/"><b>Guide</b><span>Turns a topic, a paper, a codebase or a decision into one self-contained explanatory page, built on Animated Visuals.</span></a>
   <p>Install one skill: <code>npx skills@latest add juanbermudez/skills --skill animated-visuals -g</code>. Source and licenses on <a href="https://github.com/juanbermudez/skills">GitHub</a>.</p>
   <footer>MIT License · Juan Bermudez</footer>
 </main>
