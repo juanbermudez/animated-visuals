@@ -496,18 +496,6 @@ a.card:hover { border-color: var(--fs-line-strong); }
   text-transform: uppercase;
 }
 .types-group:first-of-type { margin-top: 2px; }
-.types-group span {
-  display: inline-grid;
-  place-items: center;
-  min-width: 18px;
-  height: 16px;
-  padding: 0 5px;
-  font-size: 10px;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
-  background: var(--fs-surface-2);
-  border-radius: 999px;
-}
 .types-nav ul { margin: 0; padding: 0; list-style: none; }
 .types-nav li { margin: 0; }
 .types-nav a {
