@@ -188,6 +188,16 @@ kbd {
   white-space: nowrap;
 }
 .brand svg { flex: none; }
+
+/* Chrome keeps its own color whether visited or not; the link color and underline are for prose links. (a:visited
+   outranks a lone class, which is how the logotype once turned into a link color.) */
+.brand, .brand:visited { color: var(--fs-fg); text-decoration: none; }
+.site-nav a:visited { color: var(--fs-muted); text-decoration: none; }
+.site-nav a[aria-current="page"]:visited { color: var(--fs-fg); }
+.icon-btn:visited { color: var(--fs-muted); text-decoration: none; }
+.btn:visited { color: var(--fs-fg); text-decoration: none; }
+.btn.primary:visited { color: var(--fs-surface); }
+.card:visited { color: inherit; text-decoration: none; }
 .site-nav { display: flex; gap: 4px; align-items: center; margin-right: auto; }
 .site-nav a {
   position: relative;

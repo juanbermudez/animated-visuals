@@ -55,20 +55,17 @@ const escape = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/
 // Plain summaries for the Credits page. THIRD_PARTY_NOTICES.md remains the full legal source.
 const creditSections = [
   {
-    title: "Inspiration and adapted ideas",
+    title: "Skills and guidance this adapts",
     items: [
       { name: "diagram-design", href: "https://github.com/cathrynlavery/diagram-design", description: "is Cathryn Lavery's MIT-licensed diagram taxonomy, adapted here with motion and interaction guidance." },
       { name: "pmndrs math", href: "https://github.com/pmndrs/math", description: "is an MIT-licensed geometry and simulation library whose data-oriented approach informs the WebGL guidance." },
       { name: "gpgpu-curl-noise-dof", href: "https://pmndrs.github.io/examples/gpgpu-curl-noise-dof", description: "is an MIT-licensed Poimandres example that informed the per-point depth-of-field approach." },
       { name: "Alex Zhang's blog figures", href: "https://alexzhang13.github.io/", description: "provided interaction patterns for study; no code is included, and the source notice does not state a software license." },
       { name: "interface-design guidance", href: "https://github.com/jakubkrehel/skills", description: "combines MIT-licensed guidance from jakubkrehel/skills and Vercel's Web Interface Guidelines." },
-      { name: "OKLab", href: "https://bottosson.github.io/posts/oklab/", description: "and the W3C CSS Color 4 matrices define the color conversion used by the theme tools; no source code is included." },
-      { name: "Konsistent", href: "https://github.com/vercel-labs/konsistent", description: "is Vercel Labs' optional Apache-2.0 structural linter." },
-      { name: "SapiMouse", href: "https://www.ms.sapientia.ro/~manyi/sapimouse/sapimouse.html", description: "is the mouse-dynamics dataset used for summary statistics in the interaction guidance; no recorded data is included, and the source notice does not state a dataset license." },
     ],
   },
   {
-    title: "Libraries the guidance works with",
+    title: "Libraries, tools and data",
     items: [
       { name: "nivo", href: "https://nivo.rocks/", description: "is an MIT-licensed chart library and is not bundled." },
       { name: "three.js", href: "https://threejs.org/", description: "is an MIT-licensed WebGL library and is not bundled." },
@@ -78,6 +75,9 @@ const creditSections = [
       { name: "maath", href: "https://github.com/pmndrs/maath", description: "is an MIT-licensed motion-math library compared with pmndrs math in the guidance and is not bundled." },
       { name: "MediaPipe", href: "https://developers.google.com/mediapipe", description: "provides the Apache-2.0 pose landmarker used for tracing people as geometry and is not bundled." },
       { name: "Mermaid", href: "https://mermaid.js.org/", description: "is an MIT-licensed diagram library supported by the fill expansion mode and is not bundled." },
+      { name: "OKLab", href: "https://bottosson.github.io/posts/oklab/", description: "and the W3C CSS Color 4 matrices define the color conversion used by the theme tools; no source code is included." },
+      { name: "Konsistent", href: "https://github.com/vercel-labs/konsistent", description: "is Vercel Labs' optional Apache-2.0 structural linter." },
+      { name: "SapiMouse", href: "https://www.ms.sapientia.ro/~manyi/sapimouse/sapimouse.html", description: "is the mouse-dynamics dataset used for summary statistics in the interaction guidance; no recorded data is included, and the source notice does not state a dataset license." },
     ],
   },
   {
