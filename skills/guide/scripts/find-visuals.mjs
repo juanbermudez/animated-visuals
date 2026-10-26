@@ -74,13 +74,19 @@ export function loadVisuals(found = findVisualsRoot()) {
   const runtime = readFileSync(join(root, "assets", "runtime", "fs-runtime.js"), "utf8");
   const pickerAsset = join(root, "assets", "plate-src.html");
   const site = siteScript(root);
-  const highlighter = site ? extractHighlighter(readFileSync(site, "utf8")) : "";
+  const highlightAsset = join(root, "assets", "highlight.js");
+  const flowAsset = join(root, "assets", "flow.js");
+  // The skill ships both as assets; the site extraction is only a fallback for older copies of the skill.
+  const highlighter = existsSync(highlightAsset) ? readFileSync(highlightAsset, "utf8") : site ? extractHighlighter(readFileSync(site, "utf8")) : "";
+  const flow = existsSync(flowAsset) ? readFileSync(flowAsset, "utf8") : "";
   return {
     root,
     themesCss,
     runtime,
     highlighter,
-    highlighterSource: site,
+    highlighterSource: existsSync(highlightAsset) ? highlightAsset : site,
+    flow,
+    flowSource: existsSync(flowAsset) ? flowAsset : null,
     pickerSource: existsSync(pickerAsset) ? pickerAsset : site,
     pickerTemplate: existsSync(pickerAsset) ? readFileSync(pickerAsset, "utf8") : site ? readFileSync(site, "utf8") : "",
   };

@@ -19,6 +19,17 @@ const copies = [
   ["themes/notebook.css", "notebook.css"],
   ["themes/omarchy.css", "omarchy.css"],
 ];
+// The site's code highlighting is the skill's assets/highlight.js, injected between markers in site/site.js so
+// there is one source for the site and for guides built on the skill.
+{
+  const sitePath = join(docs, "site", "site.js");
+  const siteSource = readFileSync(sitePath, "utf8");
+  const asset = readFileSync(join(root, "assets", "highlight.js"), "utf8").trimEnd().split("\n").map((l) => (l ? "  " + l : l)).join("\n");
+  const pattern = /(  \/\/ highlight:start[^\n]*\n)[\s\S]*?(  \/\/ highlight:end)/;
+  if (!pattern.test(siteSource)) throw new Error("site/site.js: missing // highlight:start and // highlight:end markers");
+  writeFileSync(sitePath, siteSource.replace(pattern, (_, open, close) => `${open}${asset}\n${close}`));
+  console.log("updated docs/animated-visuals/site/site.js (highlight)");
+}
 for (const [from, to] of copies) {
   copyFileSync(join(root, from), join(vendor, to));
   console.log(`copied  ${from} -> docs/vendor/${to}`);

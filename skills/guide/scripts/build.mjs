@@ -29,18 +29,21 @@ for (const key of ["css", "pickerHtml", "script", "defaultTheme"]) {
 
 const source = read(sourceFile);
 if (/class=["'][^"']*language-(?:js|ts|tsx|javascript|typescript|python|py|shell|sh|bash|json|html|css)/i.test(source) && !visuals.highlighter) {
-  throw new Error("This guide contains highlighted code, but animated-visuals ships its highlighter only in docs/animated-visuals/site/site.js. Build from the monorepo or move that highlighter into animated-visuals/assets.");
+  throw new Error("This guide contains highlighted code, but the located animated-visuals has no assets/highlight.js. Update the skill (npx skills@latest add juanbermudez/skills --skill animated-visuals -g).");
 }
 
 const themeScript = layer.script ? `<script>\n${layer.script}\n</script>` : "";
 const sharedFigureScript = existsSync(join(directory, "flow.js")) ? read(join(directory, "flow.js")) : "";
-const guideScript = [visuals.highlighter, sharedFigureScript, read(scriptFile)].filter(Boolean).join("\n\n");
+const guideScript = [visuals.highlighter, visuals.flow, sharedFigureScript, read(scriptFile)].filter(Boolean).join("\n\n");
+// The highlighter only defines AV.enhanceCode; a guide calls it once the page is parsed.
+const enhanceCall = visuals.highlighter ? "\n\nif (window.AV && typeof AV.enhanceCode === \"function\") AV.enhanceCode();" : "";
+const guideScriptWithCode = guideScript + enhanceCall;
 const replacements = {
   THEMES: layer.css,
   RUNTIME: visuals.runtime,
   COMPONENTS: read(join(guideRoot, "assets", "components.css")),
   PAGE_CSS: existsSync(join(directory, "page.css")) ? read(join(directory, "page.css")) : "",
-  GUIDE_JS: guideScript,
+  GUIDE_JS: guideScriptWithCode,
 };
 
 let html = source;

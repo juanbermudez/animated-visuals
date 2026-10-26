@@ -37,7 +37,7 @@ const parts = {
   RUNTIME: read(join(vendor, "fs-runtime.js")),
   THEMES_JS: read(join(vendor, "themes.js")),
   SITE_JS: read(join(docs, "site/site.js")),
-  FLOW_JS: read(join(shared, "flow.js")),
+  FLOW_JS: read(join(docs, "..", "..", "skills", "animated-visuals", "assets", "flow.js")),
 };
 
 function build(slug) {

@@ -13,7 +13,7 @@ listed on `docs/examples.html`; the sources live in `src/<slug>/`.
    writing style (`references/writing/practical.md`), then build and verify. The site's register is the default theme;
    never hard-code colors, use the `--fs-*` tokens.
 3. Write `guide.src.html` (prose and plates; keep the placeholders) and `guide.js` (the figures). `page.css` is
-   optional, for the guide's own furniture. The shared flow helper `flowFigure(id, spec)` from `_shared/flow.js` is
+   optional, for the guide's own furniture. The shared flow helper `flowFigure(id, spec)` from the skill's `assets/flow.js` is
    available to every guide for stepped node-and-edge diagrams.
 4. Build and verify:
 
