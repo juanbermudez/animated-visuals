@@ -14,6 +14,19 @@
         "./skills/animated-visuals"
       ],
       "description": "Interactive, animated figures and diagrams for papers, articles and sites, with 27 swappable themes."
+    },
+    {
+      "name": "guide",
+      "source": "./",
+      "strict": false,
+      "version": "0.1.0",
+      "skills": [
+        "./skills/guide"
+      ],
+      "dependencies": [
+        "animated-visuals"
+      ],
+      "description": "One self-contained HTML guide for a topic, paper, codebase or decision, with practical writing and live figures."
     }
   ]
 }

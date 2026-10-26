@@ -5,8 +5,7 @@ Agent skills by Juan Bermudez, one folder each under `skills/`, with a site per 
 | Skill | What it does | Site |
 |---|---|---|
 | [animated-visuals](skills/animated-visuals/) | Interactive, animated figures and diagrams for papers, articles, explainers and sites: flows with packets, stepped mechanisms, timelines, explorable charts, 27 themes. | [juanbermudez.github.io/skills/animated-visuals](https://juanbermudez.github.io/skills/animated-visuals/) |
-
-`guide`, a skill that turns a topic, paper or codebase into one self-contained explanatory page on top of animated-visuals, is in progress.
+| [guide](skills/guide/) | One self-contained HTML guide for a topic, paper, codebase or decision, with practical writing, source checks and live figures. | [juanbermudez.github.io/skills/guide](https://juanbermudez.github.io/skills/guide/) |
 
 ## Install one skill
 
@@ -14,10 +13,13 @@ Agent skills by Juan Bermudez, one folder each under `skills/`, with a site per 
 # skills.sh, into Claude Code or Codex
 npx skills@latest add juanbermudez/skills --skill animated-visuals -g -a claude-code
 npx skills@latest add juanbermudez/skills --skill animated-visuals -g -a codex
+npx skills@latest add juanbermudez/skills --skill guide -g -a claude-code
+npx skills@latest add juanbermudez/skills --skill guide -g -a codex
 
 # Claude Code plugin, which updates itself
 claude plugin marketplace add juanbermudez/skills
 claude plugin install animated-visuals@juanbermudez
+claude plugin install guide@juanbermudez
 ```
 
 ## Develop

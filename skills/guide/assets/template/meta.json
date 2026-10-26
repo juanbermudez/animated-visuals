@@ -1,0 +1,9 @@
+{
+  "title": "Subject name",
+  "summary": "One sentence that says what this guide explains and for whom.",
+  "source": {
+    "label": "Primary source",
+    "url": "https://example.com/primary-source"
+  },
+  "type": "topic"
+}
