@@ -1,14 +1,7 @@
 #!/usr/bin/env node
-// Prints every number the guide quotes about its running example, computed by the same block the figures use
-// (the code between the <example> markers in guide.js). Run: node check-example.mjs
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+// Prints every quoted running-example value from the shared data module.
+import { data as EX } from "./data.js";
 
-const here = dirname(fileURLToPath(import.meta.url));
-const source = readFileSync(join(here, "guide.js"), "utf8");
-const block = source.slice(source.indexOf("// <example>"), source.indexOf("// </example>"));
-const EX = new Function(`${block}\nreturn GHN_EXAMPLE;`)();
 const f2 = (v) => (Math.abs(v) < 0.005 ? 0 : v).toFixed(2);
 const pair = (p) => `(${f2(p[0])}, ${f2(p[1])})`;
 

@@ -34,7 +34,7 @@ Diátaxis separates tutorials, how-to guides, explanations, and reference. A top
 2. Concrete before abstract: example first, definition last. (3Blue1Brown; IES rec. 4)
 3. One worked example runs from the first section to the last. (teach-me P4; animated-visuals content-design §4; IES rec. 2)
 4. Each section teaches one idea and adds one thing to the last. (teach-me P8; codebase-to-course "exactly one idea")
-5. A term is named only after its figure has shown it, and never two new terms at once. (teach-me method §5)
+5. A term is named only after its figure has shown it, and never two new terms at once. The audit permits the term in its own figure title, caption, step text, and tips, plus the Source line and paper title. It reads headings only to catch an introduction before that figure. (teach-me method §5)
 6. Every figure proves one claim, stated in its title; cut figures a sentence would replace. (animated-visuals; visual-explainer; diagram-design "deletion")
 7. Words sit with their pictures: labels on the part, prose linked to the figure. (IES rec. 3; Mayer contiguity via teach-me learning-science §3)
 8. Interaction only where the reader needs to change the input the claim depends on, always with "try this, notice that". (Nicky Case; teach-me V8; animated-visuals interaction ladder)

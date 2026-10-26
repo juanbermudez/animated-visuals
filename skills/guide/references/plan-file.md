@@ -1,83 +1,51 @@
 # The plan file
 
-Write `plan.md` and check it before creating HTML. The plan is the factual and structural contract for the guide. The build is a translation of that contract.
+Write `plan.md` before HTML. It is the factual and structural contract for the guide. Use the empty scaffold from `scripts/new.mjs`. Read the filled queue example at `assets/template/example/plan.md` when you need a model.
 
-Copy this template:
+## Required blocks
 
-```markdown
----
-title: Safe queue handoffs
-slug: queue-handoffs
-type: topic              # topic | paper | codebase | decision | how-to
-length: short            # short | standard | long
-audience: Engineers who know what a job queue is.
-outcome: Explain why an acknowledgement must follow durable work.
-source: https://example.com/queue-spec
----
+Keep these blocks in this order:
 
-## Scope
+1. Frontmatter: `title`, `slug`, `type`, `length`, `audience`, `outcome`, and primary `source`.
+2. Scope: audience, outcome, running example, exclusions, and length.
+3. Thesis: one sentence that the page will prove.
+4. Terms: term, the figure that shows it first, and approved aliases.
+5. Running example: what remains constant across the page.
+6. Sections: one idea, example part, figure claim, and source per section.
+7. Fact sheet: claim or number, evidence label, source, use, and checked state.
+8. Limits: where the account stops.
+9. Predicted reader questions: 5 to 10 questions the built file must answer.
+10. Copy-lint exceptions: documented lint exceptions and dimensionless symbols.
 
-- Audience: Engineers who have used a queue but have not implemented one.
-- Afterwards: Trace a job from receipt to durable completion and place the acknowledgement.
-- Running example: One image resize job, received at 09:00 UTC and stored in 240 ms.
-- Out of scope: Queue selection, capacity planning, and multi-region replication.
-- Reading length: Short, about 1,000 words.
+The plan checks live in [structure.md](structure.md). Run them before HTML.
 
-## Thesis
+## Shared example values
 
-A worker acknowledges a job only after the result is durable, because an earlier acknowledgement can lose work.
+Put computed values in `<guide-directory>/data.js`:
 
-## Terms
-
-| Term | Introduced after figure | Approved aliases |
-|---|---|---|
-| acknowledgement | job-flow | ack |
-| durable result | storage-step | stored result |
-
-## Running example
-
-The same image resize job appears in the problem, worked example, mechanism, limits, and closing answer. It is small enough to trace without hiding a second process.
-
-## Sections
-
-| Section | One idea | Part of the running example | Figure claim | Required source |
-|---|---|---|---|---|
-| The problem | Early acknowledgement can lose a job. | The worker stops after 120 ms. | The queue forgets work acknowledged too soon | Queue specification |
-| Worked example | Durable storage changes the safe point. | The result is stored after 240 ms. | Storage moves the safe acknowledgement point | Queue specification |
-
-## Fact sheet
-
-| Claim or number | Label | Source | Where used | Checked |
-|---|---|---|---|---|
-| The example stores its result in 240 ms. | estimate | Author-defined running example | Worked example | yes |
-| Acknowledged jobs are removed from the visible queue. | reported | Queue specification, delivery section | The problem | yes |
-| The failure at 120 ms loses this illustrative job. | estimate | Derived from the example timeline | Worked example | yes |
-
-Labels are `measured`, `reported`, `estimate`, or `speculative`. A measured claim comes from an observation. A reported claim comes from a source. An estimate shows its arithmetic. An estimate may be chosen for a clearly illustrative example and names that basis as its source. A speculative claim is visibly uncertain.
-
-## Limits
-
-- The example assumes one worker and one durable store.
-- The guide does not compare delivery guarantees across queue products.
-
-## Predicted reader questions
-
-1. When is it safe to acknowledge the job?
-2. What fails if acknowledgement happens first?
-3. Which values are illustrative?
-4. Does this guide choose a queue product?
-5. What changes when storage fails?
-
-## Plan checks
-
-- [ ] One idea per section.
-- [ ] One example runs through the guide.
-- [ ] Each term appears only after its figure.
-- [ ] Nothing sits above a heading.
-- [ ] The title is the subject's name.
-- [ ] Every number has a source or is marked illustrative.
-- [ ] Reference material is at the end.
-- [ ] How-to steps are kept apart from explanation.
+```js
+export const data = Object.freeze({
+  settings: { workers: 1 },
+  checkedNumbers: ["1 worker"],
+});
 ```
 
-Keep the fact sheet current while writing. If a claim changes, update the plan before the prose.
+The build removes the `export` keyword and inlines this file before `guide.js`. Figures use `data.settings`. A Node check imports the same module. `numbers-check.mjs` reads `data.checkedNumbers` and requires those tokens in the checked-against-source block. The fact sheet must take its example values from this module. Do not copy calculations into `guide.js` or a checker.
+
+## Copy-lint exceptions
+
+Use one line per exception: the exact flagged text or a `/regular expression/`, then an em dash and the reason. The verifier fails only unexplained flags.
+
+```markdown
+## Copy-lint exceptions
+
+dimensionless: λ, β, α, x, y, w
+- `unit: 0.65` — This probability is dimensionless and is named in the sentence.
+- `/sentence:.*Eq\. 2/` — The compact equation citation is clearer as one sentence.
+```
+
+`dimensionless:` declares symbols whose nearby numeric values do not take units. Keep it on its own line. Do not use an exception to hide a missing source, inconsistent rounding, or unclear prose.
+
+Labels are `measured`, `reported`, `estimate`, or `speculative`. A measured claim comes from an observation. A reported claim comes from a source. An estimate shows its arithmetic or names an author-defined illustration. A speculative claim is visibly uncertain.
+
+Keep the plan current. When a claim changes, update the plan before the prose.

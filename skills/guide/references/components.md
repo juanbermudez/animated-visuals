@@ -1,10 +1,10 @@
 # Components
 
-Use these components in this order. Their styles live in `assets/components.css` and use only `--fs-*` theme tokens.
+Use these components in this order. Their styles live in `assets/components.css` and use only `--fs-*` theme tokens. The guide type rules exclude every descendant of `.fs-plate`; plate titles, captions, step text, and tips keep Animated Visuals spacing and type.
 
 ## Plate
 
-Use a plate for one visual claim. Load animated-visuals and follow its plate markup, interaction, motion, accessibility, and verification rules. Do not recreate the plate here.
+Use a plate for one visual claim. Load animated-visuals and follow its plate markup, interaction, motion, accessibility, and verification rules. Do not recreate the plate here. Set `autoplay: false` on a figure with steps but no finite `duration`; a timeless figure must wait for reader input.
 
 ```html
 <figure class="fs-plate wide" aria-labelledby="flow-title">
@@ -13,6 +13,12 @@ Use a plate for one visual claim. Load animated-visuals and follow its plate mar
   <p class="fs-caption">Illustrative timing. Step through the job and notice when the acknowledgement becomes safe.</p>
 </figure>
 ```
+
+## Shared figure code
+
+Put guide-specific helpers used by several figures in `<guide-directory>/figures.shared.js`. The build places it after Animated Visuals `assets/flow.js` and before `guide.js`. Do not create a guide-local `flow.js`; that name belongs to Animated Visuals and is always loaded from the dependency.
+
+Put shared computed values in `data.js` as described in [plan-file.md](plan-file.md). Keep drawing helpers in `figures.shared.js` and factual values in `data.js`.
 
 ## Callout and note
 

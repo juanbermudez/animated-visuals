@@ -6,7 +6,7 @@ Put the point first, then its consequence, then the reason. Write as a colleague
 
 - Keep each sentence at 25 words or fewer. Keep most under 20 words.
 - Keep paragraphs to 1 to 3 sentences.
-- Use second person, active voice, and present tense.
+- Address the reader in second person. Use first person only when the author reports what they did. Keep active voice and present tense. This follows animated-visuals `references/writing/practical.md`.
 - Put a condition before its instruction: “When the build passes, publish the file.”
 - Prefer everyday words. Keep an exact technical term when the reader will see or use it.
 - Define a term once, after its figure shows the thing. Use that term consistently afterwards.
@@ -76,7 +76,7 @@ End in this order:
 1. Answer the opening problem in a few sentences.
 2. State one principle worth keeping.
 3. Point to the next useful source or action.
-4. Put the glossary, checked-against-source block, limits, and sources in the reference section.
+4. Put the glossary, checked-against-source block, and sources in the reference section. Limits stay in the main flow.
 5. Add an AI-generated note that names the sources, simplifications, and correction path.
 
 ## Before and after

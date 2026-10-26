@@ -7,9 +7,11 @@ import { themeLayer } from "./theme-layer.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const guideRoot = join(here, "..");
-const directory = process.argv[2] ? resolve(process.argv[2]) : null;
+const args = process.argv.slice(2);
+const directoryArg = args.find((arg) => !arg.startsWith("-"));
+const directory = directoryArg ? resolve(directoryArg) : null;
 if (!directory) {
-  console.error("usage: node build.mjs <guide-directory>");
+  console.error("usage: node build.mjs <guide-directory> [--bb]");
   process.exit(2);
 }
 const sourceFile = join(directory, "guide.src.html");
@@ -22,7 +24,11 @@ if (!existsSync(sourceFile) || !existsSync(scriptFile)) {
 const read = (path) => readFileSync(path, "utf8");
 const found = findVisualsRoot();
 const visuals = loadVisuals(found);
-const layer = await themeLayer({ visualsRoot: visuals.root });
+const bbFlag = args.includes("--bb");
+const bbEnvironment = process.env.GUIDE_BB === "1";
+const bbRequested = bbFlag || bbEnvironment;
+const defaultReason = bbFlag ? "--bb" : bbEnvironment ? "GUIDE_BB=1" : "published build: no baked default";
+const layer = await themeLayer({ visualsRoot: visuals.root, bb: bbRequested });
 for (const key of ["css", "pickerHtml", "script", "defaultTheme"]) {
   if (!(key in layer)) throw new Error(`themeLayer() did not return ${key}`);
 }
@@ -33,8 +39,11 @@ if (/class=["'][^"']*language-(?:js|ts|tsx|javascript|typescript|python|py|shell
 }
 
 const themeScript = layer.script ? `<script>\n${layer.script}\n</script>` : "";
-const sharedFigureScript = existsSync(join(directory, "flow.js")) ? read(join(directory, "flow.js")) : "";
-const guideScript = [visuals.highlighter, visuals.flow, sharedFigureScript, read(scriptFile)].filter(Boolean).join("\n\n");
+const sharedFigureFile = join(directory, "figures.shared.js");
+const dataFile = join(directory, "data.js");
+const sharedFigureScript = existsSync(sharedFigureFile) ? read(sharedFigureFile) : "";
+const dataScript = existsSync(dataFile) ? read(dataFile).replace(/^\s*export\s+/gm, "") : "";
+const guideScript = [visuals.highlighter, visuals.flow, dataScript, sharedFigureScript, read(scriptFile)].filter(Boolean).join("\n\n");
 // The highlighter only defines AV.enhanceCode; a guide calls it once the page is parsed.
 const enhanceCall = visuals.highlighter ? "\n\nif (window.AV && typeof AV.enhanceCode === \"function\") AV.enhanceCode();" : "";
 const guideScriptWithCode = guideScript + enhanceCall;
@@ -61,5 +70,6 @@ console.log(JSON.stringify({
   output,
   bytes: Buffer.byteLength(html),
   visuals: { source: found.source, root: found.path, highlighter: visuals.highlighterSource },
-  theme: { defaultTheme: layer.defaultTheme, picker: Boolean(layer.pickerHtml), script: Boolean(layer.script) },
+  theme: { defaultTheme: layer.defaultTheme, defaultReason, picker: Boolean(layer.pickerHtml), script: Boolean(layer.script) },
+  fonts: "not inlined; system fallback is used offline",
 }));

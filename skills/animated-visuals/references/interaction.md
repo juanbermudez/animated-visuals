@@ -70,6 +70,17 @@ These are rules, not suggestions.
 - Cursor `grab`, `grabbing` while held. The figure draws the states: rest, hover/focus (`f.handleHover`), held (`f.drag`): the stroke thickens (1.25 → 1.75 → 2.25px), knobs grow (4.5 → 6 → 7px) with a halo in the surface color, and a value label appears while held (`r 0.30`).
 - Past its bounds a handle rubber-bands (iOS-style compression, `FS.rubber`, c = 0.55, dimension ≈ 22% of the region), then springs back on release with a slight overshoot (`FS.springTo`, k = 420, ζ = 0.62). Constraints that are not boxes (a radius) rubber-band inside `set()` and choose their resting point in `release()`.
 
+`set(f, x, y, phase)` receives `drag` while the pointer moves, `settle` while release motion returns to rest, and `key` for a keyboard arrow press. A snapped handle advances exactly one snap per key press. Compare the proposed coordinate with the current snap; do not turn the pixel distance into several indices:
+
+```js
+set(f, x, y, phase) {
+  const here = snapX(index);
+  if (phase === "key") index = FS.clamp(index + Math.sign(x - here), 0, last);
+  else index = nearestSnap(x);
+  f.api.redraw();
+}
+```
+
 **The physics slider** (`<div data-fs-param="id:name">`, `<div data-fs-seek="id">`, or `FS.slider(el, …)`); never a bare native range in a finished figure:
 - 2px track in `--fs-line-strong`, fill in `--fs-fg`; a **vertical bar handle** 4×18px, radius 2, with a 3px halo in the surface color; it grows to 22px on hover and 5×26px while held, on the spring ease (`--fs-ease-spring`).
 - A value bubble pops above the handle while held or keyboard-focused (scale 0.85 → 1 on the spring ease), plus a tabular value readout at the end of the row.

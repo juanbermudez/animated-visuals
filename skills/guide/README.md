@@ -19,11 +19,11 @@ npx skills@latest add juanbermudez/skills --skill animated-visuals -g
 ## Start a guide
 
 ```sh
-node skills/guide/scripts/new.mjs my-guide
+node skills/guide/scripts/new.mjs my-guide --path guides/my-guide
 node skills/guide/scripts/build.mjs guides/my-guide
 node skills/guide/scripts/verify.mjs guides/my-guide/index.html
 ```
 
-Write and check `plan.md` before editing the HTML. The build writes one offline `index.html` beside the sources.
+Write and check `plan.md` before editing the HTML. The build writes one offline `index.html` beside the sources. Plain builds have no baked theme default; pass `--bb` or set `GUIDE_BB=1` to bake bb's current theme.
 
 Read the [skill instructions](SKILL.md) or open the [Guide site](https://juanbermudez.github.io/skills/guide/).

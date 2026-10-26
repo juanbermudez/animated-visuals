@@ -19,6 +19,7 @@ document.querySelectorAll("[data-guide-check]").forEach((check) => {
 // Replace this illustrative figure. Keep one claim, one worked example, and computed readouts.
 FS.figure("example-figure", {
   height: (width) => width < 520 ? 260 : 220,
+  autoplay: false,
   steps: [
     { caption: "One input arrives." },
     { caption: "The worker changes it." },

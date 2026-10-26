@@ -5,12 +5,11 @@ import { createServer } from "node:http";
 import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { createRequire } from "node:module";
 import { auditBridgeCss } from "./bb-theme.mjs";
 import { themeLayer } from "./theme-layer.mjs";
+import { resolvePlaywright } from "./playwright-path.mjs";
 
-const require = createRequire(import.meta.url);
-const { chromium } = require("/Users/juanbermudez/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright");
+const { module: { chromium } } = resolvePlaywright({ skillDirectory: resolve(import.meta.dirname, "..") });
 const repo = resolve(import.meta.dirname, "..", "..", "..");
 const sibling = join(repo, "skills", "animated-visuals");
 const installed = join(homedir(), ".claude", "skills", "animated-visuals");
@@ -35,7 +34,10 @@ async function staticChecks() {
 
   const siblingLayer = await themeLayer({ visualsRoot: sibling });
   assertThemes(siblingLayer, "sibling");
-  assert.equal(siblingLayer.defaultTheme, "hackerman");
+  assert.equal(siblingLayer.defaultTheme, null);
+
+  const bbLayer = await themeLayer({ visualsRoot: sibling, bb: true });
+  assert.equal(bbLayer.defaultTheme, "hackerman");
 
   const installedLayer = await themeLayer({ visualsRoot: installed, bb: false });
   assertThemes(installedLayer, "installed symlink");
@@ -43,7 +45,7 @@ async function staticChecks() {
 
   const previous = process.env.GUIDE_NO_BB;
   process.env.GUIDE_NO_BB = "1";
-  const disabledLayer = await themeLayer({ visualsRoot: sibling });
+  const disabledLayer = await themeLayer({ visualsRoot: sibling, bb: false });
   if (previous == null) delete process.env.GUIDE_NO_BB;
   else process.env.GUIDE_NO_BB = previous;
   assert.equal(disabledLayer.defaultTheme, null);
@@ -59,10 +61,10 @@ async function staticChecks() {
   const bridgeEnd = bridgedLayer.css.indexOf("/* Theme picker.", bridgeStart);
   const audit = await auditBridgeCss(bridgedLayer.css.slice(bridgeStart, bridgeEnd), { visualsRoot: sibling });
   assert.equal(audit.pass, true, audit.failures.join("\n"));
-  assert.doesNotMatch(siblingLayer.script, /docs\/animated-visuals|site\/site|vendor\/themes|\.\.\//);
+  assert.doesNotMatch(bbLayer.script, /docs\/animated-visuals|site\/site|vendor\/themes|\.\.\//);
 
   execFileSync(process.execPath, [join(sibling, "scripts", "check-contrast.mjs")], { stdio: "pipe" });
-  return { layer: siblingLayer, bbOutput, audit };
+  return { layer: bbLayer, bbOutput, audit };
 }
 
 function pageHtml(layer, runtime, plate) {
@@ -227,5 +229,5 @@ async function browserChecks(layer) {
 
 const { layer, audit } = await staticChecks();
 const browser = await browserChecks(layer);
-console.log(`PASS 27 themes from sibling and installed symlink; bb default hackerman; GUIDE_NO_BB null; fake bridge contrast ${audit.pass ? "PASS" : "FAIL"}; browser 1440/390 PASS`);
+console.log(`PASS 27 themes from sibling and installed symlink; plain default null; explicit bb default hackerman; GUIDE_NO_BB compatibility no-op; fake bridge contrast ${audit.pass ? "PASS" : "FAIL"}; browser 1440/390 PASS`);
 console.log(`artifacts: ${browser.out}`);

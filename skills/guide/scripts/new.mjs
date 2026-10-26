@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { copyFileSync, existsSync, mkdirSync, readdirSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -19,7 +19,10 @@ if (existsSync(destination) && readdirSync(destination).length) {
   process.exit(1);
 }
 mkdirSync(destination, { recursive: true });
-for (const file of ["guide.src.html", "guide.js", "plan.md", "meta.json"]) {
-  copyFileSync(join(template, file), join(destination, file));
+for (const file of ["guide.src.html", "guide.js", "data.js", "plan.md", "meta.json", ".gitignore"]) {
+  const source = readFileSync(join(template, file), "utf8")
+    .replaceAll("__SLUG__", slug)
+    .replaceAll("__TITLE__", slug.split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" "));
+  writeFileSync(join(destination, file), source);
 }
 console.log(JSON.stringify({ status: "PASS", slug, directory: destination, files: readdirSync(destination).sort() }));

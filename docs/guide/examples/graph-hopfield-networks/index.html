@@ -1897,25 +1897,33 @@ body {
   padding: 64px 0 104px;
 }
 .guide-page > * { grid-column: content; min-width: 0; }
-.guide-page > .wide, .guide-page > .fs-plate.wide { grid-column: wide; }
+.guide-page > section { grid-column: full; display: grid; grid-template-columns: subgrid; }
+.guide-page > section > * { grid-column: content; min-width: 0; }
+.guide-page :where(.wide, .fs-plate.wide) {
+  grid-column: wide;
+  width: min(58rem, calc(100vw - 40px));
+  max-width: none;
+  margin-inline: calc((100% - min(58rem, calc(100vw - 40px))) / 2);
+}
 .guide-page > .full { grid-column: full; }
-.guide-page h1, .guide-page h2, .guide-page h3 { color: var(--fs-strong); font-family: var(--fs-font-display, system-ui, sans-serif); text-wrap: balance; }
-.guide-page h1 { margin: 0 0 16px; font-size: clamp(2rem, 1.5rem + 2vw, 3rem); line-height: 1.12; font-weight: 560; letter-spacing: -0.025em; }
-.guide-page h2 { margin: 64px 0 12px; font-size: 1.5rem; line-height: 1.3; font-weight: 560; letter-spacing: -0.012em; }
-.guide-page h3 { margin: 36px 0 8px; font-size: 1.125rem; line-height: 1.4; font-weight: 600; }
-.guide-page p { margin: 0 0 16px; text-wrap: pretty; }
-.guide-page ul, .guide-page ol { margin: 0 0 20px; padding-left: 1.35rem; }
-.guide-page li { margin: 8px 0; }
-.guide-page li::marker { color: var(--fs-faint); }
-.guide-page a, .guide-page a:visited {
+.guide-page :where(h1, h2, h3):not(.fs-plate *) { color: var(--fs-strong); font-family: var(--fs-font-display, system-ui, sans-serif); text-wrap: balance; }
+.guide-page h1:not(.fs-plate *) { margin: 0 0 16px; font-size: clamp(2rem, 1.5rem + 2vw, 3rem); line-height: 1.12; font-weight: 560; letter-spacing: -0.025em; }
+.guide-page h2:not(.fs-plate *) { margin: 64px 0 12px; font-size: 1.5rem; line-height: 1.3; font-weight: 560; letter-spacing: -0.012em; }
+.guide-page h3:not(.fs-plate *) { margin: 36px 0 8px; font-size: 1.125rem; line-height: 1.4; font-weight: 600; }
+.guide-page p:not(.fs-plate *) { margin: 0 0 16px; text-wrap: pretty; }
+.guide-page :where(ul, ol):not(.fs-plate *) { margin: 0 0 20px; padding-left: 1.35rem; }
+.guide-page li:not(.fs-plate *) { margin: 8px 0; }
+.guide-page li:not(.fs-plate *)::marker { color: var(--fs-faint); }
+.guide-page a:not(.fs-plate *), .guide-page a:not(.fs-plate *):visited {
   color: var(--fs-link); text-decoration: underline 1px var(--fs-link-underline);
   text-underline-offset: 3px; text-decoration-skip-ink: auto;
 }
-.guide-page a:hover { color: var(--fs-strong); text-decoration-color: currentColor; text-decoration-thickness: 2px; }
-.guide-page :focus-visible { outline: 2px solid var(--fs-accent); outline-offset: 3px; }
+.guide-page a:not(.fs-plate *):hover { color: var(--fs-strong); text-decoration-color: currentColor; text-decoration-thickness: 2px; }
+.guide-page :not(.fs-plate *):focus-visible { outline: 2px solid var(--fs-accent); outline-offset: 3px; }
 .guide-lede { margin-bottom: 24px !important; color: var(--fs-muted); font-size: 1.1875rem; line-height: 1.6; }
-.guide-context { display: grid; gap: 8px; margin: 0 0 32px; padding: 0; list-style: none; color: var(--fs-muted); }
-.guide-context strong { color: var(--fs-fg); font-weight: 600; }
+.guide-page .guide-context { display: grid; gap: 4px; margin: 0 0 32px; padding: 0; list-style: none; color: var(--fs-muted); }
+.guide-page .guide-context strong { color: var(--fs-fg); font-weight: 600;  }
+.guide-page .guide-context li { margin: 0; }
 .guide-toc { margin: 0 0 40px; padding: 16px 20px; background: var(--fs-block); border: 1px solid var(--fs-line); border-radius: var(--fs-radius-inner, 6px); }
 .guide-toc ol { columns: 2; margin: 0; }
 .guide-callout, .guide-note {
@@ -1983,28 +1991,15 @@ body {
 }
 @media (max-width: 520px) {
   .guide-page { grid-template-columns: [full-start wide-start content-start] minmax(0, 1fr) [content-end wide-end full-end]; padding: 40px 20px 80px; }
-  .guide-page > .wide, .guide-page > .fs-plate.wide { width: 100%; margin-inline: 0; }
+  .guide-page :where(.wide, .fs-plate.wide) { width: 100%; margin-inline: 0; }
+  .guide-page > section { grid-column: 1 / -1; }
   .guide-header-inner { width: calc(100% - 40px); }
-  .guide-page h2 { margin-top: 48px; }
+  .guide-page h2:not(.fs-plate *) { margin-top: 48px; }
   .guide-stats { grid-template-columns: 1fr; }
 }
 
-/* Sections sit on the page grid too, so a wide plate inside a section can break out to the wide column. */
-.guide-page > section { grid-column: full; display: grid; grid-template-columns: subgrid; }
-.guide-page > section > * { grid-column: content; min-width: 0; }
-.guide-page > section > .wide { grid-column: wide; }
 .guide-page sub, .guide-page sup { line-height: 0; }
 .guide-page .guide-table td { font-variant-numeric: tabular-nums; white-space: nowrap; }
-@media (max-width: 520px) {
-  .guide-page > section { grid-column: 1 / -1; }
-  .guide-page > section > .wide { width: 100%; margin-inline: 0; }
-}
-/* The guide's prose rules (.guide-page h3, .guide-page p) are more specific than the plate's own classes; give the plate its own type back. */
-.guide-page .fs-plate h3.fs-title { margin: 0 auto 0 0; color: inherit; font: var(--fs-weight-title) var(--fs-size-title) / 1.5 var(--fs-font-figure); letter-spacing: var(--fs-head-tracking); text-wrap: initial; }
-.guide-page .fs-plate p { margin: 0; }
-/* The context list: no inherited list indent and one gap, not two. */
-.guide-page .guide-context { padding-left: 0; gap: 4px; }
-.guide-page .guide-context li { margin: 0; }
 
 </style>
 <script>
@@ -2257,7 +2252,7 @@ body {
 
 <main class="guide-page" id="main">
   <h1>Graph Hopfield Networks</h1>
-  <p class="guide-lede">A Graph Hopfield Network classifies the nodes of a graph by moving each node's vector in small steps toward learned memory vectors and toward its neighbours. On Amazon's product graphs, the repeated steps carry most of the accuracy. The memory helps most when part of a node's features are masked.</p>
+  <p class="guide-lede">A Graph Hopfield Network classifies graph nodes by moving each vector in small steps. Each move points toward learned memory vectors and the node's neighbours. On Amazon's product graphs, the repeated steps carry most of the accuracy. The memory helps most when part of a node's features are masked.</p>
   <ul class="guide-context">
     <li><strong>For:</strong> Engineers who know what a neural network and a graph are.</li>
     <li><strong>Know first:</strong> Dot products, softmax, and a graph's adjacency matrix.</li>
@@ -2416,7 +2411,7 @@ print(X[2].round(2), softmax(X[2] @ M.T).round(2))  # [1.15 0.85] [0.65 0.35]</c
       <dt>NoMem</dt>
       <dd>The paper's main ablation removes the memory part and keeps the damped graph update. It shows how much of the result comes from the steps alone.</dd>
     </dl>
-    <p>The paper's grid uses 64 or 256 stored patterns and a hidden size of 64 or 128. It uses α = 0.3, T = 4 steps per layer and two layers, λ = 0.3 on homophilous graphs, and learns β from 1.0 (Table 4).</p>
+    <p>The paper's grid uses 64 or 256 stored patterns and a hidden size of 64 dimensions or 128 dimensions. It uses α = 0.3, T = 4 steps per layer and two layers, λ = 0.3 on homophilous graphs, and learns β from 1.0 (Table 4).</p>
   </section>
 
   <section id="results">
@@ -2434,7 +2429,7 @@ print(X[2].round(2), softmax(X[2] @ M.T).round(2))  # [1.15 0.85] [0.65 0.35]</c
     <p>The paper concludes that the iterative update itself does much of the work. Photo has 238k edges against Cora's 10.6k, so smoothing alone has plenty of signal there (Section 3.2).</p>
 
     <h3>Where memory adds accuracy</h3>
-    <p>On the citation graphs, memory beats NoMem by 2.0 points on Cora (Hier(8)), 1.1 points on CiteSeer and 0.9 points on PubMed (LSR). Only on Cora do the two ranges of one standard deviation not overlap; on CiteSeer and PubMed they overlap (Section 3.2). GAT or APPNP still score highest on all three (Table 1).</p>
+    <p>On citation graphs, memory beats NoMem by 2.0 points on Cora with Hier(8). LSR adds 1.1 points on CiteSeer and 0.9 points on PubMed. Only on Cora do the two ranges of one standard deviation not overlap; on CiteSeer and PubMed they overlap (Section 3.2). GAT or APPNP still score highest on all three (Table 1).</p>
     <figure class="fs-plate wide" aria-labelledby="fig-mask-title">
       <header class="fs-head"><h3 class="fs-title" id="fig-mask-title">Memory pays off when features are masked</h3><span class="fs-status">Table 2 · paper</span></header>
       <div class="fs-tabbar"><div data-fs-param="fig-mask:kind" data-label="Corruption"></div></div>
@@ -2548,9 +2543,9 @@ print(X[2].round(2), softmax(X[2] @ M.T).round(2))  # [1.15 0.85] [0.65 0.35]</c
       <summary>Checked against the source</summary>
       <ul>
         <li>Paper: Rao, Wa and Athavale, arXiv 2603.03464v1, 3 March 2026, ICLR 2026 workshop. Equations: Eq. 1 (energy), Eq. 2 (update), Eq. 3 (gate); Prop. D.1, Prop. D.2, Corollary D.7; Sections 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 3.4, 4; Appendix A, Appendix C.6, Appendix D; Figure 4.</li>
-        <li>Illustrative, computed by this guide's code (<a href="check-example.mjs">check-example.mjs</a> prints them): memories (2, 0) and (0, 2); A (1.8, 0.2), B (1.4, 0.6), C (0, 0), D (0.4, 1.6); a 2-dimensional space; four products; C's weights 0.50 and 0.50 and blend (1.00, 1.00) at step 0; pull on C (0.92, 0.75) at λ = 0.3; first step 0.3 × [(1.00, 1.00) + (0.92, 0.75)] = (0.58, 0.53); 70% kept and 30% taken at α = 0.3; after four steps C at (1.15, 0.85) with camera weight 0.65 (0.65 and 0.35 in the code); energy −4.74 to −7.03, graph part 1.70 to 0.40, memory part −6.44 to −7.43; L_lip at most 4.2 and 2 / L_lip = 0.48 with ‖L‖ at most 2; with λ = 0, C at (0.76, 0.76) and 0.50; lens D at 0.13 after step 4, past 0.50 at step 16, 0.96 at step 30, energy −7.96; the limits figure runs 30 steps; the example runs 4 steps; β‖M‖² = 4; weights sum to 1; values rounded to 2 decimals, off by up to 0.01.</li>
-        <li>Paper settings (Table 4, Appendix A): β = 1 (starts at 1.0, learned), α = 0.3, λ = 0.3, T = 4 steps, two layers, G = 8, gate bias 2 (gate near 0.88, Section 2.2), skip weight 0.1, 64 or 256 stored patterns (64 stored patterns or 256), hidden size 64 or 128; heterophilous λ from −0.1 to 0. Results are means over 10 seeds on nine graphs.</li>
-        <li>Table 1: NoMem 94.7% on Photo, LSE 94.5%; GraphSAGE 93.9%, a 0.8 point gap; Computers NoMem 91.5% vs GIN 88.9%, a 2.6 point gap; memory variants within 0.5 points of NoMem on Amazon (Section 3.2); Cora +2.0, CiteSeer +1.1, PubMed +0.9 points over NoMem (Section 3.2). Bimodal seeds near 87% and 50% (Appendix A). Photo 238k edges, Cora 10.6k.</li>
+        <li>Illustrative, computed by this guide's code (<a href="check-example.mjs">check-example.mjs</a> prints them): memories (2, 0) and (0, 2); A (1.8, 0.2), B (1.4, 0.6), C (0, 0), D (0.4, 1.6); a 2-dimensional space and 2 dimensions; four products; C's weights 0.50 and 0.50 and blend (1.00, 1.00) at step 0; pull on C (0.92, 0.75) at λ = 0.3; first step 0.3 × [(1.00, 1.00) + (0.92, 0.75)] = (0.58, 0.53); 70% kept and 30% taken at α = 0.3; after four steps C at (1.15, 0.85) with camera weight 0.65 (0.65 and 0.35 in the code); energy −4.74 to −7.03, graph part 1.70 to 0.40, memory part −6.44 to −7.43; L_lip at most 4.2 and 2 / L_lip = 0.48 with ‖L‖ at most 2; with λ = 0, C at (0.76, 0.76) and 0.50; lens D at 0.13 after step 4, past 0.50 at step 16, 0.96 at step 30, energy −7.96; the limits figure runs 30 steps; the example runs 4 steps; β‖M‖² = 4; weights sum to 1; values rounded to 2 decimals, off by up to 0.01.</li>
+        <li>Paper settings (Table 4, Appendix A): β = 1 (starts at 1.0, learned), α = 0.3, λ = 0.3, T = 4 steps, two layers, G = 8, gate bias 2 (gate near 0.88, Section 2.2), skip weight 0.1, 64 or 256 stored patterns (64 stored patterns or 256), hidden size 64 dimensions or 128 dimensions; heterophilous λ from −0.1 to 0. Results are means over 10 seeds on nine graphs.</li>
+        <li>Table 1: NoMem 94.7% on Photo, LSE 94.5%; GraphSAGE 93.9%, a 0.8 point gap; Computers NoMem 91.5% vs GIN 88.9%, a 2.6 point gap; memory variants within 0.5 points of NoMem on Amazon (Section 3.2); Cora +2.0 points, CiteSeer +1.1 points, PubMed +0.9 points over NoMem (Section 3.2). Bimodal seeds near 87% and 50% (Appendix A). Photo 238k edges, Cora 10.6k.</li>
         <li>Table 2, 50% corruption on Photo: clean APPNP 92.2% and GraphSAGE 93.9%; feature mask APPNP 65.0%, GraphSAGE 73.3%, Hier(8) 91.9%, NoMem 86.9%, a 5.0 point gap, LSR 91.0%, LSE 89.4%, GIN 91.1%.</li>
         <li>Table 3: GHN-LSE 81.4% on Texas vs GPR-GNN 78.4%; Wisconsin GPR-GNN 82.9% vs LSR 82.5%; Cornell 80.3% vs 78.9%; Wisconsin GCN 55.7% vs MLP 82.2%.</li>
         <li>Table 6: Wisconsin 79.8% at λ = 0, 55.1% at λ = 0.3, 44.9% at λ = 1.0; eight values of λ. Table 6 and Table 7: λ = 0 gives 74.1% on Texas and 79.8% on Wisconsin; λ = −0.05 gives 78.6% on Texas and 81.8% on Wisconsin; λ = −0.3 lower than −0.05 on all four datasets.</li>
@@ -4715,28 +4710,9 @@ function flowFigure(id, { meta, layouts, edges, returns = [], steps, params, H =
 /* ================= Fig 1: one turn on one clock (canvas, real) ================= */
 
 
-// Check-yourself behaviour from the guide template: mark the choice, reveal reasons, show the answer after 2 misses.
-document.querySelectorAll("[data-guide-check]").forEach((check) => {
-  const options = [...check.querySelectorAll(".guide-options > button")];
-  let wrong = 0;
-  options.forEach((option) => option.addEventListener("click", () => {
-    const right = option.hasAttribute("data-correct");
-    option.dataset.chosen = "";
-    option.dataset.result = right ? "right" : "wrong";
-    option.disabled = true;
-    if (right) options.forEach((item) => { item.disabled = true; });
-    else if (++wrong >= 2) {
-      const answer = options.find((item) => item.hasAttribute("data-correct"));
-      if (answer) answer.dataset.answer = "";
-      options.forEach((item) => { item.disabled = true; });
-    }
-  }));
-});
-
-// <example>
-// The running example: four products, two stored patterns, the paper's update rule (Eq. 2) and energy (Eq. 1).
-// Every number the prose quotes about the example comes from this block; check-example.mjs prints them.
-const GHN_EXAMPLE = (() => {
+// Shared running-example values. The guide build inlines this module before guide.js.
+// Node checks import the same object, so prose checks and figures use one computation.
+const data = (() => {
   const PATTERNS = [
     { name: "Camera memory", short: "camera", m: [2, 0] },
     { name: "Lens memory", short: "lens", m: [0, 2] },
@@ -4812,12 +4788,34 @@ const GHN_EXAMPLE = (() => {
     return states;
   }
   const settings = { beta: 1, alpha: 0.3, lambda: 0.3, steps: 4 };
-  return { PATTERNS, NODES, EDGES, degree, adjacency, weights, retrieve, laplacian, neighbourPull, energy, run, settings };
+  const checkedNumbers = ["4 steps"];
+  return { PATTERNS, NODES, EDGES, degree, adjacency, weights, retrieve, laplacian, neighbourPull, energy, run, settings, checkedNumbers };
 })();
-// </example>
+
+
+// Check-yourself behaviour from the guide template: mark the choice, reveal reasons, show the answer after 2 misses.
+document.querySelectorAll("[data-guide-check]").forEach((check) => {
+  const options = [...check.querySelectorAll(".guide-options > button")];
+  let wrong = 0;
+  options.forEach((option) => option.addEventListener("click", () => {
+    const right = option.hasAttribute("data-correct");
+    option.dataset.chosen = "";
+    option.dataset.result = right ? "right" : "wrong";
+    option.disabled = true;
+    if (right) options.forEach((item) => { item.disabled = true; });
+    else if (++wrong >= 2) {
+      const answer = options.find((item) => item.hasAttribute("data-correct"));
+      if (answer) answer.dataset.answer = "";
+      options.forEach((item) => { item.disabled = true; });
+    }
+  }));
+});
+
+// The build inlines data.js before this file.
+
 
 // ---------------------------------------------------------------- shared drawing helpers
-const EX = GHN_EXAMPLE;
+const EX = data;
 const BASE = EX.run();
 const LONG = EX.run({ steps: 30 });
 const f2 = (v) => (Math.abs(v) < 0.005 ? 0 : v).toFixed(2);
@@ -5557,7 +5555,7 @@ function panelRows(f, c, P, rows, { title } = {}) {
     height: (w) => (w < NARROW ? 300 : 320),
     autoplay: false,
     params: {
-      lambda: { value: 0.3, label: "Graph weight λ", options: [{ value: 0.3, label: "0.3" }, { value: 0, label: "0" }] },
+      lambda: { value: "0.3", label: "Graph weight λ", options: [{ value: "0.3", label: "0.3" }, { value: "0", label: "0" }] },
     },
     reserve: { at: ["step 30 · D 0.00 · C 0.00 · energy −0.00"] },
     handles: {

@@ -24,7 +24,7 @@ async function read(path) {
   return readFile(path, "utf8");
 }
 
-export async function themeLayer({ visualsRoot, bb = true } = {}) {
+export async function themeLayer({ visualsRoot, bb = false } = {}) {
   if (!visualsRoot) throw new Error("themeLayer requires { visualsRoot }");
   const [omarchySource, pickerHtml, pickerCss, runtimeTemplate, ...themeSources] = await Promise.all([
     read(join(visualsRoot, "themes", "omarchy.json")),
@@ -36,7 +36,7 @@ export async function themeLayer({ visualsRoot, bb = true } = {}) {
   const omarchy = JSON.parse(omarchySource);
   const themes = themeList(omarchy);
   let detected = null;
-  if (bb !== false && process.env.GUIDE_NO_BB !== "1") {
+  if (bb !== false) {
     detected = bb && typeof bb === "object" && "kind" in bb
       ? bb
       : await bbTheme({ visualsRoot, ...(bb && typeof bb === "object" ? bb : {}) });

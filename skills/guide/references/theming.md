@@ -2,7 +2,7 @@
 
 A guide gets its theme layer from the installed **animated-visuals** skill when it is built. The build reads `themes/default.css`, `themes/notebook.css`, `themes/omarchy.css`, and `themes/base.css` in that order. It also reads `themes/omarchy.json` for the picker labels and light or dark grouping. Guide does not keep a copy of those themes.
 
-The build calls `await themeLayer({ visualsRoot })`. The result contains the complete CSS layer, the picker markup, its script, and the default theme id. The picker goes in the page header at `<!--__THEME_PICKER__-->`. Inline the script after the Animated Visuals runtime. The script applies the initial attributes as soon as it runs, before it waits for the picker markup.
+The build calls `await themeLayer({ visualsRoot })`. The result contains the complete CSS layer, the picker markup, its script, and the default theme id. The picker goes in the guide header at `<!--__THEME_PICKER__-->`; the button is not fixed. Animated Visuals' fixed-corner rule applies to standalone plates and sites without a header. Inline the script after the Animated Visuals runtime. The script applies the initial attributes as soon as it runs, before it waits for the picker markup.
 
 ## The picker
 
@@ -14,15 +14,28 @@ The storage key is `av-theme`. The selected id persists across reloads. `window.
 
 ## Which theme wins
 
-Theme precedence is:
+Published guides have no baked theme default. Build them with:
+
+```sh
+node <guide-skill>/scripts/build.mjs <guide-directory>
+```
+
+The page chooses Default or Default Light from the system preference until a live bb probe or reader choice applies. Bake bb's current theme only when requested:
+
+```sh
+node <guide-skill>/scripts/build.mjs <guide-directory> --bb
+GUIDE_BB=1 node <guide-skill>/scripts/build.mjs <guide-directory>
+```
+
+`GUIDE_NO_BB=1` is a compatibility no-op. The PASS line reports the baked default and whether `--bb`, `GUIDE_BB=1`, or the published-build default selected it.
+
+Runtime precedence is:
 
 1. A reader's saved choice.
-2. bb's theme, either found while building the guide or detected when the guide opens inside bb.
-3. The system light or dark preference, choosing between Default and Default Light.
+2. A baked bb default, when the build explicitly requested one, or the live bb probe.
+3. The system light or dark preference.
 
-When the build finds a known bb Omarchy id, it uses the matching Animated Visuals palette as the default. Other bb themes become a generated `bb` palette and appear as “bb (current)” in the picker.
-
-When a guide opens inside bb, the script checks for `--canvas` on the root element once at load. It checks again only when the root `style` or `class` changes. If bb variables are present and the reader has not saved a choice, the script applies a live `bb` bridge. There is no timer. A saved reader choice always wins.
+When a guide opens inside bb, the script checks for `--canvas` on the root at load and when the root `style` or `class` changes. If bb variables are present and the reader has no saved choice, it applies the live `bb` bridge. A saved reader choice always wins. The runtime probe is independent of build flags.
 
 ## bb variable mapping
 
@@ -42,12 +55,6 @@ When a guide opens inside bb, the script checks for `--canvas` on the root eleme
 | `--ansi-2` through `--ansi-7` | `--fs-c1` through `--fs-c6` |
 
 The bridge derives `--fs-block` from the page and `--fs-node` from the plate in OKLCH. It uses the Animated Visuals minimum lightness steps. Lines and faint text roles are derived between the plate and the main text. The generated bridge is checked against the same surface and text contrast minima as the Animated Visuals themes. If bb's fixed page, surface, or text colors prevent a pass, the generated CSS keeps those bb colors and records the failed minimum in a comment.
-
-## Fallbacks and opting out
-
-If `bb` is not on `PATH`, its command fails, or its output is not valid JSON, the build says nothing and follows the system preference. Set `GUIDE_NO_BB=1` to skip the bb check. Code can also call `themeLayer({ visualsRoot, bb: false })`.
-
-The runtime probe is independent of the build check. `GUIDE_NO_BB` prevents build-time selection; a finished guide opened inside bb can still follow the live bb variables unless the reader has saved a theme.
 
 ## One guide with a custom theme
 

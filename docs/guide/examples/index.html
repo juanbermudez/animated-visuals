@@ -15,6 +15,7 @@ a { color: var(--fg); text-underline-offset: 3px; }
 .cards { display: grid; gap: 12px; margin: 32px 0; padding: 0; list-style: none; }
 .card { position: relative; padding: 18px 20px; border: 1px solid color-mix(in oklch, var(--fg) 14%, transparent); border-radius: 10px; }
 .card:hover { border-color: color-mix(in oklch, var(--fg) 32%, transparent); }
+.card .type { margin: 0 0 4px; font: 600 0.75rem/1.4 ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.05em; }
 .card h2 { margin: 0 0 6px; font-size: 1.125rem; font-weight: 560; }
 .card h2 a { text-decoration: none; }
 .card h2 a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
@@ -27,11 +28,14 @@ a { color: var(--fg); text-underline-offset: 3px; }
   <h1>Guide examples</h1>
   <p>Self-contained guides built and verified with the skill.</p>
   <ul class="cards">
+    <!-- GENERATED CARDS: START -->
     <li class="card">
+      <p class="type">paper</p>
       <h2><a href="graph-hopfield-networks/">Graph Hopfield Networks</a></h2>
-      <p>How a Graph Hopfield Network pulls each node toward stored memories and toward its neighbours, worked through on four products, with what the paper measured on nine graphs.</p>
-      <p class="source">Source: <a href="https://arxiv.org/abs/2603.03464">Rao, Wa and Athavale, Graph Hopfield Networks (arXiv 2603.03464)</a></p>
+      <p>How a Graph Hopfield Network pulls each node toward stored memories and its neighbours, worked through on four products, and what the paper measured on nine graphs.</p>
+      <p class="source">Source: <a href="https://arxiv.org/abs/2603.03464">Rao, Wa and Athavale, arXiv 2603.03464v1</a></p>
     </li>
+    <!-- GENERATED CARDS: END -->
   </ul>
   <p><a href="../">Back to Guide</a></p>
 </main>

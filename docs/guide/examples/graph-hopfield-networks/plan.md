@@ -36,7 +36,7 @@ Plain words used before the figures: "memory" for a stored pattern, "pull" for a
 
 ## Running example
 
-The four products appear in the hero (graph view), the worked example (2-D view, steps 0 to 4), every mechanism figure (C at step 0), the energy figure (steps 0 to 4), the limits figure (steps 0 to 30), the check questions and the closing answer. All of its numbers are computed by the same JavaScript in `guide.js` (`GHN_EXAMPLE`), and `check-example.mjs` prints them so the prose can be compared.
+The four products appear in the hero (graph view), the worked example (2-D view, steps 0 to 4), every mechanism figure (C at step 0), the energy figure (steps 0 to 4), the limits figure (steps 0 to 30), the check questions and the closing answer. All example values come from `data.js`. The build inlines that module for the figures, and `check-example.mjs` imports it for the Node check.
 
 ## Sections
 
@@ -93,7 +93,7 @@ The four products appear in the hero (graph view), the worked example (2-D view,
 | Flat LSE needs K = 256 on Photo; LSR is stable at K = 64 for moderate β | reported | Figure 4, Appendix C.1 | Limits | yes |
 | Example: patterns (2, 0) and (0, 2); A (1.8, 0.2), B (1.4, 0.6), C (0, 0), D (0.4, 1.6); edges A–B, A–C, B–C, C–D | estimate | Author-chosen illustration | Everywhere | yes |
 | Example: ‖M‖² = 4, so β‖M‖² = 4 | estimate | Arithmetic on the example | Limits | yes |
-| Example step 0: C's weights 0.50 / 0.50; retrieval (1.00, 1.00) | estimate | Computed by `GHN_EXAMPLE` | Retrieval | yes |
+| Example step 0: C's weights 0.50 / 0.50; retrieval (1.00, 1.00) | estimate | Computed by `data.js` | Retrieval | yes |
 | Example step 0: graph pull on C 2λ·(1.54, 1.25) = (0.92, 0.75) | estimate | Computed | Graph term | yes |
 | Example step 1: C = 0.7·(0, 0) + 0.3·[(1.00, 1.00) + (0.92, 0.75)] = (0.58, 0.53) | estimate | Computed | One update | yes |
 | Example: C's camera weight 0.50, 0.53, 0.56, 0.60, 0.65 at steps 0 to 4 | estimate | Computed | Worked example | yes |
@@ -132,19 +132,13 @@ Both runs used the exact prompt in `references/reader-test.md` and the 10 predic
 
 ## Copy-lint exceptions
 
-`copy-lint.mjs` reports about 660 flags on this guide and exits 1, which makes `verify.mjs` report FAIL. Every flag was reviewed; none is a prose fault left in place.
-
-- About 640 "number may lack a unit" flags. Most are the script splitting decimals: in `92.2%` it flags `92` because the decimal part is optional and `\b` sits before the dot. The rest are dimensionless quantities that have no unit: coordinates such as (1.8, 0.2), weights such as 0.65, energies such as −7.03, and parameters such as λ = 0.3, β = 1, α = 0.3, T = 4, L = 2, G = 8, K = 64.
-- About 20 "sentence has N words" flags. Each one joins text across block boundaries: the skip link, header and h1 with the lede; figure titles, status chips and readout labels with captions; `<dt>` with `<dd>`; whole tables; the semicolon-separated ledger lines in the checked-against-source block. "Eq. 1" is also split as a sentence end. Every real prose sentence over 25 words was rewritten.
-- No question, banned phrase, title-case or label-above-heading flags remain.
-
-## Plan checks
-
-- [x] One idea per section.
-- [x] One example runs through the guide.
-- [x] Each term appears only after its figure.
-- [x] Nothing sits above a heading.
-- [x] The title is the subject's name.
-- [x] Every number has a source or is marked illustrative.
-- [x] Reference material is at the end.
-- [x] How-to steps are kept apart from explanation. (There are no how-to steps; the code block is the general form.)
+dimensionless: λ, β, α, x, y, w, T, L, G, K
+- `/unit:.*(?:share between|weights? are|camera weight|gate's mean value)/` — These normalized weights are dimensionless shares.
+- `/unit:.*(?:λ from|λ =|below zero)/` — λ is a declared dimensionless model parameter.
+- `/unit:.*(?:learned memories|stored patterns)/` — Memory-bank sizes are dimensionless counts; an adjective separates the count from its noun.
+- `/unit:.*(?:rounded to|decimals)/` — Decimal places are a dimensionless formatting count.
+- `/unit:.*(?:energy|falls from|memory part|graph part)/` — Energy values use the paper's dimensionless objective.
+- `/unit:.*(?:\bexceed|datasets, up to|convexity)/` — The convexity diagnostic β‖M‖² is dimensionless.
+- `/unit:.*\b10\.6k\b/` — The shared noun “edges” follows the paired 238k and 10.6k values.
+- `/unit:.*arXiv 2603\.03464/` — This is a document identifier, not a measured quantity.
+- `/unit:.*Full versions of Tables/` — These are document table identifiers listed as a series.
