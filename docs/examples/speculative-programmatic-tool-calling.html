@@ -2878,6 +2878,35 @@ print(tally, review)                                       # 6</code></pre></div
   const remap = (x, a, b, c, d) => c + (d - c) * clamp((x - a) / (b - a));
   /** Frame-rate independent approach to a target. lambda ≈ 4 soft … 14 snappy. */
   const damp = (cur, target, lambda, dt) => lerp(cur, target, 1 - Math.exp(-lambda * dt));
+  const POINTER_FOLLOW_TAU = 0.085;
+  const POINTER_FOLLOW_EPSILON = 0.3;
+  /**
+   * Advance a point toward a moving target with a frame-rate independent exponential approach.
+   * Returns true once both axes are within `epsilon` px and snaps to the exact target. The state
+   * retains both the drawn position and latest target so a new target redirects it mid-flight.
+   */
+  function follow(state, target, dt, options = {}) {
+    const tau = Math.max(1e-4, options.tau ?? POINTER_FOLLOW_TAU);
+    const epsilon = Math.max(0, options.epsilon ?? POINTER_FOLLOW_EPSILON);
+    state.target = { x: target.x, y: target.y };
+    if (!Number.isFinite(state.x) || !Number.isFinite(state.y)) {
+      state.x = target.x;
+      state.y = target.y;
+      return true;
+    }
+    if (options.snap ?? reducedQuery.matches) {
+      state.x = target.x;
+      state.y = target.y;
+      return true;
+    }
+    const lambda = 1 / tau;
+    state.x = damp(state.x, target.x, lambda, dt);
+    state.y = damp(state.y, target.y, lambda, dt);
+    if (Math.hypot(state.x - target.x, state.y - target.y) > epsilon) return false;
+    state.x = target.x;
+    state.y = target.y;
+    return true;
+  }
   /** Critically damped spring (smooth damp); keeps velocity across target changes. */
   function spring(s, target, smoothTime, dt) {
     const omega = 2 / Math.max(1e-4, smoothTime);
@@ -3060,14 +3089,15 @@ print(tally, review)                                       # 6</code></pre></div
     /** Where a click would go: a faint dashed line and the time, only while hovering a scrub surface. */
     hoverTime(f, c, y0, y1, toX, format) {
       if (f.hoverT == null || f.drag) return;
-      const x = toX(f.hoverT);
+      const t = f.hoverTSmooth ?? f.hoverT;
+      const x = toX(t);
       c.save();
       c.strokeStyle = f.C.muted;
       c.globalAlpha *= 0.55;
       c.setLineDash([2, 3]);
       k.line(c, x, y0, x, y1);
       c.restore();
-      k.label(f, c, format(f.hoverT), x, y0 - 2, { size: 11, align: "center", base: "bottom", color: f.C.muted, weight: 500 });
+      k.label(f, c, format(t), x, y0 - 2, { size: 11, align: "center", base: "bottom", color: f.C.muted, weight: 500 });
     },
   };
 
@@ -3523,6 +3553,41 @@ print(tally, review)                                       # 6</code></pre></div
     return f.w && w ? w / f.w : 1;
   };
 
+  /* Raw pointer coordinates stay exact in f.pointer. Positional hover drawings use f.hoverSmooth,
+     which follows the same target on the shared frame loop and lets that loop sleep after settling. */
+  function setPointer(f, x, y) {
+    f.pointer = { x, y };
+    if (!f.pointerFollow) f.pointerFollow = { x, y, target: { x, y } };
+    else f.pointerFollow.target = { x, y };
+    f.hoverSmooth = f.pointerFollow;
+    if (f.hoverT != null && f.pointerToT && f.hoverTSmooth == null) f.hoverTSmooth = f.pointerToT(x);
+    f.dirty = true;
+    wake();
+  }
+  function clearPointer(f) {
+    f.pointer = null;
+    f.pointerFollow = null;
+    f.hoverSmooth = null;
+    f.hoverTSmooth = null;
+    f.dirty = true;
+    wake();
+  }
+  function bindPointer(f) {
+    const onMove = (e) => {
+      if (e.pointerType === "touch") return;
+      const r = f.el.getBoundingClientRect();
+      const z = zoomOf(f);
+      setPointer(f, (e.clientX - r.left) / z, (e.clientY - r.top) / z);
+    };
+    const onLeave = () => clearPointer(f);
+    f.el.addEventListener("pointermove", onMove);
+    f.el.addEventListener("pointerleave", onLeave);
+    f.cleanup.push(() => {
+      f.el.removeEventListener("pointermove", onMove);
+      f.el.removeEventListener("pointerleave", onLeave);
+    });
+  }
+
   // ---------- head actions, stable outputs, timeline surface, tips, expand ----------
   /** Settings and expand share one right-aligned group in the plate head. */
   function headActions(f) {
@@ -3613,13 +3678,14 @@ print(tally, review)                                       # 6</code></pre></div
     if (!axis || !Number.isFinite(f.duration)) return;
     const el = f.el;
     f.stage.classList.add("fs-scrubbable");
-    const toT = (clientX) => {
+    const pointerToT = (x) => {
       const a = axis(f);
       const t0 = a.t0 ?? 0;
       const t1 = a.t1 ?? f.duration;
-      const x = (clientX - el.getBoundingClientRect().left) / zoomOf(f);
       return clamp(t0 + ((x - a.x0) / (a.x1 - a.x0)) * (t1 - t0), 0, f.duration);
     };
+    const toT = (clientX) => pointerToT((clientX - el.getBoundingClientRect().left) / zoomOf(f));
+    f.pointerToT = pointerToT;
     f.timeToX = (t) => {
       const a = axis(f);
       const t0 = a.t0 ?? 0;
@@ -3643,9 +3709,11 @@ print(tally, review)                                       # 6</code></pre></div
       const next = inside ? toT(e.clientX) : null;
       if (next === f.hoverT) return;
       f.hoverT = next;
+      if (next == null) f.hoverTSmooth = null;
+      else if (f.hoverTSmooth == null) f.hoverTSmooth = next;
       f.dirty = true; wake();
     };
-    const onLeave = () => { if (!press) { f.hoverT = null; f.dirty = true; wake(); } };
+    const onLeave = () => { if (!press) { f.hoverT = f.hoverTSmooth = null; f.dirty = true; wake(); } };
     const onDown = (e) => {
       if (e.button > 0 || !inArea(e)) return;
       if (e.pointerType === "mouse") e.preventDefault();
@@ -3684,7 +3752,7 @@ print(tally, review)                                       # 6</code></pre></div
           const v = a && b && b.at > a.at ? (b.t - a.t) / ((b.at - a.at) / 1000) : 0;
           if (Math.abs(v) > f.duration * 0.6) f.api.seek(b.t + v * 0.12, { animate: true, smooth: 0.3 });
         }
-        if (ev.pointerType === "touch") f.hoverT = null;
+        if (ev.pointerType === "touch") f.hoverT = f.hoverTSmooth = null;
         f.dirty = true; wake();
       });
     };
@@ -3699,12 +3767,15 @@ print(tally, review)                                       # 6</code></pre></div
   }
 
   /* Explanations: a title and one or two plain sentences. They open after a hover delay; once one is
-     open, neighbours open at once and the tip glides between them. Keyboard focus opens immediately,
-     a tap toggles on touch, Escape closes. Tips are supplements: essential facts stay on the figure. */
+     open, neighbours open at once and the tip keeps its current drawn position while its pointer target changes.
+     Keyboard focus opens immediately at the focused part, a tap toggles on touch, Escape closes. */
   const TIP_DELAY = 500;
   const TIP_WARM = 450;
   const TIP_GRACE = 100;
-  const tip = { el: null, timer: 0, closeTimer: 0, hiddenAt: -1e9, open: false, source: null };
+  const tip = {
+    el: null, timer: 0, closeTimer: 0, hiddenAt: -1e9, open: false,
+    source: null, pendingSource: null, target: null, radiusY: 6, follower: {},
+  };
   function tipElement() {
     if (tip.el) return tip.el;
     const el = document.createElement("div");
@@ -3718,21 +3789,52 @@ print(tally, review)                                       # 6</code></pre></div
     tip.el = el;
     return el;
   }
-  function placeTip(anchor, glide) {
+  function tipBounds() {
+    const plate = tip.source?.closest?.(".fs-plate") || tip.pendingSource?.closest?.(".fs-plate");
+    const r = plate?.getBoundingClientRect();
+    return r || { left: 0, top: 0, right: innerWidth, bottom: innerHeight };
+  }
+  function setTipTarget(anchor, source) {
+    const a = typeof anchor === "function" ? anchor() : anchor;
+    if (!a) return;
+    tip.target = "x" in a && "y" in a
+      ? { x: a.x, y: a.y }
+      : { x: a.left + a.width / 2, y: (a.top + a.bottom) / 2 };
+    tip.radiusY = "x" in a && "y" in a ? 6 : Math.max(0, (a.bottom - a.top) / 2);
+    tip.pendingSource = source;
+    if (!tip.open) return;
+    if (reducedQuery.matches) {
+      follow(tip.follower, tip.target, 0, { snap: true });
+      placeTip();
+    } else wake();
+  }
+  function placeTip() {
     const el = tip.el;
+    if (!el || !tip.target || !Number.isFinite(tip.follower.x)) return;
     const w = el.offsetWidth;
     const h = el.offsetHeight;
-    const below = anchor.top - h - 10 < 8;
-    const x = clamp(anchor.left + anchor.width / 2 - w / 2, 8, innerWidth - w - 8);
-    const y = below ? anchor.bottom + 10 : anchor.top - h - 10;
-    el.dataset.side = below ? "bottom" : "top";
-    el.classList.toggle("fs-tip-glide", glide);
-    el.style.translate = `${Math.round(x)}px ${Math.round(y)}px`;
+    const bounds = tipBounds();
+    const left = Math.max(8, bounds.left + 8);
+    const right = Math.min(innerWidth - 8, bounds.right - 8);
+    const top = Math.max(8, bounds.top + 8);
+    const bottom = Math.min(innerHeight - 8, bounds.bottom - 8);
+    const maxX = Math.max(left, right - w);
+    const above = tip.follower.y - tip.radiusY - h - 10;
+    const below = tip.follower.y + tip.radiusY + 10;
+    const useBelow = above < top;
+    const maxY = Math.max(top, bottom - h);
+    const x = clamp(tip.follower.x - w / 2, left, maxX);
+    const y = clamp(useBelow ? below : above, top, maxY);
+    el.dataset.side = useBelow ? "bottom" : "top";
+    // Position is advanced by the runtime follower; the old CSS translate tween would double-ease it.
+    el.classList.remove("fs-tip-glide");
+    el.style.translate = Math.round(x) + "px " + Math.round(y) + "px";
   }
-  function showTip(content, anchor, source) {
+  function showTip(content, source) {
     const el = tipElement();
     clearTimeout(tip.closeTimer);
     const wasOpen = tip.open;
+    const warm = performance.now() - tip.hiddenAt < TIP_WARM;
     el.querySelector("b").textContent = content.title || "";
     el.querySelector("b").hidden = !content.title;
     el.querySelector("span").textContent = content.body || "";
@@ -3740,19 +3842,27 @@ print(tally, review)                                       # 6</code></pre></div
       if (el.popover) { if (!el.matches(":popover-open")) el.showPopover(); }
       else el.hidden = false;
     }
-    placeTip(typeof anchor === "function" ? anchor() : anchor, wasOpen && !reducedQuery.matches);
+    if (!wasOpen && !warm || !Number.isFinite(tip.follower.x)) {
+      tip.follower = { x: tip.target.x, y: tip.target.y, target: { ...tip.target } };
+    }
+    const previousSource = tip.source;
+    tip.source = source;
+    tip.pendingSource = source;
+    follow(tip.follower, tip.target, 0, { snap: reducedQuery.matches });
+    placeTip();
     if (!wasOpen) {
-      void el.offsetWidth; // the closed style is computed first, so the open state transitions
+      void el.offsetWidth; // compute the closed style first so the open state transitions
       el.dataset.open = "";
     }
-    if (tip.source && tip.source !== source) tip.source.removeAttribute?.("aria-describedby");
-    tip.source = source;
+    if (previousSource && previousSource !== source) previousSource.removeAttribute?.("aria-describedby");
     source?.setAttribute?.("aria-describedby", "fs-tip");
     tip.open = true;
+    wake();
   }
   function hideTip() {
     clearTimeout(tip.timer);
     clearTimeout(tip.closeTimer);
+    tip.pendingSource = null;
     if (!tip.open) return;
     tip.open = false;
     tip.hiddenAt = performance.now();
@@ -3770,13 +3880,20 @@ print(tally, review)                                       # 6</code></pre></div
     if (!content || (!content.title && !content.body)) { releaseTip(); return; }
     clearTimeout(tip.timer);
     clearTimeout(tip.closeTimer);
+    setTipTarget(anchor, source);
     const warm = tip.open || performance.now() - tip.hiddenAt < TIP_WARM;
-    if (immediate || warm) showTip(content, anchor, source);
-    else tip.timer = setTimeout(() => showTip(content, anchor, source), TIP_DELAY);
+    if (immediate || warm) showTip(content, source);
+    else tip.timer = setTimeout(() => {
+      if (tip.pendingSource === source) showTip(content, source);
+    }, TIP_DELAY);
+  }
+  function moveTip(anchor, source) {
+    if (tip.source === source || tip.pendingSource === source) setTipTarget(anchor, source);
   }
   function releaseTip() {
     clearTimeout(tip.timer);
     clearTimeout(tip.closeTimer);
+    tip.pendingSource = null;
     tip.closeTimer = setTimeout(hideTip, TIP_GRACE);
   }
   addEventListener("keydown", (e) => { if (e.key === "Escape") hideTip(); });
@@ -3784,17 +3901,19 @@ print(tally, review)                                       # 6</code></pre></div
   function bindTipElement(node, content) {
     node.dataset.fsTipBound = "";
     const rect = () => node.getBoundingClientRect();
-    node.addEventListener("pointerenter", (e) => { if (e.pointerType !== "touch") requestTip(content(), rect, node); });
+    const point = (e) => ({ x: e.clientX, y: e.clientY });
+    node.addEventListener("pointerenter", (e) => { if (e.pointerType !== "touch") requestTip(content(), point(e), node); });
+    node.addEventListener("pointermove", (e) => { if (e.pointerType !== "touch") moveTip(point(e), node); });
     node.addEventListener("pointerleave", (e) => { if (e.pointerType !== "touch") releaseTip(); });
     node.addEventListener("focus", () => { if (node.matches(":focus-visible")) requestTip(content(), rect, node, true); });
     node.addEventListener("blur", hideTip);
     node.addEventListener("pointerup", (e) => {
       if (e.pointerType !== "touch") return;
       if (tip.open && tip.source === node) hideTip();
-      else requestTip(content(), rect, node, true);
+      else requestTip(content(), point(e), node, true);
     });
   }
-  /** Canvas or SVG parts: spec.tips = { key: { title, body } }, spec.tipAt(f, x, y) -> key | { key, x, y } | null. */
+  /** Canvas or SVG parts: spec.tips maps keys to copy; spec.tipAt(f, x, y) returns a key or keyed hit. */
   function bindFigureTips(f) {
     if (!f.spec.tips || !f.spec.tipAt) return;
     const el = f.el;
@@ -3805,13 +3924,12 @@ print(tally, review)                                       # 6</code></pre></div
       const z = zoomOf(f);
       const hit = f.spec.tipAt(f, (e.clientX - r.left) / z, (e.clientY - r.top) / z);
       const key = hit && typeof hit === "object" ? hit.key : hit;
-      if (key === current) return;
+      const anchor = { x: e.clientX, y: e.clientY };
+      if (key === current) { if (current) moveTip(anchor, el); return; }
       current = key ?? null;
       if (f.spec.tipHover !== false) setHover(f, current);
       if (!current) { releaseTip(); return; }
-      const ax = hit && typeof hit === "object" && hit.x != null ? r.left + hit.x : e.clientX;
-      const ay = hit && typeof hit === "object" && hit.y != null ? r.top + hit.y : e.clientY;
-      requestTip(f.spec.tips[current], { left: ax, top: ay - 6, width: 0, bottom: ay + 6 }, el);
+      requestTip(f.spec.tips[current], anchor, el);
     };
     const onLeave = () => { current = null; if (f.spec.tipHover !== false) setHover(f, null); releaseTip(); };
     el.addEventListener("pointermove", onMove);
@@ -4062,7 +4180,8 @@ print(tally, review)                                       # 6</code></pre></div
       ctx: isCanvas ? el.getContext("2d") : null,
       w: 0, h: 0, dpr: 1,
       t: 0, duration: spec.duration ?? Infinity, rate: 1,
-      tTarget: null, tState: { value: 0, velocity: 0 }, tSmooth: 0.22, hoverT: null, drag: null,
+      tTarget: null, tState: { value: 0, velocity: 0 }, tSmooth: 0.22,
+      pointer: null, pointerFollow: null, hoverSmooth: null, hoverT: null, hoverTSmooth: null, drag: null,
       playing: false, visible: false, dirty: true, started: false,
       step: 0, from: 0, stepT: 1,
       params: {}, v: {}, hover: null, state: {}, outputs: {},
@@ -4204,6 +4323,7 @@ print(tally, review)                                       # 6</code></pre></div
     resize();
     applyReduced(f);
     bindKeys(f);
+    bindPointer(f);
     bindHandles(f);
     bindScrub(f);
     bindFigureTips(f);
@@ -4414,10 +4534,26 @@ print(tally, review)                                       # 6</code></pre></div
     const dt = Math.min(0.1, (now - last) / 1000);
     last = now;
     let busy = false;
+    if (tip.open && tip.target) {
+      const x = tip.follower.x;
+      const y = tip.follower.y;
+      const settled = follow(tip.follower, tip.target, dt);
+      if (tip.follower.x !== x || tip.follower.y !== y) placeTip();
+      if (!settled) busy = true;
+    }
     for (const fn of animations) if (fn(dt)) animations.delete(fn);
     if (animations.size) busy = true;
     for (const f of figures.values()) {
       if (!f.w || !f.visible || document.hidden) continue;
+      if (f.pointerFollow?.target) {
+        const x = f.pointerFollow.x;
+        const y = f.pointerFollow.y;
+        const settled = follow(f.pointerFollow, f.pointerFollow.target, dt);
+        f.hoverSmooth = f.pointerFollow;
+        if (f.hoverT != null && f.pointerToT) f.hoverTSmooth = f.pointerToT(f.hoverSmooth.x);
+        if (f.pointerFollow.x !== x || f.pointerFollow.y !== y) f.dirty = true;
+        if (!settled) busy = true;
+      }
       if (f.playing) {
         const step = dt * f.rate;
         f.spec.update?.(f, step);
@@ -4517,6 +4653,7 @@ print(tally, review)                                       # 6</code></pre></div
     travel,
     window: window_,
     damp,
+    follow,
     spring,
     clamp,
     lerp,
@@ -4530,7 +4667,7 @@ print(tally, review)                                       # 6</code></pre></div
     slider: buildSlider,
     tabs: buildTabs,
     reserve,
-    tip: (content, anchor) => (content ? showTip(content, anchor, null) : hideTip()),
+    tip: (content, anchor) => (content ? requestTip(content, anchor, null, true) : hideTip()),
   };
 })(typeof window !== "undefined" ? window : globalThis);
 

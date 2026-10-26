@@ -78,6 +78,13 @@ export type FsFigureState = {
   params: Record<string, number>;
   v: Record<string, number>;
   hover: string | null;
+  /** Raw pointer position in figure pixels while hovering; null when the pointer leaves. */
+  pointer: { x: number; y: number } | null;
+  /** The pointer's damped follower (85 ms time constant): draw positional hover marks from it, not from `pointer`. */
+  hoverSmooth: { x: number; y: number; target: { x: number; y: number } } | null;
+  /** Hovered time on a timeline figure, raw and damped. */
+  hoverT: number | null;
+  hoverTSmooth: number | null;
   state: Record<string, unknown>;
   /** Time under the pointer while hovering a scrub surface (timeAxis), else null. */
   hoverT: number | null;
@@ -282,6 +289,15 @@ export type FsRuntime = {
   travel(t: number, phase?: number, duration?: number, dwell?: number): { u: number; alpha: number; dwelling: boolean; index: number };
   window(t: number, t0: number, t1: number, fn?: (t: number) => number): number;
   damp(current: number, target: number, lambda: number, dt: number): number;
+  /** Advance `state` toward `target` with an exponential approach (default tau 85 ms); returns true once settled
+   *  within `epsilon` px. Snaps under reduced motion or when `snap` is set. The state keeps `target` so a new
+   *  target redirects it mid-flight. */
+  follow(
+    state: { x: number; y: number; target?: { x: number; y: number } },
+    target: { x: number; y: number },
+    dt: number,
+    options?: { tau?: number; epsilon?: number; snap?: boolean },
+  ): boolean;
   spring(
     state: { value: number; velocity: number },
     target: number,
