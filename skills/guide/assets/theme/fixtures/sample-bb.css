@@ -1,0 +1,26 @@
+:root,
+.dark {
+  color-scheme: dark;
+  --canvas: #101217;
+  --ink: #f3f6fa;
+  --card: #202630;
+  --popover: #3a4556;
+  --primary: #9dc4ff;
+  --primary-foreground: #101217;
+  --muted-foreground: #c2cad5;
+  --subtle-foreground: #9ba7b8;
+  --link-foreground: #a9d2ff;
+  --heading-foreground: #ffffff;
+  --inline-code-foreground: #b3ddff;
+  --inline-code-surface: color-mix(in oklab, #b3ddff 10%, transparent);
+  --ring: #9dc4ff;
+  --success: #86d9a0;
+  --destructive: #ff9b9b;
+  --ansi-1: #ff9b9b;
+  --ansi-2: #86d9a0;
+  --ansi-3: #f0cf7d;
+  --ansi-4: #9dc4ff;
+  --ansi-5: #d6adff;
+  --ansi-6: #8ee5e3;
+  --ansi-7: #e7ebf0;
+}

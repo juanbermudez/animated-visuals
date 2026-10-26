@@ -1,0 +1,26 @@
+/* bb theme bridge. __COMMENT__ */
+[data-fs-theme="bb"] {
+  color-scheme: __MODE__;
+  --fs-bg: __BG__;
+  --fs-surface: __SURFACE__;
+  --fs-block: __BLOCK__;
+  --fs-node: __NODE__;
+  --fs-surface-2: __SURFACE_2__;
+  --fs-line: __LINE__;
+  --fs-line-strong: __LINE_STRONG__;
+  --fs-faint: __FAINT__;
+  --fs-muted: __MUTED__;
+  --fs-fg: __FG__;
+  --fs-strong: __STRONG__;
+  --fs-accent: __ACCENT__;
+  --fs-link: __LINK__;
+  --fs-link-underline: __LINK_UNDERLINE__;
+  --fs-c1: __C1__;
+  --fs-c2: __C2__;
+  --fs-c3: __C3__;
+  --fs-c4: __C4__;
+  --fs-c5: __C5__;
+  --fs-c6: __C6__;
+  --fs-good: __GOOD__;
+  --fs-bad: __BAD__;
+}
