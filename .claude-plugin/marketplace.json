@@ -1,0 +1,19 @@
+{
+  "name": "juanbermudez",
+  "owner": {
+    "name": "Juan Bermudez"
+  },
+  "description": "Juan Bermudez's agent skills: animated visuals and guides.",
+  "plugins": [
+    {
+      "name": "animated-visuals",
+      "source": "./",
+      "strict": false,
+      "version": "1.0.0",
+      "skills": [
+        "./skills/animated-visuals"
+      ],
+      "description": "Interactive, animated figures and diagrams for papers, articles and sites, with 27 swappable themes."
+    }
+  ]
+}

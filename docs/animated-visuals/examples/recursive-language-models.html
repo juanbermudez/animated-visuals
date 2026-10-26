@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Liquid time-constant networks · Animated Visuals</title>
-<meta name="description" content="A visual guide to Liquid Time-constant Networks (AAAI 2021), using one neuron and one touch sensor to explain the equation, bounds, fused solver, trajectory length, benchmark results and limits in six figures.">
+<title>Recursive language models · Animated Visuals</title>
+<meta name="description" content="A visual guide to Zhang, Kraska and Khattab's Recursive Language Models (arXiv:2512.24601v2). The guide shows how the prompt becomes a variable, how the model inspects it with code, and how it uses sub-model calls on selected pieces. Six figures use numbers from the paper.">
 <script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="../site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2704,10 +2704,6 @@ a.card:hover { border-color: var(--fs-line-strong); }
 .guide .verified li { margin-bottom: 4px; }
 .guide code { overflow-wrap: anywhere; }
 
-/* The paper's equations, set apart from the prose on the site's tokens. */
-.guide .eq { margin: 0 0 1.25rem; padding: 12px 16px; overflow-x: auto; color: var(--fs-fg); background: var(--fs-surface-2); border-radius: 6px; font: 500 0.9375rem/1.5 var(--fs-font-mono); white-space: nowrap; }
-.guide ul { padding-left: 1.25rem; }
-.guide li { margin-bottom: 6px; }
 
 </style>
 </head>
@@ -2718,134 +2714,135 @@ a.card:hover { border-color: var(--fs-line-strong); }
     <a class="brand" href="../index.html"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="10" width="12" height="12" rx="3" fill="currentColor" opacity="0.22"/><rect x="10" y="10" width="12" height="12" rx="3" fill="currentColor" opacity="0.5"/><rect x="18" y="10" width="12" height="12" rx="3" fill="currentColor"/></svg>Animated Visuals</a>
     <nav class="site-nav" aria-label="Main"><a href="../gallery.html">Gallery</a><a href="../examples.html">Examples</a><a href="../themes.html">Themes</a><a href="../customize.html">Customize</a><a href="../credits.html">Credits</a></nav>
     <div class="head-actions">
-      <a class="icon-btn" href="https://github.com/juanbermudez/animated-visuals" aria-label="Source on GitHub"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a>
+      <a class="icon-btn" href="https://github.com/juanbermudez/skills/tree/main/skills/animated-visuals" aria-label="Source on GitHub"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a>
       <button class="icon-btn theme-btn" type="button" aria-label="Change theme"></button>
     </div>
   </div>
 </header>
 
 <main class="page guide" id="main">
-  <h1>Liquid time-constant networks</h1>
-  <p class="source">A visual guide to Ramin Hasani, Mathias Lechner, Alexander Amini, Daniela Rus and Radu Grosu, “Liquid Time-constant Networks”, AAAI 2021 · <a href="https://arxiv.org/abs/2006.04439">the paper</a>. Built with Animated Visuals; every number from the paper says which equation, figure or table it comes from, and every simulated figure says so.</p>
-  <p class="lede">A liquid time-constant network (LTC) lets each neuron's time constant change with its current input. This guide uses one neuron connected to one touch sensor to explain the paper's equation, bounds, fused solver, trajectory length, benchmark results and limits.</p>
+  <h1>Recursive language models</h1>
+  <p class="source">A visual guide to Alex L. Zhang, Tim Kraska and Omar Khattab, “Recursive Language Models”, arXiv:2512.24601, version 2, January 2026 · <a href="https://arxiv.org/abs/2512.24601v2">the paper</a> · <a href="https://github.com/alexzhang13/rlm">the code</a>. Built with Animated Visuals. Every number is from the paper and says where it comes from.</p>
+  <p class="lede">Recursive language models (RLMs) let a model work with inputs longer than its context window by storing the prompt in a Python variable. The example asks who won a beauty pageant mentioned in one of 1,000 documents, about 8.3 million tokens or roughly 30 times what GPT-5 reads at once. The root model searches the variable and uses a sub-model call, a separate model request on selected text, to read the relevant document. This guide shows how the loop works, how it scales, its results on four tasks, and its limits.</p>
 
-  <h2>The example: one neuron and one sensor</h2>
-  <p>A touch sensor produces a value near 0 when untouched and 1 when pressed. The neuron converts that input into a smooth internal value called its <span data-fs-ref="fig-neuron:state">state</span>. Its <span data-fs-ref="fig-neuron:tau">time constant</span> is roughly the seconds needed for the state to cover two thirds of the distance to its new resting value.</p>
-  <p>In an LTC, the input determines the time constant. Drag the <span data-fs-ref="fig-neuron:input">input</span> knob at the right edge. A firm press lowers the time constant toward 0.20 s, so the state rises quickly. Releasing it raises the time constant toward 0.93 s, so the state returns more slowly.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-neuron-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-neuron-title">A stronger input shortens the time constant</h3><span class="fs-status">Eq. 1 · simulated</span></header>
-    <div class="fs-stage"><canvas id="fig-neuron" role="img" aria-label="Three lanes scrolling over the last eight seconds: the input, the neuron's time constant between 0.2 and 1 second, and its state between 0 and 1. When the input rises the time constant falls and the state rises quickly; when the input falls the time constant rises and the state decays slowly."></canvas></div>
+  <h2>The prompt as a variable</h2>
+  <p>A model's context window is the text it can read at once. GPT-5's window is 272K tokens (the paper's Fig. 1). The example's 1,000 documents total about 8.3M tokens (App. E.1). A base model cannot take the full input. Base GPT-5 therefore scores 0.0 on this task in Table 1, marked as running into its input limit. Even when an input fits, the paper reports context rot, where quality drops as the prompt grows (§1).</p>
+  <p>An RLM stores the input in a Python variable named <code>context</code> instead of putting it in the model's window. It tells the model what <code>context</code> contains and how long its pieces are (App. C.1). The <span data-fs-ref="fig-window:window">window</span> holds a short description while the complete <span data-fs-ref="fig-window:input">input</span> remains available in the variable. Switch between the two models below, or choose a smaller input to see one that fits.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-window-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-window-title">A base model must fit the full input</h3><span class="fs-status">Fig. 1 · lengths to scale</span></header>
+    <div class="fs-stage"><canvas id="fig-window" role="img" aria-label="On the left, the model's window, 272K tokens. On the right, the input drawn as tiles the size of that window: the worked example's 8.3M tokens make about 30 tiles. A base model has to fit every tile into the one window; an RLM keeps all of them in a variable in a Python session and puts only a short description in the window."></canvas></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-neuron:read"></span>
-      <div class="fs-controls"><div data-fs-param="fig-neuron:source"></div><button type="button" data-fs="fig-neuron play">Pause</button></div>
+      <span class="fs-position" data-fs-out="fig-window:readout"></span>
+      <div class="fs-controls"><div data-fs-param="fig-window:who" data-label="Who reads it"></div></div>
     </div>
-    <p class="fs-caption">This illustrative LTC neuron uses Eq. 1 with τ = 1 s, gate strength W = 4 and target A = 1, solved live with the paper's fused step (Eq. 3). Drag the knob on the input lane, or leave it on the press loop.</p>
+    <p class="fs-caption">Each tile is one 272K-token GPT-5 window (the paper's Fig. 1), and the input sizes come from Table 1 and App. E. The RLM window contents are illustrative, based on the instructions, question and input description in §2 and App. C.1; switch models or choose a smaller input.</p>
   </figure>
 
-  <h2>The one change from older continuous-time networks</h2>
-  <p>The paper starts from two older ideas. A <strong>neural ODE</strong> lets a small network <em>f</em> set how fast the state changes. A <strong>continuous-time RNN</strong> (CT-RNN) adds a leak, −x/τ, that pulls the state back to rest with one fixed time constant τ. The LTC changes where the input enters. It uses a synaptic current <em>f</em>·(A − x), which pulls the state toward a target A and grows with the input (Section 1, “Why this specific formulation?”). Expanding that current gives the paper's Eq. 1:</p>
-  <p class="eq">dx/dt = −[ 1/τ + f(x, I, t, θ) ] · x + f(x, I, t, θ) · A</p>
-  <p>The input now appears inside the bracket that multiplies x, beside the leak. That bracket sets how fast the state moves, so the effective time constant is τ<sub>sys</sub> = τ / (1 + τ·f). When <em>f</em> is large, τ<sub>sys</sub> is small. Use the steps to compare the same press across all three models.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-family-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-family-title">Only the LTC changes its response speed</h3><span class="fs-status">Eq. 1 · simulated</span></header>
-    <div class="fs-stage"><canvas id="fig-family" role="img" aria-label="Four lanes on one eight-second clock: a press from 1 to 3 seconds, then the response of a neural ODE, a CT-RNN and an LTC to it. The neural ODE keeps climbing and never returns; the CT-RNN rises and falls with the same 1 second time constant; the LTC rises in about 0.2 seconds and falls in about 0.93 seconds."></canvas></div>
+  <h2>How the loop runs</h2>
+  <p>The <span data-fs-ref="fig-loop:root">root model</span> controls the loop. On each turn, it writes code. The <span data-fs-ref="fig-loop:repl">Python session</span> runs that code and returns a short, cut-off printout to the root model's window (§2). The code can use Python and one extra function, <code>llm_query</code>. This function sends a string to another model and returns the response. Each use is a <span data-fs-ref="fig-loop:sub">sub-model call</span>. In the paper's GPT-5 runs, GPT-5 is the root model and GPT-5-mini handles the sub-model calls (§3.2). The results stay in <span data-fs-ref="fig-loop:vars">variables</span> outside the root model's window. The root model ends the loop with <code>FINAL(answer)</code>, or uses <code>FINAL_VAR(name)</code> to return a variable (App. C.1).</p>
+  <p>The next figure follows the real pageant-question run from Appendix E.1, one turn at a time.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-loop-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-loop-title">The root receives only short printouts</h3><span class="fs-status">App. E.1 · a real run</span></header>
+    <div class="fs-stage"><svg id="fig-loop" viewBox="0 0 960 250" role="img" aria-label="Flow: your question goes to the root model; the root writes code that the Python session runs; the session holds the documents in a variable and can send any piece to a sub-call on a smaller model; sub-call answers land in variables; only short printouts go back to the root; the root returns the final answer."></svg></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-family:step"></span>
-      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-family" aria-hidden="true"></span><button type="button" data-fs="fig-family prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-family next" aria-label="Next step">Next</button></div>
+      <span class="fs-position" data-fs-out="fig-loop:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-loop" aria-hidden="true"></span><button type="button" data-fs="fig-loop prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-loop next" aria-label="Next step">Next</button><button type="button" data-fs="fig-loop play" aria-label="Pause the flow">Pause</button></div>
     </div>
-    <p class="fs-step-text" data-fs-out="fig-family:caption" aria-live="polite"></p>
-    <p class="fs-caption">Each model gets the same gate f and τ = 1 s; the equations are the paper's (Section 1), the numbers are illustrative. Rise and fall times are measured on the simulated curves: the seconds to cover 63% of the gap to the new resting value.</p>
+    <p class="fs-step-text" data-fs-out="fig-loop:caption" aria-live="polite"></p>
+    <p class="fs-caption">The steps follow the paper's trajectory for BrowseComp-Plus query 74 (App. E.1); the cost, token count and run times come from its panels, and the animation timing is illustrative. Use Prev and Next to change steps, or hover a box for its role.</p>
   </figure>
 
-  <h2>Bounds on the state and the time constant</h2>
-  <p>Section 4 gives two bounds. They require the gate <em>f</em> to be a sigmoid between 0 and 1, scaled by a weight W.</p>
-  <p><strong>Theorem 1</strong> (Eq. 4): the time constant stays between τ/(1 + τW) and τ. Our neuron has τ = 1 s and W = 4, so it remains between 0.20 s and 1 s. <strong>Theorem 2</strong> (Eq. 5): the state stays between min(0, A) and max(0, A). In Eq. 1, the leak pulls toward 0 and the gate pulls toward A, so the state remains in that range.</p>
-  <p>Use the rough, illustrative signal and raise its strength to <span data-fs-scrub="fig-bounds:strength"><span data-fs-out="fig-bounds:strengthText">×10</span></span>. The <span data-fs-ref="fig-bounds:tau">time constant</span> approaches its lower bound, and the <span data-fs-ref="fig-bounds:state">state</span> remains inside its bounds. Drag the <span data-fs-ref="fig-bounds:target">target A</span> below zero to move the state bounds with it.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-bounds-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-bounds-title">The time constant and state stay within bounds</h3><span class="fs-status">Eqs. 4–5 · simulated</span></header>
-    <div class="fs-stage"><canvas id="fig-bounds" role="img" aria-label="Three lanes over ten seconds of a rough seeded input: the input, the time constant inside an envelope from tau over one plus tau W up to tau, and the state inside an envelope from min of zero and A to max of zero and A. Whatever the input strength, both curves stay inside."></canvas></div>
-    <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-bounds:read"></span>
-      <div class="fs-controls"><div data-fs-param="fig-bounds:strength"></div></div>
-    </div>
-    <p class="fs-caption">The envelopes are the paper's expressions (Theorems 1 and 2); the input is a seeded random signal and the neuron is the same illustrative one. Drag the target line in the bottom lane; the gate strength W is in settings.</p>
-  </figure>
-  <p>A CT-RNN with the same gate is also bounded by τ·W·A, so its upper bound grows with the weights. The LTC's upper bound is A for any W. The paper also proves that LTCs can approximate any smooth dynamical system over a finite stretch of time (Theorem 3, Section 5), the same kind of guarantee CT-RNNs have.</p>
+  <h2>What separates it from an agent with tools</h2>
+  <p>Coding agents and retrieval agents also run code and call models. The paper compares its RLM loop in Algorithm 1 with a similar agent loop in Algorithm 2 and identifies three differences (§2).</p>
+  <div class="tablewrap"><table class="plain">
+    <thead><tr><th>Design choice</th><th>An RLM</th><th>An agent with tools</th></tr></thead>
+    <tbody>
+      <tr><td>Prompt location</td><td>A variable; the model receives a handle and a length</td><td>The model's window; it reaches the window limit and falls back to summarizing</td></tr>
+      <tr><td>Answer location</td><td>A variable, so the answer can exceed one call's output</td><td>The model's output, limited to what one call can write</td></tr>
+      <tr><td>Sub-model calls</td><td>Code makes them inside loops on selected pieces, including one per line when needed</td><td>The model requests a few calls at a time as actions</td></tr>
+    </tbody>
+  </table></div>
 
-  <h2>The fused solver step</h2>
-  <p>Eq. 1 has no closed-form answer in general, so a computer advances it in small time steps of Δt. The paper describes LTCs as <em>stiff</em>: a strong gate can make the state change quickly. A step based on the current slope, called explicit Euler, can overshoot the target. Runge-Kutta solvers handle this by taking many small steps, which is slow (Section 2).</p>
-  <p>The paper's fused solver uses the state at the <em>end</em> of the step for the x that multiplies the bracket in Eq. 1. It keeps the start-of-step state inside <em>f</em> (Eq. 2). The result is the paper's Eq. 3:</p>
-  <p class="eq">x(t + Δt) = [ x(t) + Δt · f · A ] / [ 1 + Δt · (1/τ + f) ]</p>
-  <p>The result is a weighted average of the current state, the target A and rest at 0. An average of numbers between 0 and A stays between 0 and A, so the step cannot overshoot for any Δt. Drag the <span data-fs-ref="fig-solver:dt">step size</span> on the time axis to compare the methods.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-solver-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-solver-title">The fused step does not overshoot</h3><span class="fs-status">Eqs. 2–3 · simulated</span></header>
-    <div class="fs-stage"><canvas id="fig-solver" role="img" aria-label="The state of the neuron after a press, over two seconds: the exact curve, explicit Euler steps that overshoot the ceiling A equals 1 when the step is large, and fused steps that approach the resting value from below. A bar under the chart splits one fused step into its three weights."></canvas></div>
+  <h2>How the model splits the input</h2>
+  <p>The instructions show the root model several example strategies but do not prescribe how to split the work (App. C.1). Appendix E shows four different runs. For the pageant question, the root searches first and reads one document. On a code repository, it splits the input into large chunks and asks about each one. On two counting tasks, Qwen3-Coder labels questions in <span data-fs-ref="fig-split:calls">batches</span> in one run and one at a time in the other. The split determines the number of sub-model calls. All four runs use one level of recursion. Their sub-model calls are regular model calls and cannot start another RLM (§6).</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-split-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-split-title">The root decides how to split the input</h3><span class="fs-chip" data-fs-out="fig-split:chip" aria-live="polite"></span></header>
+    <div class="fs-tabbar"><div data-fs-param="fig-split:run" data-label="Runs from Appendix E"></div></div>
+    <div class="fs-stage"><canvas id="fig-split" role="img" aria-label="Four real runs from the paper's appendix. For each: the input as a long bar, how the code cut it, the sub-calls as dots under their pieces, how the pieces were put back together, and whether the answer was right, with the run's cost."></canvas></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-solver:step"></span>
-      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-solver" aria-hidden="true"></span><button type="button" data-fs="fig-solver prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-solver next" aria-label="Next step">Next</button></div>
+      <span class="fs-position" data-fs-out="fig-split:readout"></span>
+      <div class="fs-controls"><button type="button" data-fs="fig-split play" aria-label="Replay">Play</button></div>
     </div>
-    <p class="fs-step-text" data-fs-out="fig-solver:caption" aria-live="polite"></p>
-    <p class="fs-caption">Same illustrative neuron, input held pressed from t = 0. The exact curve is the closed-form answer for a constant gate; the two step rules are Euler and the paper's Eq. 3. Drag the step marker on the time axis; W is in settings.</p>
+    <p class="fs-caption">Each tab shows one trajectory from Appendix E, with its counts, sizes and costs. The pieces are spaced evenly except for document 6 in the pageant run, which uses its real position; choose a tab to replay it.</p>
   </figure>
-  <p>In the paper's experiments each input sample is split into 6 of these fused steps (Algorithm 1 unfolds L steps; Section S5 sets the step to 1/6 of the input sampling period). Training runs plain backpropagation through all of those steps instead of the adjoint method neural ODEs often use: memory grows with the sequence, O(L × T) instead of O(1), but the gradients are accurate (Table 1, Section 3).</p>
 
-  <h2>Trajectory length</h2>
-  <p>The paper uses <strong>trajectory length</strong> (Raghu et al. 2017) to measure how much each network transforms the same input. The input is a circle traced once (I₁ = sin t, I₂ = cos t, for t from 0 to 2π). The hidden state is reduced to 2D with PCA, then the length of its path is measured. The input circle has length 2π ≈ 6.28. The paper treats a longer resulting path as a more expressive transformation (Section 5.1, Fig. 1).</p>
-  <p>The paper applies this measure to randomly initialised neural ODEs, CT-RNNs and LTCs solved with RK45. Use the tabs to compare the values printed in Fig. 2.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-length-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-length-title">LTC leads trajectory length in 14 of 15 settings</h3><span class="fs-status">Fig. 2 · paper values</span></header>
-    <div class="fs-tabbar"><div data-fs-param="fig-length:panel" data-label="Panels of Fig. 2"></div></div>
-    <div class="fs-stage"><canvas id="fig-length" role="img" aria-label="Trajectory length on a log scale for a neural ODE, a CT-RNN and an LTC, for the settings of one panel of the paper's Figure 2. In most settings the LTC's path is several times to a thousand times longer; in panel A at layer 3 the neural ODE's is longer."></canvas></div>
+  <h2>Scaling with input length</h2>
+  <p>The paper's Fig. 1 compares input length with how much of the input the answer depends on (§3). S-NIAH hides one phrase in filler, so the work stays constant as the input grows. OOLONG asks for a count that depends on nearly every line, so the work grows with the input. OOLONG-Pairs asks for pairs of entries, so the work grows with the square of the input (§3.1). GPT-5 finds the phrase at every length it can take. Its score falls to almost nothing on OOLONG-Pairs by 33K tokens. The RLM declines more slowly and continues past <span data-fs-ref="fig-scale:window">GPT-5's window</span> to 1M tokens. Drag the <span data-fs-ref="fig-scale:cursor">cursor</span> to inspect any length.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-scale-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-scale-title">RLM scores decline more slowly with input length</h3><span class="fs-status">Fig. 1 · the paper's data</span></header>
+    <div class="fs-tabbar"><div data-fs-param="fig-scale:task" data-label="Tasks"></div></div>
+    <div class="fs-stage"><canvas id="fig-scale" role="img" aria-label="Score against input length from 8K to 1M tokens on a log scale, for GPT-5 and for an RLM built on GPT-5. GPT-5's points stop at its 272K window. On the needle task both stay at 100; on OOLONG and OOLONG-Pairs GPT-5 falls much faster."></canvas></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-length:read"></span>
+      <span class="fs-position" data-fs-out="fig-scale:readout"></span>
     </div>
-    <p class="fs-caption">Every value is printed in the paper's Fig. 2 above its panel (one network per setting). The dashed line is the input circle's length, 2π, for scale. Hover a dot for its exact value.</p>
+    <p class="fs-caption">The values were extracted from the paper's vector Fig. 1 for GPT-5 and RLM(GPT-5), using one level of sub-model calls; they match Table 1 where the two overlap. Drag the cursor, or focus it and use the arrow keys.</p>
   </figure>
-  <p>Theorems 4 and 5 (Eqs. 7–9) put lower bounds on how this length grows: for all three models it grows exponentially with depth times the number of solver steps, and the LTC's bound carries an extra factor that grows with the size of its hidden state. The paper's reading of its Figs. 2 and 3: the length grows linearly with width, the LTC's grows faster than linearly with the spread of the weights, and in multi-layer tanh and sigmoid networks none of the three grows with depth.</p>
 
-  <h2>Benchmark results</h2>
-  <p>Trajectory length measures expressivity. Section 6 tests task performance by training each model with 32 hidden units on real sequences for five runs and reporting mean ± standard deviation (Tables 3, 4 and 6; setup in Section S5). Choose a comparison model. Every row places the better result farther to the right.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-bench-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-bench-title">LTC leads in four of seven Table 3 tasks</h3><span class="fs-status">Tables 3, 4, 6 · paper values</span></header>
-    <div class="fs-tabbar"><div data-fs-param="fig-bench:versus" data-label="Compare the LTC with"></div></div>
-    <div class="fs-stage"><canvas id="fig-bench" role="img" aria-label="Nine rows, one per task, each with its own scale where better is to the right: dots with error bars for LSTM, CT-RNN, neural ODE, CT-GRU and LTC, and a bracket between the LTC and the chosen comparison with the computed difference."></canvas></div>
+  <h2>Results on four tasks</h2>
+  <p>Table 1 compares the RLM with a <span data-fs-ref="fig-results:base">base model</span>; CodeAct, an agent that runs code but keeps the prompt in its window, with either the BM25 search tool or sub-model calls; a <span data-fs-ref="fig-results:summary">summary agent</span> that summarizes when its window fills; and an RLM with a Python session but <span data-fs-ref="fig-results:nosub">no sub-model calls</span> (§3.2).</p>
+  <p>With GPT-5, the RLM scores highest on all four tasks. On BrowseComp+, the pageant question's task, it scores 91.3 against 70.5 for the summary agent at $0.99 a query. The paper's linear estimate for GPT-5-mini reading all 6 to 11M tokens is $1.50 to $2.75 (Obs. 1). On OOLONG, which fits in the window, the RLM improves on the base model by 28.4% (56.5 against 44.0). On OOLONG-Pairs, it scores 58.0 while the base model scores 0.1. Sub-model calls improve the dense tasks: 56.5 against 36.0 without them on OOLONG, and 58.0 against 43.9 on OOLONG-Pairs. With Qwen3-Coder, the version without sub-model calls scores highest on CodeQA (66.0 against 56.0) and BrowseComp+ (46.0 against 44.7) (Obs. 2). Switch the model to compare both.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-results-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-results-title">An RLM variant leads every task for both models</h3><span class="fs-status">Table 1</span></header>
+    <div class="fs-stage"><canvas id="fig-results" role="img" aria-label="Scores of six methods on four tasks, as bars, for GPT-5 or Qwen3-Coder-480B. A dashed line marks the base model in each task. With GPT-5 the RLM has the longest bar on all four tasks; with Qwen3-Coder the RLM or the RLM without sub-calls has it. Each bar carries its average cost per query."></canvas></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-bench:read"></span>
+      <span class="fs-position" data-fs-out="fig-results:readout"></span>
+      <div class="fs-controls"><div data-fs-param="fig-results:model" data-label="Model"></div></div>
     </div>
-    <p class="fs-caption">Means and standard deviations over 5 runs, copied from Tables 3, 4 and 6; each row has its own scale. The bracket and its difference are computed here. Hover a dot for the method and value.</p>
+    <p class="fs-caption">The bars show scores and average API cost per query from Table 1; higher is better, using F1 on OOLONG-Pairs and percent correct elsewhere. Hatched bars mark input-limit cases from Table 1's asterisk; hover a bar to see its cost spread.</p>
   </figure>
-  <p>The paper reports improvements of 5% to 70% in four of seven Table 3 tasks, but this range could not be matched to one baseline. Against the best other model on each task, the gains are 1.8% on gesture, 0.1% on occupancy, 41% less error on traffic and 6.3% on ozone. The gains are larger against weaker baselines. On gesture, the LTC beats the neural ODE by 48%. On a second version of the person activity task (Table 5), set up to match Rubanova et al. 2019, the LTC scores 0.882 ± 0.005 against 0.846 ± 0.013 for the best latent ODE.</p>
+  <p>Average cost does not show the most expensive runs. With GPT-5, the median RLM run costs less than the median base-model call. Some runs take many turns and cost much more (the paper's Fig. 3, Obs. 4). Compared with the summary agent, which reads the whole input, the paper reports RLMs up to 3× cheaper (Obs. 4).</p>
+
+  <h2>Fine-tuning a small model</h2>
+  <p>Qwen3-8B, a small open model, performs poorly as an RLM without fine-tuning. The authors fine-tuned it on 1,000 filtered RLM runs that Qwen3-Coder-480B produced on LongBenchPro, using tasks unrelated to the four benchmarks (§3.2, App. A). Training used 300 steps at a batch size of 64 and took 48 H100 hours (App. A). Each sub-model call is an ordinary model call, so only the root model had to learn how to manage the session (§3.2). Use Next to step through the comparison.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-train-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-train-title">Fine-tuning improves the small model on all tasks</h3><span class="fs-status">Table 1</span></header>
+    <div class="fs-stage"><canvas id="fig-train" role="img" aria-label="Four tasks, each with Qwen3-8B's score on its own, run as an RLM, and after fine-tuning, plus base GPT-5 for comparison. Fine-tuning raises all four; the fine-tuned small RLM is above base GPT-5 on three tasks and below it on OOLONG."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-train:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-train" aria-hidden="true"></span><button type="button" data-fs="fig-train prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-train next" aria-label="Next step">Next</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-train:caption" aria-live="polite"></p>
+    <p class="fs-caption">The scores come from the Qwen3-8B and GPT-5 rows in Table 1, and the gains under the chart are computed from them. Hover a mark to see its value and cost.</p>
+  </figure>
+  <p>The paper reports a 28.3% improvement, described as “on average” in the abstract and “a median” in the introduction. From the rounded Table 1 scores, the four relative gains are <span data-fs-out="fig-train:gains"></span> and their median is <span data-fs-out="fig-train:median"></span>. Allowing for rounding, 28.3% is the median rather than the mean. The fine-tuned model also costs less, at 1 to 4 cents a query instead of 3 to 19 (Table 1). It exceeds base GPT-5 on three tasks, including two that GPT-5 could not fully take in. On OOLONG, it scores 32.0 against 44.0.</p>
 
   <h2>Limits</h2>
-  <p>Table 2 calls the average number of solver steps per input sample <em>computational depth</em>. The LTC uses more steps than the other models:</p>
-  <div class="stats">
-    <div class="stat"><b>81.01</b><span>solver steps per input for the LTC with Hard-tanh, against 0.61 for the neural ODE: 133× more</span><small>Table 2 · ± 10.05 and ± 0.02</small></div>
-    <div class="stat"><b>56.9</b><span>for the LTC with ReLU, against 1.29 for the neural ODE and 4.31 for the CT-RNN</span><small>Table 2 · ReLU row</small></div>
-    <div class="stat"><b>7.00</b><span>for the LTC with sigmoid, against 0.56 for the neural ODE: the smallest gap, still 12.5×</span><small>Table 2 · sigmoid row · ± 5.36</small></div>
-  </div>
-  <p>Section 8 says neural ODEs are “remarkably fast” next to LTCs, and that the LTC's expressivity comes “at the expense of elevated time and memory complexity”. It gives two more limits:</p>
+  <p>The paper reports four limits (App. B, App. E).</p>
   <ul>
-    <li><strong>Long-term dependencies.</strong> Like other continuous-time RNNs trained by gradient descent, LTCs suffer from vanishing gradients, so in their current form they're “not the obvious choice” for learning long-range dependencies.</li>
-    <li><strong>The solver matters.</strong> They do well with variable-step solvers and the fused solver, but performance is “majorly influenced” when off-the-shelf explicit Euler is used: the overshoot in the solver figure.</li>
+    <li><strong>Latency.</strong> Every sub-model call waits for the previous one, so the slowest runs take much longer than any baseline (§4, the paper's Figs. 7 and 8). Parallel sub-model calls are left to future work.</li>
+    <li><strong>Model behavior varies.</strong> On one OOLONG question, Qwen3-Coder made one sub-model call per line, producing hundreds to thousands for one task. GPT-5 makes “on the order of ten” (App. E). The authors added one line to Qwen3-Coder's instructions to discourage this behavior (App. C.1).</li>
+    <li><strong>Final-answer handling.</strong> In one OOLONG-Pairs run, the model built the correct list in a variable and kept checking it. It then returned a different answer that it wrote itself, and that answer was wrong (App. E.2).</li>
+    <li><strong>Short inputs.</strong> The base model is sometimes slightly better on short inputs (Obs. 3). Small models without strong coding skills also struggle to use the session (App. B).</li>
   </ul>
-  <p>And in Table 3 itself, three of seven tasks favour another model: activity recognition (neural ODE, 97.26% against 95.67%), sequential MNIST (LSTM, 98.41% against 97.57%) and power (CT-GRU, 0.586 against 0.642 squared error).</p>
 
   <details class="verified">
     <summary>Checked against the source</summary>
     <ul>
-      <li><strong>Equations.</strong> Eq. 1 (state equation), τ<sub>sys</sub> = τ/(1 + τf) (Section 1), Eqs. 2–3 (fused step), Algorithm 1, Eq. 4 (Theorem 1), Eq. 5 (Theorem 2), trajectory length l(I) = ∫‖dI/dt‖dt with the circular input (Section 5.1), Eqs. 7–9 (Theorems 4–5), as written in the paper. The CT-RNN and neural ODE equations are the ones in Section 1.</li>
-      <li><strong>Fig. 2 (trajectory length).</strong> All 45 values in the trajectory-length figure are read from the labels printed above the panels of the paper's Fig. 2 (A: layers 1–3, Hard-tanh, depth 3; B: σ<sub>w</sub>² = 1, 2, 4, Hard-tanh, depth 1; C: width 100 and 200, ReLU, depth 1; D: layers 1–5, depth 5; E: width 100 and 200, Hard-tanh, depth 1; all RK45, width 100, σ<sub>w</sub>² = 2 and σ<sub>b</sub>² = 1 unless varied). Panel D's label says “tanh” while the caption says “logistic-sigmoid”; the guide follows the panel and says so.</li>
-      <li><strong>Tables 3, 4, 6 (benchmarks).</strong> Means and standard deviations as printed. Table 4 has a latent ODE where Table 3 has a neural ODE; the guide shows it in the same column and says so. Table 5 (0.882 ± 0.005 against 0.846 ± 0.013) and Table 2 (computational depth) are quoted in the prose. Ratios (133×, 12.5×), percentage gains (1.8%, 0.1%, 41%, 6.3%, 48%) and the brackets are computed here from those tables.</li>
-      <li><strong>Setup numbers.</strong> 32 hidden units, 5 runs, ODE step 1/6 of the input sampling period (Section S5, Table S1); O(L × T) against O(1) memory (Table 1).</li>
-      <li><strong>Simulated.</strong> The neuron in the first four figures is illustrative: τ = 1 s, W = 4, A = 1, and a gate f = W·sigmoid(8·(I − 0.5)) that depends only on the input. Its numbers (time constant 0.20 s to 0.93 s, resting state 0.07, pressed state 0.80, the Euler and fused values) are computed from Eq. 1 and Eq. 3 with those values, not reported by the paper. The rough input in the bounds figure is a seeded random signal.</li>
-      <li><strong>Left out on purpose.</strong> The proofs (Supplement S1–S4), Theorem 3's construction, Fig. 3's box plots (no numbers are printed for them), the Half-Cheetah setup beyond Table 6, the parameter counts of Table S2, and the wiring of multi-neuron LTC networks: the guide keeps to one neuron so every number can be checked by hand.</li>
-      <li><strong>Not verified.</strong> The paper's “5% to 70%” range could not be matched to a single baseline (see the benchmarks section). No experiment from the paper was re-run.</li>
+      <li>This guide uses arXiv:2512.24601 <strong>version 2</strong> (28 January 2026), including the appendices. Version 3 (11 May 2026) extends Table 1 with recursion depths 0 to 3 and coding-agent baselines, and it changes some numbers. This guide does not use version 3's numbers.</li>
+      <li>GPT-5's 272K-token window comes from the paper's Fig. 1 caption. App. E.1 provides the 1,000 documents, about 8.3M tokens, $0.079, nine search keywords, document index 6, the sub-model call's 1,605 tokens and $0.001682 on GPT-5-mini, run times of 0.158 s, 9.089 s and 6.279 s, and the answer Maria Dalmacio. “About 30 windows” is 8.3M ÷ 272K = 30.5.</li>
+      <li>Table 1 provides the task lengths (CodeQA 23K to 4.2M, BrowseComp+ 6M to 11M, OOLONG 131K, OOLONG-Pairs 32K), every score, and every cost with its spread in Figs. 5 and 6. The percentages 28.4% for OOLONG over the base model, 91.3 against 70.5, and 17.9% and 3% for the no-sub-model-call ablation with Qwen3-Coder were recomputed from Table 1 and match Obs. 1 and 2.</li>
+      <li>Fig. 4's scores were extracted from the paper's vector Fig. 1. Each plotted point's coordinates were read from the PDF and mapped to its gridlines from 0 to 100. They match Table 1 at 131K (GPT-5 44.0, RLM 56.5) and at 32K for the RLM (58.0). At 33K, Fig. 1 shows GPT-5 at 3.7 on OOLONG-Pairs, while Table 1 has 0.1 at 32K; these appear to be separate runs.</li>
+      <li>The paper's Fig. 1 caption in version 2 says the lengths run from 2¹³ to 2¹⁸, while its RLM points extend to 1M (2²⁰). Version 3's caption says 2²⁰. The guide plots the points that are drawn.</li>
+      <li>Fig. 3 uses App. E.1 (BrowseComp+ query 74); E.4 (CodeQA query 44, about 900K tokens, chunks of 380,000 characters, 11 sub-model calls, $0.27); E.2 (OOLONG-Pairs query 3, 76,083 characters, 794 lines including 787 questions, 8 batches of 100, 131 users, 8,515 pairs, $1.12, wrong answer); and E.3 (OOLONG query 212, 3,182 questions, 382 sub-model calls in the step shown, $0.38). The CodeQA run's 10 chunks are inferred from 11 calls minus the one that combines them.</li>
+      <li>Fine-tuning uses 1,000 trajectories (§3.2), 300 steps, batch 64, and 48 H100 hours (App. A). The page computes the relative gains and their median from Table 1. Appendix A also gives other counts at different filtering stages, 2,250, 1,072, and 2,241 and 953 in its Fig. 5, that do not clearly reconcile with 1,000. The guide uses the number from §3.2.</li>
+      <li>The RLM window contents in Fig. 1, animation timing in Fig. 2, and even piece spacing in Fig. 3 are simulated or illustrative. Everything else is data from the paper.</li>
+      <li>The guide leaves out the cost-against-length plot in Fig. 11 and the cost and runtime percentile charts in Figs. 3, 7 to 10 because they are raster images without printed values, so no number is read from them. It also leaves out the BrowseComp+ document-count experiment in the paper's Fig. 6 and App. D.2, and the code in the trajectory screenshots.</li>
     </ul>
   </details>
 </main>
 
 <footer class="site-foot">
-  <div class="site-foot-inner"><span>Animated Visuals · MIT License · Juan Bermudez</span><nav aria-label="Footer"><a href="https://github.com/juanbermudez/animated-visuals">GitHub</a><a href="../credits.html">Credits</a></nav></div>
+  <div class="site-foot-inner"><span>Animated Visuals · MIT License · Juan Bermudez</span><nav aria-label="Footer"><a href="https://github.com/juanbermudez/skills/tree/main/skills/animated-visuals">GitHub</a><a href="../credits.html">Credits</a></nav></div>
 </footer>
 <script>
 /* Animated Visuals runtime. Global `FS` (from the project's first name, Figure Studio). No dependencies.
@@ -5341,641 +5338,524 @@ function flowFigure(id, { meta, layouts, edges, returns = [], steps, params, H =
 
 /* ================= Fig 1: one turn on one clock (canvas, real) ================= */
 
-/* Liquid time-constant networks: six figures. One illustrative neuron runs through the first four:
-   tau = 1 s, a gate of strength W = 4 and a target A = 1, with a sigmoid gate f(I) = W * sigmoid(8 (I - 0.5))
-   that depends only on the input. Eq. 1 of the paper: dx/dt = -(1/tau + f) x + f A, so the time constant the
-   system has is tau / (1 + tau f). Eq. 3, the fused step: x' = (x + dt f A) / (1 + dt (1/tau + f)).
-   Figs. 5 and 6 draw the paper's own numbers (Fig. 2; Tables 3, 4, 6). */
-const LTC = { tau: 1, W: 4, A: 1, k: 8, mid: 0.5, substeps: 6 };
-const sigmoid = (z) => 1 / (1 + Math.exp(-z));
-const gate = (I, W = LTC.W) => W * sigmoid(LTC.k * (I - LTC.mid));
-const tauSys = (F, tau = LTC.tau) => tau / (1 + tau * F);
-const fusedStep = (x, F, dt, A = LTC.A, tau = LTC.tau) => (x + dt * F * A) / (1 + dt * (1 / tau + F));
-const restingState = (F, A = LTC.A, tau = LTC.tau) => (tau * F * A) / (1 + tau * F);
-const narrowOf = (f) => f.w < 560;
-const inRect = (h, x, y) => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h;
+/* Recursive Language Models: six figures. Every number below is from arXiv:2512.24601v2 and says where.
+   Claims, one per figure:
+   1 fig-window   A base model must fit the input in its window; an RLM keeps the input in a variable.
+   2 fig-loop     The root writes code, the session runs it, sub-calls read pieces, only short printouts come back.
+   3 fig-split    The root chooses how to cut the input, and the cut sets how many sub-calls it makes.
+   4 fig-scale    As the task needs more of the input, GPT-5 falls off sooner; the RLM slides slowly, past the window.
+   5 fig-results  An RLM variant has the best score on all four tasks, with either model, at a mid-pack cost.
+   6 fig-train    Fine-tuning a small model on 1,000 RLM runs lifts it on every task. */
 
-/* Lanes stacked down the stage: [{ y0, y1 }] with a label column on the left. */
-function laneBoxes(top, heights, gap) {
-  let y = top;
-  return heights.map((h) => { const box = { y0: y, y1: y + h }; y += h + gap; return box; });
-}
-function polyline(c, pts) {
-  c.beginPath();
-  pts.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y)));
-  c.stroke();
-}
-function dashed(c, x0, y0, x1, y1, dash = [3, 3]) {
-  c.save(); c.setLineDash(dash); FS.k.line(c, x0, y0, x1, y1); c.restore();
-}
-function laneLabel(f, c, lane, text, sub, hot) {
-  const mid = (lane.y0 + lane.y1) / 2;
-  FS.k.text(f, c, text, 0, mid + (sub ? -2 : 4), { color: hot ? f.C.accent : f.C.fg, size: narrowOf(f) ? 11.5 : 12, weight: 600 });
-  if (sub) FS.k.text(f, c, sub, 0, mid + 12, { size: 10.5 });
-}
-function knob(f, c, x, y, key) {
-  const C = f.C, held = f.drag === key, hot = held || f.handleHover === key || f.hover === key, r = held ? 7 : hot ? 6 : 5;
-  c.fillStyle = C.surface; c.beginPath(); c.arc(x, y, r + 3, 0, 7); c.fill();
-  c.fillStyle = C.accent; c.beginPath(); c.arc(x, y, r, 0, 7); c.fill();
-  return hot;
-}
+const hitAt = (f, x, y, pad = 0) => f.state.hits?.find((h) => x >= h.x - pad && x <= h.x + h.w + pad && y >= h.y - pad && y <= h.y + h.h + pad)?.key ?? null;
+const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n / 1e3)}K`);
 
-/* ================= Fig 1: one neuron, the input sets its speed (live process) ================= */
+/* ================= Fig 1: the window against the input (canvas, to scale) ================= */
 (() => {
-  const WINDOW = 8, PERIOD = 6, PRESS = [1.5, 3.5];
-  const loopInput = (t) => { const p = t % PERIOD; return p >= PRESS[0] && p < PRESS[1] ? 1 : 0; };
-  const tips = {
-    input: { title: "Input", body: "The touch sensor reads 0 when untouched and 1 for a firm press. Drag the knob at the right edge to set the input." },
-    tau: { title: "Time constant", body: "From Eq. 1, τ/(1 + τf) is roughly the seconds needed for the state to cover two thirds of the distance. A stronger input shortens it." },
-    state: { title: "State", body: "The neuron's internal value, x in Eq. 1. Its resting value is τfA/(1 + τf): 0.07 when untouched and 0.80 while pressed." },
-  };
-  const geo = (f) => {
-    const narrow = narrowOf(f), Lx = narrow ? 96 : 118, R = f.w - (narrow ? 58 : 72);
-    const lanes = laneBoxes(14, narrow ? [62, 72, 72] : [58, 70, 70], narrow ? 18 : 16);
-    const Y = (lane, v, lo, hi) => lane.y1 - ((v - lo) / (hi - lo)) * (lane.y1 - lane.y0);
-    return { narrow, Lx, R, lanes, yIn: (v) => Y(lanes[0], v, -0.08, 1.08), yTau: (v) => Y(lanes[1], v, 0, 1.12), yX: (v) => Y(lanes[2], v, -0.06, 1.12) };
-  };
-  const advance = (s, dt, input) => {
-    s.t += dt; s.I = input;
-    const F = gate(input), h = dt / LTC.substeps;
-    for (let i = 0; i < LTC.substeps; i++) s.x = fusedStep(s.x, F, h);
-    s.hist.push({ t: s.t, I: input, tau: tauSys(F), x: s.x });
-    while (s.hist.length && s.hist[0].t < s.t - WINDOW - 0.5) s.hist.shift();
-  };
-  const prefill = (f) => {
-    const s = f.state;
-    s.t = 0; s.x = restingState(gate(0)); s.hist = []; s.hand = s.hand ?? 0;
-    for (let i = 0; i < WINDOW * 60; i++) advance(s, 1 / 60, loopInput(s.t));
-  };
-  FS.figure("fig-neuron", {
-    height: (w) => (w < 560 ? 296 : 270),
-    params: { source: { value: "loop", label: "Input", placement: "inline", options: [{ value: "loop", label: "Press loop" }, { value: "hand", label: "Manual input" }] } },
-    reserve: { read: ["input 1.00 · gate f 3.93 · time constant 0.93 s · state 0.80"] },
-    tips,
-    tipAt: (f, x, y) => { const g = geo(f); if (x > g.Lx) return null; const i = g.lanes.findIndex((l) => y >= l.y0 - 6 && y <= l.y1 + 6); return ["input", "tau", "state"][i] ?? null; },
-    handles: {
-      input: {
-        label: "Input level: drag up or down, or use the arrow keys",
-        radius: 16, step: 6,
-        get: (f) => { const g = geo(f); return { x: g.R, y: f.state.dragY ?? g.yIn(f.state.I ?? 0) }; },
-        set: (f, x, y, phase) => {
-          const g = geo(f), lane = g.lanes[0], v = ((lane.y1 - y) / (lane.y1 - lane.y0)) * 1.16 - 0.08;
-          f.state.hand = Math.min(1, Math.max(0, v));
-          f.state.dragY = phase === "drag" || phase === "settle" ? y : null;
-          if (f.params.source !== "hand") f.api.set("source", "hand");
-        },
-        bounds: (f) => { const g = geo(f); return { x0: g.R, x1: g.R, y0: g.yIn(1), y1: g.yIn(0) }; },
-        release: (f) => { const g = geo(f); return { x: g.R, y: g.yIn(f.state.hand) }; },
-      },
-    },
-    init(f) { prefill(f); },
-    onParam(f, name, value) { if (name === "source" && value === "hand") f.state.hand = f.state.I ?? 0; },
-    update(f, dt) {
-      const s = f.state;
-      if (!s.hist) prefill(f);
-      if (s.dragY != null && f.drag !== "input" && !s.settling) s.dragY = null;
-      advance(s, Math.min(dt, 0.05), f.params.source === "hand" ? s.hand : loopInput(s.t));
-    },
-    render(f, c) {
-      const C = f.C, s = f.state, g = geo(f), { Lx, R, lanes } = g;
-      if (!s.hist) prefill(f);
-      const X = (t) => R - ((s.t - t) / WINDOW) * (R - Lx);
-      const pts = s.hist.filter((p) => p.t >= s.t - WINDOW);
-      laneLabel(f, c, lanes[0], "Input", "the sensor", f.hover === "input");
-      laneLabel(f, c, lanes[1], "Time constant", "seconds", f.hover === "tau");
-      laneLabel(f, c, lanes[2], "State", "x", f.hover === "state");
-      c.lineWidth = 1;
-      // time-constant envelope (Theorem 1)
-      const lo = tauSys(gate(1e9)), y1s = g.yTau(LTC.tau), y0s = g.yTau(lo);
-      c.fillStyle = C.surface2; c.fillRect(Lx, y1s, R - Lx, y0s - y1s);
-      c.strokeStyle = C.lineStrong; dashed(c, Lx, y1s, R, y1s); dashed(c, Lx, y0s, R, y0s);
-      FS.k.label(f, c, "τ = 1 s", Lx + 6, y1s - 7, { size: 10.5, color: C.muted, weight: 500 });
-      FS.k.label(f, c, `fastest possible ${lo.toFixed(2)} s`, Lx + 6, y0s + 9, { size: 10.5, color: C.muted, weight: 500 });
-      // state scaffolding: rest 0 and the target A
-      c.strokeStyle = C.line; FS.k.line(c, Lx, g.yX(0), R, g.yX(0));
-      c.strokeStyle = C.lineStrong; dashed(c, Lx, g.yX(LTC.A), R, g.yX(LTC.A));
-      FS.k.label(f, c, "target A = 1", Lx + 6, g.yX(LTC.A) - 7, { size: 10.5, color: C.muted, weight: 500 });
-      c.strokeStyle = C.line; FS.k.line(c, Lx, g.yIn(0), R, g.yIn(0));
-      const trace = (key, sel, yOf) => {
-        c.strokeStyle = f.hover === key ? C.accent : C.fg; c.lineWidth = f.hover === key ? 2.25 : C.series;
-        c.lineJoin = "round"; polyline(c, pts.map((p) => [X(p.t), yOf(sel(p))])); c.lineWidth = 1;
-      };
-      trace("input", (p) => p.I, g.yIn);
-      trace("tau", (p) => p.tau, g.yTau);
-      trace("state", (p) => p.x, g.yX);
-      // now: a hairline across the lanes, dots and values at the right edge
-      c.strokeStyle = C.line; FS.k.line(c, R, lanes[0].y0 - 6, R, lanes[2].y1 + 4);
-      const now = pts[pts.length - 1] ?? { I: 0, tau: 1, x: 0 };
-      const dot = (y) => { c.fillStyle = C.fg; c.beginPath(); c.arc(R, y, 3.5, 0, 7); c.fill(); };
-      dot(g.yTau(now.tau)); dot(g.yX(now.x));
-      FS.k.label(f, c, `${now.tau.toFixed(2)} s`, R + 8, g.yTau(now.tau), { size: 11, weight: 600 });
-      FS.k.label(f, c, now.x.toFixed(2), R + 8, g.yX(now.x), { size: 11, weight: 600 });
-      const ky = s.dragY ?? g.yIn(now.I);
-      const hot = knob(f, c, R, ky, "input");
-      FS.k.label(f, c, now.I.toFixed(2), R + 12, ky, { size: 11, weight: 600 });
-      if (f.params.source === "loop" && !hot) FS.k.label(f, c, "drag ↕", R + 12, ky + (now.I < 0.5 ? -16 : 16), { size: 10.5, color: C.muted, weight: 500 });
-      for (let k = 0; k <= WINDOW; k += 2) FS.k.text(f, c, k === 0 ? "now" : `−${k} s`, X(s.t - k), lanes[2].y1 + 16, { align: k === 0 ? "right" : "center", size: 10.5 });
-      f.api.out("read", `input ${now.I.toFixed(2)} · gate f ${gate(now.I).toFixed(2)} · time constant ${now.tau.toFixed(2)} s · state ${now.x.toFixed(2)}`);
-    },
-  });
-})();
-
-/* ================= Fig 2: three model families on one press (steps) ================= */
-(() => {
-  const END = 8, PRESS = [1, 3], DT = 0.002;
-  const input = (t) => (t >= PRESS[0] && t < PRESS[1] ? 1 : 0);
-  // Each model is linear in x for a fixed input, dx/dt = -a x + b, so every slice is stepped exactly.
-  const MODELS = [
-    { key: "node", name: "Neural ODE", eq: "dx/dt = f·A", coef: (F) => [0, F * LTC.A], x0: 0 },
-    { key: "ctrnn", name: "CT-RNN", eq: "dx/dt = −x/τ + f·A", coef: (F) => [1 / LTC.tau, F * LTC.A], x0: LTC.tau * gate(0) * LTC.A },
-    { key: "ltc", name: "LTC", eq: "dx/dt = −(1/τ + f)·x + f·A", coef: (F) => [1 / LTC.tau + F, F * LTC.A], x0: restingState(gate(0)) },
-  ];
-  for (const m of MODELS) {
-    let x = m.x0; m.pts = [[0, x]];
-    for (let i = 0; i < Math.round(END / DT); i++) {
-      const t = i * DT, [a, b] = m.coef(gate(input(t + DT / 2)));
-      x = a === 0 ? x + b * DT : b / a + (x - b / a) * Math.exp(-a * DT);
-      m.pts.push([t + DT, x]);
-    }
-    m.max = Math.max(...m.pts.map((p) => p[1]));
-    m.at = (t) => m.pts[Math.min(m.pts.length - 1, Math.round(t / DT))][1];
-    // seconds to cover 63.2% of the gap to the new resting value, measured on the curve
-    const crossing = (t0, target) => { const x0 = m.at(t0), goal = x0 + 0.632 * (target - x0); for (const [t, v] of m.pts) if (t >= t0 && (target > x0 ? v >= goal : v <= goal)) return t - t0; return null; };
-    if (m.key !== "node") {
-      const [aOn, bOn] = m.coef(gate(1)), [aOff, bOff] = m.coef(gate(0));
-      m.rise = crossing(PRESS[0], bOn / aOn); m.fall = crossing(PRESS[1], bOff / aOff);
-    }
-  }
-  const [node, ctrnn, ltc] = MODELS;
-  const ratio = ctrnn.rise / ltc.rise;
-  const steps = [
-    { lanes: 1, caption: "The touch sensor is untouched, then pressed from 1 s to 3 s, then untouched again; all three models receive this input." },
-    { lanes: 2, caption: `For the neural ODE, the input sets the slope directly, so the state rises while pressed and remains at ${node.at(END).toFixed(1)} without a leak.` },
-    { lanes: 3, caption: `The CT-RNN uses a fixed τ = 1 s, so it rises in ${ctrnn.rise.toFixed(2)} s and falls in ${ctrnn.fall.toFixed(2)} s.` },
-    { lanes: 4, caption: `For the LTC, the gate changes the time constant, so the state rises in ${ltc.rise.toFixed(2)} s while pressed and falls in ${ltc.fall.toFixed(2)} s after release.` },
-    { lanes: 4, compare: true, caption: `With the same input and τ, the LTC responds to the press ${ratio.toFixed(1)}× faster than the CT-RNN and returns almost as slowly.` },
-  ];
-  const tips = {
-    lane0: { title: "Input", body: "The input is 0, then 1 from 1 s to 3 s, then 0. Every model receives it through the same gate f." },
-    lane1: { title: "Neural ODE", body: "The network sets the rate of change directly. Without a leak, the state does not return to rest." },
-    lane2: { title: "CT-RNN", body: "The leak −x/τ gives the model a fixed time constant τ. The input does not change it." },
-    lane3: { title: "LTC", body: "In Eq. 1, the gate f joins the leak, so the time constant τ/(1 + τf) changes with the input." },
-  };
-  FS.figure("fig-family", {
-    height: (w) => (w < 560 ? 350 : 300),
-    steps,
-    tips,
-    tipAt: (f, x, y) => f.state.hits?.find((h) => inRect(h, x, y))?.key ?? null,
-    render(f, c) {
-      const C = f.C, narrow = narrowOf(f), s = steps[f.step], Lx = narrow ? 76 : 118, R = f.w - 14;
-      const lanes = laneBoxes(narrow ? 10 : 10, narrow ? [36, 60, 60, 60] : [34, 50, 50, 50], narrow ? 20 : 16);
-      const X = (t) => Lx + (t / END) * (R - Lx), hits = (f.state.hits = []);
-      const grow = (i) => (i === s.lanes - 1 && f.from < f.step && !s.compare ? FS.ease.inOut(Math.min(1, f.stepT * 1.4)) : 1);
-      c.fillStyle = C.surface2; c.fillRect(X(PRESS[0]), lanes[0].y0 - 4, X(PRESS[1]) - X(PRESS[0]), lanes[3].y1 - lanes[0].y0 + 8);
-      FS.k.text(f, c, "pressed", (X(PRESS[0]) + X(PRESS[1])) / 2, lanes[3].y1 + 32, { align: "center", size: 10.5 });
-      const names = ["Input", ...MODELS.map((m) => m.name)];
-      lanes.forEach((lane, i) => {
-        const on = i < s.lanes;
-        c.globalAlpha = on ? 1 : C.dim;
-        laneLabel(f, c, lane, names[i], null, f.hover === `lane${i}`);
-        hits.push({ key: `lane${i}`, x: 0, y: lane.y0 - 4, w: Lx - 6, h: lane.y1 - lane.y0 + 8 });
-        c.strokeStyle = C.line; c.lineWidth = 1; FS.k.line(c, Lx, lane.y1, R, lane.y1);
-        c.globalAlpha = 1;
-        if (!on) return;
-        const p = grow(i);
-        if (i === 0) {
-          const Y = (v) => lane.y1 - v * (lane.y1 - lane.y0);
-          c.strokeStyle = C.fg; c.lineWidth = C.series;
-          polyline(c, [[X(0), Y(0)], [X(PRESS[0]), Y(0)], [X(PRESS[0]), Y(1)], [X(PRESS[1]), Y(1)], [X(PRESS[1]), Y(0)], [X(END), Y(0)]]);
-          return;
-        }
-        const m = MODELS[i - 1], top = m.max * 1.08, Y = (v) => lane.y1 - (v / top) * (lane.y1 - lane.y0);
-        const tEnd = p * END, pts = m.pts.filter((q, j) => j % 5 === 0 && q[0] <= tEnd + 1e-9).map(([t, v]) => [X(t), Y(v)]);
-        c.strokeStyle = C.line; dashed(c, Lx, Y(m.max), R, Y(m.max), [2, 4]);
-        FS.k.text(f, c, m.max.toFixed(m.max >= 2 ? 1 : 2), Lx - 6, Y(m.max) + 4, { align: "right", size: 10 });
-        c.strokeStyle = f.hover === `lane${i}` ? C.accent : C.fg; c.lineWidth = C.series; c.lineJoin = "round"; polyline(c, pts); c.lineWidth = 1;
-        if (!narrow) FS.k.label(f, c, m.eq, R - 4, Y(m.max) + 10, { align: "right", size: 10.5, mono: true, color: C.muted, weight: 400 });
-        if (s.compare && m.rise) {
-          // each bar runs at the 63% level it measures, from the event to where the curve crosses it
-          const yr = Y(m.at(PRESS[0] + m.rise)), yf = Y(m.at(PRESS[1] + m.fall));
-          c.strokeStyle = C.accent; c.lineWidth = 1.5;
-          FS.k.line(c, X(PRESS[0]), yr, X(PRESS[0] + m.rise), yr); FS.k.line(c, X(PRESS[0]), yr - 4, X(PRESS[0]), yr + 4);
-          FS.k.line(c, X(PRESS[1]), yf, X(PRESS[1] + m.fall), yf); FS.k.line(c, X(PRESS[1]), yf - 4, X(PRESS[1]), yf + 4);
-          c.lineWidth = 1;
-          FS.k.label(f, c, `${narrow ? "" : "rise "}${m.rise.toFixed(2)} s`, X(PRESS[0]) - 6, yr, { align: "right", size: 10.5, weight: 600, color: C.accent });
-          FS.k.label(f, c, `${narrow ? "" : "fall "}${m.fall.toFixed(2)} s`, X(PRESS[1]) + 6, yf + 11, { size: 10.5, weight: 600, color: C.accent });
-        }
-      });
-      for (let t = 0; t <= END; t += narrow ? 2 : 1) FS.k.text(f, c, `${t} s`, X(t), lanes[3].y1 + 16, { align: "center", size: 10.5 });
-    },
-  });
-})();
-
-/* ================= Fig 3: the envelopes of Theorems 1 and 2 under a rough input ================= */
-(() => {
-  const END = 10, DT = 1 / 60;
-  // A seeded rough signal in [-1, 1]: a few slow waves plus held random steps.
-  const rnd = FS.rng(2006);
-  const waves = [0, 1, 2].map(() => ({ fr: 0.15 + rnd() * 0.6, ph: rnd() * 6.28, a: 0.3 + rnd() * 0.4 }));
-  const holds = Array.from({ length: 24 }, () => rnd() * 2 - 1);
-  const raw = Array.from({ length: Math.round(END / DT) + 1 }, (_, i) => { const t = i * DT; return waves.reduce((s, w) => s + w.a * Math.sin(2 * Math.PI * w.fr * t + w.ph), 0) + 0.5 * holds[Math.min(holds.length - 1, Math.floor(t / (END / holds.length)))]; });
-  const peak = Math.max(...raw.map(Math.abs));
-  const U = raw.map((v) => v / peak);
-  const fmtX = (v) => { const s = 10 ** v; return s >= 100 ? `×${Math.round(s / 10) * 10}` : s >= 10 ? `×${Math.round(s)}` : `×${s.toFixed(1)}`; };
-  const simulate = (strength, W, A) => {
-    let x = 0, xmin = 0, xmax = 0, tmin = Infinity, tmax = 0;
-    const xs = [], ts = [];
-    for (const u of U) {
-      const F = gate(strength * u, W), h = DT / LTC.substeps;
-      for (let i = 0; i < LTC.substeps; i++) x = fusedStep(x, F, h, A);
-      const ta = tauSys(F);
-      xs.push(x); ts.push(ta);
-      xmin = Math.min(xmin, x); xmax = Math.max(xmax, x); tmin = Math.min(tmin, ta); tmax = Math.max(tmax, ta);
-    }
-    return { xs, ts, xmin, xmax, tmin, tmax };
-  };
-  const geo = (f) => {
-    const narrow = narrowOf(f), Lx = narrow ? 96 : 118, R = f.w - (narrow ? 26 : 32);
-    const lanes = laneBoxes(12, narrow ? [52, 76, 96] : [46, 72, 92], narrow ? 18 : 16);
-    const Y = (lane, v, lo, hi) => lane.y1 - ((v - lo) / (hi - lo)) * (lane.y1 - lane.y0);
-    return { narrow, Lx, R, lanes, yIn: (v) => Y(lanes[0], v, -1.1, 1.1), yTau: (v) => Y(lanes[1], v, 0, 1.12), yX: (v) => Y(lanes[2], v, -1.15, 1.15) };
+  const WINDOW = 272e3; // GPT-5's context window, the paper's Fig. 1 caption
+  const INPUTS = {
+    pairs: { label: "OOLONG-Pairs task · 32K", tokens: 32e3, what: "an OOLONG-Pairs task" },          // Table 1
+    oolong: { label: "OOLONG task · 131K", tokens: 131e3, what: "an OOLONG task" },                  // Table 1
+    codeqa: { label: "A code repository · ~900K", tokens: 900e3, what: "a code repository" },        // App. E.4
+    bcp: { label: "1,000 documents · ~8.3M", tokens: 8.3e6, what: "the pageant question's documents" }, // App. E.1
   };
   const tips = {
-    input: { title: "Input", body: "A seeded random signal between −1 and 1, multiplied by the input strength. At ×1000 the gate switches between fully off and fully on." },
-    tau: { title: "Time constant", body: "Theorem 1 (Eq. 4) places it between τ/(1 + τW) and τ because the gate f stays between 0 and W." },
-    state: { title: "State", body: "Theorem 2 (Eq. 5) places it between min(0, A) and max(0, A) because the leak pulls toward 0 and the gate toward A." },
-    target: { title: "Target A", body: "The gate pulls the state toward this value. Drag it below zero to make the gate pull the state down." },
+    window: { title: "Context window", body: "GPT-5 reads up to 272K tokens in one call. All task information it uses must fit here." },
+    input: { title: "Input", body: "Each tile matches one context window, so the lengths are shown to scale." },
+    session: { title: "Python session", body: "The session keeps variables between turns. The complete input is stored in one named context." },
+    over: { title: "Input limit", body: "Every tile after the first exceeds the context window. A base model cannot take the full input." },
   };
-  FS.figure("fig-bounds", {
-    height: (w) => (w < 560 ? 300 : 278),
+  const layout = (w) => {
+    const narrow = w < 560, gap = narrow ? 4 : 6, cols = narrow ? 7 : 10, rows = narrow ? 5 : 4;
+    const gx0 = narrow ? 12 : 196, gw = w - gx0 - 12;
+    const s = Math.min(narrow ? 44 : 58, (gw - gap * (cols - 1)) / cols);
+    const win = narrow ? { x: 12, y: 34, s: s * 1.6 } : { x: 28, y: 52, s: Math.max(s * 1.9, 110) };
+    const gy0 = narrow ? win.y + win.s + 70 : 52;
+    const h = gy0 + rows * (s + gap) - gap + (narrow ? 34 : 40);
+    return { narrow, gap, cols, rows, gx0, gy0, s, win, h: Math.max(h, narrow ? 0 : win.y + win.s + 96) };
+  };
+  FS.figure("fig-window", {
+    height: (w) => layout(w).h,
     params: {
-      strength: { value: 1, min: 0, max: 3, step: 0.05, label: "Input strength", placement: "inline", format: fmtX },
-      W: { value: 4, min: 1, max: 20, step: 0.5, label: "Gate strength W", format: (v) => v.toFixed(1) },
-      A: { value: 1, min: -1, max: 1, step: 0.01, label: "Target A", hidden: true },
+      who: { value: "base", label: "Who reads it", options: [{ value: "base", label: "Base model" }, { value: "rlm", label: "RLM" }], placement: "inline" },
+      input: { value: "bcp", label: "Input", options: Object.entries(INPUTS).map(([value, i]) => ({ value, label: i.label })) },
+      mix: { value: 0, min: 0, max: 1, hidden: true },
     },
-    reserve: { read: (f) => (narrowOf(f) ? ["state −0.80 to 0 · τ 0.05 to 0.98 s · inside"] : ["state −0.80 to 0, inside [−1.00, 0] · time constant 0.05 to 0.98 s, inside [0.05, 1] s"]), strengthText: ["×1000"] },
+    reserve: { readout: ["Base model: only 3% of the input fits in its window", "RLM: all 8.3M tokens sit in a variable; the window holds a few lines"] },
     tips,
-    tipAt: (f, x, y) => { const g = geo(f); if (x > g.Lx) return null; const i = g.lanes.findIndex((l) => y >= l.y0 - 6 && y <= l.y1 + 6); return ["input", "tau", "state"][i] ?? null; },
-    handles: {
-      target: {
-        label: "Target A: drag up or down, or use the arrow keys",
-        radius: 16, step: 4,
-        get: (f) => { const g = geo(f); return { x: g.R, y: f.state.dragY ?? g.yX(f.params.A) }; },
-        set: (f, x, y, phase) => {
-          const g = geo(f), lane = g.lanes[2], v = 1.15 - ((y - lane.y0) / (lane.y1 - lane.y0)) * 2.3;
-          f.state.dragY = phase === "drag" || phase === "settle" ? y : null;
-          f.api.set("A", Math.round(Math.max(-1, Math.min(1, v)) * 100) / 100, { instant: true });
-        },
-        bounds: (f) => { const g = geo(f); return { x0: g.R, x1: g.R, y0: g.yX(1), y1: g.yX(-1) }; },
-        release: (f) => { const g = geo(f); return { x: g.R, y: g.yX(f.params.A) }; },
-      },
-    },
-    resize(f) { const el = document.querySelector('[data-fs-out="fig-bounds:read"]'); if (el) FS.reserve(el, narrowOf(f) ? ["state −0.80 to 0 · τ 0.05 to 0.98 s · inside"] : ["state −0.80 to 0, inside [−1.00, 0] · time constant 0.05 to 0.98 s, inside [0.05, 1] s"]); },
-    update(f) { if (f.state.dragY != null && f.drag !== "target" && Math.abs(f.state.dragY - geo(f).yX(f.params.A)) < 0.5) f.state.dragY = null; },
+    tipAt: (f, x, y) => hitAt(f, x, y),
+    autoplay: false,
+    onParam(f, name, value) { if (name === "who") f.api.set("mix", value === "rlm" ? 1 : 0); },
     render(f, c) {
-      const C = f.C, g = geo(f), { Lx, R, lanes } = g, A = f.v.A, W = f.v.W, strength = 10 ** f.v.strength;
-      const sim = simulate(strength, W, A), n = U.length, X = (i) => Lx + (i / (n - 1)) * (R - Lx);
-      laneLabel(f, c, lanes[0], "Input", `${fmtX(f.v.strength)} strength`, f.hover === "input");
-      laneLabel(f, c, lanes[1], "Time constant", "seconds", f.hover === "tau");
-      laneLabel(f, c, lanes[2], "State", "x", f.hover === "state");
-      c.strokeStyle = C.line; c.lineWidth = 1; FS.k.line(c, Lx, g.yIn(0), R, g.yIn(0));
-      c.strokeStyle = f.hover === "input" ? C.accent : C.muted; c.lineWidth = 1.25;
-      polyline(c, U.map((u, i) => [X(i), g.yIn(u)]).filter((_, i) => i % 2 === 0));
-      // Theorem 1 envelope
-      const tLo = tauSys(W), yHi = g.yTau(LTC.tau), yLo = g.yTau(tLo);
-      c.fillStyle = C.surface2; c.fillRect(Lx, yHi, R - Lx, yLo - yHi);
-      c.strokeStyle = C.lineStrong; c.lineWidth = 1; dashed(c, Lx, yHi, R, yHi); dashed(c, Lx, yLo, R, yLo);
-      c.strokeStyle = f.hover === "tau" ? C.accent : C.fg; c.lineWidth = C.series; c.lineJoin = "round";
-      polyline(c, sim.ts.map((v, i) => [X(i), g.yTau(v)]));
-      FS.k.label(f, c, "τ = 1 s", Lx + 6, yHi - 7, { size: 10.5, color: C.muted, weight: 500 });
-      FS.k.label(f, c, `τ/(1 + τW) = ${tLo.toFixed(2)} s`, Lx + 6, yLo + 9, { size: 10.5, color: C.muted, weight: 500 });
-      // Theorem 2 envelope [min(0, A), max(0, A)]
-      const top = Math.max(0, A), bot = Math.min(0, A), yT = g.yX(top), yB = g.yX(bot);
-      c.fillStyle = C.surface2; c.fillRect(Lx, yT, R - Lx, Math.max(1, yB - yT));
-      c.strokeStyle = C.line; c.lineWidth = 1; FS.k.line(c, Lx, g.yX(0), R, g.yX(0));
-      const hotA = f.hover === "target" || f.handleHover === "target" || f.drag === "target";
-      const yA = f.state.dragY ?? g.yX(A);
-      c.strokeStyle = hotA ? C.accent : C.lineStrong; c.lineWidth = hotA ? 1.5 : 1; dashed(c, Lx, yA, R, yA, [5, 3]);
-      c.strokeStyle = f.hover === "state" ? C.accent : C.fg; c.lineWidth = C.series;
-      polyline(c, sim.xs.map((v, i) => [X(i), g.yX(v)]));
-      c.lineWidth = 1;
-      const up = A >= 0;
-      const env = g.narrow ? "" : ` · envelope [min(0, A), max(0, A)] = [${bot.toFixed(2)}, ${top.toFixed(2)}]`;
-      FS.k.label(f, c, `target A = ${A.toFixed(2)}${env}`, Lx + 6, yA + (up ? -8 : 9), { size: 10.5, color: hotA ? C.accent : C.muted, weight: 600 });
-      knob(f, c, R, yA, "target");
-      for (let t = 0; t <= END; t += 2) FS.k.text(f, c, `${t} s`, Lx + (t / END) * (R - Lx), lanes[2].y1 + 16, { align: "center", size: 10.5 });
-      const inside = sim.xmin >= bot - 1e-9 && sim.xmax <= top + 1e-9;
-      const r2 = (v) => (Math.abs(v) < 0.005 ? "0" : v.toFixed(2));
-      f.api.out("read", g.narrow ? `state ${r2(sim.xmin)} to ${r2(sim.xmax)} · τ ${sim.tmin.toFixed(2)} to ${sim.tmax.toFixed(2)} s · ${inside ? "inside" : "outside"}`
-        : `state ${r2(sim.xmin)} to ${r2(sim.xmax)}, ${inside ? "inside" : "outside"} [${r2(bot)}, ${r2(top)}] · time constant ${sim.tmin.toFixed(2)} to ${sim.tmax.toFixed(2)} s, inside [${tLo.toFixed(2)}, 1] s`);
-      f.api.out("strengthText", fmtX(f.params.strength));
-    },
-  });
-})();
-
-/* ================= Fig 4: explicit Euler against the fused step (steps + a step-size handle) ================= */
-(() => {
-  const END = 2;
-  const run = (dt, W) => {
-    const F = gate(1, W), rest = restingState(F), ts = tauSys(F), euler = [[0, 0]], fused = [[0, 0]];
-    let xe = 0, xf = 0;
-    for (let i = 1; (i - 1) * dt <= END; i++) {
-      xe = xe + dt * (-(1 / LTC.tau + F) * xe + F * LTC.A);
-      xf = fusedStep(xf, F, dt);
-      euler.push([i * dt, xe]); fused.push([i * dt, xf]);
-    }
-    const D = 1 + dt * (1 / LTC.tau + F);
-    return { F, rest, ts, euler, fused, exact: (t) => rest * (1 - Math.exp(-t / ts)), weights: [1 / D, (dt * F) / D, dt / LTC.tau / D] };
-  };
-  const at = (f) => run(f.params.dt, f.params.W);
-  const first = (r) => ({ e: r.euler[1][1], u: r.fused[1][1], x: r.exact(r.euler[1][0]) });
-  const steps = [
-    { show: ["exact"], caption: (f) => { const r = at(f); return `After the press at t = 0, the exact curve approaches ${r.rest.toFixed(2)} with a time constant of ${r.ts.toFixed(2)} s.`; } },
-    { show: ["exact", "euler"], caption: (f) => { const r = at(f), p = first(r), dt = f.params.dt; return p.e > LTC.A ? `Euler uses the starting slope across Δt = ${dt.toFixed(2)} s, so its first step lands at ${p.e.toFixed(2)}, above the ceiling A = 1.` : dt > r.ts ? `At Δt = ${dt.toFixed(2)} s, Euler's first step lands at ${p.e.toFixed(2)}, past the resting value ${r.rest.toFixed(2)}, then returns.` : `With Δt = ${dt.toFixed(2)} s, Euler tracks the curve, but a step above ${r.ts.toFixed(2)} s causes overshoot.`; } },
-    { show: ["exact", "euler", "fused"], caption: (f) => { const r = at(f), p = first(r); return `The fused step's first move lands at ${p.u.toFixed(2)} (exact: ${p.x.toFixed(2)}) and approaches ${r.rest.toFixed(2)} from below without passing it at any Δt.`; } },
-    { show: ["exact", "euler", "fused", "mix"], caption: (f) => { const w = at(f).weights.map((v) => Math.round(v * 100)); return `One fused step averages ${w[0]}% of the current state, ${w[1]}% of the target A and ${w[2]}% of rest at 0, which keeps it inside [0, A].`; } },
-  ];
-  const geo = (f) => {
-    const narrow = narrowOf(f), L = narrow ? 34 : 52, R = f.w - (narrow ? 14 : 110), T = narrow ? 30 : 16, B = f.h - (narrow ? 104 : 96);
-    return { narrow, L, R, T, B, X: (t) => L + (t / END) * (R - L), Y: (v) => B - ((v + 0.4) / 2.0) * (B - T) };
-  };
-  const tips = {
-    exact: { title: "Exact", body: "The closed-form answer for a constant gate is rest·(1 − e^(−t/τsys)). Both step rules approximate this curve." },
-    euler: { title: "Explicit Euler", body: "This rule adds Δt times the starting slope to x. With a strong gate, it can overshoot and become unstable." },
-    fused: { title: "Fused step", body: "In the paper's Eq. 3, the x outside f is taken at the end of the step. The result does not overshoot." },
-  };
-  FS.figure("fig-solver", {
-    height: (w) => (w < 560 ? 380 : 340),
-    steps,
-    params: {
-      dt: { value: 0.3, min: 0.03, max: 0.8, step: 0.01, label: "Step size Δt", hidden: true },
-      W: { value: 4, min: 1, max: 20, step: 0.5, label: "Gate strength W", format: (v) => v.toFixed(1) },
-    },
-    tips,
-    tipAt: (f, x, y) => f.state.hits?.find((h) => inRect(h, x, y))?.key ?? null,
-    handles: {
-      dt: {
-        label: "Step size: drag left or right, or use the arrow keys",
-        radius: 16, step: 4,
-        get: (f) => { const g = geo(f); return { x: f.state.dragX ?? g.X(f.params.dt), y: g.B }; },
-        set: (f, x, y, phase) => {
-          const g = geo(f);
-          f.state.dragX = phase === "drag" || phase === "settle" ? x : null;
-          f.api.set("dt", Math.round(((x - g.L) / (g.R - g.L)) * END * 100) / 100, { instant: true });
-        },
-        bounds: (f) => { const g = geo(f); return { x0: g.X(0.03), x1: g.X(0.8), y0: g.B, y1: g.B }; },
-        release: (f) => { const g = geo(f); return { x: g.X(f.params.dt), y: g.B }; },
-      },
-    },
-    update(f) { if (f.state.dragX != null && f.drag !== "dt" && Math.abs(f.state.dragX - geo(f).X(f.params.dt)) < 0.5) f.state.dragX = null; },
-    render(f, c) {
-      const C = f.C, g = geo(f), { L, R, T, B, X, Y } = g, s = steps[f.step], show = new Set(s.show);
-      const r = run(f.v.dt, f.v.W), hits = (f.state.hits = []), e = FS.ease.out(f.stepT);
-      const fresh = (k) => (steps[f.from]?.show.includes(k) ? 1 : e);
-      for (const v of [0, 0.5, 1, 1.5]) { c.strokeStyle = C.line; c.lineWidth = 1; FS.k.line(c, L, Y(v), R, Y(v)); FS.k.text(f, c, v.toFixed(1), L - 8, Y(v) + 4, { align: "right", size: 10.5 }); }
-      for (let t = 0; t <= END; t += 0.5) FS.k.text(f, c, `${t} s`, X(t), B + 36, { align: "center", size: 10.5 });
-      c.strokeStyle = C.lineStrong; dashed(c, L, Y(LTC.A), R, Y(LTC.A), [5, 3]);
-      FS.k.label(f, c, "ceiling A = 1", g.narrow ? R - 4 : R + 6, Y(LTC.A) + (g.narrow ? -8 : 0), { size: 10.5, color: C.muted, weight: 500, align: g.narrow ? "right" : "left" });
-      c.strokeStyle = C.line; dashed(c, L, Y(r.rest), R, Y(r.rest), [2, 4]);
-      c.strokeStyle = C.lineStrong; FS.k.line(c, L, B, R, B);
-      c.save(); c.beginPath(); c.rect(L - 6, T - 8, R - L + 12, B - T + 16); c.clip();
-      c.strokeStyle = f.hover === "exact" ? C.accent : C.muted; c.lineWidth = 1.25;
-      polyline(c, Array.from({ length: 121 }, (_, i) => [X((i / 120) * END), Y(r.exact((i / 120) * END))]));
-      const drawSeries = (pts, key, solid, alpha) => {
-        c.globalAlpha = alpha;
-        const hot = f.hover === key, vis = pts.filter(([t]) => t <= END + 1e-6);
-        c.strokeStyle = hot ? C.accent : solid ? C.fg : C.muted; c.lineWidth = solid ? C.series : 1.25;
-        if (!solid) c.setLineDash([4, 3]);
-        polyline(c, pts.map(([t, v]) => [X(t), Y(Math.max(-2, Math.min(4, v)))])); c.setLineDash([]);
-        for (const [t, v] of vis) {
-          c.beginPath(); c.arc(X(t), Y(v), solid ? 3.5 : 3.25, 0, 7);
-          if (solid) { c.fillStyle = hot ? C.accent : C.fg; c.fill(); } else { c.fillStyle = C.surface; c.fill(); c.strokeStyle = hot ? C.accent : C.muted; c.lineWidth = 1.25; c.stroke(); }
-        }
-        c.globalAlpha = 1;
-      };
-      if (show.has("euler")) drawSeries(r.euler, "euler", false, (show.has("fused") ? 0.55 : 1) * fresh("euler"));
-      if (show.has("fused")) drawSeries(r.fused, "fused", true, fresh("fused"));
+      const C = f.C, L = layout(f.w), m = FS.ease.smooth(f.v.mix), inp = INPUTS[f.params.input];
+      const tiles = inp.tokens / WINDOW, hits = (f.state.hits = []);
+      const ring = (k) => f.hover === k;
+      // the window
+      const W = L.win;
+      FS.k.text(f, c, "Model's window", W.x, W.y - 22, { size: 12, weight: 600, color: C.fg });
+      FS.k.text(f, c, "272K tokens", W.x, W.y - 8, { size: 10.5 });
+      FS.k.rrect(c, W.x, W.y, W.s, W.s, 6); c.fillStyle = C.surface; c.fill();
+      c.strokeStyle = ring("window") ? C.accent : C.fg; c.lineWidth = ring("window") ? 1.75 : 1.25; c.stroke(); c.lineWidth = 1;
+      hits.push({ key: "window", x: W.x, y: W.y, w: W.s, h: W.s });
+      // base: the window fills with the input (to its fraction); rlm: a few short lines
+      const pad = 8, lineH = W.s > 120 ? 6 : 5, nLines = Math.floor((W.s - pad * 2) / lineH);
+      const fillFrac = Math.min(1, tiles);
+      c.save(); c.globalAlpha = 1 - m;
+      for (let i = 0; i < Math.round(nLines * fillFrac); i++) { const lw = (W.s - pad * 2) * (0.55 + 0.45 * Math.abs(Math.sin(i * 2.3))); FS.k.rrect(c, W.x + pad, W.y + pad + i * lineH, lw, 2.2, 1); c.fillStyle = C.muted; c.fill(); }
       c.restore();
-      if (show.has("euler")) {
-        const off = r.euler.find(([t, v]) => t <= END && (v > 1.6 || v < -0.4));
-        if (off) { const up = off[1] > 0, x = X(off[0]); c.globalAlpha = fresh("euler"); FS.k.arrow(c, x, up ? T + 16 : B - 16, x, up ? T - 4 : B + 4, C.muted); FS.k.label(f, c, `Euler: ${off[1].toFixed(1)}`, x + 8, up ? T + 4 : B - 6, { size: 10.5, color: C.muted, weight: 600 }); c.globalAlpha = 1; }
-      }
-      // direct labels (wide) or a key (narrow) for the series
-      const lastIn = (pts) => pts.filter((p) => p[0] <= END).at(-1)[1];
-      if (!g.narrow) {
-        const lab = [{ key: "rest", text: `rests at ${r.rest.toFixed(2)}`, y: Y(r.rest) }, { key: "exact", text: "exact", y: Y(r.exact(END)) }];
-        if (show.has("fused")) lab.push({ key: "fused", text: "fused", y: Y(lastIn(r.fused)) });
-        if (show.has("euler")) { const v = lastIn(r.euler); if (v < 1.6 && v > -0.4) lab.push({ key: "euler", text: "Euler", y: Y(v) }); }
-        lab.sort((a, b) => a.y - b.y);
-        for (let i = 1; i < lab.length; i++) lab[i].y = Math.max(lab[i].y, lab[i - 1].y + 14);
-        const ceil = Y(LTC.A) + 14;   // the ceiling's own label sits on its line
-        for (const l of lab) l.y = Math.max(l.y, ceil);
-        for (let i = 1; i < lab.length; i++) lab[i].y = Math.max(lab[i].y, lab[i - 1].y + 14);
-        for (const l of lab) {
-          const rest = l.key === "rest";
-          FS.k.label(f, c, l.text, R + 6, l.y, { size: rest ? 10.5 : 11, weight: rest ? 500 : 600, color: f.hover === l.key ? C.accent : l.key === "fused" ? C.fg : C.muted });
-          if (!rest) hits.push({ key: l.key, x: R + 2, y: l.y - 8, w: 60, h: 16 });
-        }
+      const parts = [["instructions", 4], ["question", 1], ["about context", 1], ["printouts", 2]];
+      c.save(); c.globalAlpha = m;
+      let row = 0;
+      parts.forEach(([, n], pi) => { for (let i = 0; i < n; i++) { const lw = (W.s - pad * 2) * (pi === 2 ? 0.5 : 0.7 + 0.3 * Math.abs(Math.sin(row * 1.7))); FS.k.rrect(c, W.x + pad, W.y + pad + row * lineH, lw, 2.2, 1); c.fillStyle = pi === 2 ? C.accent : pi === 1 ? C.fg : C.muted; c.fill(); row++; } row++; });
+      c.restore();
+      const capY = W.y + W.s + 16;
+      if (!L.narrow) {
+        FS.k.text(f, c, tiles <= 1 ? `holds ${Math.round(fillFrac * 100)}% of the window` : "full, and the rest is left out", W.x, capY, { size: 10.5, alpha: 1 - m });
+        FS.k.text(f, c, "instructions, the question,", W.x, capY, { size: 10.5, alpha: m });
+        FS.k.text(f, c, "one line about context,", W.x, capY + 14, { size: 10.5, alpha: m });
+        FS.k.text(f, c, "short printouts", W.x, capY + 28, { size: 10.5, alpha: m });
       } else {
-        [["exact", "exact", false], ["euler", "Euler", false], ["fused", "fused", true]].filter(([k]) => show.has(k)).forEach(([k, t, solid], i) => {
-          const x = L + i * 76; c.strokeStyle = solid ? C.fg : C.muted; c.lineWidth = solid ? 2 : 1.25; if (k === "euler") c.setLineDash([4, 3]);
-          FS.k.line(c, x, 10, x + 16, 10); c.setLineDash([]); FS.k.text(f, c, t, x + 20, 14, { size: 10.5, color: C.fg }); hits.push({ key: k, x, y: 2, w: 70, h: 16 });
-        });
+        FS.k.text(f, c, tiles <= 1 ? `holds ${Math.round(fillFrac * 100)}% of the window` : "full, the rest left out", W.x + W.s + 12, W.y + 18, { size: 10.5, alpha: 1 - m });
+        FS.k.text(f, c, "instructions, the question,", W.x + W.s + 12, W.y + 18, { size: 10.5, alpha: m });
+        FS.k.text(f, c, "a line about context,", W.x + W.s + 12, W.y + 32, { size: 10.5, alpha: m });
+        FS.k.text(f, c, "short printouts", W.x + W.s + 12, W.y + 46, { size: 10.5, alpha: m });
       }
-      // the step-size marker: a bracket from 0 to dt on the axis, and its knob
-      const xdt = f.state.dragX ?? X(f.v.dt), hotDt = f.hover === "dt" || f.handleHover === "dt" || f.drag === "dt";
-      FS.k.bracket(f, c, X(0), xdt, B + 14, "", { color: hotDt ? C.accent : C.lineStrong });
-      FS.k.label(f, c, `Δt = ${f.v.dt.toFixed(2)} s · drag`, Math.min(xdt + 18, R - 80), B + 14, { size: 10.5, weight: 600, color: hotDt ? C.accent : C.fg });
-      knob(f, c, xdt, B, "dt");
-      if (show.has("mix")) {
-        c.globalAlpha = fresh("mix");
-        const y = f.h - (g.narrow ? 40 : 34), h = 12, w = r.weights, parts = [["current state", C.lineStrong], ["target A", C.fg], ["rest at 0", C.muted]];
-        FS.k.text(f, c, `new x = ${w[0].toFixed(2)}·x + ${w[1].toFixed(2)}·A + ${w[2].toFixed(2)}·0`, L, y - 8, { size: g.narrow ? 10.5 : 11, mono: true, color: C.fg });
-        let x = L; const labels = [];
-        w.forEach((v, i) => { const ww = v * (R - L); FS.k.rrect(c, x + 1, y, Math.max(1, ww - 2), h, 3); c.fillStyle = parts[i][1]; c.fill(); labels.push({ x: x + 2, text: `${parts[i][0]} · ${Math.round(v * 100)}%` }); x += ww; });
-        c.font = FS.k.font(f, 10.5);
-        for (let i = 1; i < labels.length; i++) labels[i].x = Math.max(labels[i].x, labels[i - 1].x + c.measureText(labels[i - 1].text).width + 10);
-        const over = labels.at(-1).x + c.measureText(labels.at(-1).text).width - R;
-        if (over > 0) for (let i = labels.length - 1; i >= 0; i--) { labels[i].x -= over; if (i && labels[i].x < labels[i - 1].x + c.measureText(labels[i - 1].text).width + 10) labels[i - 1].x = labels[i].x - c.measureText(labels[i - 1].text).width - 10; }
-        labels.forEach((l) => FS.k.text(f, c, l.text, Math.max(L, l.x), y + h + 14, { size: 10.5 }));
-        c.globalAlpha = 1;
+      // the input as window-sized tiles
+      const n = Math.ceil(tiles), gx = L.gx0, gy = L.gy0, s = L.s;
+      FS.k.text(f, c, "The input", gx, L.narrow ? gy - 24 : gy - 22, { size: 12, weight: 600, color: C.fg });
+      FS.k.text(f, c, `${inp.what} · ${fmtTok(inp.tokens)} tokens = ${tiles < 10 ? tiles.toFixed(2) : tiles.toFixed(1)} windows`, L.narrow ? gx : gx + 70, L.narrow ? gy - 8 : gy - 22, { size: 10.5 });
+      const sess = { x: gx - 6, y: gy - 6, w: Math.min(n, L.cols) * (s + L.gap) - L.gap + 12, h: Math.ceil(n / L.cols) * (s + L.gap) - L.gap + 12 };
+      c.save(); c.globalAlpha = m;
+      FS.k.rrect(c, sess.x, sess.y, sess.w, sess.h, 9); c.fillStyle = C.surface2; c.fill(); c.strokeStyle = ring("session") ? C.accent : C.lineStrong; c.setLineDash([4, 3]); c.stroke(); c.setLineDash([]);
+      c.restore();
+      if (m > 0.5) hits.push({ key: "session", x: sess.x, y: sess.y, w: sess.w, h: sess.h });
+      for (let i = 0; i < n; i++) {
+        const col = i % L.cols, r = Math.floor(i / L.cols), x = gx + col * (s + L.gap), y = gy + r * (s + L.gap);
+        const frac = Math.min(1, tiles - i), tw = s * frac, fits = i === 0;
+        FS.k.rrect(c, x, y, s, s, 5); c.strokeStyle = ring("input") ? C.accent : C.line; c.stroke();
+        FS.k.rrect(c, x, y, tw, s, 5); c.fillStyle = C.surface; c.fill();
+        if (!fits) { c.save(); c.globalAlpha = 1 - m; FS.k.rrect(c, x, y, tw, s, 5); c.fillStyle = FS.k.hatch(f, c, C.muted, 5); c.fill(); c.restore(); }
+        const ink = fits && m < 0.5 ? C.fg : C.muted;
+        c.save(); c.globalAlpha = fits ? 1 : m + (1 - m) * 0.25;
+        for (let j = 0; j < 4; j++) { FS.k.rrect(c, x + 6, y + 8 + j * (s - 16) / 4, Math.max(0, Math.min(tw - 12, (s - 12) * (0.6 + 0.4 * Math.abs(Math.sin(i + j))))), 2, 1); c.fillStyle = ink; c.fill(); }
+        c.restore();
+        hits.push({ key: fits ? "input" : m < 0.5 ? "over" : "input", x, y, w: s, h: s });
+        c.strokeStyle = ring("input") ? C.accent : fits && m < 0.5 ? C.fg : C.lineStrong; c.lineWidth = fits && m < 0.5 ? 1.25 : 1; FS.k.rrect(c, x, y, tw, s, 5); c.stroke(); c.lineWidth = 1;
       }
+      if (m > 0.02) FS.k.label(f, c, "variable: context", sess.x + sess.w - 8, sess.y + sess.h + 12, { size: 10.5, weight: 600, align: "right", color: C.muted, alpha: m });
+      if (tiles > 1 && m < 0.98) FS.k.label(f, c, "doesn't fit", gx + s + L.gap + 6, gy + s / 2, { size: 10.5, weight: 600, color: C.fg, alpha: 1 - m, halo: C.surface });
+      const pct = Math.round((Math.min(WINDOW, inp.tokens) / inp.tokens) * 100);
+      f.api.out("readout", f.params.who === "base"
+        ? tiles > 1 ? `Base model: only ${pct}% of the input fits in its window` : `Base model: it fits, filling ${Math.round(tiles * 100)}% of the window`
+        : `RLM: all ${fmtTok(inp.tokens)} tokens sit in a variable; the window holds a few lines`);
     },
   });
 })();
 
-/* ================= Fig 5: trajectory length, the paper's Fig. 2 values ================= */
+/* ================= Fig 2: the loop on the pageant question (stepped flow, App. E.1) ================= */
 (() => {
-  const PANELS = {
-    A: { tab: "A · layers", axis: "layer", xs: ["1", "2", "3"], setting: "Fig. 2A: Hard-tanh · 3 layers · width 100 · σw² = 2 · σb² = 1 · RK45",
-      node: [108.245, 5407.3963, 255299.3159], ct: [90.5486, 1210.7898, 15949.0123], ltc: [12481.0242, 15332.7607, 17707.2484] },
-    B: { tab: "B · weights", axis: "σw², the spread of the weights", xs: ["1", "2", "4"], setting: "Fig. 2B: Hard-tanh · 1 layer · width 100 · σb² = 1 · RK45",
-      node: [76.8928, 105.3978, 227.3078], ct: [28.807, 84.3868, 208.133], ltc: [3052.0265, 16889.202, 276980.4953] },
-    C: { tab: "C · width (ReLU)", axis: "width, neurons", xs: ["100", "200"], setting: "Fig. 2C: ReLU · 1 layer · σw² = 2 · σb² = 1 · RK45",
-      node: [81.0841, 110.943], ct: [39.9081, 54.5492], ltc: [266.2873, 527.0816] },
-    D: { tab: "D · layers (tanh)", axis: "layer", xs: ["1", "2", "3", "4", "5"], setting: "Fig. 2D: tanh (caption: logistic-sigmoid) · 5 layers · width 100 · σw² = 2 · σb² = 1",
-      node: [37.1075, 55.8477, 56.8841, 57.0224, 57.6322], ct: [29.4344, 24.4596, 25.1329, 21.2794, 21.7574], ltc: [438.7242, 366.6077, 406.2259, 357.9859, 329.3917] },
-    E: { tab: "E · width", axis: "width, neurons", xs: ["100", "200"], setting: "Fig. 2E: Hard-tanh · 1 layer · σw² = 2 · σb² = 1 · RK45",
-      node: [104.5981, 138.4056], ct: [87.9204, 120.58], ltc: [18339.8985, 53858.6441] },
+  const meta = {
+    question: { label: "Your question", sub: "who won the pageant?", tip: { title: "Question", body: "BrowseComp-Plus query 74 asks about a festival, its 13th year, a pageant, and the winner's first and last name." } },
+    root: { label: "Root model", sub: "GPT-5, short printouts", tip: { title: "Root model", body: "This model controls the loop. It receives the question, a description of context, and short printouts instead of the documents." } },
+    repl: { label: "Python session", sub: "runs the root's code", tip: { title: "Python session", body: "It runs each block of code from the root model and keeps every variable for the next turn." } },
+    context: { label: "context", sub: "1,000 documents", tip: { title: "context", body: "This variable stores the prompt: 1,000 documents and about 8.3M tokens. Code can index, slice and search it." } },
+    vars: { label: "Variables", sub: "answer6, confirm", tip: { title: "Variables", body: "Sub-model call responses are stored here, outside the root model's context window." } },
+    sub: { label: "Sub-model call", sub: "GPT-5-mini, one piece", tip: { title: "Sub-model call", body: "llm_query(text) sends one selected string to a smaller model and returns its response, here for one document." } },
+    answer: { label: "Answer", sub: "FINAL(...)", tip: { title: "Final answer", body: "The root ends the loop by writing FINAL(answer), or FINAL_VAR(name) to return a variable." } },
   };
-  const SERIES = [{ key: "ltc", name: "LTC" }, { key: "node", name: "Neural ODE" }, { key: "ct", name: "CT-RNN" }];
-  const tips = {};
-  for (const [p, d] of Object.entries(PANELS)) for (const s of SERIES) d[s.key].forEach((v, i) => {
-    tips[`${p}:${s.key}:${i}`] = { title: `${s.name} · ${d.axis.split(",")[0]} ${d.xs[i]}`, body: `Trajectory length ${v.toLocaleString("en-US", { maximumFractionDigits: 4 })}, printed above Fig. 2${p}.` };
-  });
-  const LOG1 = 6;
-  const fmtV = (v) => (v >= 1e4 ? `${(v / 1000).toFixed(v >= 1e5 ? 0 : 1)}k` : v >= 100 ? v.toFixed(0) : v.toFixed(1));
-  FS.figure("fig-length", {
-    height: (w) => (w < 560 ? 350 : 316),
-    params: { panel: { value: "A", label: "Panel", placement: "inline", options: Object.entries(PANELS).map(([value, d]) => ({ value, label: d.tab })) } },
-    reserve: { read: ["Longest path: LTC in 3 of 3 settings · up to 1,331× the next longest"] },
-    tips,
-    tipAt: (f, x, y) => { const h = f.state.hits?.find((p) => Math.hypot(p.x - x, p.y - y) < 12); return h ? { key: h.key, x: h.x, y: h.y } : null; },
-    init(f) { f.state.from = null; f.state.fade = 1; },
-    onParam(f, name) { if (name === "panel") { f.state.from = f.state.shown ?? null; f.state.fade = 0; } },
-    update(f, dt) { if (f.state.fade < 1) { f.state.fade = Math.min(1, f.state.fade + dt / 0.3); f.dirty = true; } },
-    render(f, c) {
-      const C = f.C, narrow = narrowOf(f), L = narrow ? 40 : 56, R = f.w - (narrow ? 16 : 120), T = narrow ? 34 : 18, B = f.h - (narrow ? 76 : 62);
-      const Y = (v) => B - (Math.log10(v) / LOG1) * (B - T);
-      const hits = (f.state.hits = []);
-      for (let e = 0; e <= LOG1; e++) { c.strokeStyle = C.line; c.lineWidth = 1; FS.k.line(c, L, Y(10 ** e), R, Y(10 ** e)); FS.k.text(f, c, ["1", "10", "100", "1k", "10k", "100k", "1M"][e], L - 8, Y(10 ** e) + 4, { align: "right", size: 10.5 }); }
-      c.strokeStyle = C.lineStrong; dashed(c, L, Y(2 * Math.PI), R, Y(2 * Math.PI), [5, 3]);
-      FS.k.label(f, c, "input circle, 2π", narrow ? R - 4 : R + 6, Y(2 * Math.PI) + (narrow ? -8 : 0), { size: 10.5, color: C.muted, weight: 500, align: narrow ? "right" : "left" });
-      const draw = (key, alpha) => {
-        const d = PANELS[key], n = d.xs.length, X = (i) => L + ((i + 0.5) / n) * (R - L);
-        c.globalAlpha = alpha;
-        d.xs.forEach((x, i) => FS.k.text(f, c, x, X(i), B + 16, { align: "center", size: 11, color: C.fg }));
-        FS.k.text(f, c, `${d.axis} →`, (L + R) / 2, B + 34, { align: "center", size: 10.5 });
-        const ends = [];
-        for (const s of SERIES) {
-          const vals = d[s.key], hero = s.key === "ltc";
-          c.strokeStyle = hero ? C.fg : C.muted; c.lineWidth = hero ? C.series : 1.25;
-          if (s.key === "ct") c.setLineDash([4, 3]);
-          polyline(c, vals.map((v, i) => [X(i), Y(v)])); c.setLineDash([]);
-          vals.forEach((v, i) => {
-            const k = `${key}:${s.key}:${i}`, hot = f.hover === k;
-            c.beginPath(); c.arc(X(i), Y(v), hot ? 5 : hero ? 4 : 3.5, 0, 7);
-            if (hero) { c.fillStyle = hot ? C.accent : C.fg; c.fill(); } else { c.fillStyle = C.surface; c.fill(); c.strokeStyle = hot ? C.accent : C.muted; c.lineWidth = 1.25; c.stroke(); }
-            if (key === f.params.panel) hits.push({ key: k, x: X(i), y: Y(v) });
-            if (hero) {
-              // keep the value off the line: above-right, above-left if the line climbs to the right, below in a dip
-              const up = (j) => j >= 0 && j < n && vals[j] > v, side = up(i + 1) && up(i - 1) ? "below" : up(i + 1) ? "left" : "right";
-              FS.k.label(f, c, fmtV(v), X(i) + (side === "left" ? -8 : 8), Y(v) + (side === "below" ? 14 : -10), { size: 10.5, weight: 600, align: side === "left" ? "right" : "left" });
-            }
-          });
-          ends.push({ name: s.name, y: Y(vals[n - 1]), hero });
-        }
-        if (!narrow) {
-          ends.sort((a, b) => a.y - b.y);
-          for (let i = 1; i < ends.length; i++) ends[i].y = Math.max(ends[i].y, ends[i - 1].y + 14);
-          for (const e of ends) FS.k.label(f, c, e.name, R + 8, e.y, { size: 11, weight: 600, color: e.hero ? C.fg : C.muted });
-        }
-        c.globalAlpha = 1;
-      };
-      const fade = FS.ease.out(f.state.fade), switching = f.state.from && f.state.from !== f.params.panel && fade < 1;
-      if (switching) draw(f.state.from, 1 - fade);
-      draw(f.params.panel, switching ? fade : 1);
-      f.state.shown = f.params.panel;
-      if (narrow) {
-        [["LTC", true, false], ["Neural ODE", false, false], ["CT-RNN", false, true]].forEach(([name, hero, dash], i) => {
-          const x = L + i * 96, y = 12; c.strokeStyle = hero ? C.fg : C.muted; c.lineWidth = hero ? 2 : 1.25; if (dash) c.setLineDash([4, 3]); FS.k.line(c, x, y, x + 16, y); c.setLineDash([]); FS.k.text(f, c, name, x + 20, y + 4, { size: 10.5, color: C.fg });
-        });
-      }
-      const d = PANELS[f.params.panel];
-      let wins = 0, best = 0;
-      d.ltc.forEach((v, i) => { const other = Math.max(d.node[i], d.ct[i]); if (v > other) { wins++; best = Math.max(best, v / other); } });
-      f.api.out("read", `Longest path: LTC in ${wins} of ${d.xs.length} settings${wins ? ` · up to ${Math.round(best).toLocaleString("en-US")}× the next longest` : ""}`);
-      // the panel's settings, as printed beside it in the paper, under the axis
-      c.font = FS.k.font(f, 10.5);
-      const words = d.setting.split(" · "), lines = [""];
-      for (const w of words) { const next = lines.at(-1) ? `${lines.at(-1)} · ${w}` : w; if (c.measureText(next).width > f.w - 8 && lines.at(-1)) lines.push(w); else lines[lines.length - 1] = next; }
-      lines.forEach((t, i) => FS.k.text(f, c, t, 0, B + 56 + i * 14, { size: 10.5 }));
-    },
-  });
-})();
-
-/* ================= Fig 6: benchmarks, Tables 3, 4 and 6 (dots per method) ================= */
-(() => {
-  const METHODS = [{ key: "lstm", name: "LSTM" }, { key: "ctrnn", name: "CT-RNN" }, { key: "node", name: "Neural ODE" }, { key: "ctgru", name: "CT-GRU" }, { key: "ltc", name: "LTC" }];
-  // [mean, sd] per method, in METHODS order. dir: +1 higher is better, -1 lower is better.
-  const ROWS = [
-    { task: "Gesture", metric: "accuracy, %", src: "Table 3", dir: 1, v: [[64.57, 0.59], [59.01, 1.22], [46.97, 3.03], [68.31, 1.78], [69.55, 1.13]] },
-    { task: "Occupancy", metric: "accuracy, %", src: "Table 3", dir: 1, v: [[93.18, 1.66], [94.54, 0.54], [90.15, 1.71], [91.44, 1.67], [94.63, 0.17]] },
-    { task: "Activity recognition", metric: "accuracy, %", src: "Table 3", dir: 1, v: [[95.85, 0.29], [95.73, 0.47], [97.26, 0.1], [96.16, 0.39], [95.67, 0.575]] },
-    { task: "Sequential MNIST", metric: "accuracy, %", src: "Table 3", dir: 1, v: [[98.41, 0.12], [96.73, 0.19], [97.61, 0.14], [98.27, 0.14], [97.57, 0.18]] },
-    { task: "Traffic", metric: "squared error", src: "Table 3", dir: -1, v: [[0.169, 0.004], [0.224, 0.008], [1.512, 0.179], [0.389, 0.076], [0.099, 0.0095]] },
-    { task: "Power", metric: "squared error", src: "Table 3", dir: -1, v: [[0.628, 0.003], [0.742, 0.005], [1.254, 0.149], [0.586, 0.003], [0.642, 0.021]] },
-    { task: "Ozone", metric: "F1 score", src: "Table 3", dir: 1, v: [[0.284, 0.025], [0.236, 0.011], [0.168, 0.006], [0.26, 0.024], [0.302, 0.0155]] },
-    { task: "Person activity", metric: "accuracy, %", src: "Table 4", dir: 1, nodeName: "Latent ODE", v: [[83.59, 0.4], [81.54, 0.33], [76.48, 0.56], [85.27, 0.39], [85.48, 0.4]] },
-    { task: "Half-Cheetah", metric: "squared error", src: "Table 6", dir: -1, v: [[2.5, 0.14], [2.838, 0.112], [3.805, 0.313], [3.014, 0.134], [2.308, 0.015]] },
+  const layouts = {
+    wide: { box: [960, 250], at: { question: [20, 40, 160], root: [220, 40, 170], repl: [450, 40, 170], context: [680, 40, 150], vars: [450, 160, 170], sub: [790, 160, 150], answer: [220, 160, 170] } },
+    narrow: { box: [360, 370], at: { question: [16, 10, 180], root: [16, 80, 180], repl: [16, 150, 180], context: [16, 220, 180], vars: [16, 290, 180], sub: [222, 220, 128], answer: [222, 80, 128] } },
+  };
+  const edges = [
+    { a: "question", b: "root", wide: "x", narrow: "y" },
+    { a: "root", b: "repl", wide: "x", narrow: "y" },
+    { a: "repl", b: "context", wide: "x", narrow: "y" },
+    { a: "repl", b: "sub", wide: "v", narrow: "x" },
+    { a: "sub", b: "vars", wide: "back", narrow: "back" },
+    { a: "vars", b: "repl", wide: "v", narrow: "left" },
+    { a: "root", b: "answer", wide: "v", narrow: "x" },
   ];
-  const LTC_I = 4;
-  const nameOf = (row, i) => (i === 2 && row.nodeName ? row.nodeName : METHODS[i].name);
-  const versusIndex = (row, vs) => {
-    if (vs !== "best") return METHODS.findIndex((m) => m.key === vs);
-    let best = 0; for (let i = 1; i < LTC_I; i++) if (row.dir * row.v[i][0] > row.dir * row.v[best][0]) best = i; return best;
+  const returns = [{ a: "repl", b: "root", wide: "top", narrow: "left" }];
+  const steps = [
+    { on: Object.keys(meta), caption: "The RLM starts with one root model, one Python session that holds the prompt, and a function for sub-model calls." },
+    { on: ["question", "root", "repl", "context"], caption: "The 1,000 documents, about 8.3M tokens, enter a variable while the root model receives the question and a short description." },
+    { on: ["root", "repl", "context"], caption: "The root searches every document for “festival”, “beauty pageant”, “La Union” and six more keywords in 0.158 s." },
+    { on: ["repl", "root"], caption: "A short, cut-off printout returns one promising hit, the document at index 6." },
+    { on: ["repl", "context", "sub", "vars"], caption: "Code sends document 6 to a GPT-5-mini sub-model call that uses 1,605 tokens, costs $0.0017, and stores its response in answer6." },
+    { on: ["repl", "sub", "vars", "root"], caption: "Two more sub-model calls confirm the year and extract the winner's first and last name, Maria Dalmacio." },
+    { on: ["root", "answer"], caption: "The root returns the correct answer with FINAL, and the complete run costs $0.079." },
+  ];
+  flowFigure("fig-loop", {
+    meta, layouts, edges, returns, steps,
+    regions: [{ keys: ["repl", "context", "vars"], label: "Python session" }],
+  });
+})();
+
+/* ================= Fig 3: four real runs, four cuts (canvas, plays once per tab) ================= */
+(() => {
+  const RUNS = {
+    e1: { tab: "Search", model: "RLM(GPT-5)", input: "1,000 documents · about 8.3M tokens", kind: "filter", units: 1000, pieces: 1000, pick: 6,
+      cut: "Code searches all 1,000 for keywords without a model", calls: 3, callNote: "3 sub-model calls, all on document 6", combine: "The root reads three short answers", answer: "Maria Dalmacio", ok: true, cost: "$0.079", src: "App. E.1" },
+    e4: { tab: "Chunks", model: "RLM(GPT-5)", input: "a code repository · about 900K tokens", kind: "chunks", pieces: 10,
+      cut: "Chunks of 380,000 characters", calls: 10, extra: 1, callNote: "one sub-model call per chunk, 11 in all", combine: "One more sub-model call combines the findings", answer: "choice 1", ok: true, cost: "$0.27", src: "App. E.4" },
+    e2: { tab: "Batches", model: "RLM(Qwen3-Coder)", input: "787 questions · about 32K tokens", kind: "chunks", pieces: 8,
+      cut: "Batches of 100 lines", calls: 8, callNote: "8 sub-model calls label every question", combine: "Plain code finds 131 users and 8,515 pairs", answer: "kept re-checking, returned a different answer", ok: false, cost: "$1.12", src: "App. E.2" },
+    e3: { tab: "Each line", model: "RLM(Qwen3-Coder)", input: "3,182 questions", kind: "lines", pieces: 3182,
+      cut: "One question per sub-model call", calls: 382, callNote: "382 sub-model calls in the step the paper shows", combine: "Plain code counts the labels", answer: "“less common than”", ok: true, cost: "$0.38", src: "App. E.3" },
   };
-  const diffText = (row, j) => {
-    const a = row.v[LTC_I][0], b = row.v[j][0];
-    if (row.metric.endsWith("%")) { const d = a - b; return `${d >= 0 ? "+" : "−"}${Math.abs(d).toFixed(2)} pts`; }
-    const rel = ((a - b) / b) * 100;
-    return row.dir < 0 ? `${Math.abs(rel).toFixed(1)}% ${rel <= 0 ? "less" : "more"} error` : `${rel >= 0 ? "+" : "−"}${Math.abs(rel).toFixed(1)}%`;
+  const T = { cut: [0, 1], calls: [1, 2.6], combine: [2.6, 3.3], answer: [3.3, 4] }, END = 4.2;
+  const tips = {
+    input: { title: "The input", body: "What the run had to work through, stored as the variable context." },
+    cut: { title: "The split", body: "The root model's code decides how to divide the input. The paper's instructions suggest strategies without selecting one (App. C.1)." },
+    calls: { title: "Sub-model calls", body: "Each dot is one llm_query call on one piece. These runs use one level of recursion (§6)." },
+    combine: { title: "Combine results", body: "The root model combines the pieces by reading printouts, making one more sub-model call, or running plain code." },
+    answer: { title: "The answer", body: "Whether the run was right, and what the whole trajectory cost (App. E)." },
   };
-  const tips = {};
-  ROWS.forEach((row, r) => row.v.forEach(([m, s], i) => { tips[`${r}:${i}`] = { title: `${nameOf(row, i)} · ${row.task}`, body: `${m}${row.metric.endsWith("%") ? "%" : ""} ± ${s}, ${row.metric} (${row.dir > 0 ? "higher" : "lower"} is better), ${row.src}.` }; }));
-  FS.figure("fig-bench", {
-    height: (w) => (w < 560 ? 30 + ROWS.length * 58 : 30 + ROWS.length * 40),
-    params: { versus: { value: "best", label: "Compare with", placement: "inline", options: [{ value: "best", label: "Best other" }, { value: "lstm", label: "LSTM" }, { value: "ctrnn", label: "CT-RNN" }, { value: "node", label: "Neural ODE" }, { value: "ctgru", label: "CT-GRU" }] } },
-    reserve: { read: ["LTC ahead of the best other on 4 of 7 Table 3 tasks, 6 of 9 overall"] },
+  const geo = (f) => {
+    const narrow = f.w < 560, x0 = narrow ? 12 : 128, x1 = f.w - 14;
+    return { narrow, x0, x1, labelX: 12, yIn: narrow ? 46 : 34, yCalls: narrow ? 124 : 112, yComb: narrow ? 214 : 196, yAns: narrow ? 262 : 244 };
+  };
+  FS.figure("fig-split", {
+    height: (w) => (w < 560 ? 300 : 276),
+    duration: END,
+    keyframe: END,
+    params: { run: { value: "e1", label: "Runs from Appendix E", options: Object.entries(RUNS).map(([value, r]) => ({ value, label: r.tab })), placement: "inline" } },
+    reserve: { readout: ["RLM(Qwen3-Coder) · 382 sub-model calls · $0.38 · right answer"], chip: ["combining results", "App. E.3 · a real run"] },
     tips,
-    tipAt: (f, x, y) => { const h = f.state.hits?.find((p) => Math.abs(p.x - x) < 8 && Math.abs(p.y - y) < 9); return h ? { key: h.key, x: h.x, y: h.y } : null; },
+    tipAt: (f, x, y) => hitAt(f, x, y, 4),
+    onParam(f, name) { if (name === "run") { f.api.seek(0); f.api.play(); } },
     render(f, c) {
-      const C = f.C, narrow = narrowOf(f), vs = f.params.versus, hits = (f.state.hits = []);
-      const L = narrow ? 8 : 184, R = f.w - (narrow ? 8 : 150), rowH = narrow ? 58 : 40, top = 28;
-      // key: filled LTC, a bold ring for the method compared, thin rings for the rest
-      { let x = 4; const y = 10;
-        const item = (kind, text) => {
-          c.beginPath(); c.arc(x, y, kind === "ltc" ? 5 : 4, 0, 7);
-          if (kind === "ltc") { c.fillStyle = C.fg; c.fill(); } else { c.fillStyle = C.surface; c.fill(); c.strokeStyle = kind === "picked" ? C.fg : C.muted; c.lineWidth = kind === "picked" ? 1.75 : 1.25; c.stroke(); }
-          FS.k.text(f, c, text, x + 9, y + 4, { size: 10.5, color: C.fg }); c.font = FS.k.font(f, 10.5); x += 9 + c.measureText(text).width + 16;
-        };
-        item("ltc", "LTC"); item("picked", "compared"); item("other", narrow ? "others" : "others (hover to name)"); }
-      FS.k.text(f, c, "better →", R, 14, { size: 10.5, align: "right" });
-      let wins3 = 0, winsAll = 0;
-      ROWS.forEach((row, r) => {
-        const y0 = top + r * rowH, yDot = y0 + (narrow ? 38 : 20);
-        const lo = Math.min(...row.v.map(([m, s]) => m - s)), hi = Math.max(...row.v.map(([m, s]) => m + s)), pad = (hi - lo) * 0.05;
-        const u = (v) => (v - (lo - pad)) / (hi - lo + 2 * pad);
-        const X = (v) => (row.dir > 0 ? L + u(v) * (R - L) : R - u(v) * (R - L));   // better is always to the right
-        if (r > 0) { c.strokeStyle = C.line; c.lineWidth = 1; FS.k.line(c, 0, y0 - 4, f.w, y0 - 4); }
-        const j = versusIndex(row, vs), ahead = row.dir * (row.v[LTC_I][0] - row.v[j][0]) > 0;
-        if (ahead) { winsAll++; if (row.src === "Table 3") wins3++; }
-        const diff = `${diffText(row, j)} vs ${nameOf(row, j)}`;
-        if (narrow) {
-          FS.k.text(f, c, row.task, 0, y0 + 12, { size: 11.5, weight: 600, color: C.fg });
-          FS.k.text(f, c, `${row.metric} · ${row.src}`, 0, y0 + 25, { size: 10 });
-          FS.k.text(f, c, diff, f.w, y0 + 12, { size: 10.5, align: "right", color: ahead ? C.fg : C.muted, weight: 600 });
-        } else {
-          FS.k.text(f, c, row.task, 0, yDot - 2, { size: 12, weight: 600, color: C.fg });
-          FS.k.text(f, c, `${row.metric} · ${row.src}`, 0, yDot + 12, { size: 10.5 });
-          FS.k.text(f, c, diff, R + 14, yDot + 4, { size: 10.5, color: ahead ? C.fg : C.muted, weight: 600 });
-        }
-        c.strokeStyle = C.line; c.lineWidth = 1; FS.k.line(c, L, yDot, R, yDot);
-        const xa = X(row.v[j][0]), xb = X(row.v[LTC_I][0]), yb = yDot - 10;
-        c.strokeStyle = ahead ? C.accent : C.muted; c.lineWidth = 1.2;
-        c.beginPath(); c.moveTo(xa, yb + 4); c.lineTo(xa, yb); c.lineTo(xb, yb); c.lineTo(xb, yb + 4); c.stroke();
-        row.v.forEach(([m, s], i) => {
-          const x = X(m), hero = i === LTC_I, picked = i === j, k = `${r}:${i}`, hot = f.hover === k;
-          c.strokeStyle = hero || picked ? C.fg : C.muted; c.lineWidth = 1.25;
-          FS.k.line(c, X(m - s), yDot, X(m + s), yDot); FS.k.line(c, X(m - s), yDot - 3, X(m - s), yDot + 3); FS.k.line(c, X(m + s), yDot - 3, X(m + s), yDot + 3);
-          c.beginPath(); c.arc(x, yDot, hero ? 5 : 4, 0, 7);
-          if (hero) { c.fillStyle = hot ? C.accent : C.fg; c.fill(); }
-          else { c.fillStyle = C.surface; c.fill(); c.strokeStyle = hot ? C.accent : picked ? C.fg : C.muted; c.lineWidth = picked ? 1.75 : 1.25; c.stroke(); }
-          hits.push({ key: k, x, y: yDot });
+      const C = f.C, G = geo(f), R = RUNS[f.params.run], t = f.t, hits = (f.state.hits = []);
+      const W = G.x1 - G.x0, w = (a, b) => FS.window(t, a, b);
+      const rowLabel = (s, y, key) => {
+        if (G.narrow) return;
+        FS.k.text(f, c, s, G.labelX, y + 4, { size: 12, weight: 600, color: f.hover === key ? C.accent : C.fg });
+      };
+      // row 1: the input bar and the cut
+      rowLabel("Input", G.yIn + 8, "input");
+      FS.k.text(f, c, R.input, G.narrow ? G.x0 : G.x0 + W, G.narrow ? G.yIn - 26 : G.yIn - 6, { size: 10.5, align: G.narrow ? "left" : "right", color: G.narrow ? C.fg : C.muted });
+      const yb = G.yIn, hb = 16;
+      FS.k.rrect(c, G.x0, yb, W, hb, 4); c.fillStyle = C.surface2; c.fill(); c.strokeStyle = f.hover === "input" ? C.accent : C.lineStrong; c.stroke();
+      hits.push({ key: "input", x: G.x0, y: yb, w: W, h: hb });
+      const cutP = w(...T.cut), pieceX = (i, n) => G.x0 + (W * (i + 0.5)) / n;
+      c.save();
+      if (R.kind === "chunks") {
+        c.strokeStyle = C.fg; c.lineWidth = 1.25;
+        for (let i = 1; i < R.pieces; i++) { const x = G.x0 + (W * i) / R.pieces; c.globalAlpha = FS.clamp(cutP * R.pieces - i + 1); FS.k.line(c, x, yb - 2, x, yb + hb + 2); }
+      } else if (R.kind === "lines") {
+        c.globalAlpha = 0.5 * cutP; c.fillStyle = FS.k.hatch(f, c, C.muted, 3); FS.k.rrect(c, G.x0, yb, W * cutP, hb, 4); c.fill();
+      } else {
+        // a keyword scan sweeps across all documents; the hit (document 6) lights at the end
+        const sx = G.x0 + W * cutP;
+        c.globalAlpha = 0.45; c.fillStyle = FS.k.hatch(f, c, C.muted, 3); FS.k.rrect(c, G.x0, yb, Math.max(0, sx - G.x0), hb, 4); c.fill();
+        c.globalAlpha = cutP < 1 ? 1 : 0; c.strokeStyle = C.accent; c.lineWidth = 1.5; FS.k.line(c, sx, yb - 4, sx, yb + hb + 4);
+        if (cutP >= 1) { const x = G.x0 + (W * (R.pick + 0.5)) / R.units; c.globalAlpha = 1; c.fillStyle = C.accent; c.fillRect(x - 1.5, yb - 3, 3, hb + 6); FS.k.label(f, c, "document 6", x + 6, G.narrow ? yb + hb + 12 : yb - 8, { size: 10.5, weight: 600, color: C.fg }); }
+      }
+      c.restore();
+      FS.k.text(f, c, R.cut, G.narrow ? G.x0 : G.x1, G.narrow ? yb - 8 : yb + hb + 14, { size: 10.5, align: G.narrow ? "left" : "right", alpha: cutP, color: f.hover === "cut" ? C.accent : C.muted });
+      hits.push({ key: "cut", x: G.x0 + W / 2, y: yb + hb + 2, w: W / 2, h: 16 });
+      // row 2: the sub-calls
+      rowLabel("Sub-model calls", G.yCalls, "calls");
+      const callP = w(...T.calls), shown = Math.floor(callP * R.calls + 1e-6);
+      const dots = [];
+      if (R.kind === "lines") {
+        const cols = G.narrow ? 32 : 64, rows = Math.ceil(R.calls / cols), gx = (W - 8) / (cols - 1), gy = G.narrow ? 7 : 7.5, top = G.yCalls - ((rows - 1) * gy) / 2;
+        for (let i = 0; i < R.calls; i++) dots.push({ x: G.x0 + 4 + (i % cols) * gx, y: top + Math.floor(i / cols) * gy, r: G.narrow ? 2 : 2.4, from: null });
+      } else if (R.kind === "filter") {
+        const px = G.x0 + (W * (R.pick + 0.5)) / R.units;
+        for (let i = 0; i < R.calls; i++) dots.push({ x: G.x0 + 40 + i * 34, y: G.yCalls, r: 5, from: px });
+      } else for (let i = 0; i < R.calls; i++) dots.push({ x: pieceX(i, R.pieces), y: G.yCalls, r: 5, from: pieceX(i, R.pieces) });
+      dots.forEach((d, i) => {
+        if (i >= shown) { c.strokeStyle = C.line; c.beginPath(); c.arc(d.x, d.y, d.r, 0, 7); c.stroke(); return; }
+        const age = FS.clamp((callP * R.calls - i) / 1.5);
+        if (d.from != null) { c.strokeStyle = C.muted; c.lineWidth = 1; c.globalAlpha = 0.6; c.beginPath(); c.moveTo(d.from, yb + hb + 2); c.bezierCurveTo(d.from, (yb + hb + d.y) / 2, d.x, (yb + hb + d.y) / 2, d.x, d.y - d.r); c.stroke(); c.globalAlpha = 1; }
+        c.fillStyle = f.hover === "calls" ? C.accent : C.fg; c.beginPath(); c.arc(d.x, d.y, d.r * (1 + 0.5 * (1 - age)), 0, 7); c.fill();
+      });
+      const lastDot = dots[dots.length - 1];
+      const noteX = R.kind === "filter" ? dots[dots.length - 1].x + 18 : G.x0;
+      const noteY = R.kind === "filter" ? G.yCalls + 4 : R.kind === "lines" ? lastDot.y + 18 : G.yCalls + 22;
+      FS.k.text(f, c, R.callNote, noteX, noteY, { size: 10.5, alpha: FS.clamp(callP * 4), color: f.hover === "calls" ? C.accent : C.muted });
+      hits.push({ key: "calls", x: G.x0, y: G.yCalls - 26, w: W, h: 52 });
+      // row 3: putting it together
+      rowLabel("Combine results", G.yComb + 4, "combine");
+      const combP = w(...T.combine), bw = Math.min(W, G.narrow ? W : 330), bx = G.x0 + (W - bw) / 2, by = G.yComb - 14;
+      c.save(); c.globalAlpha = combP;
+      const fromDots = R.kind === "lines" ? [dots[0], dots[Math.floor(dots.length / 2)], lastDot] : dots;
+      c.strokeStyle = C.muted; c.lineWidth = 1;
+      for (const d of fromDots) { c.beginPath(); c.moveTo(d.x, d.y + d.r + 2); c.bezierCurveTo(d.x, (d.y + by) / 2, bx + bw / 2, (d.y + by) / 2, bx + bw / 2, by); c.stroke(); }
+      FS.k.rrect(c, bx, by, bw, 28, 6); c.fillStyle = C.surface; c.fill(); c.strokeStyle = f.hover === "combine" ? C.accent : C.fg; c.stroke();
+      if (R.extra) { c.fillStyle = C.fg; c.beginPath(); c.arc(bx + 14, by + 14, 5, 0, 7); c.fill(); }
+      FS.k.text(f, c, R.combine, bx + bw / 2 + (R.extra ? 8 : 0), by + 18, { size: 11.5, weight: 600, color: C.fg, align: "center" });
+      c.restore();
+      hits.push({ key: "combine", x: bx, y: by, w: bw, h: 28 });
+      // row 4: the answer
+      rowLabel("Answer", G.yAns + 2, "answer");
+      const ansP = w(...T.answer);
+      c.save(); c.globalAlpha = ansP;
+      const mark = R.ok ? "✓" : "✗", text = `${mark} ${R.ok ? "right" : "wrong"} · ${R.answer} · run cost ${R.cost}`;
+      FS.k.text(f, c, text, G.x0 + (G.narrow ? 0 : 0), G.yAns + 6, { size: 12, weight: 600, color: R.ok ? C.fg : C.strong });
+      if (!R.ok) { c.strokeStyle = C.strong; c.setLineDash([3, 3]); const tw = c.measureText(text).width; FS.k.line(c, G.x0, G.yAns + 11, G.x0 + tw, G.yAns + 11); c.setLineDash([]); }
+      c.restore();
+      hits.push({ key: "answer", x: G.x0, y: G.yAns - 10, w: W, h: 22 });
+      const phase = t < T.cut[1] ? "splitting the input" : t < T.calls[1] ? "sub-model calls" : t < T.combine[1] ? "combining results" : `${R.src} · a real run`;
+      f.api.out("chip", phase);
+      f.api.out("readout", `${R.model} · ${R.calls + (R.extra || 0)} sub-model calls · ${R.cost} · ${R.ok ? "right answer" : "wrong answer"}`);
+    },
+  });
+})();
+
+/* ================= Fig 4: score against input length (canvas, the paper's Fig. 1) ================= */
+(() => {
+  // Extracted from the vector drawing of the paper's Fig. 1 (v2): each point mapped onto the 0-100 gridlines.
+  const LENS = ["8K", "16K", "33K", "66K", "131K", "262K", "524K", "1M"];
+  const WINDOW_AT = 5 + Math.log2(272 / 262.144); // 272K between 2^18 and 2^19
+  const DATA = {
+    sniah: { gpt: [100, 100, 100, 100, 100, 100], rlm: [100, 100, 100, 100, 100, 100, 100, 100] },
+    oolong: { gpt: [92.1, 77.2, 49.4, 44.7, 44.0, 31.1], rlm: [84.5, 76.3, 64.0, 61.3, 56.5, 51.1, 50.0, 46.0] },
+    pairs: { gpt: [80.7, 56.8, 3.7, 0.0, 0.0, 0.0], rlm: [74.3, 59.7, 58.0, 61.1, 66.9, 56.5, 54.4, 49.1] },
+  };
+  const TASKS = [
+    { value: "sniah", label: "S-NIAH", note: "Find one phrase in filler: the work stays the same as the input grows" },
+    { value: "oolong", label: "OOLONG", note: "Count over nearly every line: the work grows with the input" },
+    { value: "pairs", label: "OOLONG-Pairs", note: "List pairs of entries: the work grows with the square of the input" },
+  ];
+  const tips = {
+    window: { title: "GPT-5's window", body: "272K tokens. Past this line GPT-5 can't take the input, so it has no points; the RLM keeps going." },
+    gpt: { title: "GPT-5", body: "The base model, the whole input in its window." },
+    rlm: { title: "RLM(GPT-5)", body: "GPT-5 is the root model in the Python session, with one level of GPT-5-mini sub-model calls (§3.2)." },
+  };
+  const geo = (f) => { const narrow = f.w < 560; return { narrow, L: narrow ? 34 : 44, R: f.w - (narrow ? 40 : 104), T: narrow ? 58 : 46, B: f.h - 44 }; };
+  const X = (G, i) => G.L + ((G.R - G.L) * i) / (LENS.length - 1);
+  const Y = (G, v) => G.B - ((G.B - G.T) * v) / 100;
+  const handle = {
+    label: "Input length: drag, or use the arrow keys", radius: 18, step: 40,
+    get: (f) => { const G = geo(f); return { x: f.state.cx ?? X(G, f.v.len), y: G.B }; },
+    set: (f, x) => {
+      const G = geo(f); f.state.cx = x;
+      const i = FS.clamp(Math.round(((x - G.L) / (G.R - G.L)) * (LENS.length - 1)), 0, LENS.length - 1);
+      if (i !== f.params.len) { f.state.fromHandle = true; f.api.set("len", i, { instant: true }); f.state.fromHandle = false; }
+      f.dirty = true;
+    },
+    bounds: (f) => { const G = geo(f); return { x0: G.L, y0: G.T, x1: G.R, y1: G.B }; },
+    release: (f) => { const G = geo(f); return { x: X(G, f.params.len), y: G.B }; },
+  };
+  FS.figure("fig-scale", {
+    height: (w) => (w < 560 ? 310 : 320),
+    params: {
+      task: { value: "pairs", label: "Tasks", options: TASKS, placement: "inline" },
+      len: { value: 2, min: 0, max: 7, step: 1, hidden: true },
+      k: { value: 1, min: 0, max: 1, hidden: true },
+    },
+    handles: { cursor: handle },
+    reserve: { readout: ["At 262K tokens: GPT-5 100.0 · RLM 100.0 · RLM ahead by 100.0 points", "At 524K tokens: GPT-5 can't take it · RLM 54.4"] },
+    tips,
+    tipAt: (f, x, y) => hitAt(f, x, y, 3),
+    autoplay: false,
+    init(f) { f.state.prev = DATA.pairs; },
+    onParam(f, name, value) {
+      if (name === "task") { f.state.prev = f.state.shown || DATA[value]; f.api.set("k", 0, { instant: true }); f.api.set("k", 1); }
+      if (name === "len" && !f.state.fromHandle) f.state.cx = null;
+    },
+    resize(f) { handle.step = (geo(f).R - geo(f).L) / (LENS.length - 1); },
+    render(f, c) {
+      const C = f.C, G = geo(f), hits = (f.state.hits = []), cur = DATA[f.params.task], k = FS.ease.smooth(f.v.k), prev = f.state.prev || cur;
+      const blend = (a, b) => b.map((v, i) => FS.lerp(a[i] ?? v, v, k));
+      const shown = (f.state.shown = { gpt: blend(prev.gpt, cur.gpt), rlm: blend(prev.rlm, cur.rlm) });
+      const note = TASKS.find((t) => t.value === f.params.task).note;
+      if (G.narrow) { const cut = note.indexOf(": "); FS.k.text(f, c, note.slice(0, cut + 1), 0, 14, { size: 11, color: C.fg }); FS.k.text(f, c, note.slice(cut + 2), 0, 29, { size: 11 }); }
+      else FS.k.text(f, c, note, 0, 14, { size: 11.5, color: C.fg });
+      // past the window
+      const wx = X(G, WINDOW_AT);
+      FS.k.rrect(c, wx, G.T, G.R - wx + 6, G.B - G.T, 0); c.fillStyle = C.surface2; c.fill();
+      c.save(); c.globalAlpha = 0.5; FS.k.rrect(c, wx, G.T, G.R - wx + 6, G.B - G.T, 0); c.fillStyle = FS.k.hatch(f, c, C.line, 6); c.fill(); c.restore();
+      c.strokeStyle = f.hover === "window" ? C.accent : C.lineStrong; c.setLineDash([4, 3]); FS.k.line(c, wx, G.T - 16, wx, G.B); c.setLineDash([]);
+      FS.k.label(f, c, G.narrow ? "272K window" : "GPT-5's window, 272K", wx + 6, G.T - 9, { size: 10.5, weight: 600, color: f.hover === "window" ? C.accent : C.muted, halo: C.surface2 });
+      hits.push({ key: "window", x: wx - 4, y: G.T - 18, w: G.narrow ? 70 : 130, h: 18 });
+      // grid
+      c.strokeStyle = C.line; c.lineWidth = 1;
+      for (const v of [0, 25, 50, 75, 100]) { FS.k.line(c, G.L, Y(G, v), G.R, Y(G, v)); FS.k.text(f, c, String(v), G.L - 8, Y(G, v) + 4, { align: "right", size: 10.5 }); }
+      LENS.forEach((s, i) => { if (G.narrow && i % 2 === 1 && i !== 7) return; FS.k.text(f, c, s, X(G, i), G.B + 16, { align: "center", size: 10.5, color: i >= 6 ? C.fg : C.muted }); });
+      FS.k.text(f, c, "input tokens, log scale →", G.R, G.B + 31, { size: 10.5, align: "right" });
+      FS.k.text(f, c, "score", G.L - 8, G.T - 8, { align: "right", size: 10.5 });
+      // series
+      const series = (vals, key, strong) => {
+        const hot = f.hover === key;
+        c.strokeStyle = hot ? C.accent : strong ? C.fg : C.muted; c.lineWidth = strong ? 1.75 : 1.25;
+        if (!strong) c.setLineDash([5, 3]);
+        c.beginPath(); vals.forEach((v, i) => (i ? c.lineTo(X(G, i), Y(G, v)) : c.moveTo(X(G, i), Y(G, v)))); c.stroke(); c.setLineDash([]); c.lineWidth = 1;
+        vals.forEach((v, i) => { c.beginPath(); c.arc(X(G, i), Y(G, v), strong ? 3.5 : 3, 0, 7); if (strong) { c.fillStyle = hot ? C.accent : C.fg; c.fill(); } else { c.fillStyle = C.surface; c.fill(); c.strokeStyle = hot ? C.accent : C.muted; c.stroke(); } });
+        vals.forEach((v, i) => hits.push({ key, x: X(G, i) - 5, y: Y(G, v) - 5, w: 10, h: 10 }));
+      };
+      series(shown.gpt, "gpt", false);
+      series(shown.rlm, "rlm", true);
+      const gl = shown.gpt.length - 1, same = Math.abs(shown.gpt[gl] - shown.rlm[gl]) < 6;
+      FS.k.label(f, c, "GPT-5", X(G, gl) + 8, Y(G, shown.gpt[gl]) + (same ? 12 : 0), { size: 11, weight: 600, color: f.hover === "gpt" ? C.accent : C.muted });
+      FS.k.label(f, c, G.narrow ? "RLM" : "RLM(GPT-5)", X(G, 7) + 8, Y(G, shown.rlm[7]) - (same ? 10 : 0), { size: 11, weight: 600, color: f.hover === "rlm" ? C.accent : C.fg });
+      // cursor
+      const cx = f.state.cx ?? X(G, f.v.len), held = f.drag === "cursor", hot = held || f.handleHover === "cursor" || f.hover === "cursor";
+      c.strokeStyle = hot ? C.accent : C.strong; c.lineWidth = held ? 2.25 : hot ? 1.75 : 1.25; FS.k.line(c, cx, G.T - 4, cx, G.B); c.lineWidth = 1;
+      c.fillStyle = C.surface; c.beginPath(); c.arc(cx, G.B, (held ? 7 : hot ? 6 : 4.5) + 2, 0, 7); c.fill();
+      c.fillStyle = hot ? C.accent : C.strong; c.beginPath(); c.arc(cx, G.B, held ? 7 : hot ? 6 : 4.5, 0, 7); c.fill();
+      const i = f.params.len, g = cur.gpt[i], r = cur.rlm[i];
+      if (held) FS.k.label(f, c, LENS[i], cx, G.T - 12, { size: 10.5, weight: 600, align: "center", color: C.fg });
+      for (const [v, strong] of [[g, false], [r, true]]) if (v != null) { c.strokeStyle = strong ? C.fg : C.muted; c.lineWidth = 1.5; c.beginPath(); c.arc(X(G, i), Y(G, v), 6.5, 0, 7); c.stroke(); c.lineWidth = 1; }
+      f.api.out("readout", g == null ? `At ${LENS[i]} tokens: GPT-5 can't take it · RLM ${r.toFixed(1)}`
+        : `At ${LENS[i]} tokens: GPT-5 ${g.toFixed(1)} · RLM ${r.toFixed(1)} · ${r > g ? `RLM ahead by ${(r - g).toFixed(1)} points` : r < g ? `GPT-5 ahead by ${(g - r).toFixed(1)} points` : "tied"}`);
+    },
+  });
+})();
+
+/* ================= Fig 5: Table 1 as bars (canvas) ================= */
+(() => {
+  const TASKS = [{ name: "CodeQA", len: "23K–4.2M tokens" }, { name: "BrowseComp+ (1K)", len: "6M–11M tokens" }, { name: "OOLONG", len: "131K tokens" }, { name: "OOLONG-Pairs", len: "32K tokens" }];
+  const ROWS = [
+    { key: "base", name: "Base model" }, { key: "bm25", name: "CodeAct + BM25" }, { key: "codesub", name: "CodeAct/sub-model calls" },
+    { key: "summary", name: "Summary agent" }, { key: "rlm", name: "RLM" }, { key: "nosub", name: "RLM/no sub-model calls" },
+  ];
+  // Table 1 (v2): [score, ran into the input limit (asterisk), mean cost $, cost std $]; null cost is N/A.
+  const T1 = {
+    gpt: {
+      base: [[24.0, 1, 0.13, 0.07], [0.0, 1, null, null], [44.0, 0, 0.14, 0.02], [0.1, 0, 0.16, 0.10]],
+      bm25: [[22.0, 1, 0.06, 0.08], [51.0, 0, 0.71, 1.20], [38.0, 0, 0.61, 1.06], [24.7, 0, 0.75, 0.43]],
+      codesub: [[24.0, 1, 0.06, 0.08], [0.0, 1, null, null], [40.0, 0, 0.85, 1.27], [28.4, 0, 1.11, 0.62]],
+      summary: [[58.0, 0, 1.31, 1.46], [70.5, 0, 0.57, 0.10], [46.0, 0, 0.13, 0.01], [0.1, 0, 0.13, 0.09]],
+      rlm: [[62.0, 0, 0.11, 0.10], [91.3, 0, 0.99, 1.22], [56.5, 0, 0.43, 0.85], [58.0, 0, 0.33, 0.20]],
+      nosub: [[58.0, 0, 0.18, 0.56], [88.0, 0, 0.44, 0.90], [36.0, 0, 0.37, 0.42], [43.9, 0, 0.69, 1.16]],
+    },
+    qwen: {
+      base: [[20.0, 1, 0.13, 0.08], [0.0, 1, null, null], [36.0, 0, 0.06, 0.00], [0.1, 0, 0.05, 0.01]],
+      bm25: [[24.0, 1, 0.17, 0.08], [12.7, 0, 0.39, 0.50], [38.0, 0, 1.51, 1.09], [0.3, 0, 1.54, 0.35]],
+      codesub: [[26.0, 1, 0.28, 0.30], [0.0, 1, null, null], [32.0, 0, 1.83, 1.14], [0.1, 0, 1.49, 0.46]],
+      summary: [[50.0, 0, 1.26, 1.50], [38.0, 0, 8.98, 2.12], [44.1, 0, 0.15, 0.01], [0.31, 0, 0.05, 0.00]],
+      rlm: [[56.0, 0, 0.92, 1.23], [44.7, 0, 0.84, 0.63], [48.0, 0, 0.61, 0.49], [23.1, 0, 1.02, 0.52]],
+      nosub: [[66.0, 0, 0.18, 0.58], [46.0, 0, 0.82, 0.69], [43.5, 0, 0.32, 0.13], [17.3, 0, 1.77, 1.23]],
+    },
+  };
+  const MODELS = { gpt: "GPT-5", qwen: "Qwen3-Coder-480B" };
+  const money = (v) => (v == null ? "N/A" : `$${v.toFixed(2)}`);
+  const best = (m, ti) => ROWS.reduce((b, r) => (T1[m][r.key][ti][0] > T1[m][b.key][ti][0] ? r : b), ROWS[0]);
+  const tips = {};
+  for (const m of Object.keys(T1)) ROWS.forEach((r, ri) => TASKS.forEach((task, ti) => {
+    const [s, star, mean, sd] = T1[m][r.key][ti];
+    tips[`${m}:${ri}:${ti}`] = { title: `${r.name} · ${task.name}`, body: `${MODELS[m]} scores ${s.toFixed(1)}${star ? " and runs into the input limit at least sometimes" : ""}. ${mean == null ? "No cost reported." : `Average cost ${money(mean)} a query, spread ±${money(sd)}.`}` };
+  }));
+  const geo = (f) => {
+    const narrow = f.w < 560;
+    if (narrow) { const labelW = 132, rowH = 22, head = 44, gap = 14; return { narrow, labelW, rowH, head, gap, panelH: head + ROWS.length * rowH, colW: f.w - labelW - 16, col: (ti) => ({ x: labelW, y: 8 + ti * (head + ROWS.length * rowH + gap) }) }; }
+    const labelW = 150, gapX = 18, colW = (f.w - labelW - 12 - gapX * 3) / 4, rowH = 30, head = 42;
+    return { narrow, labelW, rowH, head, colW, col: (ti) => ({ x: labelW + ti * (colW + gapX), y: 8 }) };
+  };
+  FS.figure("fig-results", {
+    height: (w) => { const G = geo({ w }); return G.narrow ? 8 + 4 * (G.panelH + G.gap) : 8 + G.head + ROWS.length * G.rowH + 26; },
+    params: {
+      model: { value: "gpt", label: "Model", options: [{ value: "gpt", label: "GPT-5" }, { value: "qwen", label: "Qwen3-Coder" }], placement: "inline" },
+      m: { value: 0, min: 0, max: 1, hidden: true },
+    },
+    reserve: { readout: ["Best on each task: no sub-model calls, no sub-model calls, RLM, RLM"] },
+    tips,
+    tipAt: (f, x, y) => hitAt(f, x, y),
+    autoplay: false,
+    onParam(f, name, value) { if (name === "model") f.api.set("m", value === "qwen" ? 1 : 0); },
+    render(f, c) {
+      const C = f.C, G = geo(f), mix = FS.ease.smooth(f.v.m), model = f.params.model, hits = (f.state.hits = []);
+      const val = (r, ti) => FS.lerp(T1.gpt[r][ti][0], T1.qwen[r][ti][0], mix);
+      const rowHot = (key) => f.hover === key;
+      TASKS.forEach((task, ti) => {
+        const P = G.col(ti), bx = P.x + 2, maxW = G.colW - 64, Xs = (v) => bx + (maxW * v) / 100;
+        const winner = best(model, ti).key;
+        FS.k.text(f, c, task.name, G.narrow ? 12 : P.x, P.y + 16, { size: 12, weight: 600, color: C.fg });
+        FS.k.text(f, c, task.len, G.narrow ? 12 : P.x, P.y + 30, { size: 10.5 });
+        const y0 = P.y + G.head;
+        c.strokeStyle = C.line; FS.k.line(c, bx, y0 - 4, bx, y0 + ROWS.length * G.rowH - 6);
+        // the base model as a dashed reference through the column
+        const bv = val("base", ti), xb = Xs(bv);
+        c.strokeStyle = rowHot("base") ? C.accent : C.strong; c.setLineDash([3, 3]); c.lineWidth = 1; FS.k.line(c, xb, y0 - 6, xb, y0 + ROWS.length * G.rowH - 6); c.setLineDash([]);
+        ROWS.forEach((r, ri) => {
+          const y = y0 + ri * G.rowH, h = G.narrow ? 11 : 13, [, star, mean] = T1[model][r.key][ti];
+          const v = val(r.key, ti), w = Math.max(1.5, Xs(v) - bx), win = r.key === winner, hot = rowHot(r.key) || f.hover === `${model}:${ri}:${ti}`;
+          if (ti === 0 || G.narrow) FS.k.text(f, c, r.name, 12, y + h - 1, { size: G.narrow ? 11 : 11.5, weight: r.key === "rlm" || r.key === "nosub" ? 600 : 500, color: rowHot(r.key) ? C.accent : r.key === "rlm" || r.key === "nosub" ? C.fg : C.muted });
+          FS.k.rrect(c, bx, y, w, h, 2); c.fillStyle = win ? C.fg : r.key === "rlm" || r.key === "nosub" ? C.muted : C.lineStrong; c.fill();
+          if (star) { FS.k.rrect(c, bx, y, w, h, 2); c.fillStyle = FS.k.hatch(f, c, C.surface, 4); c.fill(); }
+          if (hot) { FS.k.rrect(c, bx - 1, y - 1, w + 2, h + 2, 3); c.strokeStyle = C.accent; c.lineWidth = 1.5; c.stroke(); c.lineWidth = 1; }
+          const target = T1[model][r.key][ti][0], label = `${(Math.abs(v - target) < 0.05 ? target : v).toFixed(Number.isInteger(Math.round(target * 100) / 10) ? 1 : 2)}${star ? "*" : ""}`;
+          FS.k.label(f, c, label, bx + w + 5, y + h / 2, { size: 11, weight: win ? 700 : 500, color: win ? C.fg : C.muted });
+          if (!G.narrow || true) FS.k.text(f, c, money(mean), P.x + G.colW, y + h - 2, { size: 10, align: "right", mono: true, color: C.faint || C.muted });
+          hits.push({ key: `${model}:${ri}:${ti}`, x: P.x, y: y - 6, w: G.colW, h: G.rowH });
         });
       });
-      const what = vs === "best" ? "the best other" : METHODS.find((m) => m.key === vs).name;
-      f.api.out("read", `LTC ahead of ${what} on ${wins3} of 7 Table 3 tasks, ${winsAll} of 9 overall`);
+      if (!G.narrow) FS.k.text(f, c, `${MODELS[model]} · bar = score, right = average cost a query · * ran into the input limit · dashed line = base model`, G.labelW, f.h - 8, { size: 10.5 });
+      const names = TASKS.map((_, ti) => (best(model, ti).key === "rlm" ? "RLM" : "no sub-model calls"));
+      f.api.out("readout", names.every((n) => n === "RLM") ? "Best on each task: the RLM, all four" : `Best on each task: ${names.join(", ")}`);
+    },
+  });
+})();
+
+/* ================= Fig 6: training a small RLM (canvas, steps; Table 1's Qwen3-8B rows) ================= */
+(() => {
+  const TASKS = ["CodeQA", "BrowseComp+ (1K)", "OOLONG", "OOLONG-Pairs"];
+  const S = {
+    base: { name: "Qwen3-8B", v: [4.0, 0.0, 0.0, 0.1], star: [1, 1, 1, 0], cost: [0.01, null, null, 0.01] },
+    rlm: { name: "as an RLM", v: [26.0, 2.0, 24.0, 4.3], star: [0, 0, 0, 0], cost: [0.04, 0.03, 0.19, 0.05] },
+    ft: { name: "fine-tuned RLM", v: [32.0, 14.0, 32.0, 5.2], star: [0, 0, 0, 0], cost: [0.02, 0.01, 0.04, 0.02] },
+    gpt: { name: "base GPT-5", v: [24.0, 0.0, 44.0, 0.1], star: [1, 1, 0, 0], cost: [0.13, null, 0.14, 0.16] },
+  };
+  const ORDER = ["base", "rlm", "ft"];
+  const rel = S.ft.v.map((v, i) => ((v - S.rlm.v[i]) / S.rlm.v[i]) * 100);
+  const sorted = [...rel].sort((a, b) => a - b), median = (sorted[1] + sorted[2]) / 2;
+  const steps = [
+    { show: 1, gpt: false, caption: "Qwen3-8B alone runs into its input limit on three tasks and scores almost nothing." },
+    { show: 2, gpt: false, caption: "Running the same model as an RLM without training raises it to 26.0 on CodeQA and 24.0 on OOLONG, with weaker results elsewhere." },
+    { show: 3, gpt: false, caption: "Fine-tuning on 1,000 RLM runs from a larger model on unrelated tasks improves all four results." },
+    { show: 3, gpt: true, caption: "Dashed lines add base GPT-5 for comparison, with the small RLM above it on three tasks and below it on OOLONG." },
+  ];
+  const tips = {};
+  ORDER.concat("gpt").forEach((k) => TASKS.forEach((t, i) => { const c = S[k].cost[i]; tips[`${k}:${i}`] = { title: `${S[k].name} · ${t}`, body: `Score ${S[k].v[i].toFixed(1)}${S[k].star[i] ? ", ran into the input limit at least sometimes" : ""}. ${c == null ? "No cost reported." : `Average cost $${c.toFixed(2)} a query.`} (Table 1)` }; }));
+  const geo = (f) => { const narrow = f.w < 560, L = narrow ? 30 : 44, R = f.w - 12, T = 26, B = f.h - (narrow ? 64 : 58); return { narrow, L, R, T, B, colW: (R - L) / 4 }; };
+  FS.figure("fig-train", {
+    height: (w) => (w < 560 ? 300 : 300),
+    steps,
+    tips,
+    tipAt: (f, x, y) => hitAt(f, x, y, 2),
+    init(f) {
+      f.api.out("gains", rel.map((g) => `${g.toFixed(1)}%`).join(", "));
+      f.api.out("median", `${median.toFixed(1)}%`);
+    },
+    render(f, c) {
+      const C = f.C, G = geo(f), st = steps[f.step], e = FS.ease.out(f.stepT), hits = (f.state.hits = []);
+      const Y = (v) => G.B - ((G.B - G.T) * v) / 50;
+      c.strokeStyle = C.line;
+      for (const v of [0, 25, 50]) { FS.k.line(c, G.L, Y(v), G.R, Y(v)); FS.k.text(f, c, String(v), G.L - 8, Y(v) + 4, { align: "right", size: 10.5 }); }
+      FS.k.text(f, c, "score", G.narrow ? 0 : G.L - 8, G.T - 10, { align: G.narrow ? "left" : "right", size: 10.5 });
+      TASKS.forEach((task, i) => {
+        const cx = G.L + G.colW * (i + 0.5), bw = Math.min(G.narrow ? 14 : 30, G.colW / 5), gap = G.narrow ? 3 : 6;
+        FS.k.text(f, c, G.narrow ? task.replace("BrowseComp+ (1K)", "BrowseComp+").replace("OOLONG-Pairs", "Pairs") : task, cx, G.B + 16, { align: "center", size: G.narrow ? 10.5 : 11.5, weight: 600, color: C.fg });
+        ORDER.forEach((k, j) => {
+          const x = cx + (j - 1) * (bw + gap) - bw / 2, v = S[k].v[i];
+          const vis = j < st.show ? (j === st.show - 1 && f.from < f.step && steps[f.from]?.show <= j ? e : 1) : 0;
+          if (vis <= 0) { c.strokeStyle = C.line; c.setLineDash([2, 3]); FS.k.rrect(c, x, Y(0) - 1, bw, 1, 0); c.stroke(); c.setLineDash([]); return; }
+          const h = (Y(0) - Y(v)) * vis, hot = f.hover === `${k}:${i}`;
+          FS.k.rrect(c, x, Y(0) - Math.max(1.5, h), bw, Math.max(1.5, h), 2);
+          c.fillStyle = k === "ft" ? C.fg : k === "rlm" ? C.muted : C.lineStrong; c.fill();
+          if (S[k].star[i]) { FS.k.rrect(c, x, Y(0) - Math.max(1.5, h), bw, Math.max(1.5, h), 2); c.fillStyle = FS.k.hatch(f, c, C.surface, 4); c.fill(); }
+          if (hot) { c.strokeStyle = C.accent; c.lineWidth = 1.5; FS.k.rrect(c, x - 1, Y(0) - Math.max(1.5, h) - 1, bw + 2, Math.max(1.5, h) + 2, 3); c.stroke(); c.lineWidth = 1; }
+          if (!G.narrow || k === "ft") FS.k.text(f, c, v.toFixed(1), x + bw / 2, Y(v) - 5, { align: "center", size: G.narrow ? 10 : 10.5, weight: k === "ft" ? 700 : 500, color: k === "ft" ? C.fg : C.muted, alpha: vis });
+          hits.push({ key: `${k}:${i}`, x, y: Math.min(Y(v), Y(0) - 12), w: bw, h: Math.max(12, Y(0) - Y(v)) });
+        });
+        if (st.gpt) {
+          const v = S.gpt.v[i], x0 = cx - 1.5 * (bw + gap) - 6, x1 = cx + 1.5 * (bw + gap) + 6, hot = f.hover === `gpt:${i}`;
+          c.save(); c.globalAlpha = f.from < f.step ? e : 1;
+          c.strokeStyle = hot ? C.accent : C.strong; c.lineWidth = 1.5; c.setLineDash([4, 3]); FS.k.line(c, x0, Y(v), x1, Y(v)); c.setLineDash([]); c.lineWidth = 1;
+          FS.k.label(f, c, G.narrow ? `${v.toFixed(1)}` : `GPT-5 ${v.toFixed(1)}`, x1 + 3, Y(v) - (v < 3 ? 8 : 0), { size: 10, weight: 600, color: C.strong });
+          c.restore();
+          hits.push({ key: `gpt:${i}`, x: x0, y: Y(v) - 5, w: x1 - x0, h: 10 });
+        }
+        if (st.show === 3) FS.k.text(f, c, `+${(S.ft.v[i] - S.rlm.v[i]).toFixed(1)} pts`, cx, G.B + (G.narrow ? 30 : 32), { align: "center", size: 10.5, alpha: f.step === 2 && f.from < 2 ? e : 1 });
+      });
+      // key
+      const ky = f.h - 12; let kx = G.L;
+      ORDER.forEach((k, j) => { if (j >= st.show) return; c.fillStyle = k === "ft" ? C.fg : k === "rlm" ? C.muted : C.lineStrong; FS.k.rrect(c, kx, ky - 8, 10, 10, 2); c.fill(); FS.k.text(f, c, S[k].name, kx + 14, ky + 1, { size: 10.5 }); kx += c.measureText(S[k].name).width + 34; });
+      if (st.gpt) { c.strokeStyle = C.strong; c.setLineDash([4, 3]); FS.k.line(c, kx, ky - 3, kx + 14, ky - 3); c.setLineDash([]); FS.k.text(f, c, "base GPT-5", kx + 18, ky + 1, { size: 10.5 }); }
     },
   });
 })();

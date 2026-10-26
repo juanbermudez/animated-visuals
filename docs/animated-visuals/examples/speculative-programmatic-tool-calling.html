@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Recursive language models · Animated Visuals</title>
-<meta name="description" content="A visual guide to Zhang, Kraska and Khattab's Recursive Language Models (arXiv:2512.24601v2). The guide shows how the prompt becomes a variable, how the model inspects it with code, and how it uses sub-model calls on selected pieces. Six figures use numbers from the paper.">
+<title>Speculative programmatic tool calling · Animated Visuals</title>
+<meta name="description" content="Speculative programmatic tool calling starts safe sub-model calls before a model finishes writing a program. This guide explains the method through one six-line program, five figures, and results from Zhang's post.">
 <script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="../site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2704,6 +2704,16 @@ a.card:hover { border-color: var(--fs-line-strong); }
 .guide .verified li { margin-bottom: 4px; }
 .guide code { overflow-wrap: anywhere; }
 
+/* The guide's own furniture: the key under Fig. 1 and the readout lines that wrap on a phone. */
+.guide .key { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 0 20px 12px; color: var(--fs-muted); font-size: 12px; line-height: 1.4; }
+.guide .key span { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.guide .key i { display: inline-block; flex: none; }
+.guide .key .sw-call { width: 18px; height: 11px; border: 1px solid var(--fs-line); border-radius: 2px; background: repeating-linear-gradient(135deg, var(--fs-muted) 0 1px, var(--fs-surface-2) 1px 5px); }
+.guide .key .sw-file { width: 4px; height: 13px; border-radius: 1px; background: var(--fs-fg); }
+.guide .key .sw-answer { width: 10px; height: 10px; border-radius: 50%; background: var(--fs-accent); }
+.guide .key .sw-start { width: 0; height: 14px; border-left: 1px dashed var(--fs-muted); }
+.guide .fs-step-text.readout { min-height: 1.5em; }
+@media (max-width: 560px) { .guide .fs-step-text.readout { min-height: 3em; } }
 
 </style>
 </head>
@@ -2714,135 +2724,118 @@ a.card:hover { border-color: var(--fs-line-strong); }
     <a class="brand" href="../index.html"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="10" width="12" height="12" rx="3" fill="currentColor" opacity="0.22"/><rect x="10" y="10" width="12" height="12" rx="3" fill="currentColor" opacity="0.5"/><rect x="18" y="10" width="12" height="12" rx="3" fill="currentColor"/></svg>Animated Visuals</a>
     <nav class="site-nav" aria-label="Main"><a href="../gallery.html">Gallery</a><a href="../examples.html">Examples</a><a href="../themes.html">Themes</a><a href="../customize.html">Customize</a><a href="../credits.html">Credits</a></nav>
     <div class="head-actions">
-      <a class="icon-btn" href="https://github.com/juanbermudez/animated-visuals" aria-label="Source on GitHub"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a>
+      <a class="icon-btn" href="https://github.com/juanbermudez/skills/tree/main/skills/animated-visuals" aria-label="Source on GitHub"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a>
       <button class="icon-btn theme-btn" type="button" aria-label="Change theme"></button>
     </div>
   </div>
 </header>
 
 <main class="page guide" id="main">
-  <h1>Recursive language models</h1>
-  <p class="source">A visual guide to Alex L. Zhang, Tim Kraska and Omar Khattab, “Recursive Language Models”, arXiv:2512.24601, version 2, January 2026 · <a href="https://arxiv.org/abs/2512.24601v2">the paper</a> · <a href="https://github.com/alexzhang13/rlm">the code</a>. Built with Animated Visuals. Every number is from the paper and says where it comes from.</p>
-  <p class="lede">Recursive language models (RLMs) let a model work with inputs longer than its context window by storing the prompt in a Python variable. The example asks who won a beauty pageant mentioned in one of 1,000 documents, about 8.3 million tokens or roughly 30 times what GPT-5 reads at once. The root model searches the variable and uses a sub-model call, a separate model request on selected text, to read the relevant document. This guide shows how the loop works, how it scales, its results on four tasks, and its limits.</p>
+  <h1>Speculative programmatic tool calling</h1>
+  <p class="source">A visual guide to Alex L. Zhang, “Speculative Programmatic Tool Calling”, blog post, August 24, 2026 · <a href="https://alexzhang13.github.io/blog/2026/spec-ptc/">the post</a> · <a href="https://github.com/alexzhang13/spec-ptc">the code</a> (MIT). Built with Animated Visuals; every measured number is from the post and says where.</p>
+  <p class="lede">Speculative programmatic tool calling (sPTC, Zhang's term) starts safe sub-model calls while a model is still writing the program that contains them. This guide follows one six-line program where line 2 starts three sub-model calls before the model finishes writing. It shows how a throwaway copy of the program runs those calls early, how their answers reach the real run, and when the method saves time.</p>
 
-  <h2>The prompt as a variable</h2>
-  <p>A model's context window is the text it can read at once. GPT-5's window is 272K tokens (the paper's Fig. 1). The example's 1,000 documents total about 8.3M tokens (App. E.1). A base model cannot take the full input. Base GPT-5 therefore scores 0.0 on this task in Table 1, marked as running into its input limit. Even when an input fits, the paper reports context rot, where quality drops as the prompt grows (§1).</p>
-  <p>An RLM stores the input in a Python variable named <code>context</code> instead of putting it in the model's window. It tells the model what <code>context</code> contains and how long its pieces are (App. C.1). The <span data-fs-ref="fig-window:window">window</span> holds a short description while the complete <span data-fs-ref="fig-window:input">input</span> remains available in the variable. Switch between the two models below, or choose a smaller input to see one that fits.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-window-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-window-title">A base model must fit the full input</h3><span class="fs-status">Fig. 1 · lengths to scale</span></header>
-    <div class="fs-stage"><canvas id="fig-window" role="img" aria-label="On the left, the model's window, 272K tokens. On the right, the input drawn as tiles the size of that window: the worked example's 8.3M tokens make about 30 tiles. A base model has to fit every tile into the one window; an RLM keeps all of them in a variable in a Python session and puts only a short description in the window."></canvas></div>
+  <h2>The example program</h2>
+  <p>Zhang tested the method on a Recursive Language Model (RLM), a harness where the main model never reads the long input directly. The input sits in a Python variable called <code>context</code>. The model writes code against it in a REPL, a Python session that keeps its variables from one cell to the next. <code>llm_query</code> makes one sub-model call. His benchmark, OOLONG, asks the model to label a long list of items and then count the labels. Its paper calls this classification and counting in context. The example below is one cell the model might write.</p>
+  <div class="code"><pre><code class="language-python">chunks = context.split("\n\n")                             # 1  plain code
+labels = [llm_query("Label: " + c) for c in chunks[:3]]    # 2  three sub-model calls
+tally = llm_query("Count the labels: " + str(labels))      # 3  needs line 2
+notes = read_file("notes.txt")                             # 4  reads a file
+review = llm_query("Compare with my notes: " + notes)      # 5  needs line 4
+print(tally, review)                                       # 6</code></pre></div>
+  <p>Five sub-model calls and one file read. The three label calls don't depend on each other. The tally needs all three labels. The review needs the file. Every figure below runs on these six lines.</p>
+
+  <h2>How calls start early</h2>
+  <p>Without speculation, the harness waits for the last line and then runs the cell from top to bottom. Line 2 makes three sub-model calls in a row because each one blocks until it returns. With speculation, the <span data-fs-ref="fig-turn:label">three label calls</span> start together when line 2 is complete. The <span data-fs-ref="fig-turn:tally">tally</span> starts as soon as they return, while the model is still writing. Set each sub-model call to <span data-fs-scrub="fig-turn:call"></span> by dragging the number. The answer arrives at <span data-fs-out="fig-turn:specEnd"></span> instead of <span data-fs-out="fig-turn:plainEnd"></span>.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-turn-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-turn-title">Calls start while the model is still writing</h3><span class="fs-status">Fig. 1 · simulated</span></header>
+    <div class="fs-stage"><canvas id="fig-turn" role="img" aria-label="One turn on one clock. Top lane: the model writes text, then six lines of code. Middle lane, without speculation: after writing ends, three label calls run one after another, then the tally, the file read and the review. Bottom lane, with speculation: the three label calls start together when line 2 is complete, the tally starts when they return, and after writing ends only the file read and the review remain, so the answer comes much sooner."></canvas></div>
+    <div class="key" aria-hidden="true"><span><i class="sw-call"></i>sub-model call</span><span><i class="sw-file"></i>file read</span><span><i class="sw-answer"></i>answer</span><span><i class="sw-start"></i>line 2 complete: calls start</span></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-window:readout"></span>
-      <div class="fs-controls"><div data-fs-param="fig-window:who" data-label="Who reads it"></div></div>
+      <span class="fs-position" data-fs-out="fig-turn:clock"></span>
+      <div class="fs-controls">
+        <button type="button" data-fs="fig-turn chapter-prev" aria-label="Previous moment">←</button>
+        <button type="button" data-fs="fig-turn chapter-next" aria-label="Next moment">→</button>
+        <button type="button" data-fs="fig-turn play">Play</button>
+      </div>
     </div>
-    <p class="fs-caption">Each tile is one 272K-token GPT-5 window (the paper's Fig. 1), and the input sizes come from Table 1 and App. E. The RLM window contents are illustrative, based on the instructions, question and input description in §2 and App. C.1; switch models or choose a smaller input.</p>
+    <p class="fs-step-text readout" data-fs-out="fig-turn:summary" aria-live="polite"></p>
+    <p class="fs-caption">Fig. 1 simulates one turn; its writing speed, line endings, and call lengths are illustrative, not from the post. Drag across the lanes to move through the turn, and hover over a block to identify it; call length and writing speed are in settings.</p>
+  </figure>
+  <p>The post describes two sources of savings. First, calls run during the writing instead of after it. Second, independent blocking calls run at the same time even when the code lists them one after another. Zhang calls this a naive JIT compiler, a compiler that rewrites code while it runs. In this turn, <span data-fs-out="fig-turn:atOnce"></span> of the saving comes from running the labels at once and <span data-fs-out="fig-turn:overlap"></span> from overlapping with the writing.</p>
+
+  <h2>The throwaway copy</h2>
+  <p>Line 3's sub-model call needs line 3's input, which depends on line 2's output. The harness therefore keeps a <span data-fs-ref="fig-shadow:copy">shadow copy</span>, a deep copy of the program's variables that runs each line as soon as it is complete. In the copy, a sub-model call starts in the background and leaves a promise, a placeholder that fills in when the answer arrives. Each call is filed under its inputs in a <span data-fs-ref="fig-shadow:store">store of early calls</span>. The <span data-fs-ref="fig-shadow:real">real program</span> can find the answer there later.</p>
+  <p>The copy never changes the real variables, and it is thrown away at the end of the turn. Zhang separates the two because the model may write broken code or stop in the middle of a call. The real program still runs the cell as one unit or not at all.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-shadow-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-shadow-title">The copy runs ahead while the real program waits</h3><span class="fs-status">Fig. 2 · mechanism</span></header>
+    <div class="fs-stage"><svg id="fig-shadow" viewBox="0 0 960 420" role="img" aria-label="Four panels. The program as written so far, line by line. The shadow copy's variables, filling in as each line completes. The store of early calls: three label calls, then the tally, each running, then ready. The real program, which waits until writing ends, then runs the whole cell and finds four answers already there; the file read and the review run the normal way."></svg></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-shadow:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-shadow" aria-hidden="true"></span><button type="button" data-fs="fig-shadow prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-shadow next" aria-label="Next step">Next</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-shadow:caption" aria-live="polite"></p>
+    <p class="fs-caption">This figure shows the mechanism on the worked program, with the prompts shortened to “…”. I ran these six lines through Zhang's library, where four calls started during the stream and the real run found four answers before making one call itself; step through with the buttons or arrow keys.</p>
   </figure>
 
-  <h2>How the loop runs</h2>
-  <p>The <span data-fs-ref="fig-loop:root">root model</span> controls the loop. On each turn, it writes code. The <span data-fs-ref="fig-loop:repl">Python session</span> runs that code and returns a short, cut-off printout to the root model's window (§2). The code can use Python and one extra function, <code>llm_query</code>. This function sends a string to another model and returns the response. Each use is a <span data-fs-ref="fig-loop:sub">sub-model call</span>. In the paper's GPT-5 runs, GPT-5 is the root model and GPT-5-mini handles the sub-model calls (§3.2). The results stay in <span data-fs-ref="fig-loop:vars">variables</span> outside the root model's window. The root model ends the loop with <code>FINAL(answer)</code>, or uses <code>FINAL_VAR(name)</code> to return a variable (App. C.1).</p>
-  <p>The next figure follows the real pageant-question run from Appendix E.1, one turn at a time.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-loop-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-loop-title">The root receives only short printouts</h3><span class="fs-status">App. E.1 · a real run</span></header>
-    <div class="fs-stage"><svg id="fig-loop" viewBox="0 0 960 250" role="img" aria-label="Flow: your question goes to the root model; the root writes code that the Python session runs; the session holds the documents in a variable and can send any piece to a sub-call on a smaller model; sub-call answers land in variables; only short printouts go back to the root; the root returns the final answer."></svg></div>
+  <h2>Which calls can start early</h2>
+  <p>Half-written code can run only when its effects cannot leave the copy. The post uses two rules. First, tools are declared up front. <code>@spec.tool(speculatable=True, pure=True)</code> marks a tool that may run early and has no side effects. A tool without those flags, such as <code>read_file</code> here, never runs early. Ordinary functions that reach outside the program, such as <code>open</code>, are also unsafe. Second, a call does not start when any of its inputs depend on something unsafe.</p>
+  <p>Calls are matched by their inputs and by how many times they occur. Five identical calls for a majority vote therefore receive five separate answers instead of reusing one answer five times. A started call can still be <span data-fs-ref="fig-life:thrown">thrown away</span> when the real program never asks for it. Pick a call and step through its states.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-life-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-life-title">Calls are handed over, refused, or thrown away</h3><span class="fs-status">Fig. 3 · mechanism</span></header>
+    <div class="fs-tabbar"><div data-fs-param="fig-life:call" data-label="Which call"></div></div>
+    <div class="fs-stage"><svg id="fig-life" viewBox="0 0 960 330" role="img" aria-label="A state machine for one call: line complete, then a check whether its inputs are safe. If yes, it starts early, possibly after waiting for an earlier call's answer. A started call is either handed over when the real program asks for it, or thrown away if it never does. If the inputs are not safe, the call is not started and runs the normal way after writing ends."></svg></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-loop:step"></span>
-      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-loop" aria-hidden="true"></span><button type="button" data-fs="fig-loop prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-loop next" aria-label="Next step">Next</button><button type="button" data-fs="fig-loop play" aria-label="Pause the flow">Pause</button></div>
+      <span class="fs-position" data-fs-out="fig-life:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-life" aria-hidden="true"></span><button type="button" data-fs="fig-life prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-life next" aria-label="Next step">Next</button></div>
     </div>
-    <p class="fs-step-text" data-fs-out="fig-loop:caption" aria-live="polite"></p>
-    <p class="fs-caption">The steps follow the paper's trajectory for BrowseComp-Plus query 74 (App. E.1); the cost, token count and run times come from its panels, and the animation timing is illustrative. Use Prev and Next to change steps, or hover a box for its role.</p>
+    <p class="fs-step-text" data-fs-out="fig-life:caption" aria-live="polite"></p>
+    <p class="fs-caption">States from the post's design section, matched to the states a call goes through in Zhang's code (started, ready, claimed, thrown away). Pick a call in the tabs, then step through it.</p>
+  </figure>
+  <p>No rollback is needed because a wrong guess never reaches the real variables. The cost of a wrong guess is one unused sub-model call, and those calls can add up. Zhang's worst case is a serving engine clogged with extra speculative requests. This can be controlled through how aggressive speculation is and how the calls are queued. The post says the copy itself is cheap. Checking the stream costs close to nothing, and the deep copy is small because REPLs tend to hold few large mutable objects.</p>
+
+  <h2>When speculation saves time</h2>
+  <p>The possible saving depends on two limits. In this program, overlap is capped by how long the model keeps writing after line 2. Running calls at once is capped by how many calls are independent. The gain is largest when the calls fit inside the writing, at <span data-fs-out="fig-gain:peak"></span>. Past that point, the tally finishes after the writing and the gain settles toward 5 ÷ 3 ≈ 1.67× because five calls in a row became a chain of three. Drag the line. The band shows what the post measured on a real benchmark, well below the simulation's best case.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-gain-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-gain-title">The gain peaks when calls fit inside the writing</h3><span class="fs-status">Fig. 4 · simulated</span></header>
+    <div class="fs-stage"><canvas id="fig-gain" role="img" aria-label="A chart of speed-up against the length of each sub-call for the worked turn. The full speed-up rises from 1 to a peak where the calls just fit inside the writing, then levels off toward 1.67. A second, dashed curve shows the speed-up from running the calls at once alone. A band from 1 to 1.2 marks what the post measured."></canvas></div>
+    <p class="fs-step-text readout" data-fs-out="fig-gain:readout" aria-live="polite"></p>
+    <p class="fs-caption">This figure is computed from the same simulated turn as Fig. 1; only the band comes from the post. Drag the vertical line, or focus it and use the arrow keys; the same control also moves Fig. 1.</p>
   </figure>
 
-  <h2>What separates it from an agent with tools</h2>
-  <p>Coding agents and retrieval agents also run code and call models. The paper compares its RLM loop in Algorithm 1 with a similar agent loop in Algorithm 2 and identifies three differences (§2).</p>
-  <div class="tablewrap"><table class="plain">
-    <thead><tr><th>Design choice</th><th>An RLM</th><th>An agent with tools</th></tr></thead>
-    <tbody>
-      <tr><td>Prompt location</td><td>A variable; the model receives a handle and a length</td><td>The model's window; it reaches the window limit and falls back to summarizing</td></tr>
-      <tr><td>Answer location</td><td>A variable, so the answer can exceed one call's output</td><td>The model's output, limited to what one call can write</td></tr>
-      <tr><td>Sub-model calls</td><td>Code makes them inside loops on selected pieces, including one per line when needed</td><td>The model requests a few calls at a time as actions</td></tr>
-    </tbody>
-  </table></div>
-
-  <h2>How the model splits the input</h2>
-  <p>The instructions show the root model several example strategies but do not prescribe how to split the work (App. C.1). Appendix E shows four different runs. For the pageant question, the root searches first and reads one document. On a code repository, it splits the input into large chunks and asks about each one. On two counting tasks, Qwen3-Coder labels questions in <span data-fs-ref="fig-split:calls">batches</span> in one run and one at a time in the other. The split determines the number of sub-model calls. All four runs use one level of recursion. Their sub-model calls are regular model calls and cannot start another RLM (§6).</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-split-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-split-title">The root decides how to split the input</h3><span class="fs-chip" data-fs-out="fig-split:chip" aria-live="polite"></span></header>
-    <div class="fs-tabbar"><div data-fs-param="fig-split:run" data-label="Runs from Appendix E"></div></div>
-    <div class="fs-stage"><canvas id="fig-split" role="img" aria-label="Four real runs from the paper's appendix. For each: the input as a long bar, how the code cut it, the sub-calls as dots under their pieces, how the pieces were put back together, and whether the answer was right, with the run's cost."></canvas></div>
-    <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-split:readout"></span>
-      <div class="fs-controls"><button type="button" data-fs="fig-split play" aria-label="Replay">Play</button></div>
-    </div>
-    <p class="fs-caption">Each tab shows one trajectory from Appendix E, with its counts, sizes and costs. The pieces are spaced evenly except for document 6 in the pageant run, which uses its real position; choose a tab to replay it.</p>
+  <h2>Measured results</h2>
+  <p>Zhang measured the method on his RLM harness with OOLONG, using the trec-coarse split with 132k tokens of context, and OOLONG-Pairs with 32k. vLLM served Qwen3-30B-A3B-Instruct on a node of eight H100s. He ran each setting 5 times at temperature 0.7 and at 0.0 to reduce run-to-run variance, with 4 and with 8 tasks sharing the same serving engine. His summary reports speed-ups of about 1 to 1.2×.</p>
+  <p>The plot gives a less precise picture. Mean wall time with speculation is lower in all four settings, and the ratios of the means are <span data-fs-out="fig-measured:ratios"></span>, above the post's stated range. The 95% intervals overlap in every setting. The speculative runs also made more sub-model calls in three of the four settings, so the two sides took different paths through the tasks. The bars therefore cannot isolate the effect of speculation. The supported summary is 1 to 1.2×, with the bars suggesting that it was probably faster but not showing precisely by how much.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-measured-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-measured-title">Faster on average in every setting, with wide spread</h3><span class="fs-status">Fig. 5 · from the post</span></header>
+    <div class="fs-tabbar"><div data-fs-param="fig-measured:metric" data-label="Measure"></div></div>
+    <div class="fs-stage"><canvas id="fig-measured" role="img" aria-label="Means and 95% intervals over 5 runs for four settings, temperature 0.0 and 0.7, each with 4 and 8 tasks at once, without and with speculation. Wall time is lower with speculation in all four settings, but every pair of intervals overlaps. Sub-calls are higher with speculation in three of four. Turns per task are about nine to ten either way."></canvas></div>
+    <p class="fs-step-text readout" data-fs-out="fig-measured:readout" aria-live="polite"></p>
+    <p class="fs-caption">Means and 95% t-intervals over 5 runs, read off the post's plot by pixel (about ±10 s). Above each pair is the ratio or change between the two means; hover a mark for its numbers.</p>
   </figure>
+  <p>The simulated example gains more because it represents one turn whose time is entirely calls. The benchmark tasks take about nine or ten turns each in the turns tab, 4 or 8 tasks share one serving engine, and speculative calls add load to that engine. Zhang says the speed-up is hard to pin down. It depends on tool latency, how many tokens the model generates, serving-engine load, and the choices the harness makes.</p>
 
-  <h2>Scaling with input length</h2>
-  <p>The paper's Fig. 1 compares input length with how much of the input the answer depends on (§3). S-NIAH hides one phrase in filler, so the work stays constant as the input grows. OOLONG asks for a count that depends on nearly every line, so the work grows with the input. OOLONG-Pairs asks for pairs of entries, so the work grows with the square of the input (§3.1). GPT-5 finds the phrase at every length it can take. Its score falls to almost nothing on OOLONG-Pairs by 33K tokens. The RLM declines more slowly and continues past <span data-fs-ref="fig-scale:window">GPT-5's window</span> to 1M tokens. Drag the <span data-fs-ref="fig-scale:cursor">cursor</span> to inspect any length.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-scale-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-scale-title">RLM scores decline more slowly with input length</h3><span class="fs-status">Fig. 1 · the paper's data</span></header>
-    <div class="fs-tabbar"><div data-fs-param="fig-scale:task" data-label="Tasks"></div></div>
-    <div class="fs-stage"><canvas id="fig-scale" role="img" aria-label="Score against input length from 8K to 1M tokens on a log scale, for GPT-5 and for an RLM built on GPT-5. GPT-5's points stop at its 272K window. On the needle task both stay at 100; on OOLONG and OOLONG-Pairs GPT-5 falls much faster."></canvas></div>
-    <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-scale:readout"></span>
-    </div>
-    <p class="fs-caption">The values were extracted from the paper's vector Fig. 1 for GPT-5 and RLM(GPT-5), using one level of sub-model calls; they match Table 1 where the two overlap. Drag the cursor, or focus it and use the arrow keys.</p>
-  </figure>
-
-  <h2>Results on four tasks</h2>
-  <p>Table 1 compares the RLM with a <span data-fs-ref="fig-results:base">base model</span>; CodeAct, an agent that runs code but keeps the prompt in its window, with either the BM25 search tool or sub-model calls; a <span data-fs-ref="fig-results:summary">summary agent</span> that summarizes when its window fills; and an RLM with a Python session but <span data-fs-ref="fig-results:nosub">no sub-model calls</span> (§3.2).</p>
-  <p>With GPT-5, the RLM scores highest on all four tasks. On BrowseComp+, the pageant question's task, it scores 91.3 against 70.5 for the summary agent at $0.99 a query. The paper's linear estimate for GPT-5-mini reading all 6 to 11M tokens is $1.50 to $2.75 (Obs. 1). On OOLONG, which fits in the window, the RLM improves on the base model by 28.4% (56.5 against 44.0). On OOLONG-Pairs, it scores 58.0 while the base model scores 0.1. Sub-model calls improve the dense tasks: 56.5 against 36.0 without them on OOLONG, and 58.0 against 43.9 on OOLONG-Pairs. With Qwen3-Coder, the version without sub-model calls scores highest on CodeQA (66.0 against 56.0) and BrowseComp+ (46.0 against 44.7) (Obs. 2). Switch the model to compare both.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-results-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-results-title">An RLM variant leads every task for both models</h3><span class="fs-status">Table 1</span></header>
-    <div class="fs-stage"><canvas id="fig-results" role="img" aria-label="Scores of six methods on four tasks, as bars, for GPT-5 or Qwen3-Coder-480B. A dashed line marks the base model in each task. With GPT-5 the RLM has the longest bar on all four tasks; with Qwen3-Coder the RLM or the RLM without sub-calls has it. Each bar carries its average cost per query."></canvas></div>
-    <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-results:readout"></span>
-      <div class="fs-controls"><div data-fs-param="fig-results:model" data-label="Model"></div></div>
-    </div>
-    <p class="fs-caption">The bars show scores and average API cost per query from Table 1; higher is better, using F1 on OOLONG-Pairs and percent correct elsewhere. Hatched bars mark input-limit cases from Table 1's asterisk; hover a bar to see its cost spread.</p>
-  </figure>
-  <p>Average cost does not show the most expensive runs. With GPT-5, the median RLM run costs less than the median base-model call. Some runs take many turns and cost much more (the paper's Fig. 3, Obs. 4). Compared with the summary agent, which reads the whole input, the paper reports RLMs up to 3× cheaper (Obs. 4).</p>
-
-  <h2>Fine-tuning a small model</h2>
-  <p>Qwen3-8B, a small open model, performs poorly as an RLM without fine-tuning. The authors fine-tuned it on 1,000 filtered RLM runs that Qwen3-Coder-480B produced on LongBenchPro, using tasks unrelated to the four benchmarks (§3.2, App. A). Training used 300 steps at a batch size of 64 and took 48 H100 hours (App. A). Each sub-model call is an ordinary model call, so only the root model had to learn how to manage the session (§3.2). Use Next to step through the comparison.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-train-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-train-title">Fine-tuning improves the small model on all tasks</h3><span class="fs-status">Table 1</span></header>
-    <div class="fs-stage"><canvas id="fig-train" role="img" aria-label="Four tasks, each with Qwen3-8B's score on its own, run as an RLM, and after fine-tuning, plus base GPT-5 for comparison. Fine-tuning raises all four; the fine-tuned small RLM is above base GPT-5 on three tasks and below it on OOLONG."></canvas></div>
-    <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-train:step"></span>
-      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-train" aria-hidden="true"></span><button type="button" data-fs="fig-train prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-train next" aria-label="Next step">Next</button></div>
-    </div>
-    <p class="fs-step-text" data-fs-out="fig-train:caption" aria-live="polite"></p>
-    <p class="fs-caption">The scores come from the Qwen3-8B and GPT-5 rows in Table 1, and the gains under the chart are computed from them. Hover a mark to see its value and cost.</p>
-  </figure>
-  <p>The paper reports a 28.3% improvement, described as “on average” in the abstract and “a median” in the introduction. From the rounded Table 1 scores, the four relative gains are <span data-fs-out="fig-train:gains"></span> and their median is <span data-fs-out="fig-train:median"></span>. Allowing for rounding, 28.3% is the median rather than the mean. The fine-tuned model also costs less, at 1 to 4 cents a query instead of 3 to 19 (Table 1). It exceeds base GPT-5 on three tasks, including two that GPT-5 could not fully take in. On OOLONG, it scores 32.0 against 44.0.</p>
-
-  <h2>Limits</h2>
-  <p>The paper reports four limits (App. B, App. E).</p>
-  <ul>
-    <li><strong>Latency.</strong> Every sub-model call waits for the previous one, so the slowest runs take much longer than any baseline (§4, the paper's Figs. 7 and 8). Parallel sub-model calls are left to future work.</li>
-    <li><strong>Model behavior varies.</strong> On one OOLONG question, Qwen3-Coder made one sub-model call per line, producing hundreds to thousands for one task. GPT-5 makes “on the order of ten” (App. E). The authors added one line to Qwen3-Coder's instructions to discourage this behavior (App. C.1).</li>
-    <li><strong>Final-answer handling.</strong> In one OOLONG-Pairs run, the model built the correct list in a variable and kept checking it. It then returned a different answer that it wrote itself, and that answer was wrong (App. E.2).</li>
-    <li><strong>Short inputs.</strong> The base model is sometimes slightly better on short inputs (Obs. 3). Small models without strong coding skills also struggle to use the session (App. B).</li>
-  </ul>
+  <h2>When to use it</h2>
+  <p>Zhang recommends the method when the tools are slow sub-models or sub-agents. It is especially useful with locally run models, where decoding one main context leaves the hardware waiting on memory and extra calls can put it to work. Through a hosted API, the only gain is overlap. He expects larger long-term gains from JIT-style methods that overlap calls with the program's own execution as harnesses write longer programs.</p>
 
   <details class="verified">
     <summary>Checked against the source</summary>
     <ul>
-      <li>This guide uses arXiv:2512.24601 <strong>version 2</strong> (28 January 2026), including the appendices. Version 3 (11 May 2026) extends Table 1 with recursion depths 0 to 3 and coding-agent baselines, and it changes some numbers. This guide does not use version 3's numbers.</li>
-      <li>GPT-5's 272K-token window comes from the paper's Fig. 1 caption. App. E.1 provides the 1,000 documents, about 8.3M tokens, $0.079, nine search keywords, document index 6, the sub-model call's 1,605 tokens and $0.001682 on GPT-5-mini, run times of 0.158 s, 9.089 s and 6.279 s, and the answer Maria Dalmacio. “About 30 windows” is 8.3M ÷ 272K = 30.5.</li>
-      <li>Table 1 provides the task lengths (CodeQA 23K to 4.2M, BrowseComp+ 6M to 11M, OOLONG 131K, OOLONG-Pairs 32K), every score, and every cost with its spread in Figs. 5 and 6. The percentages 28.4% for OOLONG over the base model, 91.3 against 70.5, and 17.9% and 3% for the no-sub-model-call ablation with Qwen3-Coder were recomputed from Table 1 and match Obs. 1 and 2.</li>
-      <li>Fig. 4's scores were extracted from the paper's vector Fig. 1. Each plotted point's coordinates were read from the PDF and mapped to its gridlines from 0 to 100. They match Table 1 at 131K (GPT-5 44.0, RLM 56.5) and at 32K for the RLM (58.0). At 33K, Fig. 1 shows GPT-5 at 3.7 on OOLONG-Pairs, while Table 1 has 0.1 at 32K; these appear to be separate runs.</li>
-      <li>The paper's Fig. 1 caption in version 2 says the lengths run from 2¹³ to 2¹⁸, while its RLM points extend to 1M (2²⁰). Version 3's caption says 2²⁰. The guide plots the points that are drawn.</li>
-      <li>Fig. 3 uses App. E.1 (BrowseComp+ query 74); E.4 (CodeQA query 44, about 900K tokens, chunks of 380,000 characters, 11 sub-model calls, $0.27); E.2 (OOLONG-Pairs query 3, 76,083 characters, 794 lines including 787 questions, 8 batches of 100, 131 users, 8,515 pairs, $1.12, wrong answer); and E.3 (OOLONG query 212, 3,182 questions, 382 sub-model calls in the step shown, $0.38). The CodeQA run's 10 chunks are inferred from 11 calls minus the one that combines them.</li>
-      <li>Fine-tuning uses 1,000 trajectories (§3.2), 300 steps, batch 64, and 48 H100 hours (App. A). The page computes the relative gains and their median from Table 1. Appendix A also gives other counts at different filtering stages, 2,250, 1,072, and 2,241 and 953 in its Fig. 5, that do not clearly reconcile with 1,000. The guide uses the number from §3.2.</li>
-      <li>The RLM window contents in Fig. 1, animation timing in Fig. 2, and even piece spacing in Fig. 3 are simulated or illustrative. Everything else is data from the paper.</li>
-      <li>The guide leaves out the cost-against-length plot in Fig. 11 and the cost and runtime percentile charts in Figs. 3, 7 to 10 because they are raster images without printed values, so no number is read from them. It also leaves out the BrowseComp+ document-count experiment in the paper's Fig. 6 and App. D.2, and the code in the trajectory screenshots.</li>
+      <li><b>Source.</b> Alex L. Zhang, “Speculative Programmatic Tool Calling”, blog post, August 24, 2026, <a href="https://alexzhang13.github.io/blog/2026/spec-ptc/">alexzhang13.github.io/blog/2026/spec-ptc</a>. No paper version exists that I could find; alphaXiv lists the same post (2608.spec-ptc), not an arXiv paper. Code: <a href="https://github.com/alexzhang13/spec-ptc">github.com/alexzhang13/spec-ptc</a>, MIT, read at commit 9b78b7d (August 24, 2026). No code or figure from either is copied here; the figures are redrawn.</li>
+      <li><b>Benchmark setup</b> (post, “Some Comparison Numbers on RLMs”): OOLONG trec-coarse at 132k and OOLONG-Pairs at 32k; one node of 8×H100 (the post writes “8xH100 80B”) running vLLM; Qwen3-30B-A3B-Instruct (the post's text says “Qwen3-30B-A3B-Instruct-0527”, its plot title “Qwen3-30B-A3B-Instruct”); temperatures 0.7 and 0.0; 5 runs per setting; 4 and 8 concurrent runs on one engine.</li>
+      <li><b>1 to 1.2×</b>: the post's sentence under its results plot, “The speed-ups for the RLM are generally on the order of 1-1.2x.” The post does not say how that range was computed.</li>
+      <li><b>Fig. 5 values</b>: read by pixel from the post's plot (<code>spec-plot.png</code>, 2640 × 1518), whose footnote says “Mean over repeats · 95% t-interval · all n=5 units included”. One pixel is about 4 s (temperature 0.0) or 9 s (0.7) of wall time, 5 sub-model calls, 0.03 turns. The plotting code clips interval ends at 0. The post publishes no per-run values (the CSV its plotting code reads is not in the repository), so the figure shows means and intervals, not one dot per run. The ratios (1.45×, 1.40×, 1.28×, 1.84×) and the sub-model call differences are computed by this guide.</li>
+      <li><b>Simulated</b>: Fig. 1 and Fig. 4. Text before the code takes 4 s, the model writes 16 characters per second at 1× speed, the file read takes 0.2 s, and every sub-model call takes the same time (4 s by default). Real calls vary; nothing else contends for the engine. Figs. 2 and 3 show the mechanism, not timings.</li>
+      <li><b>Mechanism checks</b>: I ran the worked program through Zhang's library at 9b78b7d with a fake sub-model. Four calls started during the stream (three labels at once when line 2 closed, the tally after they returned), <code>read_file</code> ran once, in the real run, and the real run had four hits and one miss (the review). A call whose input comes from a tool without the speculative flags is skipped, and later independent calls still start.</li>
+      <li><b>One mismatch between post and code</b>: the post's Case 4 comments say a call after an <code>open()</code> line is still “speculated after a”. In the code at 9b78b7d a blocked built-in like <code>open</code> stops the copy for the rest of the turn; I ran the post's Case 4 and the later call was not started early. The worked program uses a tool marked unsafe instead, where post and code agree.</li>
+      <li><b>Left out on purpose</b>: “peeking”, where the copy also starts calls from a line that isn't finished yet (a loop body) and takes those bets back if later tokens change them; async tools, the out-of-process daemon and the plugins for other agents; the deterministic program suite in the repository, which the post chose not to report; the related work it cites (Conveyor, Speculative Interaction Agents, AsyncFC).</li>
+      <li><b>Not verified</b>: the author's posts about it on X; whether the plot's “Wall time (s)” is per task or per run (the plotting code reads per-task rows, but I did not trace the aggregation); why the plotted means differ by more than the stated 1 to 1.2×.</li>
     </ul>
   </details>
 </main>
 
 <footer class="site-foot">
-  <div class="site-foot-inner"><span>Animated Visuals · MIT License · Juan Bermudez</span><nav aria-label="Footer"><a href="https://github.com/juanbermudez/animated-visuals">GitHub</a><a href="../credits.html">Credits</a></nav></div>
+  <div class="site-foot-inner"><span>Animated Visuals · MIT License · Juan Bermudez</span><nav aria-label="Footer"><a href="https://github.com/juanbermudez/skills/tree/main/skills/animated-visuals">GitHub</a><a href="../credits.html">Credits</a></nav></div>
 </footer>
 <script>
 /* Animated Visuals runtime. Global `FS` (from the project's first name, Figure Studio). No dependencies.
@@ -5338,526 +5331,695 @@ function flowFigure(id, { meta, layouts, edges, returns = [], steps, params, H =
 
 /* ================= Fig 1: one turn on one clock (canvas, real) ================= */
 
-/* Recursive Language Models: six figures. Every number below is from arXiv:2512.24601v2 and says where.
-   Claims, one per figure:
-   1 fig-window   A base model must fit the input in its window; an RLM keeps the input in a variable.
-   2 fig-loop     The root writes code, the session runs it, sub-calls read pieces, only short printouts come back.
-   3 fig-split    The root chooses how to cut the input, and the cut sets how many sub-calls it makes.
-   4 fig-scale    As the task needs more of the input, GPT-5 falls off sooner; the RLM slides slowly, past the window.
-   5 fig-results  An RLM variant has the best score on all four tasks, with either model, at a mid-pack cost.
-   6 fig-train    Fine-tuning a small model on 1,000 RLM runs lifts it on every task. */
+/* Speculative programmatic tool calling: five figures on one worked program.
+   Shared first: the six-line cell and the simulated turn that Figs. 1 and 4 both draw from. */
+const PROGRAM = [
+  'chunks = context.split("\\n\\n")',
+  'labels = [llm_query("Label: " + c) for c in chunks[:3]]',
+  'tally = llm_query("Count the labels: " + str(labels))',
+  'notes = read_file("notes.txt")',
+  'review = llm_query("Compare with my notes: " + notes)',
+  "print(tally, review)",
+];
+const SHORT = [
+  "chunks = context.split(…)",
+  "labels = [llm_query(…) for c in chunks[:3]]",
+  "tally = llm_query(… + str(labels))",
+  'notes = read_file("notes.txt")',
+  "review = llm_query(… + notes)",
+  "print(tally, review)",
+];
+// Illustrative timings, not from the post: text before the code, characters written per second at 1x, a file read.
+const THINK = 4, CPS = 16, READ = 0.2;
 
-const hitAt = (f, x, y, pad = 0) => f.state.hits?.find((h) => x >= h.x - pad && x <= h.x + h.w + pad && y >= h.y - pad && y <= h.y + h.h + pad)?.key ?? null;
-const fmtTok = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n / 1e3)}K`);
+/* One turn, both ways. Without speculation the cell runs after writing, every call blocking in turn.
+   With it, line 2's three calls start together when line 2 is complete, the tally starts when they return
+   (or when line 3 is complete, if later), and the real run claims both; the file and the review run after. */
+function simulate(call, speed) {
+  let t = THINK;
+  const lines = PROGRAM.map((s, i) => { const t0 = t; t += s.length / (CPS * speed); return { i, t0, t1: t }; });
+  const W = t, e2 = lines[1].t1, e3 = lines[2].t1;
+  const plain = [];
+  let u = W;
+  for (let k = 0; k < 3; k++) { plain.push({ kind: "label", n: k + 1, t0: u, t1: u + call }); u += call; }
+  plain.push({ kind: "tally", t0: u, t1: u + call }); u += call;
+  plain.push({ kind: "file", t0: u, t1: u + READ }); u += READ;
+  plain.push({ kind: "review", t0: u, t1: u + call }); u += call;
+  const B = u;
+  const spec = [0, 1, 2].map((k) => ({ kind: "label", n: k + 1, sub: k, t0: e2, t1: e2 + call }));
+  const s3 = Math.max(e3, e2 + call);
+  spec.push({ kind: "tally", t0: s3, t1: s3 + call });
+  const tc = Math.max(W, s3 + call);
+  spec.push({ kind: "file", t0: tc, t1: tc + READ });
+  spec.push({ kind: "review", t0: tc + READ, t1: tc + READ + call });
+  const S = tc + READ + call;
+  const J = W + 3 * call + READ; // the same calls run at once after writing, with no overlap
+  return { lines, W, e2, e3, plain, spec, B, S, J, wait: tc - W > 0.05 ? [W, tc] : null };
+}
+const sec = (s) => `${s.toFixed(1)} s`;
 
-/* ================= Fig 1: the window against the input (canvas, to scale) ================= */
+/* ================= Fig 1: one turn on one clock (canvas, simulated) ================= */
 (() => {
-  const WINDOW = 272e3; // GPT-5's context window, the paper's Fig. 1 caption
-  const INPUTS = {
-    pairs: { label: "OOLONG-Pairs task · 32K", tokens: 32e3, what: "an OOLONG-Pairs task" },          // Table 1
-    oolong: { label: "OOLONG task · 131K", tokens: 131e3, what: "an OOLONG task" },                  // Table 1
-    codeqa: { label: "A code repository · ~900K", tokens: 900e3, what: "a code repository" },        // App. E.4
-    bcp: { label: "1,000 documents · ~8.3M", tokens: 8.3e6, what: "the pageant question's documents" }, // App. E.1
-  };
+  const ID = "fig-turn";
+  let P = simulate(4, 1); // from the targets, for readouts and chapters
+  const span = () => P.B * 1.06;
   const tips = {
-    window: { title: "Context window", body: "GPT-5 reads up to 272K tokens in one call. All task information it uses must fit here." },
-    input: { title: "Input", body: "Each tile matches one context window, so the lengths are shown to scale." },
-    session: { title: "Python session", body: "The session keeps variables between turns. The complete input is stored in one named context." },
-    over: { title: "Input limit", body: "Every tile after the first exceeds the context window. A base model cannot take the full input." },
+    think: { title: "Text before code", body: "The model writes its reasoning first. There is no code to read yet, so nothing can start." },
+    line: { title: "A line of code", body: "A line is complete when the next one begins. Only then can the harness read the calls in it." },
+    label: { title: "Label call", body: "One sub-model call per part of the text. Without speculation they run one after another; with it, all three start when line 2 is complete." },
+    tally: { title: "Tally call", body: "Needs all three labels. With speculation it starts the moment they return, still during the writing." },
+    file: { title: "File read", body: "read_file touches the outside world, so it never runs early. It runs once, for real, after writing ends." },
+    review: { title: "Review call", body: "Needs the file's contents, which the copy can't know, so it never starts early." },
+    wait: { title: "Waits for the tally", body: "The real program reached line 3 before the early tally returned. It waits for that call instead of making a new one." },
+    launch: { title: "Calls start", body: "Line 2 is complete: the copy runs it, and the three label calls start in the background." },
+    ends: { title: "Writing ends", body: "The real program now runs the cell from the top. Answers that are already there are handed over at once." },
+    answer: { title: "Answer", body: "The cell has finished running: the moment the user is waiting for." },
   };
-  const layout = (w) => {
-    const narrow = w < 560, gap = narrow ? 4 : 6, cols = narrow ? 7 : 10, rows = narrow ? 5 : 4;
-    const gx0 = narrow ? 12 : 196, gw = w - gx0 - 12;
-    const s = Math.min(narrow ? 44 : 58, (gw - gap * (cols - 1)) / cols);
-    const win = narrow ? { x: 12, y: 34, s: s * 1.6 } : { x: 28, y: 52, s: Math.max(s * 1.9, 110) };
-    const gy0 = narrow ? win.y + win.s + 70 : 52;
-    const h = gy0 + rows * (s + gap) - gap + (narrow ? 34 : 40);
-    return { narrow, gap, cols, rows, gx0, gy0, s, win, h: Math.max(h, narrow ? 0 : win.y + win.s + 96) };
-  };
-  FS.figure("fig-window", {
-    height: (w) => layout(w).h,
+  const spec = {
+    height: (w) => (w < 560 ? 250 : 240),
+    duration: 1,
+    keyframe: 1,
+    formatTime: (t) => `t = ${(t * span()).toFixed(1)} s`,
+    timeAxis: (f) => ({ x0: f.w < 560 ? 70 : 128, x1: f.w - 18 }),
     params: {
-      who: { value: "base", label: "Who reads it", options: [{ value: "base", label: "Base model" }, { value: "rlm", label: "RLM" }], placement: "inline" },
-      input: { value: "bcp", label: "Input", options: Object.entries(INPUTS).map(([value, i]) => ({ value, label: i.label })) },
-      mix: { value: 0, min: 0, max: 1, hidden: true },
+      call: { value: 4, min: 0.5, max: 12, step: 0.5, label: "Each sub-model call takes", unit: " s", format: (v) => `${v.toFixed(1)} s` },
+      speed: { value: 1, min: 0.5, max: 3, step: 0.25, label: "Writing speed", format: (v) => `${v.toFixed(2)}×` },
     },
-    reserve: { readout: ["Base model: only 3% of the input fits in its window", "RLM: all 8.3M tokens sit in a variable; the window holds a few lines"] },
-    tips,
-    tipAt: (f, x, y) => hitAt(f, x, y),
-    autoplay: false,
-    onParam(f, name, value) { if (name === "who") f.api.set("mix", value === "rlm" ? 1 : 0); },
-    render(f, c) {
-      const C = f.C, L = layout(f.w), m = FS.ease.smooth(f.v.mix), inp = INPUTS[f.params.input];
-      const tiles = inp.tokens / WINDOW, hits = (f.state.hits = []);
-      const ring = (k) => f.hover === k;
-      // the window
-      const W = L.win;
-      FS.k.text(f, c, "Model's window", W.x, W.y - 22, { size: 12, weight: 600, color: C.fg });
-      FS.k.text(f, c, "272K tokens", W.x, W.y - 8, { size: 10.5 });
-      FS.k.rrect(c, W.x, W.y, W.s, W.s, 6); c.fillStyle = C.surface; c.fill();
-      c.strokeStyle = ring("window") ? C.accent : C.fg; c.lineWidth = ring("window") ? 1.75 : 1.25; c.stroke(); c.lineWidth = 1;
-      hits.push({ key: "window", x: W.x, y: W.y, w: W.s, h: W.s });
-      // base: the window fills with the input (to its fraction); rlm: a few short lines
-      const pad = 8, lineH = W.s > 120 ? 6 : 5, nLines = Math.floor((W.s - pad * 2) / lineH);
-      const fillFrac = Math.min(1, tiles);
-      c.save(); c.globalAlpha = 1 - m;
-      for (let i = 0; i < Math.round(nLines * fillFrac); i++) { const lw = (W.s - pad * 2) * (0.55 + 0.45 * Math.abs(Math.sin(i * 2.3))); FS.k.rrect(c, W.x + pad, W.y + pad + i * lineH, lw, 2.2, 1); c.fillStyle = C.muted; c.fill(); }
-      c.restore();
-      const parts = [["instructions", 4], ["question", 1], ["about context", 1], ["printouts", 2]];
-      c.save(); c.globalAlpha = m;
-      let row = 0;
-      parts.forEach(([, n], pi) => { for (let i = 0; i < n; i++) { const lw = (W.s - pad * 2) * (pi === 2 ? 0.5 : 0.7 + 0.3 * Math.abs(Math.sin(row * 1.7))); FS.k.rrect(c, W.x + pad, W.y + pad + row * lineH, lw, 2.2, 1); c.fillStyle = pi === 2 ? C.accent : pi === 1 ? C.fg : C.muted; c.fill(); row++; } row++; });
-      c.restore();
-      const capY = W.y + W.s + 16;
-      if (!L.narrow) {
-        FS.k.text(f, c, tiles <= 1 ? `holds ${Math.round(fillFrac * 100)}% of the window` : "full, and the rest is left out", W.x, capY, { size: 10.5, alpha: 1 - m });
-        FS.k.text(f, c, "instructions, the question,", W.x, capY, { size: 10.5, alpha: m });
-        FS.k.text(f, c, "one line about context,", W.x, capY + 14, { size: 10.5, alpha: m });
-        FS.k.text(f, c, "short printouts", W.x, capY + 28, { size: 10.5, alpha: m });
-      } else {
-        FS.k.text(f, c, tiles <= 1 ? `holds ${Math.round(fillFrac * 100)}% of the window` : "full, the rest left out", W.x + W.s + 12, W.y + 18, { size: 10.5, alpha: 1 - m });
-        FS.k.text(f, c, "instructions, the question,", W.x + W.s + 12, W.y + 18, { size: 10.5, alpha: m });
-        FS.k.text(f, c, "a line about context,", W.x + W.s + 12, W.y + 32, { size: 10.5, alpha: m });
-        FS.k.text(f, c, "short printouts", W.x + W.s + 12, W.y + 46, { size: 10.5, alpha: m });
-      }
-      // the input as window-sized tiles
-      const n = Math.ceil(tiles), gx = L.gx0, gy = L.gy0, s = L.s;
-      FS.k.text(f, c, "The input", gx, L.narrow ? gy - 24 : gy - 22, { size: 12, weight: 600, color: C.fg });
-      FS.k.text(f, c, `${inp.what} · ${fmtTok(inp.tokens)} tokens = ${tiles < 10 ? tiles.toFixed(2) : tiles.toFixed(1)} windows`, L.narrow ? gx : gx + 70, L.narrow ? gy - 8 : gy - 22, { size: 10.5 });
-      const sess = { x: gx - 6, y: gy - 6, w: Math.min(n, L.cols) * (s + L.gap) - L.gap + 12, h: Math.ceil(n / L.cols) * (s + L.gap) - L.gap + 12 };
-      c.save(); c.globalAlpha = m;
-      FS.k.rrect(c, sess.x, sess.y, sess.w, sess.h, 9); c.fillStyle = C.surface2; c.fill(); c.strokeStyle = ring("session") ? C.accent : C.lineStrong; c.setLineDash([4, 3]); c.stroke(); c.setLineDash([]);
-      c.restore();
-      if (m > 0.5) hits.push({ key: "session", x: sess.x, y: sess.y, w: sess.w, h: sess.h });
-      for (let i = 0; i < n; i++) {
-        const col = i % L.cols, r = Math.floor(i / L.cols), x = gx + col * (s + L.gap), y = gy + r * (s + L.gap);
-        const frac = Math.min(1, tiles - i), tw = s * frac, fits = i === 0;
-        FS.k.rrect(c, x, y, s, s, 5); c.strokeStyle = ring("input") ? C.accent : C.line; c.stroke();
-        FS.k.rrect(c, x, y, tw, s, 5); c.fillStyle = C.surface; c.fill();
-        if (!fits) { c.save(); c.globalAlpha = 1 - m; FS.k.rrect(c, x, y, tw, s, 5); c.fillStyle = FS.k.hatch(f, c, C.muted, 5); c.fill(); c.restore(); }
-        const ink = fits && m < 0.5 ? C.fg : C.muted;
-        c.save(); c.globalAlpha = fits ? 1 : m + (1 - m) * 0.25;
-        for (let j = 0; j < 4; j++) { FS.k.rrect(c, x + 6, y + 8 + j * (s - 16) / 4, Math.max(0, Math.min(tw - 12, (s - 12) * (0.6 + 0.4 * Math.abs(Math.sin(i + j))))), 2, 1); c.fillStyle = ink; c.fill(); }
-        c.restore();
-        hits.push({ key: fits ? "input" : m < 0.5 ? "over" : "input", x, y, w: s, h: s });
-        c.strokeStyle = ring("input") ? C.accent : fits && m < 0.5 ? C.fg : C.lineStrong; c.lineWidth = fits && m < 0.5 ? 1.25 : 1; FS.k.rrect(c, x, y, tw, s, 5); c.stroke(); c.lineWidth = 1;
-      }
-      if (m > 0.02) FS.k.label(f, c, "variable: context", sess.x + sess.w - 8, sess.y + sess.h + 12, { size: 10.5, weight: 600, align: "right", color: C.muted, alpha: m });
-      if (tiles > 1 && m < 0.98) FS.k.label(f, c, "doesn't fit", gx + s + L.gap + 6, gy + s / 2, { size: 10.5, weight: 600, color: C.fg, alpha: 1 - m, halo: C.surface });
-      const pct = Math.round((Math.min(WINDOW, inp.tokens) / inp.tokens) * 100);
-      f.api.out("readout", f.params.who === "base"
-        ? tiles > 1 ? `Base model: only ${pct}% of the input fits in its window` : `Base model: it fits, filling ${Math.round(tiles * 100)}% of the window`
-        : `RLM: all ${fmtTok(inp.tokens)} tokens sit in a variable; the window holds a few lines`);
+    reserve: {
+      clock: ["t = 99.9 s · answered; the other run is still going"],
+      specEnd: ["99.9 s"], plainEnd: ["99.9 s"], atOnce: ["99.9 s"], overlap: ["99.9 s"],
     },
-  });
-})();
-
-/* ================= Fig 2: the loop on the pageant question (stepped flow, App. E.1) ================= */
-(() => {
-  const meta = {
-    question: { label: "Your question", sub: "who won the pageant?", tip: { title: "Question", body: "BrowseComp-Plus query 74 asks about a festival, its 13th year, a pageant, and the winner's first and last name." } },
-    root: { label: "Root model", sub: "GPT-5, short printouts", tip: { title: "Root model", body: "This model controls the loop. It receives the question, a description of context, and short printouts instead of the documents." } },
-    repl: { label: "Python session", sub: "runs the root's code", tip: { title: "Python session", body: "It runs each block of code from the root model and keeps every variable for the next turn." } },
-    context: { label: "context", sub: "1,000 documents", tip: { title: "context", body: "This variable stores the prompt: 1,000 documents and about 8.3M tokens. Code can index, slice and search it." } },
-    vars: { label: "Variables", sub: "answer6, confirm", tip: { title: "Variables", body: "Sub-model call responses are stored here, outside the root model's context window." } },
-    sub: { label: "Sub-model call", sub: "GPT-5-mini, one piece", tip: { title: "Sub-model call", body: "llm_query(text) sends one selected string to a smaller model and returns its response, here for one document." } },
-    answer: { label: "Answer", sub: "FINAL(...)", tip: { title: "Final answer", body: "The root ends the loop by writing FINAL(answer), or FINAL_VAR(name) to return a variable." } },
-  };
-  const layouts = {
-    wide: { box: [960, 250], at: { question: [20, 40, 160], root: [220, 40, 170], repl: [450, 40, 170], context: [680, 40, 150], vars: [450, 160, 170], sub: [790, 160, 150], answer: [220, 160, 170] } },
-    narrow: { box: [360, 370], at: { question: [16, 10, 180], root: [16, 80, 180], repl: [16, 150, 180], context: [16, 220, 180], vars: [16, 290, 180], sub: [222, 220, 128], answer: [222, 80, 128] } },
-  };
-  const edges = [
-    { a: "question", b: "root", wide: "x", narrow: "y" },
-    { a: "root", b: "repl", wide: "x", narrow: "y" },
-    { a: "repl", b: "context", wide: "x", narrow: "y" },
-    { a: "repl", b: "sub", wide: "v", narrow: "x" },
-    { a: "sub", b: "vars", wide: "back", narrow: "back" },
-    { a: "vars", b: "repl", wide: "v", narrow: "left" },
-    { a: "root", b: "answer", wide: "v", narrow: "x" },
-  ];
-  const returns = [{ a: "repl", b: "root", wide: "top", narrow: "left" }];
-  const steps = [
-    { on: Object.keys(meta), caption: "The RLM starts with one root model, one Python session that holds the prompt, and a function for sub-model calls." },
-    { on: ["question", "root", "repl", "context"], caption: "The 1,000 documents, about 8.3M tokens, enter a variable while the root model receives the question and a short description." },
-    { on: ["root", "repl", "context"], caption: "The root searches every document for “festival”, “beauty pageant”, “La Union” and six more keywords in 0.158 s." },
-    { on: ["repl", "root"], caption: "A short, cut-off printout returns one promising hit, the document at index 6." },
-    { on: ["repl", "context", "sub", "vars"], caption: "Code sends document 6 to a GPT-5-mini sub-model call that uses 1,605 tokens, costs $0.0017, and stores its response in answer6." },
-    { on: ["repl", "sub", "vars", "root"], caption: "Two more sub-model calls confirm the year and extract the winner's first and last name, Maria Dalmacio." },
-    { on: ["root", "answer"], caption: "The root returns the correct answer with FINAL, and the complete run costs $0.079." },
-  ];
-  flowFigure("fig-loop", {
-    meta, layouts, edges, returns, steps,
-    regions: [{ keys: ["repl", "context", "vars"], label: "Python session" }],
-  });
-})();
-
-/* ================= Fig 3: four real runs, four cuts (canvas, plays once per tab) ================= */
-(() => {
-  const RUNS = {
-    e1: { tab: "Search", model: "RLM(GPT-5)", input: "1,000 documents · about 8.3M tokens", kind: "filter", units: 1000, pieces: 1000, pick: 6,
-      cut: "Code searches all 1,000 for keywords without a model", calls: 3, callNote: "3 sub-model calls, all on document 6", combine: "The root reads three short answers", answer: "Maria Dalmacio", ok: true, cost: "$0.079", src: "App. E.1" },
-    e4: { tab: "Chunks", model: "RLM(GPT-5)", input: "a code repository · about 900K tokens", kind: "chunks", pieces: 10,
-      cut: "Chunks of 380,000 characters", calls: 10, extra: 1, callNote: "one sub-model call per chunk, 11 in all", combine: "One more sub-model call combines the findings", answer: "choice 1", ok: true, cost: "$0.27", src: "App. E.4" },
-    e2: { tab: "Batches", model: "RLM(Qwen3-Coder)", input: "787 questions · about 32K tokens", kind: "chunks", pieces: 8,
-      cut: "Batches of 100 lines", calls: 8, callNote: "8 sub-model calls label every question", combine: "Plain code finds 131 users and 8,515 pairs", answer: "kept re-checking, returned a different answer", ok: false, cost: "$1.12", src: "App. E.2" },
-    e3: { tab: "Each line", model: "RLM(Qwen3-Coder)", input: "3,182 questions", kind: "lines", pieces: 3182,
-      cut: "One question per sub-model call", calls: 382, callNote: "382 sub-model calls in the step the paper shows", combine: "Plain code counts the labels", answer: "“less common than”", ok: true, cost: "$0.38", src: "App. E.3" },
-  };
-  const T = { cut: [0, 1], calls: [1, 2.6], combine: [2.6, 3.3], answer: [3.3, 4] }, END = 4.2;
-  const tips = {
-    input: { title: "The input", body: "What the run had to work through, stored as the variable context." },
-    cut: { title: "The split", body: "The root model's code decides how to divide the input. The paper's instructions suggest strategies without selecting one (App. C.1)." },
-    calls: { title: "Sub-model calls", body: "Each dot is one llm_query call on one piece. These runs use one level of recursion (§6)." },
-    combine: { title: "Combine results", body: "The root model combines the pieces by reading printouts, making one more sub-model call, or running plain code." },
-    answer: { title: "The answer", body: "Whether the run was right, and what the whole trajectory cost (App. E)." },
-  };
-  const geo = (f) => {
-    const narrow = f.w < 560, x0 = narrow ? 12 : 128, x1 = f.w - 14;
-    return { narrow, x0, x1, labelX: 12, yIn: narrow ? 46 : 34, yCalls: narrow ? 124 : 112, yComb: narrow ? 214 : 196, yAns: narrow ? 262 : 244 };
-  };
-  FS.figure("fig-split", {
-    height: (w) => (w < 560 ? 300 : 276),
-    duration: END,
-    keyframe: END,
-    params: { run: { value: "e1", label: "Runs from Appendix E", options: Object.entries(RUNS).map(([value, r]) => ({ value, label: r.tab })), placement: "inline" } },
-    reserve: { readout: ["RLM(Qwen3-Coder) · 382 sub-model calls · $0.38 · right answer"], chip: ["combining results", "App. E.3 · a real run"] },
     tips,
-    tipAt: (f, x, y) => hitAt(f, x, y, 4),
-    onParam(f, name) { if (name === "run") { f.api.seek(0); f.api.play(); } },
+    tipAt: (f, x, y) => f.state.hits?.find((h) => x >= h.x - 3 && x <= h.x + h.w + 3 && y >= h.y - 2 && y <= h.y + h.h + 2)?.kind ?? null,
+    init(f) { f.rate = 1 / 10; outs(f); },
+    onParam(f) { P = simulate(f.params.call, f.params.speed); outs(f); },
     render(f, c) {
-      const C = f.C, G = geo(f), R = RUNS[f.params.run], t = f.t, hits = (f.state.hits = []);
-      const W = G.x1 - G.x0, w = (a, b) => FS.window(t, a, b);
-      const rowLabel = (s, y, key) => {
-        if (G.narrow) return;
-        FS.k.text(f, c, s, G.labelX, y + 4, { size: 12, weight: 600, color: f.hover === key ? C.accent : C.fg });
+      const C = f.C, narrow = f.w < 560, Sv = simulate(f.v.call, f.v.speed), s = f.t * span();
+      const Lx = narrow ? 70 : 128, R = f.w - 18, X = (v) => Lx + (R - Lx) * (v / span());
+      const hits = (f.state.hits = []);
+      const rows = { write: { y: 26, h: 26 }, plain: { y: 78, h: 40 }, spec: { y: 138, h: 40 } }, bottom = 206, bracketY = 198;
+      // grid and ticks
+      const stepS = span() <= 30 ? 5 : span() <= 70 ? 10 : 20;
+      c.strokeStyle = C.line; c.lineWidth = 1;
+      for (let v = 0; v <= span(); v += stepS) { FS.k.line(c, X(v), 18, X(v), bottom); FS.k.text(f, c, `${v} s`, X(v), bottom + 16, { align: "center", size: 11 }); }
+      // lane names
+      const name = (txt, sub, r) => {
+        FS.k.text(f, c, txt, 0, r.y + r.h / 2 + (sub ? -1 : 4), { color: C.fg, size: 12, weight: 600 });
+        if (sub) FS.k.text(f, c, sub, 0, r.y + r.h / 2 + 13, { size: 11 });
       };
-      // row 1: the input bar and the cut
-      rowLabel("Input", G.yIn + 8, "input");
-      FS.k.text(f, c, R.input, G.narrow ? G.x0 : G.x0 + W, G.narrow ? G.yIn - 26 : G.yIn - 6, { size: 10.5, align: G.narrow ? "left" : "right", color: G.narrow ? C.fg : C.muted });
-      const yb = G.yIn, hb = 16;
-      FS.k.rrect(c, G.x0, yb, W, hb, 4); c.fillStyle = C.surface2; c.fill(); c.strokeStyle = f.hover === "input" ? C.accent : C.lineStrong; c.stroke();
-      hits.push({ key: "input", x: G.x0, y: yb, w: W, h: hb });
-      const cutP = w(...T.cut), pieceX = (i, n) => G.x0 + (W * (i + 0.5)) / n;
-      c.save();
-      if (R.kind === "chunks") {
-        c.strokeStyle = C.fg; c.lineWidth = 1.25;
-        for (let i = 1; i < R.pieces; i++) { const x = G.x0 + (W * i) / R.pieces; c.globalAlpha = FS.clamp(cutP * R.pieces - i + 1); FS.k.line(c, x, yb - 2, x, yb + hb + 2); }
-      } else if (R.kind === "lines") {
-        c.globalAlpha = 0.5 * cutP; c.fillStyle = FS.k.hatch(f, c, C.muted, 3); FS.k.rrect(c, G.x0, yb, W * cutP, hb, 4); c.fill();
-      } else {
-        // a keyword scan sweeps across all documents; the hit (document 6) lights at the end
-        const sx = G.x0 + W * cutP;
-        c.globalAlpha = 0.45; c.fillStyle = FS.k.hatch(f, c, C.muted, 3); FS.k.rrect(c, G.x0, yb, Math.max(0, sx - G.x0), hb, 4); c.fill();
-        c.globalAlpha = cutP < 1 ? 1 : 0; c.strokeStyle = C.accent; c.lineWidth = 1.5; FS.k.line(c, sx, yb - 4, sx, yb + hb + 4);
-        if (cutP >= 1) { const x = G.x0 + (W * (R.pick + 0.5)) / R.units; c.globalAlpha = 1; c.fillStyle = C.accent; c.fillRect(x - 1.5, yb - 3, 3, hb + 6); FS.k.label(f, c, "document 6", x + 6, G.narrow ? yb + hb + 12 : yb - 8, { size: 10.5, weight: 600, color: C.fg }); }
+      name(narrow ? "Writes" : "Model writes", null, rows.write);
+      name("Without", narrow ? null : "speculation", rows.plain);
+      name("With", narrow ? null : "speculation", rows.spec);
+      const fits = (txt, w, size = 11) => { c.font = FS.k.font(f, size, 500); return c.measureText(txt).width + 10 <= w; };
+      // a block that grows with the clock; kind decides the fill
+      const block = (kind, t0, t1, y, h, label, live) => {
+        const grow = FS.clamp((s - t0) / Math.max(1e-6, t1 - t0));
+        if (grow <= 0) return;
+        const x0 = X(t0), w = Math.max(1.5, (X(t1) - x0) * grow - 1.5), hot = f.hover === kind || live;
+        hits.push({ kind, x: x0, y, w, h });
+        FS.k.rrect(c, x0, y, w, h, 3);
+        if (kind === "think") { c.fillStyle = C.lineStrong; c.fill(); }
+        else if (kind === "line") { c.fillStyle = C.surface2; c.fill(); }
+        else if (kind === "file") { c.fillStyle = C.fg; c.fill(); }
+        else { c.fillStyle = C.surface2; c.fill(); FS.k.rrect(c, x0, y, w, h, 3); c.fillStyle = FS.k.hatch(f, c, C.muted, 5); c.fill(); }
+        c.strokeStyle = hot ? C.fg : C.line; c.lineWidth = hot ? 1.5 : 1; c.stroke(); c.lineWidth = 1;
+        if (label && grow === 1 && fits(label, w)) FS.k.label(f, c, label, x0 + w / 2, y + h / 2, { size: 11, align: "center", halo: kind === "think" ? C.lineStrong : C.surface2 });
+      };
+      // the model writing
+      block("think", 0, THINK, rows.write.y, rows.write.h, "text", s > 0 && s < THINK);
+      Sv.lines.forEach((ln) => block("line", ln.t0, ln.t1, rows.write.y, rows.write.h, String(ln.i + 1), s > ln.t0 && s < ln.t1));
+      // without speculation: one call after another, after writing
+      for (const b of Sv.plain) block(b.kind, b.t0, b.t1, rows.plain.y, rows.plain.h, b.kind === "label" ? (narrow ? `${b.n}` : `label ${b.n}`) : b.kind === "file" ? "" : b.kind, s > b.t0 && s < b.t1);
+      // with speculation: three labels stacked, then the tally, then what is left after writing
+      const sh = (rows.spec.h - 4) / 3;
+      for (const b of Sv.spec) {
+        if (b.kind === "label") block("label", b.t0, b.t1, rows.spec.y + b.sub * (sh + 2), sh, "", s > b.t0 && s < b.t1);
+        else block(b.kind, b.t0, b.t1, rows.spec.y, rows.spec.h, b.kind === "file" ? "" : b.kind, s > b.t0 && s < b.t1);
       }
-      c.restore();
-      FS.k.text(f, c, R.cut, G.narrow ? G.x0 : G.x1, G.narrow ? yb - 8 : yb + hb + 14, { size: 10.5, align: G.narrow ? "left" : "right", alpha: cutP, color: f.hover === "cut" ? C.accent : C.muted });
-      hits.push({ key: "cut", x: G.x0 + W / 2, y: yb + hb + 2, w: W / 2, h: 16 });
-      // row 2: the sub-calls
-      rowLabel("Sub-model calls", G.yCalls, "calls");
-      const callP = w(...T.calls), shown = Math.floor(callP * R.calls + 1e-6);
-      const dots = [];
-      if (R.kind === "lines") {
-        const cols = G.narrow ? 32 : 64, rows = Math.ceil(R.calls / cols), gx = (W - 8) / (cols - 1), gy = G.narrow ? 7 : 7.5, top = G.yCalls - ((rows - 1) * gy) / 2;
-        for (let i = 0; i < R.calls; i++) dots.push({ x: G.x0 + 4 + (i % cols) * gx, y: top + Math.floor(i / cols) * gy, r: G.narrow ? 2 : 2.4, from: null });
-      } else if (R.kind === "filter") {
-        const px = G.x0 + (W * (R.pick + 0.5)) / R.units;
-        for (let i = 0; i < R.calls; i++) dots.push({ x: G.x0 + 40 + i * 34, y: G.yCalls, r: 5, from: px });
-      } else for (let i = 0; i < R.calls; i++) dots.push({ x: pieceX(i, R.pieces), y: G.yCalls, r: 5, from: pieceX(i, R.pieces) });
-      dots.forEach((d, i) => {
-        if (i >= shown) { c.strokeStyle = C.line; c.beginPath(); c.arc(d.x, d.y, d.r, 0, 7); c.stroke(); return; }
-        const age = FS.clamp((callP * R.calls - i) / 1.5);
-        if (d.from != null) { c.strokeStyle = C.muted; c.lineWidth = 1; c.globalAlpha = 0.6; c.beginPath(); c.moveTo(d.from, yb + hb + 2); c.bezierCurveTo(d.from, (yb + hb + d.y) / 2, d.x, (yb + hb + d.y) / 2, d.x, d.y - d.r); c.stroke(); c.globalAlpha = 1; }
-        c.fillStyle = f.hover === "calls" ? C.accent : C.fg; c.beginPath(); c.arc(d.x, d.y, d.r * (1 + 0.5 * (1 - age)), 0, 7); c.fill();
+      if (s >= Sv.spec[0].t0) {
+        const room = X(Sv.e2) - Lx - 10, txt = fits("3 labels at once", room) ? "3 labels at once" : fits("3 at once", room) ? "3 at once" : "";
+        if (txt) { FS.k.text(f, c, txt, X(Sv.e2) - 8, rows.spec.y + rows.spec.h / 2 + 4, { align: "right", size: 11, color: C.muted }); hits.push({ kind: "label", x: X(Sv.e2) - room, y: rows.spec.y + 8, w: room - 4, h: 24 }); }
+      }
+      if (Sv.wait && s > Sv.wait[0]) {
+        const x0 = X(Sv.wait[0]), x1 = X(Math.min(s, Sv.wait[1])), y = rows.spec.y + rows.spec.h + 5;
+        hits.push({ kind: "wait", x: x0, y: y - 6, w: Math.max(4, x1 - x0), h: 9 });
+        c.strokeStyle = f.hover === "wait" ? C.fg : C.muted; c.lineWidth = 2; FS.k.line(c, x0, y, x1, y); c.lineWidth = 1;
+      }
+      // line 2 complete: the calls start (a dashed drop from the writing lane)
+      if (s >= Sv.e2) {
+        const x = X(Sv.e2), a = FS.window(s, Sv.e2, Sv.e2 + span() * 0.02);
+        hits.push({ kind: "launch", x: x - 4, y: rows.write.y + rows.write.h, w: 8, h: rows.spec.y - rows.write.y - rows.write.h });
+        c.save(); c.globalAlpha = a; c.strokeStyle = f.hover === "launch" ? C.fg : C.muted; c.setLineDash([3, 3]);
+        FS.k.line(c, x, rows.write.y + rows.write.h + 2, x, rows.spec.y - 2); c.restore();
+      }
+      // writing ends: the real program starts
+      if (s >= Sv.W) {
+        const x = X(Sv.W);
+        hits.push({ kind: "ends", x: x - 4, y: rows.plain.y - 14, w: 8, h: rows.spec.y + rows.spec.h - rows.plain.y + 14 });
+        c.save(); c.strokeStyle = f.hover === "ends" ? C.fg : C.lineStrong; c.setLineDash([2, 3]); FS.k.line(c, x, rows.plain.y - 6, x, rows.spec.y + rows.spec.h + 4); c.restore();
+        FS.k.label(f, c, "writing ends", x + 5, rows.plain.y - 9, { size: 11, color: C.muted, weight: 500 });
+      }
+      // answers
+      const answer = (t, r) => {
+        if (s < t) return;
+        const x = X(t), y = r.y + r.h / 2;
+        hits.push({ kind: "answer", x: x - 6, y: y - 6, w: 12, h: 12 });
+        c.fillStyle = C.surface; c.beginPath(); c.arc(x, y, 7, 0, 7); c.fill();
+        c.fillStyle = C.accent; c.beginPath(); c.arc(x, y, 5, 0, 7); c.fill();
+      };
+      answer(Sv.B, rows.plain); answer(Sv.S, rows.spec);
+      // the saving, computed from the same numbers, once the slower run answers
+      const reveal = FS.window(s, Sv.B, Sv.B + span() * 0.03, FS.ease.out);
+      if (reveal > 0) FS.k.bracket(f, c, X(Sv.S), X(Sv.B), bracketY, `${sec(Sv.B - Sv.S)} sooner · ${(Sv.B / Sv.S).toFixed(2)}×`, { alpha: reveal });
+      FS.k.hoverTime(f, c, 18, bottom, (t) => X(t * span()), (t) => sec(t * span()));
+      FS.k.playhead(f, c, X(s), 18, bottom);
+      f.api.out("clock", `t = ${s.toFixed(1)} s · ${phase(Sv, s)}`);
+    },
+  };
+  // Chapters follow the parameters: line 2 complete, writing ends, each answer.
+  Object.defineProperty(spec, "chapters", { get: () => [P.e2, P.W, P.S, P.B].map((t, i) => ({ t: t / span(), label: ["line 2 complete", "writing ends", "answer with", "answer without"][i] })) });
+  function phase(Sv, s) {
+    if (s >= Sv.B) return "both answered";
+    if (s >= Sv.S) return "answered; the other run is still going";
+    if (s < THINK) return "the model writes text";
+    const running = Sv.spec.filter((b) => b.kind !== "file" && s >= b.t0 && s < b.t1);
+    const what = running.length === 3 ? "3 label calls running" : running.some((b) => b.kind === "tally") ? "tally running" : running.some((b) => b.kind === "review") ? "review running" : "";
+    if (s < Sv.W) return what ? `writing, ${what}` : "writing code";
+    if (Sv.wait && s < Sv.wait[1]) return "real run waits for the tally";
+    return what || "real run reads the file";
+  }
+  function outs(f) {
+    f.api.out("specEnd", sec(P.S)); f.api.out("plainEnd", sec(P.B));
+    f.api.out("atOnce", sec(P.B - P.J)); f.api.out("overlap", sec(P.J - P.S));
+    f.api.out("summary", `Without speculation the answer lands at ${sec(P.B)}; with it, at ${sec(P.S)}: ${sec(P.B - P.S)} sooner (${(P.B / P.S).toFixed(2)}×).`);
+  }
+  FS.figure(ID, spec);
+})();
+
+/* ================= Fig 2: the shadow copy, stepped (SVG) ================= */
+(() => {
+  const ID = "fig-shadow", NS = "http://www.w3.org/2000/svg", svg = document.getElementById(ID);
+  const el = (tag, attrs, parent = svg) => { const n = document.createElementNS(NS, tag); for (const a in attrs) n.setAttribute(a, attrs[a]); parent.append(n); return n; };
+  const VARS = ["context", "chunks", "labels", "tally", "notes", "review"];
+  const value = (name, s) => ({
+    context: "a copy of the text",
+    chunks: s >= 1 ? "the parts of the text" : "",
+    labels: s >= 3 ? "3 answers" : s >= 2 ? "3 promises" : "",
+    tally: s >= 5 ? "an answer" : s >= 3 ? "a promise" : "",
+    notes: s >= 4 ? "unknown: not run" : "",
+    review: s >= 5 ? "skipped" : "",
+  })[name];
+  const CALLS = [
+    { key: "label 1" }, { key: "label 2" }, { key: "label 3" }, { key: "tally" }, { key: "review" },
+  ];
+  const callState = (i, s) => {
+    if (i < 3) return s >= 6 ? "handed over" : s >= 3 ? "ready" : s >= 2 ? "running" : "";
+    if (i === 3) return s >= 6 ? "handed over" : s >= 5 ? "ready" : s >= 3 ? "running" : "";
+    return s >= 7 ? "runs now, normally" : s >= 5 ? "not started" : "";
+  };
+  const realState = (i, s) => {
+    if (s < 6) return "waiting";
+    if (s === 6) return ["ran", "3 handed over", "handed over", "next", "", ""][i];
+    return ["ran", "3 handed over", "handed over", "reads the file", "calls now", "prints"][i];
+  };
+  const steps = [
+    { line: -1, caption: "Before the code starts, the harness deep-copies the program's variables; the copy runs ahead while the real program waits." },
+    { line: 0, caption: "When line 1 is complete, the copy runs its plain code and stores the parts of the text in chunks." },
+    { line: 1, caption: "When line 2 is complete, the copy starts its three known-input calls at once and receives promises." },
+    { line: 2, caption: "Line 3 needs labels, so the copy waits for the three answers and starts the tally while the model keeps writing." },
+    { line: 3, caption: "Line 4 reads a file outside the program, so the copy skips it and leaves notes unknown." },
+    { line: 4, caption: "Line 5 needs the unknown notes, so the review does not start early while the tally finishes." },
+    { line: 5, caption: "When writing ends, the copy is thrown away and the real program starts with four answers waiting." },
+    { line: 5, caption: "Lines 4 and 5 run normally as the real program reads the file and starts the review sub-model call." },
+  ];
+  const tipsFor = {
+    code: ["The program so far", "What the model has written. A line counts once the next one begins; unwritten lines are grey bars."],
+    copy: ["The copy", "A deep copy of the REPL's variables. It runs each complete line, starts safe calls in the background, and is thrown away at the end."],
+    store: ["Early calls", "Calls the copy started, filed by their inputs and occurrence. The real program claims them by asking for the same call."],
+    real: ["The real program", "The REPL the user's state lives in. It runs nothing until the cell is complete, then runs all of it."],
+  };
+  const panels = {};
+  for (const key of ["code", "copy", "store", "real"]) {
+    const g = el("g", { tabindex: "0", role: "img", "aria-label": `${tipsFor[key][0]}: ${tipsFor[key][1]}`, "data-fs-tip": tipsFor[key][1], "data-fs-tip-title": tipsFor[key][0] });
+    panels[key] = { g, rect: el("rect", { rx: 8 }, g), head: el("text", { "font-size": 11, "font-weight": 600, "letter-spacing": "0.06em" }, g), tag: el("text", { "font-size": 11, "font-weight": 600, "text-anchor": "end" }, g) };
+    panels[key].head.textContent = tipsFor[key][0].toUpperCase();
+    g.addEventListener("pointerenter", () => FS.get(ID).hover(key)); g.addEventListener("pointerleave", () => FS.get(ID).hover(null));
+    g.addEventListener("focus", () => FS.get(ID).hover(key)); g.addEventListener("blur", () => FS.get(ID).hover(null));
+  }
+  const codeRows = SHORT.map((src, i) => {
+    const g = el("g", {}, panels.code.g);
+    const r = { g, bg: el("rect", { rx: 4 }, g), rule: el("rect", { width: 2, rx: 1 }, g), num: el("text", { "font-size": 11, "text-anchor": "end" }, g), txt: el("text", { "font-size": 12 }, g), bar: el("rect", { height: 3, rx: 1.5 }, g) };
+    r.num.textContent = String(i + 1); r.txt.textContent = src; r.txt.style.fontFamily = "var(--fs-font-mono)";
+    return r;
+  });
+  const varRows = VARS.map((name) => {
+    const g = el("g", {}, panels.copy.g);
+    const r = { g, k: el("text", { "font-size": 12 }, g), v: el("text", { "font-size": 11 }, g), line: el("rect", { height: 1 }, g) };
+    r.k.textContent = name; r.k.style.fontFamily = "var(--fs-font-mono)";
+    return r;
+  });
+  const callRows = CALLS.map((cl) => {
+    const g = el("g", {}, panels.store.g);
+    const r = { g, pill: el("rect", { rx: 13, height: 26 }, g), k: el("text", { "font-size": 11.5, "font-weight": 600 }, g), v: el("text", { "font-size": 11, "text-anchor": "end" }, g) };
+    r.k.textContent = cl.key;
+    return r;
+  });
+  const realCells = PROGRAM.map((_, i) => {
+    const g = el("g", {}, panels.real.g);
+    const r = { g, box: el("rect", { rx: 6, height: 40 }, g), k: el("text", { "font-size": 11, "font-weight": 600 }, g), v: el("text", { "font-size": 11 }, g) };
+    r.k.textContent = `line ${i + 1}`;
+    return r;
+  });
+  const realNote = el("text", { "font-size": 11.5 }, panels.real.g);
+  let L = null;
+  function layout(w) {
+    const narrow = w < 560;
+    L = narrow
+      ? { box: [360, 890], code: [8, 8, 344, 238], copy: [8, 262, 344, 236], store: [8, 514, 344, 210], real: [8, 740, 344, 142], rowH: 32, cols: 3 }
+      : { box: [960, 420], code: [8, 8, 430, 282], copy: [454, 8, 238, 282], store: [708, 8, 244, 282], real: [8, 306, 944, 106], rowH: 36, cols: 6 };
+    svg.setAttribute("viewBox", `0 0 ${L.box[0]} ${L.box[1]}`);
+    for (const [key, p] of Object.entries(panels)) {
+      const [x, y, pw, ph] = L[key];
+      Object.assign(p.rect, {}); p.rect.setAttribute("x", x); p.rect.setAttribute("y", y); p.rect.setAttribute("width", pw); p.rect.setAttribute("height", ph);
+      p.head.setAttribute("x", x + 14); p.head.setAttribute("y", y + 22);
+      p.tag.setAttribute("x", x + pw - 14); p.tag.setAttribute("y", y + 22);
+    }
+    const [cx, cy, cw] = L.code;
+    codeRows.forEach((r, i) => {
+      const y = cy + 36 + i * L.rowH;
+      r.bg.setAttribute("x", cx + 8); r.bg.setAttribute("y", y); r.bg.setAttribute("width", cw - 16); r.bg.setAttribute("height", L.rowH - 6);
+      r.rule.setAttribute("x", cx + 8); r.rule.setAttribute("y", y); r.rule.setAttribute("height", L.rowH - 6);
+      r.num.setAttribute("x", cx + 30); r.num.setAttribute("y", y + (L.rowH - 6) / 2 + 4);
+      r.txt.setAttribute("x", cx + 40); r.txt.setAttribute("y", y + (L.rowH - 6) / 2 + 4); r.txt.setAttribute("font-size", narrow ? 11 : 12);
+      r.bar.setAttribute("x", cx + 40); r.bar.setAttribute("y", y + (L.rowH - 6) / 2 - 1); r.bar.setAttribute("width", Math.min(cw - 60, SHORT[i].length * (narrow ? 6.2 : 6.9)));
+    });
+    const [vx, vy, vw] = L.copy;
+    varRows.forEach((r, i) => {
+      const y = vy + 36 + i * L.rowH + (L.rowH - 6) / 2 + 4;
+      r.k.setAttribute("x", vx + 14); r.k.setAttribute("y", y);
+      r.v.setAttribute("x", vx + (narrow ? 110 : 84)); r.v.setAttribute("y", y);
+      r.line.setAttribute("x", vx + 14); r.line.setAttribute("y", y + 9); r.line.setAttribute("width", vw - 28);
+    });
+    const [sx, sy, sw] = L.store, sRow = narrow ? 32 : L.rowH;
+    callRows.forEach((r, i) => {
+      const y = sy + 36 + i * sRow;
+      r.pill.setAttribute("x", sx + 12); r.pill.setAttribute("y", y); r.pill.setAttribute("width", sw - 24);
+      r.k.setAttribute("x", sx + 26); r.k.setAttribute("y", y + 17);
+      r.v.setAttribute("x", sx + sw - 26); r.v.setAttribute("y", y + 17);
+    });
+    const [rx, ry, rw] = L.real;
+    realNote.setAttribute("x", narrow ? rx + 14 : rx + 190); realNote.setAttribute("y", ry + (narrow ? 44 : 22));
+    const cellW = narrow ? (rw - 28 - 2 * 6) / 3 : (rw - 28 - 5 * 8) / 6;
+    realCells.forEach((r, i) => {
+      const col = narrow ? i % 3 : i, row = narrow ? Math.floor(i / 3) : 0;
+      const x = rx + 14 + col * (cellW + (narrow ? 6 : 8)), y = ry + (narrow ? 58 : 46) + row * 40;
+      r.box.setAttribute("x", x); r.box.setAttribute("y", y); r.box.setAttribute("width", cellW); r.box.setAttribute("height", narrow ? 34 : 44);
+      r.k.setAttribute("x", x + 10); r.k.setAttribute("y", y + (narrow ? 14 : 18));
+      r.v.setAttribute("x", x + 10); r.v.setAttribute("y", y + (narrow ? 27 : 34));
+    });
+    L.narrow = narrow;
+  }
+  FS.figure(ID, {
+    height: (w) => (w < 560 ? (w * 890) / 360 : (w * 420) / 960),
+    steps,
+    resize(f) { layout(f.w); },
+    render(f) {
+      const C = f.C, s = f.step, st = steps[s], thrown = s >= 6;
+      for (const [key, p] of Object.entries(panels)) {
+        const hot = f.hover === key;
+        p.rect.setAttribute("fill", C.surface); p.rect.setAttribute("stroke", hot ? C.accent : C.line); p.rect.setAttribute("stroke-width", hot ? 1.5 : 1);
+        p.head.setAttribute("fill", C.muted);
+        p.tag.setAttribute("fill", C.muted);
+      }
+      panels.copy.tag.textContent = thrown ? "thrown away" : "";
+      panels.copy.g.setAttribute("opacity", thrown && f.hover !== "copy" ? C.dim : 1);
+      panels.code.tag.textContent = s >= 6 ? "complete" : s === 0 ? "writing…" : `line ${st.line + 1} complete`;
+      // the program as written so far
+      codeRows.forEach((r, i) => {
+        const written = i <= st.line, now = i === st.line && s <= 5;
+        r.txt.setAttribute("opacity", written ? 1 : 0); r.bar.setAttribute("opacity", written ? 0 : 1);
+        r.bar.setAttribute("fill", C.line);
+        r.txt.setAttribute("fill", C.fg); r.num.setAttribute("fill", C.muted);
+        r.bg.setAttribute("fill", now ? C.surface2 : "none");
+        r.rule.setAttribute("fill", now ? C.accent : "none");
       });
-      const lastDot = dots[dots.length - 1];
-      const noteX = R.kind === "filter" ? dots[dots.length - 1].x + 18 : G.x0;
-      const noteY = R.kind === "filter" ? G.yCalls + 4 : R.kind === "lines" ? lastDot.y + 18 : G.yCalls + 22;
-      FS.k.text(f, c, R.callNote, noteX, noteY, { size: 10.5, alpha: FS.clamp(callP * 4), color: f.hover === "calls" ? C.accent : C.muted });
-      hits.push({ key: "calls", x: G.x0, y: G.yCalls - 26, w: W, h: 52 });
-      // row 3: putting it together
-      rowLabel("Combine results", G.yComb + 4, "combine");
-      const combP = w(...T.combine), bw = Math.min(W, G.narrow ? W : 330), bx = G.x0 + (W - bw) / 2, by = G.yComb - 14;
-      c.save(); c.globalAlpha = combP;
-      const fromDots = R.kind === "lines" ? [dots[0], dots[Math.floor(dots.length / 2)], lastDot] : dots;
-      c.strokeStyle = C.muted; c.lineWidth = 1;
-      for (const d of fromDots) { c.beginPath(); c.moveTo(d.x, d.y + d.r + 2); c.bezierCurveTo(d.x, (d.y + by) / 2, bx + bw / 2, (d.y + by) / 2, bx + bw / 2, by); c.stroke(); }
-      FS.k.rrect(c, bx, by, bw, 28, 6); c.fillStyle = C.surface; c.fill(); c.strokeStyle = f.hover === "combine" ? C.accent : C.fg; c.stroke();
-      if (R.extra) { c.fillStyle = C.fg; c.beginPath(); c.arc(bx + 14, by + 14, 5, 0, 7); c.fill(); }
-      FS.k.text(f, c, R.combine, bx + bw / 2 + (R.extra ? 8 : 0), by + 18, { size: 11.5, weight: 600, color: C.fg, align: "center" });
-      c.restore();
-      hits.push({ key: "combine", x: bx, y: by, w: bw, h: 28 });
-      // row 4: the answer
-      rowLabel("Answer", G.yAns + 2, "answer");
-      const ansP = w(...T.answer);
-      c.save(); c.globalAlpha = ansP;
-      const mark = R.ok ? "✓" : "✗", text = `${mark} ${R.ok ? "right" : "wrong"} · ${R.answer} · run cost ${R.cost}`;
-      FS.k.text(f, c, text, G.x0 + (G.narrow ? 0 : 0), G.yAns + 6, { size: 12, weight: 600, color: R.ok ? C.fg : C.strong });
-      if (!R.ok) { c.strokeStyle = C.strong; c.setLineDash([3, 3]); const tw = c.measureText(text).width; FS.k.line(c, G.x0, G.yAns + 11, G.x0 + tw, G.yAns + 11); c.setLineDash([]); }
-      c.restore();
-      hits.push({ key: "answer", x: G.x0, y: G.yAns - 10, w: W, h: 22 });
-      const phase = t < T.cut[1] ? "splitting the input" : t < T.calls[1] ? "sub-model calls" : t < T.combine[1] ? "combining results" : `${R.src} · a real run`;
-      f.api.out("chip", phase);
-      f.api.out("readout", `${R.model} · ${R.calls + (R.extra || 0)} sub-model calls · ${R.cost} · ${R.ok ? "right answer" : "wrong answer"}`);
+      // the copy's variables
+      varRows.forEach((r, i) => {
+        const v = value(VARS[i], Math.min(s, 5)), fresh = v && v !== value(VARS[i], Math.min(s, 5) - 1) && s <= 5 && s > 0;
+        r.v.textContent = v || "·";
+        r.k.setAttribute("fill", v ? C.fg : C.muted); r.v.setAttribute("fill", fresh ? C.fg : C.muted);
+        r.v.setAttribute("font-weight", fresh ? 600 : 400);
+        r.line.setAttribute("fill", C.line);
+      });
+      // the store of early calls
+      callRows.forEach((r, i) => {
+        const v = callState(i, s), handed = v === "handed over", off = v === "not started", none = !v;
+        r.v.textContent = v || "·";
+        r.g.setAttribute("opacity", none ? C.dim : 1);
+        r.pill.setAttribute("fill", handed ? C.fg : C.surface);
+        r.pill.setAttribute("stroke", off ? C.lineStrong : none ? C.line : C.fg);
+        r.pill.setAttribute("stroke-dasharray", v === "running" || v.startsWith("runs") ? "4 3" : off ? "1 3" : "");
+        r.k.setAttribute("fill", handed ? C.surface : C.fg); r.v.setAttribute("fill", handed ? C.surface : C.muted);
+      });
+      // the real program
+      realNote.textContent = L.narrow
+        ? (s < 6 ? "Waits for the whole cell; untouched." : s === 6 ? "Runs the cell; answers are waiting." : "4 of 5 sub-model calls were done. 1 runs now.")
+        : (s < 6 ? "Waits for the whole cell. Its variables haven't changed." : s === 6 ? "Runs the cell from the top. Lines 2 and 3 find their answers waiting." : "Four of the five sub-model calls were done before it asked. One runs now.");
+      realNote.setAttribute("fill", s < 6 ? C.muted : C.fg);
+      realCells.forEach((r, i) => {
+        const v = realState(i, s), active = s >= 6 && v && v !== "next";
+        r.v.textContent = v || "·";
+        r.box.setAttribute("fill", active && /handed/.test(v) ? C.surface2 : C.surface);
+        r.box.setAttribute("stroke", active ? C.fg : C.line);
+        r.k.setAttribute("fill", active ? C.fg : C.muted); r.v.setAttribute("fill", active ? C.fg : C.muted);
+      });
     },
   });
 })();
 
-/* ================= Fig 4: score against input length (canvas, the paper's Fig. 1) ================= */
+/* ================= Fig 3: the life of one call (SVG state machine with tabs) ================= */
 (() => {
-  // Extracted from the vector drawing of the paper's Fig. 1 (v2): each point mapped onto the 0-100 gridlines.
-  const LENS = ["8K", "16K", "33K", "66K", "131K", "262K", "524K", "1M"];
-  const WINDOW_AT = 5 + Math.log2(272 / 262.144); // 272K between 2^18 and 2^19
-  const DATA = {
-    sniah: { gpt: [100, 100, 100, 100, 100, 100], rlm: [100, 100, 100, 100, 100, 100, 100, 100] },
-    oolong: { gpt: [92.1, 77.2, 49.4, 44.7, 44.0, 31.1], rlm: [84.5, 76.3, 64.0, 61.3, 56.5, 51.1, 50.0, 46.0] },
-    pairs: { gpt: [80.7, 56.8, 3.7, 0.0, 0.0, 0.0], rlm: [74.3, 59.7, 58.0, 61.1, 66.9, 56.5, 54.4, 49.1] },
+  const ID = "fig-life", NS = "http://www.w3.org/2000/svg", svg = document.getElementById(ID);
+  const el = (tag, attrs, parent = svg) => { const n = document.createElementNS(NS, tag); for (const a in attrs) n.setAttribute(a, attrs[a]); parent.append(n); return n; };
+  const states = {
+    closes: { label: "Line complete", sub: "the call can be read", tip: "The harness only reads a call once its line is complete, so it knows the whole call and its inputs." },
+    check: { label: "Inputs safe?", sub: "known, no side effects", tip: "The tool must be marked speculatable and pure, and every input must come from code the copy could run safely." },
+    wait: { label: "Waits for inputs", sub: "an earlier call", tip: "Safe, but an input is still a promise from another early call. The copy waits for it; the model keeps writing." },
+    started: { label: "Started early", sub: "a promise, filed by inputs", tip: "Runs in the background. Its answer is filed under its inputs and its occurrence, so repeated identical calls stay separate." },
+    claimed: { label: "Handed over", sub: "no new call made", tip: "The real program asks for the same call and gets the filed answer, at once if it is ready, or as soon as it is." },
+    thrown: { label: "Thrown away", sub: "nobody asked for it", tip: "The real program never asked: the cell failed, or later code changed the call. Only the copy saw it, so nothing needs undoing." },
+    normal: { label: "Runs after writing", sub: "the normal way", tip: "Not started early. The real program makes the call itself when it reaches the line, exactly as without speculation." },
   };
-  const TASKS = [
-    { value: "sniah", label: "S-NIAH", note: "Find one phrase in filler: the work stays the same as the input grows" },
-    { value: "oolong", label: "OOLONG", note: "Count over nearly every line: the work grows with the input" },
-    { value: "pairs", label: "OOLONG-Pairs", note: "List pairs of entries: the work grows with the square of the input" },
+  const trans = [
+    { key: "a", a: "closes", b: "check", label: "", side: ["above", "right"] },
+    { key: "b", a: "check", b: "started", label: "yes", side: ["above", "right"] },
+    { key: "c", a: "check", b: "wait", label: "not ready", side: ["left", "left"], at: 0.3 },
+    { key: "d", a: "wait", b: "started", label: "inputs arrive", side: ["right", "left"] },
+    { key: "e", a: "check", b: "normal", label: "no", side: ["right", "right"] },
+    { key: "f", a: "started", b: "claimed", label: "real program asks", side: ["left", "left"], at: 0.8, dy: -10 },
+    { key: "g", a: "started", b: "thrown", label: "never asked", side: ["left", "right"], at: 0.8, dy: 12 },
   ];
+  const CALLS = {
+    label: { path: ["closes", "check", "started", "claimed"], at: [-1, 0, 1, 2, 3], caps: [
+      "Once line 2 is complete, the harness can read the call's input, “Label: ” plus one part of the text.",
+      "The input comes from plain code and llm_query is marked safe, so the call can start now.",
+      "Each of the three calls starts in the background in a separate slot filed under its input.",
+      "At line 2, the real program finds the answer filed under the same input and receives it at once."] },
+    tally: { path: ["closes", "check", "wait", "started", "claimed"], at: [-1, 0, 2, 3, 4], caps: [
+      "The complete line 3 depends on labels, which are still three promises.",
+      "The input is safe but not ready, so the copy waits for the three labels while the model keeps writing.",
+      "When the labels arrive, the tally starts before the writing ends.",
+      "At line 3, the real program waits for the running tally instead of making a new call."] },
+    review: { path: ["closes", "check", "normal"], at: [-1, 0, 1, 2, 2], caps: [
+      "The complete line 5 depends on notes from read_file on line 4.",
+      "Because read_file touches the outside world, the copy leaves notes unknown and does not start the call.",
+      "After writing ends, the real program reads the file and makes the call itself.",
+      "The full call runs after writing, so the review appears at the end of Fig. 1."] },
+    typo: { path: ["closes", "check", "started", "thrown"], at: [-1, 1, 2, 2, 3], caps: [
+      "The complete line 2 makes the same label call with the same safe input.",
+      "The call starts early again.",
+      "The model ends the cell with a typo, so the cell cannot run and nothing asks for the label.",
+      "The answer is thrown away without reaching the real variables, at the cost of one wasted sub-model call."] },
+  };
+  const OPTIONS = [{ value: "label", label: "A label call" }, { value: "tally", label: "The tally" }, { value: "review", label: "The review" }, { value: "typo", label: "A typo at the end" }];
+  const G = { states: {}, trans: {} };
+  for (const t of trans) {
+    const g = el("g", {});
+    G.trans[t.key] = { g, path: el("path", { fill: "none" }, g), head: el("path", {}, g), lbl: el("text", { "font-size": 11, "text-anchor": "middle" }, g), length: 1 };
+    G.trans[t.key].lbl.textContent = t.label;
+  }
+  for (const [key, s] of Object.entries(states)) {
+    const g = el("g", { tabindex: "0", role: "img", "aria-label": `${s.label}: ${s.tip}`, "data-fs-tip": s.tip, "data-fs-tip-title": s.label });
+    G.states[key] = { g, rect: el("rect", { rx: 22, height: 44 }, g), t1: el("text", { "font-size": 12.5, "font-weight": 600, "text-anchor": "middle" }, g), t2: el("text", { "font-size": 11, "text-anchor": "middle" }, g) };
+    G.states[key].t1.textContent = s.label; G.states[key].t2.textContent = s.sub;
+    g.addEventListener("pointerenter", () => FS.get(ID).hover(key)); g.addEventListener("pointerleave", () => FS.get(ID).hover(null));
+    g.addEventListener("focus", () => FS.get(ID).hover(key)); g.addEventListener("blur", () => FS.get(ID).hover(null));
+  }
+  const token = el("circle", { r: 6 });
+  let P = {}, W = 170, narrow = false;
+  function layout(w) {
+    narrow = w < 560;
+    const box = narrow ? [360, 430] : [960, 330];
+    svg.setAttribute("viewBox", `0 0 ${box[0]} ${box[1]}`);
+    W = narrow ? 140 : 170;
+    P = narrow
+      ? { closes: [180, 32], check: [180, 118], wait: [80, 208], normal: [280, 208], started: [180, 296], claimed: [86, 392], thrown: [274, 392] }
+      : { closes: [100, 160], check: [300, 160], wait: [500, 58], started: [630, 160], claimed: [862, 76], thrown: [862, 244], normal: [300, 284] };
+    for (const [key, s] of Object.entries(G.states)) {
+      const [cx, cy] = P[key];
+      s.rect.setAttribute("x", cx - W / 2); s.rect.setAttribute("y", cy - 22); s.rect.setAttribute("width", W);
+      s.t1.setAttribute("x", cx); s.t1.setAttribute("y", cy - 2); s.t2.setAttribute("x", cx); s.t2.setAttribute("y", cy + 13);
+      s.t1.setAttribute("font-size", narrow ? 12 : 12.5);
+    }
+    // anchor on the box edge facing the other node
+    const anchor = (from, to) => {
+      const [x, y] = P[from], [tx, ty] = P[to], dx = tx - x, dy = ty - y;
+      if (Math.abs(dy) < 30) return [x + Math.sign(dx) * W / 2, y];
+      if (Math.abs(dx) < 30) return [x, y + Math.sign(dy) * 22];
+      return narrow ? [x + Math.sign(dx) * Math.min(W / 2 - 18, Math.abs(dx) * 0.5), y + Math.sign(dy) * 22] : [x + Math.sign(dx) * (W / 2 - 24), y + Math.sign(dy) * 22];
+    };
+    for (const t of trans) {
+      const o = G.trans[t.key], a = anchor(t.a, t.b), b = anchor(t.b, t.a);
+      const d = Math.abs(a[1] - b[1]) < 2 || Math.abs(a[0] - b[0]) < 2 ? `M${a[0]},${a[1]} L${b[0]},${b[1]}` : `M${a[0]},${a[1]} C${a[0]},${(a[1] + b[1]) / 2} ${b[0]},${(a[1] + b[1]) / 2} ${b[0]},${b[1]}`;
+      o.path.setAttribute("d", d); o.length = o.path.getTotalLength();
+      const end = o.path.getPointAtLength(o.length), near = o.path.getPointAtLength(Math.max(0, o.length - 8)), ang = Math.atan2(end.y - near.y, end.x - near.x);
+      o.head.setAttribute("d", `M${end.x},${end.y} L${end.x - 8 * Math.cos(ang - 0.45)},${end.y - 8 * Math.sin(ang - 0.45)} L${end.x - 8 * Math.cos(ang + 0.45)},${end.y - 8 * Math.sin(ang + 0.45)} Z`);
+      const mid = o.path.getPointAtLength(o.length * (narrow ? 0.5 : t.at ?? 0.5)), side = t.side[narrow ? 1 : 0];
+      o.lbl.setAttribute("x", mid.x + (side === "left" ? -9 : side === "right" ? 9 : 0)); o.lbl.setAttribute("y", mid.y + (side === "above" ? -8 : 4) + (narrow ? 0 : t.dy ?? 0));
+      o.lbl.setAttribute("text-anchor", side === "left" ? "end" : side === "right" ? "start" : "middle");
+    }
+  }
+  const edgeOf = (a, b) => trans.find((t) => t.a === a && t.b === b);
+  const callOf = (f) => CALLS[f.params.call];
+  FS.figure(ID, {
+    height: (w) => (w < 560 ? (w * 430) / 360 : (w * 330) / 960),
+    params: { call: { value: "label", label: "Which call", options: OPTIONS, placement: "inline" } },
+    steps: [0, 1, 2, 3, 4].map((i) => ({ caption: (f) => (i === 0 ? "Step through the states for the selected call." : callOf(f).caps[i - 1]) })),
+    onParam(f) { f.api.goto(1); f.dirty = true; },
+    resize(f) { layout(f.w); },
+    render(f) {
+      const C = f.C, cl = callOf(f), at = cl.at[f.step], prevAt = cl.at[f.from] ?? -1, e = FS.ease.inOut(f.stepT);
+      const lit = new Set(at >= 0 ? cl.path.slice(0, at + 1) : []);
+      const walked = new Set();
+      for (let i = 0; i < at; i++) walked.add(edgeOf(cl.path[i], cl.path[i + 1])?.key);
+      const moved = at > prevAt && at > 0 && f.from < f.step;
+      const via = moved ? edgeOf(cl.path[at - 1], cl.path[at])?.key : null;
+      for (const [key, st] of Object.entries(G.states)) {
+        const on = lit.has(key) || at < 0, hot = f.hover === key, here = at >= 0 && key === cl.path[at] && (f.stepT >= 1 || !via);
+        st.g.setAttribute("opacity", hot || on ? 1 : C.dim);
+        st.rect.setAttribute("fill", here ? C.fg : C.surface);
+        st.rect.setAttribute("stroke", hot ? C.accent : on && at >= 0 ? C.fg : C.lineStrong); st.rect.setAttribute("stroke-width", hot ? 1.5 : 1);
+        st.t1.setAttribute("fill", here ? C.surface : C.fg); st.t2.setAttribute("fill", here ? C.surface : C.muted);
+      }
+      for (const t of trans) {
+        const o = G.trans[t.key], active = t.key === via || (walked.has(t.key) && t.key === edgeOf(cl.path[at - 1], cl.path[at])?.key);
+        const on = walked.has(t.key) || at < 0;
+        o.g.setAttribute("opacity", active ? 1 : on ? 0.75 : 0.22);
+        o.path.setAttribute("stroke", active ? C.accent : C.muted); o.path.setAttribute("stroke-width", active ? 1.75 : C.edge);
+        o.head.setAttribute("fill", active ? C.accent : C.muted);
+        o.lbl.setAttribute("fill", active ? C.fg : C.muted);
+        o.lbl.setAttribute("stroke", C.surface); o.lbl.setAttribute("stroke-width", 5); o.lbl.setAttribute("stroke-linejoin", "round"); o.lbl.setAttribute("paint-order", "stroke");
+        o.lbl.setAttribute("opacity", narrow && !active ? 0 : 1);
+      }
+      const v = via && G.trans[via];
+      if (v && f.stepT < 1) { const p = v.path.getPointAtLength(v.length * e); token.setAttribute("cx", p.x); token.setAttribute("cy", p.y); token.setAttribute("opacity", 1); }
+      else token.setAttribute("opacity", 0);
+      token.setAttribute("fill", C.accent); token.setAttribute("stroke", C.surface); token.setAttribute("stroke-width", 1.5);
+    },
+  });
+})();
+
+/* ================= Fig 4: when it pays (canvas chart with a draggable line, simulated) ================= */
+(() => {
+  const ID = "fig-gain", CMIN = 0.5, CMAX = 12, BAND = [1, 1.2];
+  const ratio = (c, speed) => { const s = simulate(c, speed); return { full: s.B / s.S, once: s.B / s.J, saved: s.B - s.S }; };
+  const peakOf = (speed) => { let best = { c: CMIN, r: 0 }; for (let c = CMIN; c <= CMAX + 1e-9; c += 0.05) { const r = ratio(c, speed).full; if (r > best.r) best = { c, r }; } return best; };
+  const geo = (f) => { const narrow = f.w < 560, L = narrow ? 44 : 52, R = f.w - (narrow ? 14 : 22), T = 22, B = f.h - 40; return { L, R, T, B, narrow }; };
+  const yMax = (f) => Math.max(2, Math.ceil((peakOf(f.v.speed).r + 0.12) * 10) / 10);
+  const X = (f, c) => { const g = geo(f); return g.L + (g.R - g.L) * ((c - CMIN) / (CMAX - CMIN)); };
+  const Y = (f, r) => { const g = geo(f); return g.B - (g.B - g.T) * ((r - 0.9) / (yMax(f) - 0.9)); };
+  const invX = (f, x) => { const g = geo(f); return CMIN + ((x - g.L) / (g.R - g.L)) * (CMAX - CMIN); };
   const tips = {
-    window: { title: "GPT-5's window", body: "272K tokens. Past this line GPT-5 can't take the input, so it has no points; the RLM keeps going." },
-    gpt: { title: "GPT-5", body: "The base model, the whole input in its window." },
-    rlm: { title: "RLM(GPT-5)", body: "GPT-5 is the root model in the Python session, with one level of GPT-5-mini sub-model calls (§3.2)." },
+    band: { title: "Measured range", body: "The post's summary for its RLM benchmark: speed-ups of about 1 to 1.2×. Everything else on this chart is the simulated turn." },
+    full: { title: "With speculation", body: "Plain run time divided by speculative run time for the worked turn as each sub-model call gets longer." },
+    once: { title: "Running at once only", body: "This curve shows the JIT part of the saving when the calls start together only after writing ends, without overlap." },
+    peak: { title: "The peak", body: "The tally finishes as writing ends. Shorter calls leave writing time unused; longer calls run past it." },
   };
-  const geo = (f) => { const narrow = f.w < 560; return { narrow, L: narrow ? 34 : 44, R: f.w - (narrow ? 40 : 104), T: narrow ? 58 : 46, B: f.h - 44 }; };
-  const X = (G, i) => G.L + ((G.R - G.L) * i) / (LENS.length - 1);
-  const Y = (G, v) => G.B - ((G.B - G.T) * v) / 100;
-  const handle = {
-    label: "Input length: drag, or use the arrow keys", radius: 18, step: 40,
-    get: (f) => { const G = geo(f); return { x: f.state.cx ?? X(G, f.v.len), y: G.B }; },
-    set: (f, x) => {
-      const G = geo(f); f.state.cx = x;
-      const i = FS.clamp(Math.round(((x - G.L) / (G.R - G.L)) * (LENS.length - 1)), 0, LENS.length - 1);
-      if (i !== f.params.len) { f.state.fromHandle = true; f.api.set("len", i, { instant: true }); f.state.fromHandle = false; }
-      f.dirty = true;
-    },
-    bounds: (f) => { const G = geo(f); return { x0: G.L, y0: G.T, x1: G.R, y1: G.B }; },
-    release: (f) => { const G = geo(f); return { x: X(G, f.params.len), y: G.B }; },
-  };
-  FS.figure("fig-scale", {
-    height: (w) => (w < 560 ? 310 : 320),
+  const fig = FS.figure(ID, {
+    height: (w) => (w < 560 ? 280 : 300),
     params: {
-      task: { value: "pairs", label: "Tasks", options: TASKS, placement: "inline" },
-      len: { value: 2, min: 0, max: 7, step: 1, hidden: true },
-      k: { value: 1, min: 0, max: 1, hidden: true },
+      call: { value: 4, min: CMIN, max: CMAX, step: 0.1, label: "Each sub-model call takes", hidden: true },
+      speed: { value: 1, min: 0.5, max: 3, step: 0.25, label: "Writing speed", format: (v) => `${v.toFixed(2)}×` },
     },
-    handles: { cursor: handle },
-    reserve: { readout: ["At 262K tokens: GPT-5 100.0 · RLM 100.0 · RLM ahead by 100.0 points", "At 524K tokens: GPT-5 can't take it · RLM 54.4"] },
+    reserve: { peak: ["about 9.99× when each call takes 99.9 s"] },
     tips,
-    tipAt: (f, x, y) => hitAt(f, x, y, 3),
-    autoplay: false,
-    init(f) { f.state.prev = DATA.pairs; },
-    onParam(f, name, value) {
-      if (name === "task") { f.state.prev = f.state.shown || DATA[value]; f.api.set("k", 0, { instant: true }); f.api.set("k", 1); }
-      if (name === "len" && !f.state.fromHandle) f.state.cx = null;
+    tipAt: (f, x, y) => f.state.hits?.find((h) => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h)?.kind ?? null,
+    handles: {
+      line: {
+        label: "Sub-model call length: drag or use the arrow keys",
+        radius: 22,
+        get: (f) => ({ x: X(f, f.params.call), y: (geo(f).T + geo(f).B) / 2 }),
+        set: (f, x) => { const v = invX(f, x); f.state.raw = v; f.api.set("call", FS.clamp(v, CMIN, CMAX), { instant: true }); },
+        bounds: (f) => { const g = geo(f), y = (g.T + g.B) / 2; return { x0: X(f, CMIN), x1: X(f, CMAX), y0: y, y1: y }; },
+        step: 12,
+      },
     },
-    resize(f) { handle.step = (geo(f).R - geo(f).L) / (LENS.length - 1); },
+    init(f) { outs(f); },
+    onParam(f) { outs(f); },
     render(f, c) {
-      const C = f.C, G = geo(f), hits = (f.state.hits = []), cur = DATA[f.params.task], k = FS.ease.smooth(f.v.k), prev = f.state.prev || cur;
-      const blend = (a, b) => b.map((v, i) => FS.lerp(a[i] ?? v, v, k));
-      const shown = (f.state.shown = { gpt: blend(prev.gpt, cur.gpt), rlm: blend(prev.rlm, cur.rlm) });
-      const note = TASKS.find((t) => t.value === f.params.task).note;
-      if (G.narrow) { const cut = note.indexOf(": "); FS.k.text(f, c, note.slice(0, cut + 1), 0, 14, { size: 11, color: C.fg }); FS.k.text(f, c, note.slice(cut + 2), 0, 29, { size: 11 }); }
-      else FS.k.text(f, c, note, 0, 14, { size: 11.5, color: C.fg });
-      // past the window
-      const wx = X(G, WINDOW_AT);
-      FS.k.rrect(c, wx, G.T, G.R - wx + 6, G.B - G.T, 0); c.fillStyle = C.surface2; c.fill();
-      c.save(); c.globalAlpha = 0.5; FS.k.rrect(c, wx, G.T, G.R - wx + 6, G.B - G.T, 0); c.fillStyle = FS.k.hatch(f, c, C.line, 6); c.fill(); c.restore();
-      c.strokeStyle = f.hover === "window" ? C.accent : C.lineStrong; c.setLineDash([4, 3]); FS.k.line(c, wx, G.T - 16, wx, G.B); c.setLineDash([]);
-      FS.k.label(f, c, G.narrow ? "272K window" : "GPT-5's window, 272K", wx + 6, G.T - 9, { size: 10.5, weight: 600, color: f.hover === "window" ? C.accent : C.muted, halo: C.surface2 });
-      hits.push({ key: "window", x: wx - 4, y: G.T - 18, w: G.narrow ? 70 : 130, h: 18 });
+      const C = f.C, g = geo(f), hits = (f.state.hits = []), speed = f.v.speed, cNow = f.v.call;
+      // band: the post's measured range
+      const yb0 = Y(f, BAND[1]), yb1 = Y(f, BAND[0]);
+      c.fillStyle = C.surface2; c.fillRect(g.L, yb0, g.R - g.L, yb1 - yb0);
+      hits.push({ kind: "band", x: g.L, y: yb0, w: g.R - g.L, h: yb1 - yb0 });
+      FS.k.text(f, c, g.narrow ? "measured: 1 to 1.2× (post)" : "measured on the benchmark: 1 to 1.2× (post)", g.R - 8, yb1 - 6, { align: "right", size: 11, color: C.fg });
       // grid
       c.strokeStyle = C.line; c.lineWidth = 1;
-      for (const v of [0, 25, 50, 75, 100]) { FS.k.line(c, G.L, Y(G, v), G.R, Y(G, v)); FS.k.text(f, c, String(v), G.L - 8, Y(G, v) + 4, { align: "right", size: 10.5 }); }
-      LENS.forEach((s, i) => { if (G.narrow && i % 2 === 1 && i !== 7) return; FS.k.text(f, c, s, X(G, i), G.B + 16, { align: "center", size: 10.5, color: i >= 6 ? C.fg : C.muted }); });
-      FS.k.text(f, c, "input tokens, log scale →", G.R, G.B + 31, { size: 10.5, align: "right" });
-      FS.k.text(f, c, "score", G.L - 8, G.T - 8, { align: "right", size: 10.5 });
-      // series
-      const series = (vals, key, strong) => {
-        const hot = f.hover === key;
-        c.strokeStyle = hot ? C.accent : strong ? C.fg : C.muted; c.lineWidth = strong ? 1.75 : 1.25;
-        if (!strong) c.setLineDash([5, 3]);
-        c.beginPath(); vals.forEach((v, i) => (i ? c.lineTo(X(G, i), Y(G, v)) : c.moveTo(X(G, i), Y(G, v)))); c.stroke(); c.setLineDash([]); c.lineWidth = 1;
-        vals.forEach((v, i) => { c.beginPath(); c.arc(X(G, i), Y(G, v), strong ? 3.5 : 3, 0, 7); if (strong) { c.fillStyle = hot ? C.accent : C.fg; c.fill(); } else { c.fillStyle = C.surface; c.fill(); c.strokeStyle = hot ? C.accent : C.muted; c.stroke(); } });
-        vals.forEach((v, i) => hits.push({ key, x: X(G, i) - 5, y: Y(G, v) - 5, w: 10, h: 10 }));
+      for (let r = 1; r <= yMax(f) + 1e-9; r += 0.5) { FS.k.line(c, g.L, Y(f, r), g.R, Y(f, r)); FS.k.text(f, c, `${r.toFixed(1)}×`, g.L - 8, Y(f, r) + 4, { align: "right", size: 11 }); }
+      for (let v = 2; v <= CMAX; v += 2) FS.k.text(f, c, `${v} s`, X(f, v), g.B + 16, { align: "center", size: 11 });
+      FS.k.text(f, c, "length of each sub-model call →", g.R, g.B + 32, { align: "right", size: 11 });
+      // curves
+      const curve = (key, dash, color, width) => {
+        c.save(); c.strokeStyle = color; c.lineWidth = width; if (dash) c.setLineDash(dash);
+        c.beginPath();
+        for (let i = 0; i <= 160; i++) { const cc = CMIN + (CMAX - CMIN) * (i / 160), y = Y(f, ratio(cc, speed)[key]); i ? c.lineTo(X(f, cc), y) : c.moveTo(X(f, cc), y); }
+        c.stroke(); c.restore();
       };
-      series(shown.gpt, "gpt", false);
-      series(shown.rlm, "rlm", true);
-      const gl = shown.gpt.length - 1, same = Math.abs(shown.gpt[gl] - shown.rlm[gl]) < 6;
-      FS.k.label(f, c, "GPT-5", X(G, gl) + 8, Y(G, shown.gpt[gl]) + (same ? 12 : 0), { size: 11, weight: 600, color: f.hover === "gpt" ? C.accent : C.muted });
-      FS.k.label(f, c, G.narrow ? "RLM" : "RLM(GPT-5)", X(G, 7) + 8, Y(G, shown.rlm[7]) - (same ? 10 : 0), { size: 11, weight: 600, color: f.hover === "rlm" ? C.accent : C.fg });
-      // cursor
-      const cx = f.state.cx ?? X(G, f.v.len), held = f.drag === "cursor", hot = held || f.handleHover === "cursor" || f.hover === "cursor";
-      c.strokeStyle = hot ? C.accent : C.strong; c.lineWidth = held ? 2.25 : hot ? 1.75 : 1.25; FS.k.line(c, cx, G.T - 4, cx, G.B); c.lineWidth = 1;
-      c.fillStyle = C.surface; c.beginPath(); c.arc(cx, G.B, (held ? 7 : hot ? 6 : 4.5) + 2, 0, 7); c.fill();
-      c.fillStyle = hot ? C.accent : C.strong; c.beginPath(); c.arc(cx, G.B, held ? 7 : hot ? 6 : 4.5, 0, 7); c.fill();
-      const i = f.params.len, g = cur.gpt[i], r = cur.rlm[i];
-      if (held) FS.k.label(f, c, LENS[i], cx, G.T - 12, { size: 10.5, weight: 600, align: "center", color: C.fg });
-      for (const [v, strong] of [[g, false], [r, true]]) if (v != null) { c.strokeStyle = strong ? C.fg : C.muted; c.lineWidth = 1.5; c.beginPath(); c.arc(X(G, i), Y(G, v), 6.5, 0, 7); c.stroke(); c.lineWidth = 1; }
-      f.api.out("readout", g == null ? `At ${LENS[i]} tokens: GPT-5 can't take it · RLM ${r.toFixed(1)}`
-        : `At ${LENS[i]} tokens: GPT-5 ${g.toFixed(1)} · RLM ${r.toFixed(1)} · ${r > g ? `RLM ahead by ${(r - g).toFixed(1)} points` : r < g ? `GPT-5 ahead by ${(g - r).toFixed(1)} points` : "tied"}`);
+      curve("once", [5, 4], f.hover === "once" ? C.fg : C.muted, 1.4);
+      curve("full", null, f.hover === "full" ? C.accent : C.fg, C.series);
+      // direct labels where the curves are apart
+      const cl = g.narrow ? 9.2 : 9.8, rf = ratio(cl, speed);
+      FS.k.label(f, c, "with speculation", X(f, cl), Y(f, rf.full) - 12, { size: 11, align: "center", color: C.fg });
+      FS.k.label(f, c, "running at once only", X(f, cl), Y(f, rf.once) + 14, { size: 11, align: "center", color: C.muted });
+      hits.push({ kind: "full", x: X(f, cl) - 50, y: Y(f, rf.full) - 20, w: 100, h: 16 });
+      hits.push({ kind: "once", x: X(f, cl) - 60, y: Y(f, rf.once) + 6, w: 120, h: 16 });
+      // the peak
+      const pk = peakOf(speed), px = X(f, pk.c), py = Y(f, pk.r);
+      c.fillStyle = C.surface; c.beginPath(); c.arc(px, py, 5, 0, 7); c.fill(); c.strokeStyle = C.fg; c.lineWidth = 1.5; c.stroke(); c.lineWidth = 1;
+      const hNow = X(f, FS.clamp(cNow, CMIN, CMAX)), clash = Math.abs(hNow - px) < 44;
+      FS.k.label(f, c, `peak ${pk.r.toFixed(2)}×`, clash ? px + (hNow <= px ? 9 : -9) : px, py - 13, { size: 11, align: clash ? (hNow <= px ? "left" : "right") : "center", weight: 600 });
+      hits.push({ kind: "peak", x: px - 30, y: py - 22, w: 60, h: 28 });
+      // the handle: a vertical line at the current call length
+      const hx = X(f, FS.clamp(f.state.raw != null && f.drag === "line" ? f.state.raw : cNow, CMIN - 1, CMAX + 1)), held = f.drag === "line", hov = f.handleHover === "line";
+      c.strokeStyle = held || hov ? C.accent : C.strong; c.lineWidth = held ? 2.25 : hov ? 1.75 : 1.25;
+      FS.k.line(c, hx, g.T, hx, g.B); c.lineWidth = 1;
+      const r = ratio(FS.clamp(cNow, CMIN, CMAX), speed);
+      for (const [key, color] of [["once", C.muted], ["full", C.fg]]) { c.fillStyle = C.surface; c.beginPath(); c.arc(hx, Y(f, r[key]), 5.5, 0, 7); c.fill(); c.fillStyle = color; c.beginPath(); c.arc(hx, Y(f, r[key]), 4, 0, 7); c.fill(); }
+      const right = hx + 70 < g.R;
+      FS.k.label(f, c, `${r.full.toFixed(2)}×`, hx + (right ? 9 : -9), Y(f, r.full) + 12, { size: 11, weight: 600, align: right ? "left" : "right" });
+      c.fillStyle = C.surface; c.beginPath(); c.arc(hx, g.B, held ? 9 : 7.5, 0, 7); c.fill(); c.fillStyle = held || hov ? C.accent : C.strong; c.beginPath(); c.arc(hx, g.B, held ? 7 : hov ? 6 : 4.5, 0, 7); c.fill();
+      if (held) FS.k.label(f, c, `${f.params.call.toFixed(1)} s`, hx, g.T - 8, { size: 11, align: "center", weight: 600 });
     },
   });
+  function outs(f) {
+    const r = ratio(f.params.call, f.params.speed), pk = peakOf(f.params.speed);
+    f.api.out("readout", `At ${f.params.call.toFixed(1)} s per sub-model call: ${r.full.toFixed(2)}× (${sec(r.saved)} sooner). Running at once alone: ${r.once.toFixed(2)}×.`);
+    f.api.out("peak", `about ${pk.r.toFixed(2)}× when each call takes ${sec(pk.c)}`);
+  }
+  // Figs. 1 and 4 share the call length and the writing speed.
+  const link = (from, to) => FS.get(from).on("param", ({ name, value }) => { const other = FS.get(to); if (other.params[name] !== value) other.set(name, value, { instant: true }); });
+  link("fig-gain", "fig-turn"); link("fig-turn", "fig-gain");
+  void fig;
 })();
 
-/* ================= Fig 5: Table 1 as bars (canvas) ================= */
+/* ================= Fig 5: the post's measurements (canvas, read off its plot) ================= */
 (() => {
-  const TASKS = [{ name: "CodeQA", len: "23K–4.2M tokens" }, { name: "BrowseComp+ (1K)", len: "6M–11M tokens" }, { name: "OOLONG", len: "131K tokens" }, { name: "OOLONG-Pairs", len: "32K tokens" }];
-  const ROWS = [
-    { key: "base", name: "Base model" }, { key: "bm25", name: "CodeAct + BM25" }, { key: "codesub", name: "CodeAct/sub-model calls" },
-    { key: "summary", name: "Summary agent" }, { key: "rlm", name: "RLM" }, { key: "nosub", name: "RLM/no sub-model calls" },
-  ];
-  // Table 1 (v2): [score, ran into the input limit (asterisk), mean cost $, cost std $]; null cost is N/A.
-  const T1 = {
-    gpt: {
-      base: [[24.0, 1, 0.13, 0.07], [0.0, 1, null, null], [44.0, 0, 0.14, 0.02], [0.1, 0, 0.16, 0.10]],
-      bm25: [[22.0, 1, 0.06, 0.08], [51.0, 0, 0.71, 1.20], [38.0, 0, 0.61, 1.06], [24.7, 0, 0.75, 0.43]],
-      codesub: [[24.0, 1, 0.06, 0.08], [0.0, 1, null, null], [40.0, 0, 0.85, 1.27], [28.4, 0, 1.11, 0.62]],
-      summary: [[58.0, 0, 1.31, 1.46], [70.5, 0, 0.57, 0.10], [46.0, 0, 0.13, 0.01], [0.1, 0, 0.13, 0.09]],
-      rlm: [[62.0, 0, 0.11, 0.10], [91.3, 0, 0.99, 1.22], [56.5, 0, 0.43, 0.85], [58.0, 0, 0.33, 0.20]],
-      nosub: [[58.0, 0, 0.18, 0.56], [88.0, 0, 0.44, 0.90], [36.0, 0, 0.37, 0.42], [43.9, 0, 0.69, 1.16]],
-    },
-    qwen: {
-      base: [[20.0, 1, 0.13, 0.08], [0.0, 1, null, null], [36.0, 0, 0.06, 0.00], [0.1, 0, 0.05, 0.01]],
-      bm25: [[24.0, 1, 0.17, 0.08], [12.7, 0, 0.39, 0.50], [38.0, 0, 1.51, 1.09], [0.3, 0, 1.54, 0.35]],
-      codesub: [[26.0, 1, 0.28, 0.30], [0.0, 1, null, null], [32.0, 0, 1.83, 1.14], [0.1, 0, 1.49, 0.46]],
-      summary: [[50.0, 0, 1.26, 1.50], [38.0, 0, 8.98, 2.12], [44.1, 0, 0.15, 0.01], [0.31, 0, 0.05, 0.00]],
-      rlm: [[56.0, 0, 0.92, 1.23], [44.7, 0, 0.84, 0.63], [48.0, 0, 0.61, 0.49], [23.1, 0, 1.02, 0.52]],
-      nosub: [[66.0, 0, 0.18, 0.58], [46.0, 0, 0.82, 0.69], [43.5, 0, 0.32, 0.13], [17.3, 0, 1.77, 1.23]],
-    },
+  const ID = "fig-measured";
+  // [mean, low, high] read by pixel from the post's results plot; lows clipped at 0 by its plotting code.
+  const CELLS = [{ temp: "0.0", conc: 4 }, { temp: "0.0", conc: 8 }, { temp: "0.7", conc: 4 }, { temp: "0.7", conc: 8 }];
+  const DATA = {
+    wall: { unit: "s", base: [[1117, 575, 1646], [834, 394, 1257], [1014, 74, 1917], [1319, 0, 3444]], spec: [[772, 509, 1018], [595, 230, 943], [792, 357, 1213], [718, 287, 1111]] },
+    subcalls: { unit: "", base: [[667, 269, 1050], [694, 315, 1055], [938, 726, 1131], [1182, 531, 1814]], spec: [[1001, 250, 1729], [890, 213, 1553], [1177, 658, 1682], [914, 297, 1516]] },
+    turns: { unit: "", base: [[10.3, 9.2, 11.3], [10.4, 9.0, 11.7], [8.8, 7.7, 9.9], [10.0, 9.1, 10.8]], spec: [[10.0, 8.9, 11.0], [8.9, 7.7, 10.0], [9.7, 8.1, 11.2], [10.2, 9.2, 11.0]] },
   };
-  const MODELS = { gpt: "GPT-5", qwen: "Qwen3-Coder-480B" };
-  const money = (v) => (v == null ? "N/A" : `$${v.toFixed(2)}`);
-  const best = (m, ti) => ROWS.reduce((b, r) => (T1[m][r.key][ti][0] > T1[m][b.key][ti][0] ? r : b), ROWS[0]);
-  const tips = {};
-  for (const m of Object.keys(T1)) ROWS.forEach((r, ri) => TASKS.forEach((task, ti) => {
-    const [s, star, mean, sd] = T1[m][r.key][ti];
-    tips[`${m}:${ri}:${ti}`] = { title: `${r.name} · ${task.name}`, body: `${MODELS[m]} scores ${s.toFixed(1)}${star ? " and runs into the input limit at least sometimes" : ""}. ${mean == null ? "No cost reported." : `Average cost ${money(mean)} a query, spread ±${money(sd)}.`}` };
-  }));
-  const geo = (f) => {
-    const narrow = f.w < 560;
-    if (narrow) { const labelW = 132, rowH = 22, head = 44, gap = 14; return { narrow, labelW, rowH, head, gap, panelH: head + ROWS.length * rowH, colW: f.w - labelW - 16, col: (ti) => ({ x: labelW, y: 8 + ti * (head + ROWS.length * rowH + gap) }) }; }
-    const labelW = 150, gapX = 18, colW = (f.w - labelW - 12 - gapX * 3) / 4, rowH = 30, head = 42;
-    return { narrow, labelW, rowH, head, colW, col: (ti) => ({ x: labelW + ti * (colW + gapX), y: 8 }) };
+  const NAMES = { wall: "Wall time", subcalls: "Sub-model calls per task", turns: "Turns per task" };
+  const fmtV = (m, v) => (m === "turns" ? v.toFixed(1) : Math.round(v).toLocaleString("en-US")) + (m === "wall" ? " s" : "");
+  const delta = (m, i) => {
+    const b = DATA[m].base[i][0], s = DATA[m].spec[i][0];
+    if (m === "wall") return `${(b / s).toFixed(2)}×`;
+    if (m === "subcalls") { const p = Math.round((s / b - 1) * 100); return `${p > 0 ? "+" : "−"}${Math.abs(p)}%`; }
+    const d = s - b; return `${d > 0 ? "+" : d < 0 ? "−" : "±"}${Math.abs(d).toFixed(1)}`;
   };
-  FS.figure("fig-results", {
-    height: (w) => { const G = geo({ w }); return G.narrow ? 8 + 4 * (G.panelH + G.gap) : 8 + G.head + ROWS.length * G.rowH + 26; },
-    params: {
-      model: { value: "gpt", label: "Model", options: [{ value: "gpt", label: "GPT-5" }, { value: "qwen", label: "Qwen3-Coder" }], placement: "inline" },
-      m: { value: 0, min: 0, max: 1, hidden: true },
-    },
-    reserve: { readout: ["Best on each task: no sub-model calls, no sub-model calls, RLM, RLM"] },
-    tips,
-    tipAt: (f, x, y) => hitAt(f, x, y),
-    autoplay: false,
-    onParam(f, name, value) { if (name === "model") f.api.set("m", value === "qwen" ? 1 : 0); },
-    render(f, c) {
-      const C = f.C, G = geo(f), mix = FS.ease.smooth(f.v.m), model = f.params.model, hits = (f.state.hits = []);
-      const val = (r, ti) => FS.lerp(T1.gpt[r][ti][0], T1.qwen[r][ti][0], mix);
-      const rowHot = (key) => f.hover === key;
-      TASKS.forEach((task, ti) => {
-        const P = G.col(ti), bx = P.x + 2, maxW = G.colW - 64, Xs = (v) => bx + (maxW * v) / 100;
-        const winner = best(model, ti).key;
-        FS.k.text(f, c, task.name, G.narrow ? 12 : P.x, P.y + 16, { size: 12, weight: 600, color: C.fg });
-        FS.k.text(f, c, task.len, G.narrow ? 12 : P.x, P.y + 30, { size: 10.5 });
-        const y0 = P.y + G.head;
-        c.strokeStyle = C.line; FS.k.line(c, bx, y0 - 4, bx, y0 + ROWS.length * G.rowH - 6);
-        // the base model as a dashed reference through the column
-        const bv = val("base", ti), xb = Xs(bv);
-        c.strokeStyle = rowHot("base") ? C.accent : C.strong; c.setLineDash([3, 3]); c.lineWidth = 1; FS.k.line(c, xb, y0 - 6, xb, y0 + ROWS.length * G.rowH - 6); c.setLineDash([]);
-        ROWS.forEach((r, ri) => {
-          const y = y0 + ri * G.rowH, h = G.narrow ? 11 : 13, [, star, mean] = T1[model][r.key][ti];
-          const v = val(r.key, ti), w = Math.max(1.5, Xs(v) - bx), win = r.key === winner, hot = rowHot(r.key) || f.hover === `${model}:${ri}:${ti}`;
-          if (ti === 0 || G.narrow) FS.k.text(f, c, r.name, 12, y + h - 1, { size: G.narrow ? 11 : 11.5, weight: r.key === "rlm" || r.key === "nosub" ? 600 : 500, color: rowHot(r.key) ? C.accent : r.key === "rlm" || r.key === "nosub" ? C.fg : C.muted });
-          FS.k.rrect(c, bx, y, w, h, 2); c.fillStyle = win ? C.fg : r.key === "rlm" || r.key === "nosub" ? C.muted : C.lineStrong; c.fill();
-          if (star) { FS.k.rrect(c, bx, y, w, h, 2); c.fillStyle = FS.k.hatch(f, c, C.surface, 4); c.fill(); }
-          if (hot) { FS.k.rrect(c, bx - 1, y - 1, w + 2, h + 2, 3); c.strokeStyle = C.accent; c.lineWidth = 1.5; c.stroke(); c.lineWidth = 1; }
-          const target = T1[model][r.key][ti][0], label = `${(Math.abs(v - target) < 0.05 ? target : v).toFixed(Number.isInteger(Math.round(target * 100) / 10) ? 1 : 2)}${star ? "*" : ""}`;
-          FS.k.label(f, c, label, bx + w + 5, y + h / 2, { size: 11, weight: win ? 700 : 500, color: win ? C.fg : C.muted });
-          if (!G.narrow || true) FS.k.text(f, c, money(mean), P.x + G.colW, y + h - 2, { size: 10, align: "right", mono: true, color: C.faint || C.muted });
-          hits.push({ key: `${model}:${ri}:${ti}`, x: P.x, y: y - 6, w: G.colW, h: G.rowH });
-        });
-      });
-      if (!G.narrow) FS.k.text(f, c, `${MODELS[model]} · bar = score, right = average cost a query · * ran into the input limit · dashed line = base model`, G.labelW, f.h - 8, { size: 10.5 });
-      const names = TASKS.map((_, ti) => (best(model, ti).key === "rlm" ? "RLM" : "no sub-model calls"));
-      f.api.out("readout", names.every((n) => n === "RLM") ? "Best on each task: the RLM, all four" : `Best on each task: ${names.join(", ")}`);
-    },
+  const overlap = (m, i) => { const b = DATA[m].base[i], s = DATA[m].spec[i]; return b[1] <= s[2] && s[1] <= b[2]; };
+  const tips = { key: { title: "Two runs per setting", body: "Hollow: the base RLM. Filled: the same harness with speculation. Whiskers: 95% intervals over 5 runs." } };
+  for (const m of Object.keys(DATA)) CELLS.forEach((cell, i) => {
+    for (const mode of ["base", "spec"]) {
+      const [v, lo, hi] = DATA[m][mode][i];
+      tips[`${m}:${i}:${mode}`] = { title: `${mode === "base" ? "Without" : "With"} · temp ${cell.temp} · ${cell.conc} tasks`, body: `${NAMES[m]}: mean ${fmtV(m, v)}, 95% interval ${fmtV(m, lo)} to ${fmtV(m, hi)}, over 5 runs, read off the post's plot.` };
+    }
   });
-})();
-
-/* ================= Fig 6: training a small RLM (canvas, steps; Table 1's Qwen3-8B rows) ================= */
-(() => {
-  const TASKS = ["CodeQA", "BrowseComp+ (1K)", "OOLONG", "OOLONG-Pairs"];
-  const S = {
-    base: { name: "Qwen3-8B", v: [4.0, 0.0, 0.0, 0.1], star: [1, 1, 1, 0], cost: [0.01, null, null, 0.01] },
-    rlm: { name: "as an RLM", v: [26.0, 2.0, 24.0, 4.3], star: [0, 0, 0, 0], cost: [0.04, 0.03, 0.19, 0.05] },
-    ft: { name: "fine-tuned RLM", v: [32.0, 14.0, 32.0, 5.2], star: [0, 0, 0, 0], cost: [0.02, 0.01, 0.04, 0.02] },
-    gpt: { name: "base GPT-5", v: [24.0, 0.0, 44.0, 0.1], star: [1, 1, 0, 0], cost: [0.13, null, 0.14, 0.16] },
-  };
-  const ORDER = ["base", "rlm", "ft"];
-  const rel = S.ft.v.map((v, i) => ((v - S.rlm.v[i]) / S.rlm.v[i]) * 100);
-  const sorted = [...rel].sort((a, b) => a - b), median = (sorted[1] + sorted[2]) / 2;
-  const steps = [
-    { show: 1, gpt: false, caption: "Qwen3-8B alone runs into its input limit on three tasks and scores almost nothing." },
-    { show: 2, gpt: false, caption: "Running the same model as an RLM without training raises it to 26.0 on CodeQA and 24.0 on OOLONG, with weaker results elsewhere." },
-    { show: 3, gpt: false, caption: "Fine-tuning on 1,000 RLM runs from a larger model on unrelated tasks improves all four results." },
-    { show: 3, gpt: true, caption: "Dashed lines add base GPT-5 for comparison, with the small RLM above it on three tasks and below it on OOLONG." },
-  ];
-  const tips = {};
-  ORDER.concat("gpt").forEach((k) => TASKS.forEach((t, i) => { const c = S[k].cost[i]; tips[`${k}:${i}`] = { title: `${S[k].name} · ${t}`, body: `Score ${S[k].v[i].toFixed(1)}${S[k].star[i] ? ", ran into the input limit at least sometimes" : ""}. ${c == null ? "No cost reported." : `Average cost $${c.toFixed(2)} a query.`} (Table 1)` }; }));
-  const geo = (f) => { const narrow = f.w < 560, L = narrow ? 30 : 44, R = f.w - 12, T = 26, B = f.h - (narrow ? 64 : 58); return { narrow, L, R, T, B, colW: (R - L) / 4 }; };
-  FS.figure("fig-train", {
+  const nice = (v) => { const p = Math.pow(10, Math.floor(Math.log10(v))), n = v / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p; };
+  const scaleOf = (m) => { const hi = Math.max(...DATA[m].base.map((d) => d[2]), ...DATA[m].spec.map((d) => d[2])); const step = nice(hi / 4); return { max: Math.ceil((hi * 1.1) / step) * step, step }; };
+  const tw = { k: 1, from: null };
+  FS.figure(ID, {
     height: (w) => (w < 560 ? 300 : 300),
-    steps,
+    params: { metric: { value: "wall", label: "Measure", options: Object.keys(DATA).map((k) => ({ value: k, label: NAMES[k] })), placement: "inline" } },
     tips,
-    tipAt: (f, x, y) => hitAt(f, x, y, 2),
-    init(f) {
-      f.api.out("gains", rel.map((g) => `${g.toFixed(1)}%`).join(", "));
-      f.api.out("median", `${median.toFixed(1)}%`);
+    tipAt: (f, x, y) => f.state.hits?.find((h) => Math.hypot(h.x - x, h.y - y) < 12)?.kind ?? (f.state.keyHit && x >= f.state.keyHit.x && x <= f.state.keyHit.x + f.state.keyHit.w && y >= f.state.keyHit.y && y <= f.state.keyHit.y + 16 ? "key" : null),
+    init(f) { outs(f); },
+    onParam(f, name, value) {
+      tw.from = f.state.last ?? null; tw.k = FS.reduced() || !tw.from ? 1 : 0;
+      if (tw.k < 1) FS.animate((dt) => { tw.k = Math.min(1, tw.k + dt / 0.6); f.dirty = true; return tw.k >= 1; });
+      outs(f); void value; void name;
     },
     render(f, c) {
-      const C = f.C, G = geo(f), st = steps[f.step], e = FS.ease.out(f.stepT), hits = (f.state.hits = []);
-      const Y = (v) => G.B - ((G.B - G.T) * v) / 50;
-      c.strokeStyle = C.line;
-      for (const v of [0, 25, 50]) { FS.k.line(c, G.L, Y(v), G.R, Y(v)); FS.k.text(f, c, String(v), G.L - 8, Y(v) + 4, { align: "right", size: 10.5 }); }
-      FS.k.text(f, c, "score", G.narrow ? 0 : G.L - 8, G.T - 10, { align: G.narrow ? "left" : "right", size: 10.5 });
-      TASKS.forEach((task, i) => {
-        const cx = G.L + G.colW * (i + 0.5), bw = Math.min(G.narrow ? 14 : 30, G.colW / 5), gap = G.narrow ? 3 : 6;
-        FS.k.text(f, c, G.narrow ? task.replace("BrowseComp+ (1K)", "BrowseComp+").replace("OOLONG-Pairs", "Pairs") : task, cx, G.B + 16, { align: "center", size: G.narrow ? 10.5 : 11.5, weight: 600, color: C.fg });
-        ORDER.forEach((k, j) => {
-          const x = cx + (j - 1) * (bw + gap) - bw / 2, v = S[k].v[i];
-          const vis = j < st.show ? (j === st.show - 1 && f.from < f.step && steps[f.from]?.show <= j ? e : 1) : 0;
-          if (vis <= 0) { c.strokeStyle = C.line; c.setLineDash([2, 3]); FS.k.rrect(c, x, Y(0) - 1, bw, 1, 0); c.stroke(); c.setLineDash([]); return; }
-          const h = (Y(0) - Y(v)) * vis, hot = f.hover === `${k}:${i}`;
-          FS.k.rrect(c, x, Y(0) - Math.max(1.5, h), bw, Math.max(1.5, h), 2);
-          c.fillStyle = k === "ft" ? C.fg : k === "rlm" ? C.muted : C.lineStrong; c.fill();
-          if (S[k].star[i]) { FS.k.rrect(c, x, Y(0) - Math.max(1.5, h), bw, Math.max(1.5, h), 2); c.fillStyle = FS.k.hatch(f, c, C.surface, 4); c.fill(); }
-          if (hot) { c.strokeStyle = C.accent; c.lineWidth = 1.5; FS.k.rrect(c, x - 1, Y(0) - Math.max(1.5, h) - 1, bw + 2, Math.max(1.5, h) + 2, 3); c.stroke(); c.lineWidth = 1; }
-          if (!G.narrow || k === "ft") FS.k.text(f, c, v.toFixed(1), x + bw / 2, Y(v) - 5, { align: "center", size: G.narrow ? 10 : 10.5, weight: k === "ft" ? 700 : 500, color: k === "ft" ? C.fg : C.muted, alpha: vis });
-          hits.push({ key: `${k}:${i}`, x, y: Math.min(Y(v), Y(0) - 12), w: bw, h: Math.max(12, Y(0) - Y(v)) });
-        });
-        if (st.gpt) {
-          const v = S.gpt.v[i], x0 = cx - 1.5 * (bw + gap) - 6, x1 = cx + 1.5 * (bw + gap) + 6, hot = f.hover === `gpt:${i}`;
-          c.save(); c.globalAlpha = f.from < f.step ? e : 1;
-          c.strokeStyle = hot ? C.accent : C.strong; c.lineWidth = 1.5; c.setLineDash([4, 3]); FS.k.line(c, x0, Y(v), x1, Y(v)); c.setLineDash([]); c.lineWidth = 1;
-          FS.k.label(f, c, G.narrow ? `${v.toFixed(1)}` : `GPT-5 ${v.toFixed(1)}`, x1 + 3, Y(v) - (v < 3 ? 8 : 0), { size: 10, weight: 600, color: C.strong });
-          c.restore();
-          hits.push({ key: `gpt:${i}`, x: x0, y: Y(v) - 5, w: x1 - x0, h: 10 });
-        }
-        if (st.show === 3) FS.k.text(f, c, `+${(S.ft.v[i] - S.rlm.v[i]).toFixed(1)} pts`, cx, G.B + (G.narrow ? 30 : 32), { align: "center", size: 10.5, alpha: f.step === 2 && f.from < 2 ? e : 1 });
-      });
+      const C = f.C, m = f.params.metric, narrow = f.w < 560, hits = (f.state.hits = []);
+      const L = narrow ? 46 : 64, R = f.w - 12, T = 46, B = f.h - 50;
+      const sc = scaleOf(m), Yof = (v, s = sc) => B - (B - T) * (v / s.max);
+      // grid
+      c.strokeStyle = C.line; c.lineWidth = 1;
+      for (let v = 0; v <= sc.max + 1e-9; v += sc.step) { FS.k.line(c, L, Yof(v), R, Yof(v)); FS.k.text(f, c, m === "turns" ? v.toFixed(1) : v.toLocaleString("en-US"), L - 8, Yof(v) + 4, { align: "right", size: 11 }); }
+      FS.k.text(f, c, `${NAMES[m]}${m === "wall" ? " (s)" : ""}`, L, T - 22, { size: 11, color: C.fg, weight: 600 });
       // key
-      const ky = f.h - 12; let kx = G.L;
-      ORDER.forEach((k, j) => { if (j >= st.show) return; c.fillStyle = k === "ft" ? C.fg : k === "rlm" ? C.muted : C.lineStrong; FS.k.rrect(c, kx, ky - 8, 10, 10, 2); c.fill(); FS.k.text(f, c, S[k].name, kx + 14, ky + 1, { size: 10.5 }); kx += c.measureText(S[k].name).width + 34; });
-      if (st.gpt) { c.strokeStyle = C.strong; c.setLineDash([4, 3]); FS.k.line(c, kx, ky - 3, kx + 14, ky - 3); c.setLineDash([]); FS.k.text(f, c, "base GPT-5", kx + 18, ky + 1, { size: 10.5 }); }
+      const kx = narrow ? L : R - 270, ky = narrow ? T - 8 : T - 26;
+      if (!narrow) {
+        c.strokeStyle = C.muted; c.lineWidth = 1.5; c.fillStyle = C.surface; c.beginPath(); c.arc(kx + 5, ky - 4, 4.5, 0, 7); c.fill(); c.stroke();
+        FS.k.text(f, c, "without speculation", kx + 15, ky, { size: 11 });
+        c.fillStyle = C.fg; c.beginPath(); c.arc(kx + 150, ky - 4, 4.5, 0, 7); c.fill();
+        FS.k.text(f, c, "with speculation", kx + 160, ky, { size: 11, color: C.fg });
+        f.state.keyHit = { x: kx, y: ky - 12, w: 270 };
+      } else f.state.keyHit = null;
+      // groups: two temperatures, two concurrencies each
+      const slotW = (R - L) / 4, gap = narrow ? 11 : 16;
+      const k = FS.ease.smooth(tw.k), last = [];
+      CELLS.forEach((cell, i) => {
+        const cx = L + slotW * (i + 0.5);
+        FS.k.text(f, c, `${cell.conc} tasks`, cx, B + 16, { align: "center", size: 11 });
+        if (i % 2 === 0) {
+          const gx = L + slotW * (i + 1);
+          FS.k.text(f, c, narrow ? `temp ${cell.temp}` : `temperature ${cell.temp}`, gx, B + 34, { align: "center", size: 11, color: C.fg, weight: 600 });
+          if (i === 2) { c.strokeStyle = C.lineStrong; FS.k.line(c, L + slotW * 2, T - 4, L + slotW * 2, B + 22); }
+        }
+        let top = Infinity;
+        for (const mode of ["base", "spec"]) {
+          const [v, lo, hi] = DATA[m][mode][i], x = cx + (mode === "base" ? -gap : gap);
+          const prev = tw.from?.[`${i}:${mode}`];
+          const yv = prev ? FS.lerp(prev[0], Yof(v), k) : Yof(v), ylo = prev ? FS.lerp(prev[1], Yof(lo), k) : Yof(lo), yhi = prev ? FS.lerp(prev[2], Yof(hi), k) : Yof(hi);
+          last.push([`${i}:${mode}`, [Yof(v), Yof(lo), Yof(hi)]]);
+          top = Math.min(top, yhi);
+          const key = `${m}:${i}:${mode}`, hot = f.hover === key, ink = mode === "base" ? C.muted : C.fg;
+          c.strokeStyle = hot ? C.accent : ink; c.lineWidth = 1.45;
+          FS.k.line(c, x, ylo, x, yhi); FS.k.line(c, x - 4, ylo, x + 4, ylo); FS.k.line(c, x - 4, yhi, x + 4, yhi);
+          c.beginPath(); c.arc(x, yv, hot ? 6 : 4.5, 0, 7);
+          if (mode === "base") { c.fillStyle = C.surface; c.fill(); c.lineWidth = 1.5; c.stroke(); } else { c.fillStyle = hot ? C.accent : C.fg; c.fill(); }
+          c.lineWidth = 1;
+          hits.push({ kind: key, x, y: yv });
+        }
+        FS.k.label(f, c, delta(m, i), cx, Math.max(T + 4, top - 12), { size: 11, align: "center", weight: 600 });
+      });
+      f.state.last = Object.fromEntries(last);
     },
   });
+  function outs(f) {
+    const m = f.params.metric, n = CELLS.length, ov = CELLS.filter((_, i) => overlap(m, i)).length;
+    const lower = CELLS.filter((_, i) => DATA[m].spec[i][0] < DATA[m].base[i][0]).length;
+    const text = m === "wall" ? `Lower with speculation in ${lower} of ${n} settings; the intervals overlap in ${ov} of ${n}.`
+      : m === "subcalls" ? `More sub-model calls with speculation in ${n - lower} of ${n} settings; the intervals overlap in ${ov} of ${n}.`
+      : `About 9 to 10 turns per task either way; the intervals overlap in ${ov} of ${n}.`;
+    f.api.out("readout", text);
+    const rs = CELLS.map((_, i) => DATA.wall.base[i][0] / DATA.wall.spec[i][0]);
+    f.api.out("ratios", `${Math.min(...rs).toFixed(2)}× to ${Math.max(...rs).toFixed(2)}×`);
+  }
 })();
 
 </script>

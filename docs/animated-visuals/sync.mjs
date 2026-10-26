@@ -8,7 +8,7 @@ import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const docs = dirname(fileURLToPath(import.meta.url));
-const root = join(docs, "..");
+const root = join(docs, "..", "..", "skills", "animated-visuals"); // the skill folder in the monorepo
 const vendor = join(docs, "vendor");
 mkdirSync(vendor, { recursive: true });
 
@@ -92,7 +92,7 @@ const creditSections = [
       { name: "Nord", href: "https://github.com/nordtheme/nord", description: "provides an upstream palette under the MIT License." },
       { name: "Rosé Pine", href: "https://github.com/rose-pine/rose-pine-theme", description: "provides an upstream palette under the MIT License." },
       { name: "Tokyo Night", href: "https://github.com/enkia/tokyo-night-vscode-theme", description: "provides an upstream palette under the MIT License." },
-      { name: "Default and Notebook", href: "https://github.com/juanbermudez/animated-visuals/tree/main/themes", description: "are original Animated Visuals themes released under the MIT License." },
+      { name: "Default and Notebook", href: "https://github.com/juanbermudez/skills/tree/main/skills/animated-visuals/themes", description: "are original Animated Visuals themes released under the MIT License." },
     ],
   },
   {
@@ -109,7 +109,7 @@ const creditSections = [
 
 function credits() {
   const out = [
-    '<p>Animated Visuals is MIT-licensed. See <a href="https://github.com/juanbermudez/animated-visuals/blob/main/THIRD_PARTY_NOTICES.md"><code>THIRD_PARTY_NOTICES.md</code></a> for the full notices and attribution details.</p>',
+    '<p>Animated Visuals is MIT-licensed. See <a href="https://github.com/juanbermudez/skills/blob/main/skills/animated-visuals/THIRD_PARTY_NOTICES.md"><code>THIRD_PARTY_NOTICES.md</code></a> for the full notices and attribution details.</p>',
   ];
   for (const section of creditSections) {
     out.push("<h2>" + escape(section.title) + "</h2>", "<ul>");

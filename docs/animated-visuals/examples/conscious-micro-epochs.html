@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Speculative programmatic tool calling · Animated Visuals</title>
-<meta name="description" content="Speculative programmatic tool calling starts safe sub-model calls before a model finishes writing a program. This guide explains the method through one six-line program, five figures, and results from Zhang's post.">
+<title>Conscious micro-epochs · Animated Visuals</title>
+<meta name="description" content="A visual guide to Hesse et al. (bioRxiv 2026), which shows how macaque face-cell activity alternates between state 1 and state 2 about 15 times a second.">
 <script>try{var t=localStorage.getItem("av-theme"),r=document.documentElement;if(t==="default-light"||t==="default")r.dataset.fsMode=t==="default"?"dark":"light";else if(t)r.dataset.fsTheme=t}catch(e){}</script>
 <link rel="icon" href="../site/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2704,16 +2704,30 @@ a.card:hover { border-color: var(--fs-line-strong); }
 .guide .verified li { margin-bottom: 4px; }
 .guide code { overflow-wrap: anywhere; }
 
-/* The guide's own furniture: the key under Fig. 1 and the readout lines that wrap on a phone. */
-.guide .key { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 0 20px 12px; color: var(--fs-muted); font-size: 12px; line-height: 1.4; }
-.guide .key span { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
-.guide .key i { display: inline-block; flex: none; }
-.guide .key .sw-call { width: 18px; height: 11px; border: 1px solid var(--fs-line); border-radius: 2px; background: repeating-linear-gradient(135deg, var(--fs-muted) 0 1px, var(--fs-surface-2) 1px 5px); }
-.guide .key .sw-file { width: 4px; height: 13px; border-radius: 1px; background: var(--fs-fg); }
-.guide .key .sw-answer { width: 10px; height: 10px; border-radius: 50%; background: var(--fs-accent); }
-.guide .key .sw-start { width: 0; height: 14px; border-left: 1px dashed var(--fs-muted); }
-.guide .fs-step-text.readout { min-height: 1.5em; }
-@media (max-width: 560px) { .guide .fs-step-text.readout { min-height: 3em; } }
+/* Conscious micro-epochs: the guide's own furniture. State 1 (seen) is solid, state 2 (suppressed) is hatched; the
+   legend chips repeat that so the reader never has to guess. */
+.guide .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0 0 1.5rem; color: var(--fs-muted); font-size: 0.875rem; }
+.guide .legend span { display: inline-flex; align-items: center; gap: 8px; }
+.guide .sw { display: inline-block; width: 22px; height: 11px; border-radius: 2px; border: 1px solid var(--fs-line); }
+.guide .sw.seen { background: var(--fs-fg); border-color: var(--fs-fg); }
+.guide .sw.supp { background: repeating-linear-gradient(135deg, var(--fs-muted) 0 1px, var(--fs-surface-2) 1px 5px); }
+.guide .formula { margin: 0 0 1rem; padding: 12px 16px; border: 1px solid var(--fs-line); border-radius: 8px; background: var(--fs-surface); font: 500 0.9375rem/1.5 var(--fs-font-mono); overflow-x: auto; }
+.guide .formula .lab { display: block; margin-bottom: 4px; color: var(--fs-muted); font: 600 0.75rem/1.4 var(--fs-font-body); letter-spacing: 0.04em; text-transform: uppercase; }
+.guide table.matrix td { text-align: center; }
+.guide table.matrix th.hl, .guide table.matrix td.hl { background: var(--fs-surface-2); }
+.guide .pass { color: var(--fs-strong); font-weight: 600; }
+.guide .fail { color: var(--fs-muted); }
+.guide .models { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 10px 18px; margin: 0 0 1.25rem; font-size: 0.9375rem; }
+.guide .models span { display: block; }
+.guide .models b { display: block; color: var(--fs-strong); }
+.guide ul.checks, .guide ol.limits { margin: 0 0 1.25rem; padding-left: 1.25rem; }
+.guide ul.checks li, .guide ol.limits li { margin-bottom: 8px; }
+.guide .points { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 14px 24px; margin: 0 0 1.5rem; }
+.guide .points h4 { margin: 0 0 4px; font: 600 1rem/1.3 var(--fs-font-display); }
+.guide .points p { margin: 0; font-size: 0.9375rem; }
+
+/* four stats on one row at the guide width */
+.guide .stats { grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
 
 </style>
 </head>
@@ -2724,118 +2738,270 @@ a.card:hover { border-color: var(--fs-line-strong); }
     <a class="brand" href="../index.html"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="10" width="12" height="12" rx="3" fill="currentColor" opacity="0.22"/><rect x="10" y="10" width="12" height="12" rx="3" fill="currentColor" opacity="0.5"/><rect x="18" y="10" width="12" height="12" rx="3" fill="currentColor"/></svg>Animated Visuals</a>
     <nav class="site-nav" aria-label="Main"><a href="../gallery.html">Gallery</a><a href="../examples.html">Examples</a><a href="../themes.html">Themes</a><a href="../customize.html">Customize</a><a href="../credits.html">Credits</a></nav>
     <div class="head-actions">
-      <a class="icon-btn" href="https://github.com/juanbermudez/animated-visuals" aria-label="Source on GitHub"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a>
+      <a class="icon-btn" href="https://github.com/juanbermudez/skills/tree/main/skills/animated-visuals" aria-label="Source on GitHub"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a>
       <button class="icon-btn theme-btn" type="button" aria-label="Change theme"></button>
     </div>
   </div>
 </header>
 
 <main class="page guide" id="main">
-  <h1>Speculative programmatic tool calling</h1>
-  <p class="source">A visual guide to Alex L. Zhang, “Speculative Programmatic Tool Calling”, blog post, August 24, 2026 · <a href="https://alexzhang13.github.io/blog/2026/spec-ptc/">the post</a> · <a href="https://github.com/alexzhang13/spec-ptc">the code</a> (MIT). Built with Animated Visuals; every measured number is from the post and says where.</p>
-  <p class="lede">Speculative programmatic tool calling (sPTC, Zhang's term) starts safe sub-model calls while a model is still writing the program that contains them. This guide follows one six-line program where line 2 starts three sub-model calls before the model finishes writing. It shows how a throwaway copy of the program runs those calls early, how their answers reach the real run, and when the method saves time.</p>
+  <h1>Conscious micro-epochs</h1>
+  <p class="source">A visual guide to Hesse, Lanfranchi, McGrory, Shi, Engel &amp; Tsao, “Rapid alternation of conscious and suppressed stimulus representations in the primate brain”, bioRxiv preprint, October 2026 · <a href="https://doi.org/10.64898/2026.10.15.759299">the paper</a>. Every number is from the paper and cites its figure.</p>
+  <p class="lede">Binocular flash suppression shows one face to each eye while only the flashed face is seen. Hesse et al. recorded macaque face cells during this task and found two alternating population states: state 1 encodes the flashed, seen face, and state 2 encodes the primed, suppressed face. Each state lasts about 60 ms, so averaging across time weakens both signals. This guide explains how the authors identified the states, what each state encodes and how they tested for sorting bias.</p>
+  <div class="legend" aria-label="Legend"><span><i class="sw seen"></i>State 1: flashed face, seen (solid)</span><span><i class="sw supp"></i>State 2: primed face, suppressed (hatched or dashed)</span></div>
 
-  <h2>The example program</h2>
-  <p>Zhang tested the method on a Recursive Language Model (RLM), a harness where the main model never reads the long input directly. The input sits in a Python variable called <code>context</code>. The model writes code against it in a REPL, a Python session that keeps its variables from one cell to the next. <code>llm_query</code> makes one sub-model call. His benchmark, OOLONG, asks the model to label a long list of items and then count the labels. Its paper calls this classification and counting in context. The example below is one cell the model might write.</p>
-  <div class="code"><pre><code class="language-python">chunks = context.split("\n\n")                             # 1  plain code
-labels = [llm_query("Label: " + c) for c in chunks[:3]]    # 2  three sub-model calls
-tally = llm_query("Count the labels: " + str(labels))      # 3  needs line 2
-notes = read_file("notes.txt")                             # 4  reads a file
-review = llm_query("Compare with my notes: " + notes)      # 5  needs line 4
-print(tally, review)                                       # 6</code></pre></div>
-  <p>Five sub-model calls and one file read. The three label calls don't depend on each other. The tally needs all three labels. The review needs the file. Every figure below runs on these six lines.</p>
-
-  <h2>How calls start early</h2>
-  <p>Without speculation, the harness waits for the last line and then runs the cell from top to bottom. Line 2 makes three sub-model calls in a row because each one blocks until it returns. With speculation, the <span data-fs-ref="fig-turn:label">three label calls</span> start together when line 2 is complete. The <span data-fs-ref="fig-turn:tally">tally</span> starts as soon as they return, while the model is still writing. Set each sub-model call to <span data-fs-scrub="fig-turn:call"></span> by dragging the number. The answer arrives at <span data-fs-out="fig-turn:specEnd"></span> instead of <span data-fs-out="fig-turn:plainEnd"></span>.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-turn-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-turn-title">Calls start while the model is still writing</h3><span class="fs-status">Fig. 1 · simulated</span></header>
-    <div class="fs-stage"><canvas id="fig-turn" role="img" aria-label="One turn on one clock. Top lane: the model writes text, then six lines of code. Middle lane, without speculation: after writing ends, three label calls run one after another, then the tally, the file read and the review. Bottom lane, with speculation: the three label calls start together when line 2 is complete, the tally starts when they return, and after writing ends only the file read and the review remain, so the answer comes much sooner."></canvas></div>
-    <div class="key" aria-hidden="true"><span><i class="sw-call"></i>sub-model call</span><span><i class="sw-file"></i>file read</span><span><i class="sw-answer"></i>answer</span><span><i class="sw-start"></i>line 2 complete: calls start</span></div>
+  <figure class="fs-plate wide" aria-labelledby="fig-hero-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-hero-title">One steady percept, two alternating representations</h3><span class="fs-chip" data-fs-out="fig-hero:flips" aria-live="off"></span></header>
+    <div class="fs-stage"><canvas id="fig-hero" role="img" aria-label="A spike raster of a simulated face-cell population. The top half of the rows fires while the population carries the seen face, the bottom half while it carries the suppressed face, and a strip underneath shows which face is carried at each moment, flipping about 15 times a second of brain time."></canvas></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-turn:clock"></span>
-      <div class="fs-controls">
-        <button type="button" data-fs="fig-turn chapter-prev" aria-label="Previous moment">←</button>
-        <button type="button" data-fs="fig-turn chapter-next" aria-label="Next moment">→</button>
-        <button type="button" data-fs="fig-turn play">Play</button>
-      </div>
+      <span class="fs-position" data-fs-out="fig-hero:state"></span>
+      <div class="fs-controls"><button type="button" data-fs="fig-hero play">Pause</button></div>
     </div>
-    <p class="fs-step-text readout" data-fs-out="fig-turn:summary" aria-live="polite"></p>
-    <p class="fs-caption">Fig. 1 simulates one turn; its writing speed, line endings, and call lengths are illustrative, not from the post. Drag across the lanes to move through the turn, and hover over a block to identify it; call length and writing speed are in settings.</p>
+    <p class="fs-caption">Seeded simulation of a face-cell population, slowed 10×; the speed is in the settings, each tick is a spike and the strip shows which face the population carries. The recorded version is Fig. 2b–g; hover a region.</p>
   </figure>
-  <p>The post describes two sources of savings. First, calls run during the writing instead of after it. Second, independent blocking calls run at the same time even when the code lists them one after another. Zhang calls this a naive JIT compiler, a compiler that rewrites code while it runs. In this turn, <span data-fs-out="fig-turn:atOnce"></span> of the saving comes from running the labels at once and <span data-fs-out="fig-turn:overlap"></span> from overlapping with the writing.</p>
 
-  <h2>The throwaway copy</h2>
-  <p>Line 3's sub-model call needs line 3's input, which depends on line 2's output. The harness therefore keeps a <span data-fs-ref="fig-shadow:copy">shadow copy</span>, a deep copy of the program's variables that runs each line as soon as it is complete. In the copy, a sub-model call starts in the background and leaves a promise, a placeholder that fills in when the answer arrives. Each call is filed under its inputs in a <span data-fs-ref="fig-shadow:store">store of early calls</span>. The <span data-fs-ref="fig-shadow:real">real program</span> can find the answer there later.</p>
-  <p>The copy never changes the real variables, and it is thrown away at the end of the turn. Zhang separates the two because the model may write broken code or stop in the middle of a call. The real program still runs the cell as one unit or not at all.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-shadow-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-shadow-title">The copy runs ahead while the real program waits</h3><span class="fs-status">Fig. 2 · mechanism</span></header>
-    <div class="fs-stage"><svg id="fig-shadow" viewBox="0 0 960 420" role="img" aria-label="Four panels. The program as written so far, line by line. The shadow copy's variables, filling in as each line completes. The store of early calls: three label calls, then the tally, each running, then ready. The real program, which waits until writing ends, then runs the whole cell and finds four answers already there; the file read and the review run the normal way."></svg></div>
+  <div class="stats">
+    <div class="stat"><b>≈15 / s</b><span>flips between the seen and the suppressed representation</span><small>Summary · 67 ms mean dwell</small></div>
+    <div class="stat"><b>≈60 ms</b><span>how long one micro-epoch lasts before the population flips</span><small>Fig. 5c–d · medians 64 ms and 59 ms</small></div>
+    <div class="stat"><b>61% vs 4%</b><span>single-trial decoding of the seen vs the suppressed face from state 1 moments (chance 10%)</span><small>Fig. 2l · p = 2×10⁻⁶</small></div>
+    <div class="stat"><b>1.21×</b><span>steeper tuning to the seen face in its epochs than to the suppressed face in its epochs</span><small>Fig. 4c · p = 3×10⁻⁴⁰</small></div>
+  </div>
+
+  <h2>Selectivity drops during rivalry</h2>
+  <p>Take a cell that fires more for face A than face B when the two are shown one at a time. Its preference can be written as a modulation index, where <i>R</i> is the cell’s average firing rate:</p>
+  <div class="formula"><span class="lab">Modulation index</span>MI = (R<sub>A</sub> − R<sub>B</sub>) / (R<sub>A</sub> + R<sub>B</sub>)</div>
+  <p>Now put the two faces in rivalry, one per eye. If the cell tracked what is seen, its index for the seen face should match its index when that face is shown alone. It does not. Across 5,550 cell–stimulus pairs in inferotemporal (IT) cortex, the index during rivalry was roughly a quarter of the index during plain viewing (slope 0.23, p = 8×10⁻¹³³). Earlier work had also shown the suppressed face is still decodable from IT.</p>
+  <p>Time-averaged IT activity therefore showed little selectivity for the seen face, even though the suppressed face remained decodable. This result bears on theories that place consciousness mainly in the front of the brain (global workspace and higher-order theories) or the back (integrated information and recurrent processing theories).</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-puzzle-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-puzzle-title">Selectivity falls to one quarter during rivalry</h3><span class="fs-status">Fig. 1 · illustrative dots, the paper’s slope</span></header>
+    <div class="fs-stage"><canvas id="fig-puzzle" role="img" aria-label="A scatter of cell and stimulus pairs: selectivity when the faces are shown alone across, selectivity during rivalry up. In step one the dots sit on the diagonal; in step two they fall to a line of slope 0.23."></canvas></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-shadow:step"></span>
-      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-shadow" aria-hidden="true"></span><button type="button" data-fs="fig-shadow prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-shadow next" aria-label="Next step">Next</button></div>
+      <span class="fs-position" data-fs-out="fig-puzzle:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-puzzle" aria-hidden="true"></span><button type="button" data-fs="fig-puzzle prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-puzzle next" aria-label="Next step">Next</button><button type="button" data-fs="fig-puzzle play">Pause</button></div>
     </div>
-    <p class="fs-step-text" data-fs-out="fig-shadow:caption" aria-live="polite"></p>
-    <p class="fs-caption">This figure shows the mechanism on the worked program, with the prompts shortened to “…”. I ran these six lines through Zhang's library, where four calls started during the stream and the real run found four answers before making one call itself; step through with the buttons or arrow keys.</p>
+    <p class="fs-step-text" data-fs-out="fig-puzzle:caption" aria-live="polite"></p>
+    <p class="fs-caption">Each illustrative dot is one cell and stimulus pair. The dashed line is slope 1 for cells following perception; the solid line is the recorded slope 0.23 (Fig. 1h).</p>
   </figure>
 
-  <h2>Which calls can start early</h2>
-  <p>Half-written code can run only when its effects cannot leave the copy. The post uses two rules. First, tools are declared up front. <code>@spec.tool(speculatable=True, pure=True)</code> marks a tool that may run early and has no side effects. A tool without those flags, such as <code>read_file</code> here, never runs early. Ordinary functions that reach outside the program, such as <code>open</code>, are also unsafe. Second, a call does not start when any of its inputs depend on something unsafe.</p>
-  <p>Calls are matched by their inputs and by how many times they occur. Five identical calls for a majority vote therefore receive five separate answers instead of reusing one answer five times. A started call can still be <span data-fs-ref="fig-life:thrown">thrown away</span> when the real program never asks for it. Pick a call and step through its states.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-life-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-life-title">Calls are handed over, refused, or thrown away</h3><span class="fs-status">Fig. 3 · mechanism</span></header>
-    <div class="fs-tabbar"><div data-fs-param="fig-life:call" data-label="Which call"></div></div>
-    <div class="fs-stage"><svg id="fig-life" viewBox="0 0 960 330" role="img" aria-label="A state machine for one call: line complete, then a check whether its inputs are safe. If yes, it starts early, possibly after waiting for an earlier call's answer. A started call is either handed over when the real program asks for it, or thrown away if it never does. If the inputs are not safe, the call is not started and runs the normal way after writing ends."></svg></div>
+  <h2>Binocular flash suppression</h2>
+  <p>To pull apart what is seen from what is shown, the authors used <b>binocular flash suppression</b>. One face (the primed face) is shown to one eye for 1 to 2 seconds. Then a second face is flashed to the other eye. The flashed face takes over perception, and the primed face, still physically there, drops out of awareness.</p>
+  <p>They checked this in 14 people with button presses. The flashed face was reported on 82% of rivalry trials, close to the 87% people report for an image with no competitor at all (p = 4×10⁻⁷). Every neural analysis below uses the window from 300 to 1000 ms after the flash, when the flashed face dominates.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-flash-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-flash-title">Only the flashed face is seen</h3><span class="fs-status">Fig. 2 · one trial, schematic</span></header>
+    <div class="fs-stage"><canvas id="fig-flash" role="img" aria-label="Three panels, left eye, right eye and what is seen, above a two-second timeline. Before the flash the left eye and the percept show the primed face. At the flash the right eye gets the second face and the percept switches to it. A hatched band marks the analysis window, 300 to 1000 ms after the flash."></canvas></div>
     <div class="fs-toolbar">
-      <span class="fs-position" data-fs-out="fig-life:step"></span>
-      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-life" aria-hidden="true"></span><button type="button" data-fs="fig-life prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-life next" aria-label="Next step">Next</button></div>
+      <span class="fs-position" data-fs-out="fig-flash:clock"></span>
+      <div class="fs-controls"><button type="button" data-fs="fig-flash chapter-prev" aria-label="Previous moment">←</button><div data-fs-seek="fig-flash" data-label="Time"></div><button type="button" data-fs="fig-flash chapter-next" aria-label="Next moment">→</button><button type="button" data-fs="fig-flash play">Pause</button></div>
     </div>
-    <p class="fs-step-text" data-fs-out="fig-life:caption" aria-live="polite"></p>
-    <p class="fs-caption">States from the post's design section, matched to the states a call goes through in Zhang's code (started, ready, claimed, thrown away). Pick a call in the tabs, then step through it.</p>
-  </figure>
-  <p>No rollback is needed because a wrong guess never reaches the real variables. The cost of a wrong guess is one unused sub-model call, and those calls can add up. Zhang's worst case is a serving engine clogged with extra speculative requests. This can be controlled through how aggressive speculation is and how the calls are queued. The post says the copy itself is cheap. Checking the stream costs close to nothing, and the deep copy is small because REPLs tend to hold few large mutable objects.</p>
-
-  <h2>When speculation saves time</h2>
-  <p>The possible saving depends on two limits. In this program, overlap is capped by how long the model keeps writing after line 2. Running calls at once is capped by how many calls are independent. The gain is largest when the calls fit inside the writing, at <span data-fs-out="fig-gain:peak"></span>. Past that point, the tally finishes after the writing and the gain settles toward 5 ÷ 3 ≈ 1.67× because five calls in a row became a chain of three. Drag the line. The band shows what the post measured on a real benchmark, well below the simulation's best case.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-gain-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-gain-title">The gain peaks when calls fit inside the writing</h3><span class="fs-status">Fig. 4 · simulated</span></header>
-    <div class="fs-stage"><canvas id="fig-gain" role="img" aria-label="A chart of speed-up against the length of each sub-call for the worked turn. The full speed-up rises from 1 to a peak where the calls just fit inside the writing, then levels off toward 1.67. A second, dashed curve shows the speed-up from running the calls at once alone. A band from 1 to 1.2 marks what the post measured."></canvas></div>
-    <p class="fs-step-text readout" data-fs-out="fig-gain:readout" aria-live="polite"></p>
-    <p class="fs-caption">This figure is computed from the same simulated turn as Fig. 1; only the band comes from the post. Drag the vertical line, or focus it and use the arrow keys; the same control also moves Fig. 1.</p>
+    <p class="fs-step-text" data-fs-out="fig-flash:phase" aria-live="polite"></p>
+    <p class="fs-caption">Red and cyan anaglyph goggles send a different image to each eye; the monkeys fixated without reporting, so the percept is inferred from the human reports (Fig. 1b). Drag the time slider or step between moments.</p>
   </figure>
 
-  <h2>Measured results</h2>
-  <p>Zhang measured the method on his RLM harness with OOLONG, using the trec-coarse split with 132k tokens of context, and OOLONG-Pairs with 32k. vLLM served Qwen3-30B-A3B-Instruct on a node of eight H100s. He ran each setting 5 times at temperature 0.7 and at 0.0 to reduce run-to-run variance, with 4 and with 8 tasks sharing the same serving engine. His summary reports speed-ups of about 1 to 1.2×.</p>
-  <p>The plot gives a less precise picture. Mean wall time with speculation is lower in all four settings, and the ratios of the means are <span data-fs-out="fig-measured:ratios"></span>, above the post's stated range. The 95% intervals overlap in every setting. The speculative runs also made more sub-model calls in three of the four settings, so the two sides took different paths through the tasks. The bars therefore cannot isolate the effect of speculation. The supported summary is 1 to 1.2×, with the bars suggesting that it was probably faster but not showing precisely by how much.</p>
-  <figure class="fs-plate wide" aria-labelledby="fig-measured-title">
-    <header class="fs-head"><h3 class="fs-title" id="fig-measured-title">Faster on average in every setting, with wide spread</h3><span class="fs-status">Fig. 5 · from the post</span></header>
-    <div class="fs-tabbar"><div data-fs-param="fig-measured:metric" data-label="Measure"></div></div>
-    <div class="fs-stage"><canvas id="fig-measured" role="img" aria-label="Means and 95% intervals over 5 runs for four settings, temperature 0.0 and 0.7, each with 4 and 8 tasks at once, without and with speculation. Wall time is lower with speculation in all four settings, but every pair of intervals overlaps. Sub-calls are higher with speculation in three of four. Turns per task are about nine to ten either way."></canvas></div>
-    <p class="fs-step-text readout" data-fs-out="fig-measured:readout" aria-live="polite"></p>
-    <p class="fs-caption">Means and 95% t-intervals over 5 runs, read off the post's plot by pixel (about ±10 s). Above each pair is the ratio or change between the two means; hover a mark for its numbers.</p>
+  <h2>The recordings</h2>
+  <p>The authors recorded from two macaques with Neuropixels NHP probes. Each probe has a 45 mm shaft with 4,416 contacts, of which 384 record at a time. The recordings covered two face patches in inferotemporal cortex, <b>ML</b> and <b>AM</b>, and two prefrontal regions, <b>PO</b> (orbitofrontal) and <b>PVL</b> (ventrolateral). The patches were located with fMRI. One example trial recorded 429 cells together.</p>
+  <p>The monkeys saw 1,500 synthetic faces arranged in 750 rival pairs. Each face is a point in a 50-dimensional face space: 20 shape features and 30 appearance features. Face cells respond roughly as a straight line along one preferred direction in that space. That linear code is what lets the authors read a face back out of the spikes.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-rig-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-rig-title">Recordings covered two IT and two prefrontal regions</h3><span class="fs-status">Fig. 3 · schematic, not anatomy</span></header>
+    <div class="fs-stage"><svg id="fig-rig" viewBox="0 0 960 300" role="img" aria-label="A flow from the eyes through early visual cortex, which was not recorded, to the face patches ML and AM in inferotemporal cortex and on to the prefrontal regions PVL and PO. The four recorded regions light up step by step."></svg></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-rig:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-rig" aria-hidden="true"></span><button type="button" data-fs="fig-rig prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-rig next" aria-label="Next step">Next</button><button type="button" data-fs="fig-rig play">Pause</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-rig:caption" aria-live="polite"></p>
+    <p class="fs-caption">A schematic of the visual hierarchy, not anatomy. Hover a region for what was recorded there.</p>
   </figure>
-  <p>The simulated example gains more because it represents one turn whose time is entirely calls. The benchmark tasks take about nine or ten turns each in the turns tab, 4 or 8 tasks share one serving engine, and speculative calls add load to that engine. Zhang says the speed-up is hard to pin down. It depends on tool latency, how many tokens the model generates, serving-engine load, and the choices the harness makes.</p>
+  <div class="stats">
+    <div class="stat"><b>429</b><span>cells recorded at once in ML and AM, one trial</span><small>Fig. 1g</small></div>
+    <div class="stat"><b>3,501</b><span>visually responsive IT neurons pooled to reconstruct faces</span><small>Methods</small></div>
+    <div class="stat"><b>661</b><span>prefrontal neurons</span><small>Methods</small></div>
+    <div class="stat"><b>19</b><span>sessions over two stimulus sets (1,500 faces; 10 stimuli)</span><small>Methods · 9 + 10 sessions</small></div>
+  </div>
 
-  <h2>When to use it</h2>
-  <p>Zhang recommends the method when the tools are slow sub-models or sub-agents. It is especially useful with locally run models, where decoding one main context leaves the hardware waiting on memory and extra calls can put it to work. Through a hosted API, the only gain is overlap. He expects larger long-term gains from JIT-style methods that overlap calls with the program's own execution as harnesses write longer programs.</p>
+  <h2>The decoder</h2>
+  <p>First, the authors recorded each neuron’s average firing rate for each face when it was shown alone, during priming. That produced two <b>templates</b> per neuron: one for the flashed, seen face and one for the primed, suppressed face. During rivalry, they divided the spikes into 10 ms slices and tested which template more likely produced each slice. With Poisson spiking (spikes arriving at random at a set rate), a log-likelihood ratio scores which template fits better:</p>
+  <div class="formula"><span class="lab">Log-likelihood ratio, one 10 ms slice</span>ℓ(t) = Σ<sub>i</sub> n<sub>i</sub>(t) · log(λ<sup>c</sup><sub>i</sub> / λ<sup>s</sup><sub>i</sub>) − (λ<sup>c</sup><sub>i</sub> − λ<sup>s</sup><sub>i</sub>) · Δt</div>
+  <p>Here <i>n<sub>i</sub></i> is neuron <i>i</i>’s spike count in the slice, λ<sup>c</sup> and λ<sup>s</sup> are its template rates for the seen and suppressed face, and Δt is 10 ms. Each neuron contributes according to its face preference. A spike from a cell that strongly prefers the seen face raises ℓ; silence from that cell lowers it. Positive ℓ labels the slice <b>state 1</b>, the flashed, seen face. Negative ℓ labels it <b>state 2</b>, the primed, suppressed face.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-llr-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-llr-title">The sign of each slice assigns its state</h3><span class="fs-status">Fig. 4 · simulated, 60 neurons</span></header>
+    <div class="fs-stage"><canvas id="fig-llr" role="img" aria-label="A spike raster of fourteen simulated neurons beside their two templates, with the evidence trace below it: a bar per 10 ms slice, up when the slice looks like the seen face and down when it looks like the suppressed one. Two strips show the decoded state and the hidden truth, and a panel breaks the newest slice down into each neuron's vote."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-llr:readout"></span>
+      <div class="fs-controls"><button type="button" data-fs="fig-llr play">Pause</button></div>
+    </div>
+    <p class="fs-caption">Seeded simulation of 60 neurons (14 shown) switching between two hidden states, slowed about 20×. The hidden state is known in the simulation, so the decoder can be scored; this is not possible in the recordings, which is why section 07 tests for sorting bias, and each panel can be hovered for detail.</p>
+  </figure>
+  <p>In the recordings, during priming (one face on screen) most slices match that face. After the flash the population splits about evenly between the two states, trial after trial (Fig. 2c). For pairs where each face had its own preferring cells, the switching is visible by eye in single-cell rasters (Fig. 2e–g).</p>
+
+  <h2>How fast the states flip</h2>
+  <p>If the labels were noise, the autocorrelation of ℓ would vanish within one 10 ms slice, as it does when the slices are shuffled. In the recordings, ℓ stays correlated for tens of milliseconds. Fitting a two-state switching model to that decay gives a <b>mean dwell of 67 ms</b>. A hidden Markov model, which allows each state to persist, gives median dwells of <b>64 ms</b> for state 1 and <b>59 ms</b> for state 2, stable across a range of bin sizes.</p>
+  <p>Each run of one state, a micro-epoch, lasts about 60 ms. Perception in classic binocular rivalry switches about once every two seconds (about 0.5 Hz). The population flips about 30 times faster, while the percept stays put.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-time-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-time-title">The population flips about 15 times a second</h3><span class="fs-status">Fig. 5 · simulated, real speed</span></header>
+    <div class="fs-stage"><canvas id="fig-time" role="img" aria-label="Two strips over a two-second trial: what is seen, which changes once at the flash, and what the population carries, which flips many times a second after the flash. Below, the autocorrelation of the evidence fades over tens of milliseconds for recorded data and vanishes after one bin for shuffled data, and two bars compare about 15 switches a second for the population with about half a switch a second for perception."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-time:clock"></span>
+      <div class="fs-controls"><button type="button" data-fs="fig-time chapter-prev" aria-label="Previous moment">←</button><div data-fs-seek="fig-time" data-label="Time"></div><button type="button" data-fs="fig-time chapter-next" aria-label="Next moment">→</button><button type="button" data-fs="fig-time play">Pause</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-time:note" aria-live="polite"></p>
+    <p class="fs-caption">The top shows one simulated 2 s trial at real speed: before the flash the population mostly carries the primed face, and after it the two states split evenly. The bottom compares the recorded and shuffled ℓ autocorrelation (schematic of Fig. 2d) and the switches per second for population activity and perception.</p>
+  </figure>
+
+  <h2>What each state encodes</h2>
+  <p>Because face cells encode faces linearly, a plain linear decoder trained on priming responses (each face shown alone) turns population activity into the 50 face features, and those into a picture. The authors applied that same decoder to rivalry activity three ways.</p>
+  <p>Applied to all moments, the decoder returns a blend that matches neither face. Applied only to state 1 moments, it returns the seen face. Applied only to state 2 moments, it returns the <b>suppressed face, in detail</b>, though the animal is not seeing it.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-recon-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-recon-title">Each state reconstructs a different face</h3><span class="fs-status">Fig. 6 · schematic faces</span></header>
+    <div class="fs-stage"><canvas id="fig-recon" role="img" aria-label="Three rows. Each sends a stream of population moments through the same decoder W. All moments give a blurred blend; state 1 moments give the seen face; state 2 moments give the suppressed face. The true face shown to each eye sits at the right."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-recon:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-recon" aria-hidden="true"></span><button type="button" data-fs="fig-recon prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-recon next" aria-label="Next step">Next</button><button type="button" data-fs="fig-recon play">Pause</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-recon:caption" aria-live="polite"></p>
+    <p class="fs-caption">The faces are schematic; the paper reconstructs its synthetic macaque faces (Fig. 2h) and shows the time-averaged blend in Extended Data Fig. 2. The decoder weights come only from priming, so accurate reconstruction shows that each state uses the code measured when that face was shown alone.</p>
+  </figure>
+  <p>In state 1, some features of the seen face reached over 80% explained variance (how much of the true feature the reconstruction recovers), close to the over-90% ceiling set by priming. The suppressed face in state 1 sat at chance. State 2 reversed this (p = 3×10⁻²⁹).</p>
+  <p>The same split works on single trials. A decoder picked which of 10 faces was shown from a 200 ms window (chance 10%):</p>
+  <figure class="fs-plate" aria-labelledby="fig-decode-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-decode-title">State-sorted moments identify the face six times in ten</h3><span class="fs-status">Fig. 2l · the paper’s numbers</span></header>
+    <div class="fs-stage"><canvas id="fig-decode" role="img" aria-label="Bar chart of single-trial decoding accuracy. All moments: seen face 40 percent, suppressed 34 percent. State 1 only: seen 61 percent, suppressed 4 percent. State 2 only: roughly 5 percent seen, 60 percent suppressed. Chance is 10 percent."></canvas></div>
+    <p class="fs-caption">The decoder chose one of 10 faces from a 200 ms window. All-moments and state 1 values are stated in the text; state 2 values are approximate and read off Fig. 2l.</p>
+  </figure>
+
+  <h2>Controls against circular sorting</h2>
+  <p>Section 06 has a circular sorting risk. The same spikes decide each slice’s state and then get averaged within that state. This can create an apparent difference without real switching: slices where a cell fired more are sorted one way, and slices where it fired less are sorted the other way. The authors call this <b>circular conditioning bias</b>. Their control lets some neurons decide the state and measures the others.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-circ-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-circ-title">Self-labelling creates a false state difference</h3><span class="fs-status">Fig. 7 · simulated, one neuron</span></header>
+    <div class="fs-stage"><canvas id="fig-circ" role="img" aria-label="One simulated neuron whose true rate never changes, drawn as a bar per 10 ms slice around its mean. When the neuron's own noise labels the slices, the state 1 and state 2 averages drift apart; when other neurons label them, the two averages sit together."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-circ:gap"></span>
+      <div class="fs-controls"><div data-fs-param="fig-circ:decider"></div><button type="button" data-fs="fig-circ play">Pause</button></div>
+    </div>
+    <p class="fs-caption">One simulated neuron never switches: its true rate is constant, and only Poisson-like noise changes each 10 ms slice. Choose whether the same neuron or other neurons assign state 1 and state 2, then compare the two state averages.</p>
+  </figure>
+
+  <h3>Tests with recorded data</h3>
+  <ul class="checks">
+    <li><b>Model comparison.</b> A two-state model explained the activity better than the best single static state in all 19 sessions (p = 10⁻⁴).</li>
+    <li><b>Held-out neurons.</b> States inferred from a random half of the neurons still made the other half reconstruct the seen face in state 1 and the suppressed face in state 2 (p = 6×10⁻¹⁷). Leaving out one neuron at a time did about 2 points better, so neuron count was not the limit.</li>
+    <li><b>Within-trial control.</b> Forcing every trial to contribute equal state 1 and state 2 samples kept the reconstructions. The flips happen inside single trials.</li>
+    <li><b>Shuffled templates.</b> With shuffled templates, reconstructions fell below zero explained variance.</li>
+    <li><b>Excitability control.</b> Firing swings between high-gain On and low-gain Off periods. The state split was 49/51 during On and 50/50 during Off, agreed with a split by total firing no better than chance (Cohen’s κ ≈ 0), and a four-state decoder matched the two-state labels 80% of the time.</li>
+  </ul>
+
+  <h3>Tests with simulated populations</h3>
+  <p>The authors simulated four kinds of population, each built from the real priming templates, and ran them through the same tests as the data. Only a population that truly switches as a whole passes everything, as the real data does.</p>
+  <div class="tablewrap">
+    <table class="plain matrix">
+      <thead><tr><th>Test</th><th class="hl">Real data</th><th class="hl">Two-state</th><th>Seen-only</th><th>Averaging</th><th>Uncoordinated</th></tr></thead>
+      <tbody>
+        <tr><th>Reconstruct each face from its own state, same neurons</th><td class="pass hl" aria-label="pass">✓</td><td class="pass hl" aria-label="pass">✓</td><td class="fail" aria-label="fail">✗</td><td class="pass" aria-label="pass">✓</td><td class="pass" aria-label="pass">✓</td></tr>
+        <tr><th>Same, with states inferred from the other half of the neurons</th><td class="pass hl" aria-label="pass">✓</td><td class="pass hl" aria-label="pass">✓</td><td class="fail" aria-label="fail">✗</td><td class="fail" aria-label="fail">✗</td><td class="fail" aria-label="fail">✗</td></tr>
+        <tr><th>Tuning flips sign in held-out neurons</th><td class="pass hl" aria-label="pass">✓</td><td class="pass hl" aria-label="pass">✓</td><td class="fail" aria-label="fail">✗</td><td class="fail" aria-label="fail">✗</td><td class="fail" aria-label="fail">✗</td></tr>
+        <tr><th>Two states fit held-out data better than one</th><td class="pass hl" aria-label="pass">✓</td><td class="pass hl" aria-label="pass">✓</td><td class="fail" aria-label="fail">✗</td><td class="fail" aria-label="fail">✗</td><td class="fail" aria-label="fail">✗</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="models">
+    <span><b>Two-state</b>The whole population flips together between the two faces, about 60 ms per state.</span>
+    <span><b>Seen-only</b>Only the seen face is ever represented.</span>
+    <span><b>Averaging</b>Every neuron fires at the average of its two face responses. Nothing switches.</span>
+    <span><b>Uncoordinated</b>Every neuron flips on its own 60 ms clock, ignoring the others.</span>
+  </div>
+  <p>Averaging and uncoordinated pass the first test for the reason Fig. 7 shows, and fail as soon as other neurons decide. Even on the first test, with dwell times matched, the real data beat the averaging model by 8.2 points of explained variance (p = 0.007).</p>
+
+  <h2>One cell in both states</h2>
+  <p>A face cell’s firing rises as a face moves along the cell’s preferred direction in face space. Order all the rival pairs by the seen face and the cell’s response rises in state 1 and stays flat in state 2. Order them by the suppressed face and the pattern reverses. The same cells change what they encode across the two states. Across 543 cells, gain for the seen face in state 1 and gain for the suppressed face in state 2 correlate at r = 0.90.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-tune-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-tune-title">One cell encodes either face by state</h3><span class="fs-status">Fig. 8 · illustrative cell, the paper’s gain ratio</span></header>
+    <div class="fs-stage"><canvas id="fig-tune" role="img" aria-label="Two scatter panels of one cell's responses to 160 rival pairs, one ordered by the seen face and one by the suppressed face. In state 1 the seen-face panel ramps and the suppressed-face panel is flat; in state 2 the ramp moves to the suppressed-face panel and is slightly shallower."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position"></span>
+      <div class="fs-controls"><div data-fs-param="fig-tune:state"></div></div>
+    </div>
+    <p class="fs-caption">Illustrative cell using 160 of the 1,500 rival pairs; each dot is positioned by its seen face (left) or suppressed face (right) on the cell’s preferred axis. The gains use the paper’s 1.21 : 1 ratio (Fig. 4a–c), the slopes are fitted to the drawn dots, and the state control changes which face drives the cell.</p>
+  </figure>
+  <p>The two states are not mirror images. Tuning to the seen face in state 1 is <b>1.21× steeper</b> than tuning to the suppressed face in state 2 (p = 3×10⁻⁴⁰). Mean firing is slightly higher in state 2 (p = 2×10⁻¹⁵). A linear decoder can tell a state 1 moment from a state 2 moment 66% of the time, against 50% chance.</p>
+
+  <h2>Why selectivity looked weak</h2>
+  <p>The authors computed each cell’s selectivity separately in each state, with states inferred from the other half of the neurons. In state 1, cells behave as if the seen face were shown alone. In state 2, they behave as if the suppressed face were shown alone. Averaging the two produces the weak positive relationship measured in section 01.</p>
+  <p>The remaining positive slope comes from steeper tuning in state 1. Equalizing the gain of the two states before averaging removes that slope.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-mi-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-mi-title">State sorting restores opposite selectivity patterns</h3><span class="fs-status">Fig. 9 · illustrative dots, the paper’s slopes</span></header>
+    <div class="fs-stage"><canvas id="fig-mi" role="img" aria-label="The scatter from Fig. 1 morphing through four views: all moments (a weak positive smear), state 1 only (dots on the diagonal, slope 0.93), state 2 only (dots on the anti-diagonal, slope minus 0.76), and gain-equalized (flat, slope 0.07)."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position" data-fs-out="fig-mi:step"></span>
+      <div class="fs-controls"><span class="fs-dots" data-fs-dots="fig-mi" aria-hidden="true"></span><button type="button" data-fs="fig-mi prev" aria-label="Previous step">Prev</button><button type="button" data-fs="fig-mi next" aria-label="Next step">Next</button><button type="button" data-fs="fig-mi play">Pause</button></div>
+    </div>
+    <p class="fs-step-text" data-fs-out="fig-mi:caption" aria-live="polite"></p>
+    <p class="fs-caption">The illustrative dots use the paper’s slopes and correlations (Fig. 4g: 2,885 cell–stimulus pairs, states inferred from held-out neurons).</p>
+  </figure>
+
+  <h2>Prefrontal cortex</h2>
+  <p>Prefrontal cortex does not hold a pure copy of the seen face. Decoding is weaker there overall, but the pattern is the same: state 1 gives the seen face, state 2 gives the suppressed face, and the split survives the held-out-neuron test.</p>
+  <div class="tablewrap">
+    <table class="plain">
+      <thead><tr><th>Measure</th><th>IT (ML, AM)</th><th>Prefrontal (PO, PVL)</th></tr></thead>
+      <tbody>
+        <tr><th>Best possible reconstruction (from priming)</th><td>over 90%</td><td>under 80%, under 30% for shape</td></tr>
+        <tr><th>Selectivity, all moments averaged (slope)</th><td>0.23</td><td>0.32</td></tr>
+        <tr><th>Selectivity in state 1 (slope)</th><td>0.93</td><td>0.91</td></tr>
+        <tr><th>Selectivity in state 2 (slope)</th><td>−0.76</td><td>−0.52</td></tr>
+        <tr><th>Held-out-neuron test</th><td>p = 6×10⁻¹⁷</td><td>p = 3×10⁻⁴</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The flips are only <b>weakly coordinated</b> between the two IT patches. States inferred in ML predicted AM’s content, and the reverse, but weakly (ML→AM p = 3×10⁻⁴, AM→ML p = 9×10⁻⁶). The authors say this is not strong evidence that the patches switch together, so each patch may operate partly independently.</p>
+  <figure class="fs-plate wide" aria-labelledby="fig-patch-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-patch-title">ML and AM states are weakly coordinated</h3><span class="fs-status">Fig. 10 · schematic</span></header>
+    <div class="fs-stage"><canvas id="fig-patch" role="img" aria-label="Two state strips, one for the face patch ML and one for AM, each flipping between solid and hatched on its own, with the two agreeing more often than chance but not always."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position"></span>
+      <div class="fs-controls"><button type="button" data-fs="fig-patch play">Pause</button></div>
+    </div>
+    <p class="fs-caption">This schematic of weak coordination is slowed 10×. The paper reports the statistics above (Fig. 5e), not a measured agreement rate.</p>
+  </figure>
+
+  <h2>What the authors conclude</h2>
+  <p>The authors conclude that conscious access requires <b>temporal selection</b> in addition to the regions involved.</p>
+  <div class="points">
+    <div><h4>Regional averages</h4><p>Neither IT nor prefrontal averages hold a clean copy of what is seen. Averaging a region’s activity, front or back, removes the structure in time.</p></div>
+    <div><h4>Suppressed-face representation</h4><p>The suppressed face gets the same high-dimensional code as the seen one, in its own time slots, through the same neurons and the same feature mapping.</p></div>
+    <div><h4>Timing</h4><p>Similar alternation appears in rhythmic sampling in attention, brief bursts in working memory, alternating value states in orbitofrontal cortex, and flickering place maps in the hippocampus.</p></div>
+    <div><h4>Unresolved routing</h4><p>The data do not show why some epochs reach awareness. The two states are linearly separable, so the activity may carry a tag that determines where each epoch is sent.</p></div>
+  </div>
+  <figure class="fs-plate wide" aria-labelledby="fig-route-title">
+    <header class="fs-head"><h3 class="fs-title" id="fig-route-title">State 1 epochs may be routed onward</h3><span class="fs-status">Fig. 11 · speculative</span></header>
+    <div class="fs-stage"><canvas id="fig-route" role="img" aria-label="A stream of micro-epochs arrives at a gate marked routing with a question mark. Solid state 1 epochs are sent up to a box for report, introspection and action; hatched state 2 epochs are sent down to a box marked not broadcast."></canvas></div>
+    <div class="fs-toolbar">
+      <span class="fs-position"></span>
+      <div class="fs-controls"><button type="button" data-fs="fig-route play">Pause</button></div>
+    </div>
+    <p class="fs-caption">The authors’ speculation, not a result: state 1 epochs may be routed to circuits for report, introspection and action, perhaps by feedback from parietal cortex or the pulvinar, while state 2 epochs may remain outside those circuits.</p>
+  </figure>
+
+  <h3>Limits</h3>
+  <ol class="limits">
+    <li><b>Preprint.</b> Posted 16 October 2026 and not yet peer reviewed.</li>
+    <li><b>Two monkeys, 19 sessions.</b> Effects held in each animal and each session, but the sample of brains is two.</li>
+    <li><b>The monkeys did not report what they saw.</b> They fixated. Evidence that the flashed face was seen comes from 14 humans doing the same task.</li>
+    <li><b>“Conscious state” means “looks like the flashed face”.</b> The paper shows two representations alternating. The data cannot directly test whether each state 1 micro-epoch is experienced.</li>
+    <li><b>In-sample reconstructions are partly inflated.</b> They contain circularity bias; held-out reconstructions are lower, and the real data fall well short of the idealized two-state simulation. The authors suggest real transitions are gradual, not instant.</li>
+    <li><b>Coordination across patches remains unresolved.</b> If ML and AM flip on loosely coupled clocks, it is unclear how they produce one percept.</li>
+  </ol>
 
   <details class="verified">
     <summary>Checked against the source</summary>
     <ul>
-      <li><b>Source.</b> Alex L. Zhang, “Speculative Programmatic Tool Calling”, blog post, August 24, 2026, <a href="https://alexzhang13.github.io/blog/2026/spec-ptc/">alexzhang13.github.io/blog/2026/spec-ptc</a>. No paper version exists that I could find; alphaXiv lists the same post (2608.spec-ptc), not an arXiv paper. Code: <a href="https://github.com/alexzhang13/spec-ptc">github.com/alexzhang13/spec-ptc</a>, MIT, read at commit 9b78b7d (August 24, 2026). No code or figure from either is copied here; the figures are redrawn.</li>
-      <li><b>Benchmark setup</b> (post, “Some Comparison Numbers on RLMs”): OOLONG trec-coarse at 132k and OOLONG-Pairs at 32k; one node of 8×H100 (the post writes “8xH100 80B”) running vLLM; Qwen3-30B-A3B-Instruct (the post's text says “Qwen3-30B-A3B-Instruct-0527”, its plot title “Qwen3-30B-A3B-Instruct”); temperatures 0.7 and 0.0; 5 runs per setting; 4 and 8 concurrent runs on one engine.</li>
-      <li><b>1 to 1.2×</b>: the post's sentence under its results plot, “The speed-ups for the RLM are generally on the order of 1-1.2x.” The post does not say how that range was computed.</li>
-      <li><b>Fig. 5 values</b>: read by pixel from the post's plot (<code>spec-plot.png</code>, 2640 × 1518), whose footnote says “Mean over repeats · 95% t-interval · all n=5 units included”. One pixel is about 4 s (temperature 0.0) or 9 s (0.7) of wall time, 5 sub-model calls, 0.03 turns. The plotting code clips interval ends at 0. The post publishes no per-run values (the CSV its plotting code reads is not in the repository), so the figure shows means and intervals, not one dot per run. The ratios (1.45×, 1.40×, 1.28×, 1.84×) and the sub-model call differences are computed by this guide.</li>
-      <li><b>Simulated</b>: Fig. 1 and Fig. 4. Text before the code takes 4 s, the model writes 16 characters per second at 1× speed, the file read takes 0.2 s, and every sub-model call takes the same time (4 s by default). Real calls vary; nothing else contends for the engine. Figs. 2 and 3 show the mechanism, not timings.</li>
-      <li><b>Mechanism checks</b>: I ran the worked program through Zhang's library at 9b78b7d with a fake sub-model. Four calls started during the stream (three labels at once when line 2 closed, the tally after they returned), <code>read_file</code> ran once, in the real run, and the real run had four hits and one miss (the review). A call whose input comes from a tool without the speculative flags is skipped, and later independent calls still start.</li>
-      <li><b>One mismatch between post and code</b>: the post's Case 4 comments say a call after an <code>open()</code> line is still “speculated after a”. In the code at 9b78b7d a blocked built-in like <code>open</code> stops the copy for the rest of the turn; I ran the post's Case 4 and the later call was not started early. The worked program uses a tool marked unsafe instead, where post and code agree.</li>
-      <li><b>Left out on purpose</b>: “peeking”, where the copy also starts calls from a line that isn't finished yet (a loop body) and takes those bets back if later tokens change them; async tools, the out-of-process daemon and the plugins for other agents; the deterministic program suite in the repository, which the post chose not to report; the related work it cites (Conveyor, Speculative Interaction Agents, AsyncFC).</li>
-      <li><b>Not verified</b>: the author's posts about it on X; whether the plot's “Wall time (s)” is per task or per run (the plotting code reads per-task rows, but I did not trace the aggregation); why the plotted means differ by more than the stated 1 to 1.2×.</li>
+      <li><b>Source.</b> Hesse JK, Lanfranchi FF, McGrory C, Shi Y, Engel TA, Tsao DY. Rapid alternation of conscious and suppressed stimulus representations in the primate brain. bioRxiv, posted 16 October 2026, <a href="https://doi.org/10.64898/2026.10.15.759299">doi:10.64898/2026.10.15.759299</a>, CC BY 4.0. Every number was checked against that version’s full text, figure legends and Methods.</li>
+      <li><b>Where the numbers come from.</b> Slope 0.23 over 5,550 pairs, p = 8×10⁻¹³³: Fig. 1h. Human reports 82% against 87%, p = 4×10⁻⁷: Fig. 1b and Methods. Probe geometry, 429 cells, 3,501 IT neurons, 661 prefrontal neurons, 19 sessions, 1,500 faces in 750 pairs, 50-dimensional face space: Fig. 1f–g and Methods. The ℓ(t) formula, the 10 ms bin and the 300–1000 ms window: Methods. Mean dwell 67 ms: Fig. 2d. Median dwells 64 and 59 ms: Fig. 5c–d. Explained variance over 80% against an over-90% ceiling, p = 3×10⁻²⁹: Fig. 2h–i. Single-trial decoding 40/34, 61/4 (p = 2×10⁻⁶), about 5/60 (p = 3×10⁻⁷): text and Fig. 2l. Two states beat one in 19 sessions, p = 10⁻⁴; held-out neurons p = 6×10⁻¹⁷; On/Off splits, κ ≈ 0, 80% four-state agreement; the four-model matrix; 8.2 points, p = 0.007: Fig. 3, Extended Data and text. Gain ratio 1.21, p = 3×10⁻⁴⁰; r = 0.90 over 543 cells; state 2 firing p = 2×10⁻¹⁵; 66% state decoding: Fig. 4a–f. Slopes 0.93, −0.76, 0.07 with r = 0.45, 0.66, −0.44, −0.02 (p = 0.31) over 2,885 pairs: Fig. 4g. Prefrontal slopes 0.32, 0.91, −0.52 and p = 3×10⁻⁴: Fig. 6. ML↔AM p = 3×10⁻⁴ and 9×10⁻⁶: Fig. 5e. About 0.5 Hz perceptual switching: Discussion.</li>
+      <li><b>Simulations.</b> Every animation is a seeded simulation built from the paper’s numbers; none shows recorded data. Figs. 0, 4, 5 and 10 draw two-state switching with the paper’s 67 ms mean dwell. Figs. 1 and 9 scatter illustrative points to the paper’s slopes and correlations. Fig. 7 is a constant-rate neuron with Gaussian noise. Fig. 8 uses the 1.21 : 1 gain ratio; its fitted slopes are of the drawn dots. Faces are drawn glyphs standing in for points in the paper’s face space, not its stimuli.</li>
+      <li><b>Omissions.</b> The hidden Markov model fitting details, the On/Off gain analysis beyond the split it reports, the per-feature explained-variance curves, and the Extended Data figures other than the time-averaged blend. The guide names the four theory families once and does not adjudicate between them.</li>
     </ul>
   </details>
 </main>
 
 <footer class="site-foot">
-  <div class="site-foot-inner"><span>Animated Visuals · MIT License · Juan Bermudez</span><nav aria-label="Footer"><a href="https://github.com/juanbermudez/animated-visuals">GitHub</a><a href="../credits.html">Credits</a></nav></div>
+  <div class="site-foot-inner"><span>Animated Visuals · MIT License · Juan Bermudez</span><nav aria-label="Footer"><a href="https://github.com/juanbermudez/skills/tree/main/skills/animated-visuals">GitHub</a><a href="../credits.html">Credits</a></nav></div>
 </footer>
 <script>
 /* Animated Visuals runtime. Global `FS` (from the project's first name, Figure Studio). No dependencies.
@@ -5331,695 +5497,580 @@ function flowFigure(id, { meta, layouts, edges, returns = [], steps, params, H =
 
 /* ================= Fig 1: one turn on one clock (canvas, real) ================= */
 
-/* Speculative programmatic tool calling: five figures on one worked program.
-   Shared first: the six-line cell and the simulated turn that Figs. 1 and 4 both draw from. */
-const PROGRAM = [
-  'chunks = context.split("\\n\\n")',
-  'labels = [llm_query("Label: " + c) for c in chunks[:3]]',
-  'tally = llm_query("Count the labels: " + str(labels))',
-  'notes = read_file("notes.txt")',
-  'review = llm_query("Compare with my notes: " + notes)',
-  "print(tally, review)",
-];
-const SHORT = [
-  "chunks = context.split(…)",
-  "labels = [llm_query(…) for c in chunks[:3]]",
-  "tally = llm_query(… + str(labels))",
-  'notes = read_file("notes.txt")',
-  "review = llm_query(… + notes)",
-  "print(tally, review)",
-];
-// Illustrative timings, not from the post: text before the code, characters written per second at 1x, a file read.
-const THINK = 4, CPS = 16, READ = 0.2;
-
-/* One turn, both ways. Without speculation the cell runs after writing, every call blocking in turn.
-   With it, line 2's three calls start together when line 2 is complete, the tally starts when they return
-   (or when line 3 is complete, if later), and the real run claims both; the file and the review run after. */
-function simulate(call, speed) {
-  let t = THINK;
-  const lines = PROGRAM.map((s, i) => { const t0 = t; t += s.length / (CPS * speed); return { i, t0, t1: t }; });
-  const W = t, e2 = lines[1].t1, e3 = lines[2].t1;
-  const plain = [];
-  let u = W;
-  for (let k = 0; k < 3; k++) { plain.push({ kind: "label", n: k + 1, t0: u, t1: u + call }); u += call; }
-  plain.push({ kind: "tally", t0: u, t1: u + call }); u += call;
-  plain.push({ kind: "file", t0: u, t1: u + READ }); u += READ;
-  plain.push({ kind: "review", t0: u, t1: u + call }); u += call;
-  const B = u;
-  const spec = [0, 1, 2].map((k) => ({ kind: "label", n: k + 1, sub: k, t0: e2, t1: e2 + call }));
-  const s3 = Math.max(e3, e2 + call);
-  spec.push({ kind: "tally", t0: s3, t1: s3 + call });
-  const tc = Math.max(W, s3 + call);
-  spec.push({ kind: "file", t0: tc, t1: tc + READ });
-  spec.push({ kind: "review", t0: tc + READ, t1: tc + READ + call });
-  const S = tc + READ + call;
-  const J = W + 3 * call + READ; // the same calls run at once after writing, with no overlap
-  return { lines, W, e2, e3, plain, spec, B, S, J, wait: tc - W > 0.05 ? [W, tc] : null };
-}
-const sec = (s) => `${s.toFixed(1)} s`;
-
-/* ================= Fig 1: one turn on one clock (canvas, simulated) ================= */
+/* Conscious micro-epochs: thirteen figures on the runtime. Every animation is a seeded simulation built from numbers
+   the paper reports (figure numbers in the captions); none shows recorded data. Faces are drawn glyphs standing in
+   for points in the paper's face space. State 1 = the flashed face, the one that is seen (solid). State 2 = the
+   primed face, still on screen but suppressed (hatched or dashed). */
 (() => {
-  const ID = "fig-turn";
-  let P = simulate(4, 1); // from the targets, for readouts and chapters
-  const span = () => P.B * 1.06;
-  const tips = {
-    think: { title: "Text before code", body: "The model writes its reasoning first. There is no code to read yet, so nothing can start." },
-    line: { title: "A line of code", body: "A line is complete when the next one begins. Only then can the harness read the calls in it." },
-    label: { title: "Label call", body: "One sub-model call per part of the text. Without speculation they run one after another; with it, all three start when line 2 is complete." },
-    tally: { title: "Tally call", body: "Needs all three labels. With speculation it starts the moment they return, still during the writing." },
-    file: { title: "File read", body: "read_file touches the outside world, so it never runs early. It runs once, for real, after writing ends." },
-    review: { title: "Review call", body: "Needs the file's contents, which the copy can't know, so it never starts early." },
-    wait: { title: "Waits for the tally", body: "The real program reached line 3 before the early tally returned. It waits for that call instead of making a new one." },
-    launch: { title: "Calls start", body: "Line 2 is complete: the copy runs it, and the three label calls start in the background." },
-    ends: { title: "Writing ends", body: "The real program now runs the cell from the top. Answers that are already there are handed over at once." },
-    answer: { title: "Answer", body: "The cell has finished running: the moment the user is waiting for." },
-  };
-  const spec = {
-    height: (w) => (w < 560 ? 250 : 240),
-    duration: 1,
-    keyframe: 1,
-    formatTime: (t) => `t = ${(t * span()).toFixed(1)} s`,
-    timeAxis: (f) => ({ x0: f.w < 560 ? 70 : 128, x1: f.w - 18 }),
-    params: {
-      call: { value: 4, min: 0.5, max: 12, step: 0.5, label: "Each sub-model call takes", unit: " s", format: (v) => `${v.toFixed(1)} s` },
-      speed: { value: 1, min: 0.5, max: 3, step: 0.25, label: "Writing speed", format: (v) => `${v.toFixed(2)}×` },
-    },
-    reserve: {
-      clock: ["t = 99.9 s · answered; the other run is still going"],
-      specEnd: ["99.9 s"], plainEnd: ["99.9 s"], atOnce: ["99.9 s"], overlap: ["99.9 s"],
-    },
-    tips,
-    tipAt: (f, x, y) => f.state.hits?.find((h) => x >= h.x - 3 && x <= h.x + h.w + 3 && y >= h.y - 2 && y <= h.y + h.h + 2)?.kind ?? null,
-    init(f) { f.rate = 1 / 10; outs(f); },
-    onParam(f) { P = simulate(f.params.call, f.params.speed); outs(f); },
-    render(f, c) {
-      const C = f.C, narrow = f.w < 560, Sv = simulate(f.v.call, f.v.speed), s = f.t * span();
-      const Lx = narrow ? 70 : 128, R = f.w - 18, X = (v) => Lx + (R - Lx) * (v / span());
-      const hits = (f.state.hits = []);
-      const rows = { write: { y: 26, h: 26 }, plain: { y: 78, h: 40 }, spec: { y: 138, h: 40 } }, bottom = 206, bracketY = 198;
-      // grid and ticks
-      const stepS = span() <= 30 ? 5 : span() <= 70 ? 10 : 20;
-      c.strokeStyle = C.line; c.lineWidth = 1;
-      for (let v = 0; v <= span(); v += stepS) { FS.k.line(c, X(v), 18, X(v), bottom); FS.k.text(f, c, `${v} s`, X(v), bottom + 16, { align: "center", size: 11 }); }
-      // lane names
-      const name = (txt, sub, r) => {
-        FS.k.text(f, c, txt, 0, r.y + r.h / 2 + (sub ? -1 : 4), { color: C.fg, size: 12, weight: 600 });
-        if (sub) FS.k.text(f, c, sub, 0, r.y + r.h / 2 + 13, { size: 11 });
-      };
-      name(narrow ? "Writes" : "Model writes", null, rows.write);
-      name("Without", narrow ? null : "speculation", rows.plain);
-      name("With", narrow ? null : "speculation", rows.spec);
-      const fits = (txt, w, size = 11) => { c.font = FS.k.font(f, size, 500); return c.measureText(txt).width + 10 <= w; };
-      // a block that grows with the clock; kind decides the fill
-      const block = (kind, t0, t1, y, h, label, live) => {
-        const grow = FS.clamp((s - t0) / Math.max(1e-6, t1 - t0));
-        if (grow <= 0) return;
-        const x0 = X(t0), w = Math.max(1.5, (X(t1) - x0) * grow - 1.5), hot = f.hover === kind || live;
-        hits.push({ kind, x: x0, y, w, h });
-        FS.k.rrect(c, x0, y, w, h, 3);
-        if (kind === "think") { c.fillStyle = C.lineStrong; c.fill(); }
-        else if (kind === "line") { c.fillStyle = C.surface2; c.fill(); }
-        else if (kind === "file") { c.fillStyle = C.fg; c.fill(); }
-        else { c.fillStyle = C.surface2; c.fill(); FS.k.rrect(c, x0, y, w, h, 3); c.fillStyle = FS.k.hatch(f, c, C.muted, 5); c.fill(); }
-        c.strokeStyle = hot ? C.fg : C.line; c.lineWidth = hot ? 1.5 : 1; c.stroke(); c.lineWidth = 1;
-        if (label && grow === 1 && fits(label, w)) FS.k.label(f, c, label, x0 + w / 2, y + h / 2, { size: 11, align: "center", halo: kind === "think" ? C.lineStrong : C.surface2 });
-      };
-      // the model writing
-      block("think", 0, THINK, rows.write.y, rows.write.h, "text", s > 0 && s < THINK);
-      Sv.lines.forEach((ln) => block("line", ln.t0, ln.t1, rows.write.y, rows.write.h, String(ln.i + 1), s > ln.t0 && s < ln.t1));
-      // without speculation: one call after another, after writing
-      for (const b of Sv.plain) block(b.kind, b.t0, b.t1, rows.plain.y, rows.plain.h, b.kind === "label" ? (narrow ? `${b.n}` : `label ${b.n}`) : b.kind === "file" ? "" : b.kind, s > b.t0 && s < b.t1);
-      // with speculation: three labels stacked, then the tally, then what is left after writing
-      const sh = (rows.spec.h - 4) / 3;
-      for (const b of Sv.spec) {
-        if (b.kind === "label") block("label", b.t0, b.t1, rows.spec.y + b.sub * (sh + 2), sh, "", s > b.t0 && s < b.t1);
-        else block(b.kind, b.t0, b.t1, rows.spec.y, rows.spec.h, b.kind === "file" ? "" : b.kind, s > b.t0 && s < b.t1);
-      }
-      if (s >= Sv.spec[0].t0) {
-        const room = X(Sv.e2) - Lx - 10, txt = fits("3 labels at once", room) ? "3 labels at once" : fits("3 at once", room) ? "3 at once" : "";
-        if (txt) { FS.k.text(f, c, txt, X(Sv.e2) - 8, rows.spec.y + rows.spec.h / 2 + 4, { align: "right", size: 11, color: C.muted }); hits.push({ kind: "label", x: X(Sv.e2) - room, y: rows.spec.y + 8, w: room - 4, h: 24 }); }
-      }
-      if (Sv.wait && s > Sv.wait[0]) {
-        const x0 = X(Sv.wait[0]), x1 = X(Math.min(s, Sv.wait[1])), y = rows.spec.y + rows.spec.h + 5;
-        hits.push({ kind: "wait", x: x0, y: y - 6, w: Math.max(4, x1 - x0), h: 9 });
-        c.strokeStyle = f.hover === "wait" ? C.fg : C.muted; c.lineWidth = 2; FS.k.line(c, x0, y, x1, y); c.lineWidth = 1;
-      }
-      // line 2 complete: the calls start (a dashed drop from the writing lane)
-      if (s >= Sv.e2) {
-        const x = X(Sv.e2), a = FS.window(s, Sv.e2, Sv.e2 + span() * 0.02);
-        hits.push({ kind: "launch", x: x - 4, y: rows.write.y + rows.write.h, w: 8, h: rows.spec.y - rows.write.y - rows.write.h });
-        c.save(); c.globalAlpha = a; c.strokeStyle = f.hover === "launch" ? C.fg : C.muted; c.setLineDash([3, 3]);
-        FS.k.line(c, x, rows.write.y + rows.write.h + 2, x, rows.spec.y - 2); c.restore();
-      }
-      // writing ends: the real program starts
-      if (s >= Sv.W) {
-        const x = X(Sv.W);
-        hits.push({ kind: "ends", x: x - 4, y: rows.plain.y - 14, w: 8, h: rows.spec.y + rows.spec.h - rows.plain.y + 14 });
-        c.save(); c.strokeStyle = f.hover === "ends" ? C.fg : C.lineStrong; c.setLineDash([2, 3]); FS.k.line(c, x, rows.plain.y - 6, x, rows.spec.y + rows.spec.h + 4); c.restore();
-        FS.k.label(f, c, "writing ends", x + 5, rows.plain.y - 9, { size: 11, color: C.muted, weight: 500 });
-      }
-      // answers
-      const answer = (t, r) => {
-        if (s < t) return;
-        const x = X(t), y = r.y + r.h / 2;
-        hits.push({ kind: "answer", x: x - 6, y: y - 6, w: 12, h: 12 });
-        c.fillStyle = C.surface; c.beginPath(); c.arc(x, y, 7, 0, 7); c.fill();
-        c.fillStyle = C.accent; c.beginPath(); c.arc(x, y, 5, 0, 7); c.fill();
-      };
-      answer(Sv.B, rows.plain); answer(Sv.S, rows.spec);
-      // the saving, computed from the same numbers, once the slower run answers
-      const reveal = FS.window(s, Sv.B, Sv.B + span() * 0.03, FS.ease.out);
-      if (reveal > 0) FS.k.bracket(f, c, X(Sv.S), X(Sv.B), bracketY, `${sec(Sv.B - Sv.S)} sooner · ${(Sv.B / Sv.S).toFixed(2)}×`, { alpha: reveal });
-      FS.k.hoverTime(f, c, 18, bottom, (t) => X(t * span()), (t) => sec(t * span()));
-      FS.k.playhead(f, c, X(s), 18, bottom);
-      f.api.out("clock", `t = ${s.toFixed(1)} s · ${phase(Sv, s)}`);
-    },
-  };
-  // Chapters follow the parameters: line 2 complete, writing ends, each answer.
-  Object.defineProperty(spec, "chapters", { get: () => [P.e2, P.W, P.S, P.B].map((t, i) => ({ t: t / span(), label: ["line 2 complete", "writing ends", "answer with", "answer without"][i] })) });
-  function phase(Sv, s) {
-    if (s >= Sv.B) return "both answered";
-    if (s >= Sv.S) return "answered; the other run is still going";
-    if (s < THINK) return "the model writes text";
-    const running = Sv.spec.filter((b) => b.kind !== "file" && s >= b.t0 && s < b.t1);
-    const what = running.length === 3 ? "3 label calls running" : running.some((b) => b.kind === "tally") ? "tally running" : running.some((b) => b.kind === "review") ? "review running" : "";
-    if (s < Sv.W) return what ? `writing, ${what}` : "writing code";
-    if (Sv.wait && s < Sv.wait[1]) return "real run waits for the tally";
-    return what || "real run reads the file";
+  // ---------- shared helpers ----------
+  const mulberry = (seed) => () => { seed |= 0; seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const gauss = (r) => { let u = 0, v = 0; while (u === 0) u = r(); while (v === 0) v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  const poisson = (r, lam) => { const L = Math.exp(-lam); let k = 0, p = 1; do { k++; p *= r(); } while (p > L); return k - 1; };
+  const lsSlope = (xs, ys) => { let mx = 0, my = 0; const n = xs.length; for (let i = 0; i < n; i++) { mx += xs[i]; my += ys[i]; } mx /= n; my /= n; let sxy = 0, sxx = 0; for (let i = 0; i < n; i++) { sxy += (xs[i] - mx) * (ys[i] - my); sxx += (xs[i] - mx) ** 2; } return { b: sxy / sxx, a: my - (sxy / sxx) * mx }; };
+  const DWELL = 67;   // ms, the paper's mean dwell from the autocorrelation fit (Fig. 2d, Methods)
+  /** A run of one state: solid for state 1, hatched over the raised surface for state 2. */
+  function fillState(f, c, x, y, w, h, s) {
+    if (w <= 0) return;
+    const C = f.C;
+    if (s === 1) { c.fillStyle = C.fg; c.fillRect(x, y, w, h); }
+    else { c.fillStyle = C.surface2; c.fillRect(x, y, w, h); c.fillStyle = FS.k.hatch(f, c, C.muted, 5); c.fillRect(x, y, w, h); }
   }
-  function outs(f) {
-    f.api.out("specEnd", sec(P.S)); f.api.out("plainEnd", sec(P.B));
-    f.api.out("atOnce", sec(P.B - P.J)); f.api.out("overlap", sec(P.J - P.S));
-    f.api.out("summary", `Without speculation the answer lands at ${sec(P.B)}; with it, at ${sec(P.S)}: ${sec(P.B - P.S)} sooner (${(P.B / P.S).toFixed(2)}×).`);
+  function runs(f, c, states, xOf, cw, y, h, upto) {
+    const n = upto == null ? states.length : Math.min(upto, states.length);
+    let k = 0;
+    while (k < n) { let j = k; while (j + 1 < n && states[j + 1] === states[k]) j++; fillState(f, c, xOf(k), y, (j - k + 1) * cw + 0.6, h, states[k]); k = j + 1; }
   }
-  FS.figure(ID, spec);
-})();
-
-/* ================= Fig 2: the shadow copy, stepped (SVG) ================= */
-(() => {
-  const ID = "fig-shadow", NS = "http://www.w3.org/2000/svg", svg = document.getElementById(ID);
-  const el = (tag, attrs, parent = svg) => { const n = document.createElementNS(NS, tag); for (const a in attrs) n.setAttribute(a, attrs[a]); parent.append(n); return n; };
-  const VARS = ["context", "chunks", "labels", "tally", "notes", "review"];
-  const value = (name, s) => ({
-    context: "a copy of the text",
-    chunks: s >= 1 ? "the parts of the text" : "",
-    labels: s >= 3 ? "3 answers" : s >= 2 ? "3 promises" : "",
-    tally: s >= 5 ? "an answer" : s >= 3 ? "a promise" : "",
-    notes: s >= 4 ? "unknown: not run" : "",
-    review: s >= 5 ? "skipped" : "",
-  })[name];
-  const CALLS = [
-    { key: "label 1" }, { key: "label 2" }, { key: "label 3" }, { key: "tally" }, { key: "review" },
-  ];
-  const callState = (i, s) => {
-    if (i < 3) return s >= 6 ? "handed over" : s >= 3 ? "ready" : s >= 2 ? "running" : "";
-    if (i === 3) return s >= 6 ? "handed over" : s >= 5 ? "ready" : s >= 3 ? "running" : "";
-    return s >= 7 ? "runs now, normally" : s >= 5 ? "not started" : "";
-  };
-  const realState = (i, s) => {
-    if (s < 6) return "waiting";
-    if (s === 6) return ["ran", "3 handed over", "handed over", "next", "", ""][i];
-    return ["ran", "3 handed over", "handed over", "reads the file", "calls now", "prints"][i];
-  };
-  const steps = [
-    { line: -1, caption: "Before the code starts, the harness deep-copies the program's variables; the copy runs ahead while the real program waits." },
-    { line: 0, caption: "When line 1 is complete, the copy runs its plain code and stores the parts of the text in chunks." },
-    { line: 1, caption: "When line 2 is complete, the copy starts its three known-input calls at once and receives promises." },
-    { line: 2, caption: "Line 3 needs labels, so the copy waits for the three answers and starts the tally while the model keeps writing." },
-    { line: 3, caption: "Line 4 reads a file outside the program, so the copy skips it and leaves notes unknown." },
-    { line: 4, caption: "Line 5 needs the unknown notes, so the review does not start early while the tally finishes." },
-    { line: 5, caption: "When writing ends, the copy is thrown away and the real program starts with four answers waiting." },
-    { line: 5, caption: "Lines 4 and 5 run normally as the real program reads the file and starts the review sub-model call." },
-  ];
-  const tipsFor = {
-    code: ["The program so far", "What the model has written. A line counts once the next one begins; unwritten lines are grey bars."],
-    copy: ["The copy", "A deep copy of the REPL's variables. It runs each complete line, starts safe calls in the background, and is thrown away at the end."],
-    store: ["Early calls", "Calls the copy started, filed by their inputs and occurrence. The real program claims them by asking for the same call."],
-    real: ["The real program", "The REPL the user's state lives in. It runs nothing until the cell is complete, then runs all of it."],
-  };
-  const panels = {};
-  for (const key of ["code", "copy", "store", "real"]) {
-    const g = el("g", { tabindex: "0", role: "img", "aria-label": `${tipsFor[key][0]}: ${tipsFor[key][1]}`, "data-fs-tip": tipsFor[key][1], "data-fs-tip-title": tipsFor[key][0] });
-    panels[key] = { g, rect: el("rect", { rx: 8 }, g), head: el("text", { "font-size": 11, "font-weight": 600, "letter-spacing": "0.06em" }, g), tag: el("text", { "font-size": 11, "font-weight": 600, "text-anchor": "end" }, g) };
-    panels[key].head.textContent = tipsFor[key][0].toUpperCase();
-    g.addEventListener("pointerenter", () => FS.get(ID).hover(key)); g.addEventListener("pointerleave", () => FS.get(ID).hover(null));
-    g.addEventListener("focus", () => FS.get(ID).hover(key)); g.addEventListener("blur", () => FS.get(ID).hover(null));
+  const text = (f, c, s, x, y, o = {}) => FS.k.text(f, c, s, x, y, { size: 11, ...o });
+  const vtext = (f, c, s, x, y, o = {}) => { c.save(); c.translate(x, y); c.rotate(-Math.PI / 2); FS.k.text(f, c, s, 0, 0, { align: "center", size: 10.5, ...o }); c.restore(); };
+  function wrap(f, c, s, x, y, maxW, lh, o = {}) {
+    c.font = `${o.weight || 400} ${o.size || 13}px ${f.C.font}`;
+    const words = s.split(" "); let line = "";
+    for (const w of words) { const t = line ? `${line} ${w}` : w; if (c.measureText(t).width > maxW && line) { text(f, c, line, x, y, o); y += lh; line = w; } else line = t; }
+    if (line) { text(f, c, line, x, y, o); y += lh; }
+    return y;
   }
-  const codeRows = SHORT.map((src, i) => {
-    const g = el("g", {}, panels.code.g);
-    const r = { g, bg: el("rect", { rx: 4 }, g), rule: el("rect", { width: 2, rx: 1 }, g), num: el("text", { "font-size": 11, "text-anchor": "end" }, g), txt: el("text", { "font-size": 12 }, g), bar: el("rect", { height: 3, rx: 1.5 }, g) };
-    r.num.textContent = String(i + 1); r.txt.textContent = src; r.txt.style.fontFamily = "var(--fs-font-mono)";
-    return r;
-  });
-  const varRows = VARS.map((name) => {
-    const g = el("g", {}, panels.copy.g);
-    const r = { g, k: el("text", { "font-size": 12 }, g), v: el("text", { "font-size": 11 }, g), line: el("rect", { height: 1 }, g) };
-    r.k.textContent = name; r.k.style.fontFamily = "var(--fs-font-mono)";
-    return r;
-  });
-  const callRows = CALLS.map((cl) => {
-    const g = el("g", {}, panels.store.g);
-    const r = { g, pill: el("rect", { rx: 13, height: 26 }, g), k: el("text", { "font-size": 11.5, "font-weight": 600 }, g), v: el("text", { "font-size": 11, "text-anchor": "end" }, g) };
-    r.k.textContent = cl.key;
-    return r;
-  });
-  const realCells = PROGRAM.map((_, i) => {
-    const g = el("g", {}, panels.real.g);
-    const r = { g, box: el("rect", { rx: 6, height: 40 }, g), k: el("text", { "font-size": 11, "font-weight": 600 }, g), v: el("text", { "font-size": 11 }, g) };
-    r.k.textContent = `line ${i + 1}`;
-    return r;
-  });
-  const realNote = el("text", { "font-size": 11.5 }, panels.real.g);
-  let L = null;
-  function layout(w) {
-    const narrow = w < 560;
-    L = narrow
-      ? { box: [360, 890], code: [8, 8, 344, 238], copy: [8, 262, 344, 236], store: [8, 514, 344, 210], real: [8, 740, 344, 142], rowH: 32, cols: 3 }
-      : { box: [960, 420], code: [8, 8, 430, 282], copy: [454, 8, 238, 282], store: [708, 8, 244, 282], real: [8, 306, 944, 106], rowH: 36, cols: 6 };
-    svg.setAttribute("viewBox", `0 0 ${L.box[0]} ${L.box[1]}`);
-    for (const [key, p] of Object.entries(panels)) {
-      const [x, y, pw, ph] = L[key];
-      Object.assign(p.rect, {}); p.rect.setAttribute("x", x); p.rect.setAttribute("y", y); p.rect.setAttribute("width", pw); p.rect.setAttribute("height", ph);
-      p.head.setAttribute("x", x + 14); p.head.setAttribute("y", y + 22);
-      p.tag.setAttribute("x", x + pw - 14); p.tag.setAttribute("y", y + 22);
+  const line = (c, x1, y1, x2, y2) => { c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke(); };
+  // drawn faces: ten parameters standing in for a point in face space
+  const FACE_A = [0.7, -0.3, 0.6, 0.8, -0.4, 0.7, -0.6, 0.7, -0.7, 0.3];     // primed, suppressed
+  const FACE_B = [-0.6, 0.6, -0.5, -0.5, 0.7, -0.6, 0.7, -0.5, 0.8, -0.4];   // flashed, seen
+  const mixFace = (a, b, t) => a.map((v, i) => FS.lerp(v, b[i], t));
+  const dashFor = (s) => [Math.max(2, s * 0.05), Math.max(2, s * 0.04)];
+  function drawFace(f, c, cx, cy, s, p, o = {}) {
+    const C = f.C;
+    c.save();
+    c.globalAlpha = o.alpha == null ? 1 : o.alpha;
+    c.strokeStyle = o.color || C.fg; c.fillStyle = o.color || C.fg;
+    c.lineWidth = o.lw || Math.max(1.2, s / 55); c.lineCap = "round"; c.lineJoin = "round";
+    c.setLineDash(o.dash || []);
+    const rx = s * (0.34 + 0.05 * p[0]), ry = s * (0.44 + 0.04 * p[1]), jaw = 0.16 + 0.12 * p[2];
+    c.beginPath();
+    for (let k = 0; k <= 72; k++) { const a = (k / 72) * Math.PI * 2, sn = Math.sin(a), lo = Math.max(0, sn); const x = cx + rx * Math.cos(a) * (1 - jaw * lo * lo), y = cy + ry * sn; k ? c.lineTo(x, y) : c.moveTo(x, y); }
+    c.closePath(); c.stroke();
+    const ey = cy - s * (0.07 + 0.035 * p[9]), ex = s * (0.13 + 0.03 * p[3]), er = s * (0.04 + 0.014 * p[4]);
+    for (const sg of [-1, 1]) {
+      c.beginPath(); c.ellipse(cx + sg * ex, ey, er * 1.35, er * 0.85, 0, 0, Math.PI * 2); c.stroke();
+      c.setLineDash([]); c.beginPath(); c.arc(cx + sg * ex, ey, Math.max(0.8, er * 0.38), 0, Math.PI * 2); c.fill(); c.setLineDash(o.dash || []);
+      const by = ey - er * 2.2, bl = s * 0.085, tilt = 0.32 * p[5];
+      line(c, cx + sg * (ex - bl * 0.9), by + tilt * bl, cx + sg * (ex + bl * 0.9), by - tilt * bl);
     }
-    const [cx, cy, cw] = L.code;
-    codeRows.forEach((r, i) => {
-      const y = cy + 36 + i * L.rowH;
-      r.bg.setAttribute("x", cx + 8); r.bg.setAttribute("y", y); r.bg.setAttribute("width", cw - 16); r.bg.setAttribute("height", L.rowH - 6);
-      r.rule.setAttribute("x", cx + 8); r.rule.setAttribute("y", y); r.rule.setAttribute("height", L.rowH - 6);
-      r.num.setAttribute("x", cx + 30); r.num.setAttribute("y", y + (L.rowH - 6) / 2 + 4);
-      r.txt.setAttribute("x", cx + 40); r.txt.setAttribute("y", y + (L.rowH - 6) / 2 + 4); r.txt.setAttribute("font-size", narrow ? 11 : 12);
-      r.bar.setAttribute("x", cx + 40); r.bar.setAttribute("y", y + (L.rowH - 6) / 2 - 1); r.bar.setAttribute("width", Math.min(cw - 60, SHORT[i].length * (narrow ? 6.2 : 6.9)));
-    });
-    const [vx, vy, vw] = L.copy;
-    varRows.forEach((r, i) => {
-      const y = vy + 36 + i * L.rowH + (L.rowH - 6) / 2 + 4;
-      r.k.setAttribute("x", vx + 14); r.k.setAttribute("y", y);
-      r.v.setAttribute("x", vx + (narrow ? 110 : 84)); r.v.setAttribute("y", y);
-      r.line.setAttribute("x", vx + 14); r.line.setAttribute("y", y + 9); r.line.setAttribute("width", vw - 28);
-    });
-    const [sx, sy, sw] = L.store, sRow = narrow ? 32 : L.rowH;
-    callRows.forEach((r, i) => {
-      const y = sy + 36 + i * sRow;
-      r.pill.setAttribute("x", sx + 12); r.pill.setAttribute("y", y); r.pill.setAttribute("width", sw - 24);
-      r.k.setAttribute("x", sx + 26); r.k.setAttribute("y", y + 17);
-      r.v.setAttribute("x", sx + sw - 26); r.v.setAttribute("y", y + 17);
-    });
-    const [rx, ry, rw] = L.real;
-    realNote.setAttribute("x", narrow ? rx + 14 : rx + 190); realNote.setAttribute("y", ry + (narrow ? 44 : 22));
-    const cellW = narrow ? (rw - 28 - 2 * 6) / 3 : (rw - 28 - 5 * 8) / 6;
-    realCells.forEach((r, i) => {
-      const col = narrow ? i % 3 : i, row = narrow ? Math.floor(i / 3) : 0;
-      const x = rx + 14 + col * (cellW + (narrow ? 6 : 8)), y = ry + (narrow ? 58 : 46) + row * 40;
-      r.box.setAttribute("x", x); r.box.setAttribute("y", y); r.box.setAttribute("width", cellW); r.box.setAttribute("height", narrow ? 34 : 44);
-      r.k.setAttribute("x", x + 10); r.k.setAttribute("y", y + (narrow ? 14 : 18));
-      r.v.setAttribute("x", x + 10); r.v.setAttribute("y", y + (narrow ? 27 : 34));
-    });
-    L.narrow = narrow;
+    const ny = cy + s * (0.08 + 0.04 * p[6]);
+    c.beginPath(); c.moveTo(cx, ey + er); c.lineTo(cx - s * 0.03, ny); c.lineTo(cx + s * 0.025, ny + s * 0.01); c.stroke();
+    const my = cy + s * (0.21 + 0.025 * p[6]), mw = s * (0.1 + 0.035 * p[7]), cu = s * 0.06 * p[8];
+    c.beginPath(); c.moveTo(cx - mw, my); c.quadraticCurveTo(cx, my + cu, cx + mw, my); c.stroke();
+    c.restore();
   }
-  FS.figure(ID, {
-    height: (w) => (w < 560 ? (w * 890) / 360 : (w * 420) / 960),
-    steps,
-    resize(f) { layout(f.w); },
-    render(f) {
-      const C = f.C, s = f.step, st = steps[s], thrown = s >= 6;
-      for (const [key, p] of Object.entries(panels)) {
-        const hot = f.hover === key;
-        p.rect.setAttribute("fill", C.surface); p.rect.setAttribute("stroke", hot ? C.accent : C.line); p.rect.setAttribute("stroke-width", hot ? 1.5 : 1);
-        p.head.setAttribute("fill", C.muted);
-        p.tag.setAttribute("fill", C.muted);
-      }
-      panels.copy.tag.textContent = thrown ? "thrown away" : "";
-      panels.copy.g.setAttribute("opacity", thrown && f.hover !== "copy" ? C.dim : 1);
-      panels.code.tag.textContent = s >= 6 ? "complete" : s === 0 ? "writing…" : `line ${st.line + 1} complete`;
-      // the program as written so far
-      codeRows.forEach((r, i) => {
-        const written = i <= st.line, now = i === st.line && s <= 5;
-        r.txt.setAttribute("opacity", written ? 1 : 0); r.bar.setAttribute("opacity", written ? 0 : 1);
-        r.bar.setAttribute("fill", C.line);
-        r.txt.setAttribute("fill", C.fg); r.num.setAttribute("fill", C.muted);
-        r.bg.setAttribute("fill", now ? C.surface2 : "none");
-        r.rule.setAttribute("fill", now ? C.accent : "none");
-      });
-      // the copy's variables
-      varRows.forEach((r, i) => {
-        const v = value(VARS[i], Math.min(s, 5)), fresh = v && v !== value(VARS[i], Math.min(s, 5) - 1) && s <= 5 && s > 0;
-        r.v.textContent = v || "·";
-        r.k.setAttribute("fill", v ? C.fg : C.muted); r.v.setAttribute("fill", fresh ? C.fg : C.muted);
-        r.v.setAttribute("font-weight", fresh ? 600 : 400);
-        r.line.setAttribute("fill", C.line);
-      });
-      // the store of early calls
-      callRows.forEach((r, i) => {
-        const v = callState(i, s), handed = v === "handed over", off = v === "not started", none = !v;
-        r.v.textContent = v || "·";
-        r.g.setAttribute("opacity", none ? C.dim : 1);
-        r.pill.setAttribute("fill", handed ? C.fg : C.surface);
-        r.pill.setAttribute("stroke", off ? C.lineStrong : none ? C.line : C.fg);
-        r.pill.setAttribute("stroke-dasharray", v === "running" || v.startsWith("runs") ? "4 3" : off ? "1 3" : "");
-        r.k.setAttribute("fill", handed ? C.surface : C.fg); r.v.setAttribute("fill", handed ? C.surface : C.muted);
-      });
-      // the real program
-      realNote.textContent = L.narrow
-        ? (s < 6 ? "Waits for the whole cell; untouched." : s === 6 ? "Runs the cell; answers are waiting." : "4 of 5 sub-model calls were done. 1 runs now.")
-        : (s < 6 ? "Waits for the whole cell. Its variables haven't changed." : s === 6 ? "Runs the cell from the top. Lines 2 and 3 find their answers waiting." : "Four of the five sub-model calls were done before it asked. One runs now.");
-      realNote.setAttribute("fill", s < 6 ? C.muted : C.fg);
-      realCells.forEach((r, i) => {
-        const v = realState(i, s), active = s >= 6 && v && v !== "next";
-        r.v.textContent = v || "·";
-        r.box.setAttribute("fill", active && /handed/.test(v) ? C.surface2 : C.surface);
-        r.box.setAttribute("stroke", active ? C.fg : C.line);
-        r.k.setAttribute("fill", active ? C.fg : C.muted); r.v.setAttribute("fill", active ? C.fg : C.muted);
-      });
-    },
-  });
-})();
+  const hit = (f, x, y) => f.state.hits?.find((h) => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h)?.kind ?? null;
 
-/* ================= Fig 3: the life of one call (SVG state machine with tabs) ================= */
-(() => {
-  const ID = "fig-life", NS = "http://www.w3.org/2000/svg", svg = document.getElementById(ID);
-  const el = (tag, attrs, parent = svg) => { const n = document.createElementNS(NS, tag); for (const a in attrs) n.setAttribute(a, attrs[a]); parent.append(n); return n; };
-  const states = {
-    closes: { label: "Line complete", sub: "the call can be read", tip: "The harness only reads a call once its line is complete, so it knows the whole call and its inputs." },
-    check: { label: "Inputs safe?", sub: "known, no side effects", tip: "The tool must be marked speculatable and pure, and every input must come from code the copy could run safely." },
-    wait: { label: "Waits for inputs", sub: "an earlier call", tip: "Safe, but an input is still a promise from another early call. The copy waits for it; the model keeps writing." },
-    started: { label: "Started early", sub: "a promise, filed by inputs", tip: "Runs in the background. Its answer is filed under its inputs and its occurrence, so repeated identical calls stay separate." },
-    claimed: { label: "Handed over", sub: "no new call made", tip: "The real program asks for the same call and gets the filed answer, at once if it is ready, or as soon as it is." },
-    thrown: { label: "Thrown away", sub: "nobody asked for it", tip: "The real program never asked: the cell failed, or later code changed the call. Only the copy saw it, so nothing needs undoing." },
-    normal: { label: "Runs after writing", sub: "the normal way", tip: "Not started early. The real program makes the call itself when it reaches the line, exactly as without speculation." },
-  };
-  const trans = [
-    { key: "a", a: "closes", b: "check", label: "", side: ["above", "right"] },
-    { key: "b", a: "check", b: "started", label: "yes", side: ["above", "right"] },
-    { key: "c", a: "check", b: "wait", label: "not ready", side: ["left", "left"], at: 0.3 },
-    { key: "d", a: "wait", b: "started", label: "inputs arrive", side: ["right", "left"] },
-    { key: "e", a: "check", b: "normal", label: "no", side: ["right", "right"] },
-    { key: "f", a: "started", b: "claimed", label: "real program asks", side: ["left", "left"], at: 0.8, dy: -10 },
-    { key: "g", a: "started", b: "thrown", label: "never asked", side: ["left", "right"], at: 0.8, dy: 12 },
-  ];
-  const CALLS = {
-    label: { path: ["closes", "check", "started", "claimed"], at: [-1, 0, 1, 2, 3], caps: [
-      "Once line 2 is complete, the harness can read the call's input, “Label: ” plus one part of the text.",
-      "The input comes from plain code and llm_query is marked safe, so the call can start now.",
-      "Each of the three calls starts in the background in a separate slot filed under its input.",
-      "At line 2, the real program finds the answer filed under the same input and receives it at once."] },
-    tally: { path: ["closes", "check", "wait", "started", "claimed"], at: [-1, 0, 2, 3, 4], caps: [
-      "The complete line 3 depends on labels, which are still three promises.",
-      "The input is safe but not ready, so the copy waits for the three labels while the model keeps writing.",
-      "When the labels arrive, the tally starts before the writing ends.",
-      "At line 3, the real program waits for the running tally instead of making a new call."] },
-    review: { path: ["closes", "check", "normal"], at: [-1, 0, 1, 2, 2], caps: [
-      "The complete line 5 depends on notes from read_file on line 4.",
-      "Because read_file touches the outside world, the copy leaves notes unknown and does not start the call.",
-      "After writing ends, the real program reads the file and makes the call itself.",
-      "The full call runs after writing, so the review appears at the end of Fig. 1."] },
-    typo: { path: ["closes", "check", "started", "thrown"], at: [-1, 1, 2, 2, 3], caps: [
-      "The complete line 2 makes the same label call with the same safe input.",
-      "The call starts early again.",
-      "The model ends the cell with a typo, so the cell cannot run and nothing asks for the label.",
-      "The answer is thrown away without reaching the real variables, at the cost of one wasted sub-model call."] },
-  };
-  const OPTIONS = [{ value: "label", label: "A label call" }, { value: "tally", label: "The tally" }, { value: "review", label: "The review" }, { value: "typo", label: "A typo at the end" }];
-  const G = { states: {}, trans: {} };
-  for (const t of trans) {
-    const g = el("g", {});
-    G.trans[t.key] = { g, path: el("path", { fill: "none" }, g), head: el("path", {}, g), lbl: el("text", { "font-size": 11, "text-anchor": "middle" }, g), length: 1 };
-    G.trans[t.key].lbl.textContent = t.label;
-  }
-  for (const [key, s] of Object.entries(states)) {
-    const g = el("g", { tabindex: "0", role: "img", "aria-label": `${s.label}: ${s.tip}`, "data-fs-tip": s.tip, "data-fs-tip-title": s.label });
-    G.states[key] = { g, rect: el("rect", { rx: 22, height: 44 }, g), t1: el("text", { "font-size": 12.5, "font-weight": 600, "text-anchor": "middle" }, g), t2: el("text", { "font-size": 11, "text-anchor": "middle" }, g) };
-    G.states[key].t1.textContent = s.label; G.states[key].t2.textContent = s.sub;
-    g.addEventListener("pointerenter", () => FS.get(ID).hover(key)); g.addEventListener("pointerleave", () => FS.get(ID).hover(null));
-    g.addEventListener("focus", () => FS.get(ID).hover(key)); g.addEventListener("blur", () => FS.get(ID).hover(null));
-  }
-  const token = el("circle", { r: 6 });
-  let P = {}, W = 170, narrow = false;
-  function layout(w) {
-    narrow = w < 560;
-    const box = narrow ? [360, 430] : [960, 330];
-    svg.setAttribute("viewBox", `0 0 ${box[0]} ${box[1]}`);
-    W = narrow ? 140 : 170;
-    P = narrow
-      ? { closes: [180, 32], check: [180, 118], wait: [80, 208], normal: [280, 208], started: [180, 296], claimed: [86, 392], thrown: [274, 392] }
-      : { closes: [100, 160], check: [300, 160], wait: [500, 58], started: [630, 160], claimed: [862, 76], thrown: [862, 244], normal: [300, 284] };
-    for (const [key, s] of Object.entries(G.states)) {
-      const [cx, cy] = P[key];
-      s.rect.setAttribute("x", cx - W / 2); s.rect.setAttribute("y", cy - 22); s.rect.setAttribute("width", W);
-      s.t1.setAttribute("x", cx); s.t1.setAttribute("y", cy - 2); s.t2.setAttribute("x", cx); s.t2.setAttribute("y", cy + 13);
-      s.t1.setAttribute("font-size", narrow ? 12 : 12.5);
+  /* ================= Fig 0: the hero raster (process) ================= */
+  (() => {
+    function push(S) {
+      if (S.r() < S.bin / DWELL) { S.s = 3 - S.s; S.flips++; }
+      const sp = new Uint8Array(S.N);
+      for (let i = 0; i < S.N; i++) { const pref = i < S.N / 2 ? 1 : 2; const rate = (pref === S.s ? 72 : 9) * S.mul[i]; sp[i] = S.r() < (rate * S.bin) / 1000 ? 1 : 0; }
+      S.cols.push({ s: S.s, sp }); if (S.cols.length > S.win / S.bin) S.cols.shift();
+      S.ms += S.bin;
     }
-    // anchor on the box edge facing the other node
-    const anchor = (from, to) => {
-      const [x, y] = P[from], [tx, ty] = P[to], dx = tx - x, dy = ty - y;
-      if (Math.abs(dy) < 30) return [x + Math.sign(dx) * W / 2, y];
-      if (Math.abs(dx) < 30) return [x, y + Math.sign(dy) * 22];
-      return narrow ? [x + Math.sign(dx) * Math.min(W / 2 - 18, Math.abs(dx) * 0.5), y + Math.sign(dy) * 22] : [x + Math.sign(dx) * (W / 2 - 24), y + Math.sign(dy) * 22];
+    const tips = {
+      seen: { title: "Seen-face cells", body: "These simulated cells fire more for the flashed, seen face while the population carries it." },
+      supp: { title: "Suppressed-face cells", body: "In the recordings, these cells fire for the primed, suppressed face (Fig. 2e–g)." },
+      carried: { title: "Decoded state", body: "State 1 is the flashed, seen face (solid). State 2 is the primed, suppressed face (hatched). The population flips about 15 times a second (Fig. 2d, Fig. 5)." },
+      face: { title: "Faces shown", body: "Both faces remain on screen. Only the flashed face is seen; the highlighted face follows the decoded state." },
     };
-    for (const t of trans) {
-      const o = G.trans[t.key], a = anchor(t.a, t.b), b = anchor(t.b, t.a);
-      const d = Math.abs(a[1] - b[1]) < 2 || Math.abs(a[0] - b[0]) < 2 ? `M${a[0]},${a[1]} L${b[0]},${b[1]}` : `M${a[0]},${a[1]} C${a[0]},${(a[1] + b[1]) / 2} ${b[0]},${(a[1] + b[1]) / 2} ${b[0]},${b[1]}`;
-      o.path.setAttribute("d", d); o.length = o.path.getTotalLength();
-      const end = o.path.getPointAtLength(o.length), near = o.path.getPointAtLength(Math.max(0, o.length - 8)), ang = Math.atan2(end.y - near.y, end.x - near.x);
-      o.head.setAttribute("d", `M${end.x},${end.y} L${end.x - 8 * Math.cos(ang - 0.45)},${end.y - 8 * Math.sin(ang - 0.45)} L${end.x - 8 * Math.cos(ang + 0.45)},${end.y - 8 * Math.sin(ang + 0.45)} Z`);
-      const mid = o.path.getPointAtLength(o.length * (narrow ? 0.5 : t.at ?? 0.5)), side = t.side[narrow ? 1 : 0];
-      o.lbl.setAttribute("x", mid.x + (side === "left" ? -9 : side === "right" ? 9 : 0)); o.lbl.setAttribute("y", mid.y + (side === "above" ? -8 : 4) + (narrow ? 0 : t.dy ?? 0));
-      o.lbl.setAttribute("text-anchor", side === "left" ? "end" : side === "right" ? "start" : "middle");
-    }
-  }
-  const edgeOf = (a, b) => trans.find((t) => t.a === a && t.b === b);
-  const callOf = (f) => CALLS[f.params.call];
-  FS.figure(ID, {
-    height: (w) => (w < 560 ? (w * 430) / 360 : (w * 330) / 960),
-    params: { call: { value: "label", label: "Which call", options: OPTIONS, placement: "inline" } },
-    steps: [0, 1, 2, 3, 4].map((i) => ({ caption: (f) => (i === 0 ? "Step through the states for the selected call." : callOf(f).caps[i - 1]) })),
-    onParam(f) { f.api.goto(1); f.dirty = true; },
-    resize(f) { layout(f.w); },
-    render(f) {
-      const C = f.C, cl = callOf(f), at = cl.at[f.step], prevAt = cl.at[f.from] ?? -1, e = FS.ease.inOut(f.stepT);
-      const lit = new Set(at >= 0 ? cl.path.slice(0, at + 1) : []);
-      const walked = new Set();
-      for (let i = 0; i < at; i++) walked.add(edgeOf(cl.path[i], cl.path[i + 1])?.key);
-      const moved = at > prevAt && at > 0 && f.from < f.step;
-      const via = moved ? edgeOf(cl.path[at - 1], cl.path[at])?.key : null;
-      for (const [key, st] of Object.entries(G.states)) {
-        const on = lit.has(key) || at < 0, hot = f.hover === key, here = at >= 0 && key === cl.path[at] && (f.stepT >= 1 || !via);
-        st.g.setAttribute("opacity", hot || on ? 1 : C.dim);
-        st.rect.setAttribute("fill", here ? C.fg : C.surface);
-        st.rect.setAttribute("stroke", hot ? C.accent : on && at >= 0 ? C.fg : C.lineStrong); st.rect.setAttribute("stroke-width", hot ? 1.5 : 1);
-        st.t1.setAttribute("fill", here ? C.surface : C.fg); st.t2.setAttribute("fill", here ? C.surface : C.muted);
-      }
-      for (const t of trans) {
-        const o = G.trans[t.key], active = t.key === via || (walked.has(t.key) && t.key === edgeOf(cl.path[at - 1], cl.path[at])?.key);
-        const on = walked.has(t.key) || at < 0;
-        o.g.setAttribute("opacity", active ? 1 : on ? 0.75 : 0.22);
-        o.path.setAttribute("stroke", active ? C.accent : C.muted); o.path.setAttribute("stroke-width", active ? 1.75 : C.edge);
-        o.head.setAttribute("fill", active ? C.accent : C.muted);
-        o.lbl.setAttribute("fill", active ? C.fg : C.muted);
-        o.lbl.setAttribute("stroke", C.surface); o.lbl.setAttribute("stroke-width", 5); o.lbl.setAttribute("stroke-linejoin", "round"); o.lbl.setAttribute("paint-order", "stroke");
-        o.lbl.setAttribute("opacity", narrow && !active ? 0 : 1);
-      }
-      const v = via && G.trans[via];
-      if (v && f.stepT < 1) { const p = v.path.getPointAtLength(v.length * e); token.setAttribute("cx", p.x); token.setAttribute("cy", p.y); token.setAttribute("opacity", 1); }
-      else token.setAttribute("opacity", 0);
-      token.setAttribute("fill", C.accent); token.setAttribute("stroke", C.surface); token.setAttribute("stroke-width", 1.5);
-    },
-  });
-})();
-
-/* ================= Fig 4: when it pays (canvas chart with a draggable line, simulated) ================= */
-(() => {
-  const ID = "fig-gain", CMIN = 0.5, CMAX = 12, BAND = [1, 1.2];
-  const ratio = (c, speed) => { const s = simulate(c, speed); return { full: s.B / s.S, once: s.B / s.J, saved: s.B - s.S }; };
-  const peakOf = (speed) => { let best = { c: CMIN, r: 0 }; for (let c = CMIN; c <= CMAX + 1e-9; c += 0.05) { const r = ratio(c, speed).full; if (r > best.r) best = { c, r }; } return best; };
-  const geo = (f) => { const narrow = f.w < 560, L = narrow ? 44 : 52, R = f.w - (narrow ? 14 : 22), T = 22, B = f.h - 40; return { L, R, T, B, narrow }; };
-  const yMax = (f) => Math.max(2, Math.ceil((peakOf(f.v.speed).r + 0.12) * 10) / 10);
-  const X = (f, c) => { const g = geo(f); return g.L + (g.R - g.L) * ((c - CMIN) / (CMAX - CMIN)); };
-  const Y = (f, r) => { const g = geo(f); return g.B - (g.B - g.T) * ((r - 0.9) / (yMax(f) - 0.9)); };
-  const invX = (f, x) => { const g = geo(f); return CMIN + ((x - g.L) / (g.R - g.L)) * (CMAX - CMIN); };
-  const tips = {
-    band: { title: "Measured range", body: "The post's summary for its RLM benchmark: speed-ups of about 1 to 1.2×. Everything else on this chart is the simulated turn." },
-    full: { title: "With speculation", body: "Plain run time divided by speculative run time for the worked turn as each sub-model call gets longer." },
-    once: { title: "Running at once only", body: "This curve shows the JIT part of the saving when the calls start together only after writing ends, without overlap." },
-    peak: { title: "The peak", body: "The tally finishes as writing ends. Shorter calls leave writing time unused; longer calls run past it." },
-  };
-  const fig = FS.figure(ID, {
-    height: (w) => (w < 560 ? 280 : 300),
-    params: {
-      call: { value: 4, min: CMIN, max: CMAX, step: 0.1, label: "Each sub-model call takes", hidden: true },
-      speed: { value: 1, min: 0.5, max: 3, step: 0.25, label: "Writing speed", format: (v) => `${v.toFixed(2)}×` },
-    },
-    reserve: { peak: ["about 9.99× when each call takes 99.9 s"] },
-    tips,
-    tipAt: (f, x, y) => f.state.hits?.find((h) => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h)?.kind ?? null,
-    handles: {
-      line: {
-        label: "Sub-model call length: drag or use the arrow keys",
-        radius: 22,
-        get: (f) => ({ x: X(f, f.params.call), y: (geo(f).T + geo(f).B) / 2 }),
-        set: (f, x) => { const v = invX(f, x); f.state.raw = v; f.api.set("call", FS.clamp(v, CMIN, CMAX), { instant: true }); },
-        bounds: (f) => { const g = geo(f), y = (g.T + g.B) / 2; return { x0: X(f, CMIN), x1: X(f, CMAX), y0: y, y1: y }; },
-        step: 12,
+    FS.figure("fig-hero", {
+      height: (w) => (w < 640 ? 350 : 310),
+      params: { slow: { value: 10, min: 2, max: 40, step: 1, label: "Slowed down by", format: (v) => `${Math.round(v)}×` } },
+      reserve: { state: ["state 2 · primed, suppressed"], flips: ["999 flips in 99.9 s of brain time"] },
+      tips, tipAt: hit, settle: 2,
+      init(f) { const S = f.state; S.r = mulberry(7); S.N = 36; S.bin = 5; S.win = 600; S.cols = []; S.acc = 0; S.s = 1; S.flips = 0; S.ms = 0; S.mul = []; for (let i = 0; i < S.N; i++) S.mul.push(0.6 + 0.8 * S.r()); for (let k = 0; k < S.win / S.bin; k++) push(S); S.flips = 0; S.ms = 0; S.alpha = [1, 0.2]; },
+      update(f, dt) { const S = f.state; S.acc += (dt * 1000) / f.v.slow; while (S.acc >= S.bin) { S.acc -= S.bin; push(S); } const tg = S.s === 1 ? [1, 0.2] : [0.2, 1]; for (let i = 0; i < 2; i++) S.alpha[i] += (tg[i] - S.alpha[i]) * Math.min(1, dt * 5); },
+      render(f, c) {
+        const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 640, hits = (f.state.hits = []);
+        let rx0, ry0;
+        if (nar) {
+          const fs = 62, fy = 40;
+          drawFace(f, c, W * 0.27, fy, fs, FACE_B, { alpha: S.alpha[0] }); drawFace(f, c, W * 0.73, fy, fs, FACE_A, { alpha: S.alpha[1], dash: dashFor(fs) });
+          text(f, c, "state 1 · seen", W * 0.27, fy + 46, { align: "center", size: 10, color: S.s === 1 ? C.fg : C.muted }); text(f, c, "state 2 · suppressed", W * 0.73, fy + 46, { align: "center", size: 10, color: S.s === 2 ? C.fg : C.muted });
+          hits.push({ kind: "face", x: 0, y: 0, w: W, h: 90 }); rx0 = 22; ry0 = 108;
+        } else {
+          const fs = 86;
+          drawFace(f, c, 80, H * 0.25, fs, FACE_B, { alpha: S.alpha[0] }); drawFace(f, c, 80, H * 0.64, fs, FACE_A, { alpha: S.alpha[1], dash: dashFor(fs) });
+          text(f, c, "state 1 · flashed, seen", 80, H * 0.25 + 58, { align: "center", size: 10, color: S.s === 1 ? C.fg : C.muted }); text(f, c, "state 2 · primed, suppressed", 80, H * 0.64 + 58, { align: "center", size: 10, color: S.s === 2 ? C.fg : C.muted });
+          hits.push({ kind: "face", x: 0, y: 0, w: 170, h: H }); rx0 = 200; ry0 = 16;
+        }
+        const rx1 = W - 2, ry1 = H - 58, n = S.cols.length, cw = (rx1 - rx0) / n, off = (S.acc / S.bin) * cw, rh = (ry1 - ry0) / S.N, xOf = (k) => rx1 - (n - k) * cw - off;
+        if (nar) { vtext(f, c, "prefer seen", 9, ry0 + (ry1 - ry0) * 0.25, { size: 9 }); vtext(f, c, "prefer supp.", 9, ry0 + (ry1 - ry0) * 0.75, { size: 9 }); }
+        else { vtext(f, c, "prefer the seen face", rx0 - 12, ry0 + (ry1 - ry0) * 0.25, { size: 9.5 }); vtext(f, c, "prefer the suppressed", rx0 - 12, ry0 + (ry1 - ry0) * 0.75, { size: 9.5 }); text(f, c, "carried", rx0 - 8, ry1 + 21, { align: "right", size: 9.5 }); }
+        hits.push({ kind: "seen", x: rx0, y: ry0, w: rx1 - rx0, h: (ry1 - ry0) / 2 }, { kind: "supp", x: rx0, y: ry0 + (ry1 - ry0) / 2, w: rx1 - rx0, h: (ry1 - ry0) / 2 }, { kind: "carried", x: rx0, y: ry1 + 8, w: rx1 - rx0, h: 20 });
+        c.save(); c.beginPath(); c.rect(rx0, 0, rx1 - rx0, H); c.clip();
+        c.fillStyle = C.fg; c.globalAlpha = 0.05; for (let k = 0; k < n; k++) if (S.cols[k].s === 1) c.fillRect(xOf(k), ry0, cw + 0.6, ry1 - ry0); c.globalAlpha = 1;
+        c.strokeStyle = C.line; c.setLineDash([3, 4]); line(c, rx0, ry0 + (rh * S.N) / 2, rx1, ry0 + (rh * S.N) / 2); c.setLineDash([]);
+        c.strokeStyle = C.fg; c.lineWidth = 1; c.beginPath();
+        for (let k = 0; k < n; k++) { const x = Math.round(xOf(k) + cw / 2) + 0.5, sp = S.cols[k].sp; for (let i = 0; i < S.N; i++) if (sp[i]) { const y = ry0 + i * rh; c.moveTo(x, y + 1); c.lineTo(x, y + rh - 1); } }
+        c.stroke();
+        runs(f, c, S.cols.map((o) => o.s), xOf, cw, ry1 + 10, 15);
+        c.restore();
+        const px = rx1 - off; c.strokeStyle = C.strong; c.lineWidth = 1; line(c, px, ry0, px, ry1 + 25);
+        const sb = (100 / S.bin) * cw; c.strokeStyle = C.muted; line(c, rx1 - sb, H - 12, rx1, H - 12); line(c, rx1 - sb, H - 16, rx1 - sb, H - 8); line(c, rx1, H - 16, rx1, H - 8);
+        text(f, c, "100 ms", rx1 - sb - 8, H - 8, { align: "right", size: 10 }); text(f, c, `simulated · slowed ${Math.round(f.v.slow)}×`, rx0, H - 8, { size: 10 });
+        f.api.out("state", S.s === 1 ? "state 1 · flashed, seen" : "state 2 · primed, suppressed");
+        f.api.out("flips", `${S.flips} ${S.flips === 1 ? "flip" : "flips"} in ${(S.ms / 1000).toFixed(1)} s of brain time`);
       },
-    },
-    init(f) { outs(f); },
-    onParam(f) { outs(f); },
-    render(f, c) {
-      const C = f.C, g = geo(f), hits = (f.state.hits = []), speed = f.v.speed, cNow = f.v.call;
-      // band: the post's measured range
-      const yb0 = Y(f, BAND[1]), yb1 = Y(f, BAND[0]);
-      c.fillStyle = C.surface2; c.fillRect(g.L, yb0, g.R - g.L, yb1 - yb0);
-      hits.push({ kind: "band", x: g.L, y: yb0, w: g.R - g.L, h: yb1 - yb0 });
-      FS.k.text(f, c, g.narrow ? "measured: 1 to 1.2× (post)" : "measured on the benchmark: 1 to 1.2× (post)", g.R - 8, yb1 - 6, { align: "right", size: 11, color: C.fg });
-      // grid
-      c.strokeStyle = C.line; c.lineWidth = 1;
-      for (let r = 1; r <= yMax(f) + 1e-9; r += 0.5) { FS.k.line(c, g.L, Y(f, r), g.R, Y(f, r)); FS.k.text(f, c, `${r.toFixed(1)}×`, g.L - 8, Y(f, r) + 4, { align: "right", size: 11 }); }
-      for (let v = 2; v <= CMAX; v += 2) FS.k.text(f, c, `${v} s`, X(f, v), g.B + 16, { align: "center", size: 11 });
-      FS.k.text(f, c, "length of each sub-model call →", g.R, g.B + 32, { align: "right", size: 11 });
-      // curves
-      const curve = (key, dash, color, width) => {
-        c.save(); c.strokeStyle = color; c.lineWidth = width; if (dash) c.setLineDash(dash);
-        c.beginPath();
-        for (let i = 0; i <= 160; i++) { const cc = CMIN + (CMAX - CMIN) * (i / 160), y = Y(f, ratio(cc, speed)[key]); i ? c.lineTo(X(f, cc), y) : c.moveTo(X(f, cc), y); }
-        c.stroke(); c.restore();
-      };
-      curve("once", [5, 4], f.hover === "once" ? C.fg : C.muted, 1.4);
-      curve("full", null, f.hover === "full" ? C.accent : C.fg, C.series);
-      // direct labels where the curves are apart
-      const cl = g.narrow ? 9.2 : 9.8, rf = ratio(cl, speed);
-      FS.k.label(f, c, "with speculation", X(f, cl), Y(f, rf.full) - 12, { size: 11, align: "center", color: C.fg });
-      FS.k.label(f, c, "running at once only", X(f, cl), Y(f, rf.once) + 14, { size: 11, align: "center", color: C.muted });
-      hits.push({ kind: "full", x: X(f, cl) - 50, y: Y(f, rf.full) - 20, w: 100, h: 16 });
-      hits.push({ kind: "once", x: X(f, cl) - 60, y: Y(f, rf.once) + 6, w: 120, h: 16 });
-      // the peak
-      const pk = peakOf(speed), px = X(f, pk.c), py = Y(f, pk.r);
-      c.fillStyle = C.surface; c.beginPath(); c.arc(px, py, 5, 0, 7); c.fill(); c.strokeStyle = C.fg; c.lineWidth = 1.5; c.stroke(); c.lineWidth = 1;
-      const hNow = X(f, FS.clamp(cNow, CMIN, CMAX)), clash = Math.abs(hNow - px) < 44;
-      FS.k.label(f, c, `peak ${pk.r.toFixed(2)}×`, clash ? px + (hNow <= px ? 9 : -9) : px, py - 13, { size: 11, align: clash ? (hNow <= px ? "left" : "right") : "center", weight: 600 });
-      hits.push({ kind: "peak", x: px - 30, y: py - 22, w: 60, h: 28 });
-      // the handle: a vertical line at the current call length
-      const hx = X(f, FS.clamp(f.state.raw != null && f.drag === "line" ? f.state.raw : cNow, CMIN - 1, CMAX + 1)), held = f.drag === "line", hov = f.handleHover === "line";
-      c.strokeStyle = held || hov ? C.accent : C.strong; c.lineWidth = held ? 2.25 : hov ? 1.75 : 1.25;
-      FS.k.line(c, hx, g.T, hx, g.B); c.lineWidth = 1;
-      const r = ratio(FS.clamp(cNow, CMIN, CMAX), speed);
-      for (const [key, color] of [["once", C.muted], ["full", C.fg]]) { c.fillStyle = C.surface; c.beginPath(); c.arc(hx, Y(f, r[key]), 5.5, 0, 7); c.fill(); c.fillStyle = color; c.beginPath(); c.arc(hx, Y(f, r[key]), 4, 0, 7); c.fill(); }
-      const right = hx + 70 < g.R;
-      FS.k.label(f, c, `${r.full.toFixed(2)}×`, hx + (right ? 9 : -9), Y(f, r.full) + 12, { size: 11, weight: 600, align: right ? "left" : "right" });
-      c.fillStyle = C.surface; c.beginPath(); c.arc(hx, g.B, held ? 9 : 7.5, 0, 7); c.fill(); c.fillStyle = held || hov ? C.accent : C.strong; c.beginPath(); c.arc(hx, g.B, held ? 7 : hov ? 6 : 4.5, 0, 7); c.fill();
-      if (held) FS.k.label(f, c, `${f.params.call.toFixed(1)} s`, hx, g.T - 8, { size: 11, align: "center", weight: 600 });
-    },
-  });
-  function outs(f) {
-    const r = ratio(f.params.call, f.params.speed), pk = peakOf(f.params.speed);
-    f.api.out("readout", `At ${f.params.call.toFixed(1)} s per sub-model call: ${r.full.toFixed(2)}× (${sec(r.saved)} sooner). Running at once alone: ${r.once.toFixed(2)}×.`);
-    f.api.out("peak", `about ${pk.r.toFixed(2)}× when each call takes ${sec(pk.c)}`);
-  }
-  // Figs. 1 and 4 share the call length and the writing speed.
-  const link = (from, to) => FS.get(from).on("param", ({ name, value }) => { const other = FS.get(to); if (other.params[name] !== value) other.set(name, value, { instant: true }); });
-  link("fig-gain", "fig-turn"); link("fig-turn", "fig-gain");
-  void fig;
-})();
+    });
+  })();
 
-/* ================= Fig 5: the post's measurements (canvas, read off its plot) ================= */
-(() => {
-  const ID = "fig-measured";
-  // [mean, low, high] read by pixel from the post's results plot; lows clipped at 0 by its plotting code.
-  const CELLS = [{ temp: "0.0", conc: 4 }, { temp: "0.0", conc: 8 }, { temp: "0.7", conc: 4 }, { temp: "0.7", conc: 8 }];
-  const DATA = {
-    wall: { unit: "s", base: [[1117, 575, 1646], [834, 394, 1257], [1014, 74, 1917], [1319, 0, 3444]], spec: [[772, 509, 1018], [595, 230, 943], [792, 357, 1213], [718, 287, 1111]] },
-    subcalls: { unit: "", base: [[667, 269, 1050], [694, 315, 1055], [938, 726, 1131], [1182, 531, 1814]], spec: [[1001, 250, 1729], [890, 213, 1553], [1177, 658, 1682], [914, 297, 1516]] },
-    turns: { unit: "", base: [[10.3, 9.2, 11.3], [10.4, 9.0, 11.7], [8.8, 7.7, 9.9], [10.0, 9.1, 10.8]], spec: [[10.0, 8.9, 11.0], [8.9, 7.7, 10.0], [9.7, 8.1, 11.2], [10.2, 9.2, 11.0]] },
-  };
-  const NAMES = { wall: "Wall time", subcalls: "Sub-model calls per task", turns: "Turns per task" };
-  const fmtV = (m, v) => (m === "turns" ? v.toFixed(1) : Math.round(v).toLocaleString("en-US")) + (m === "wall" ? " s" : "");
-  const delta = (m, i) => {
-    const b = DATA[m].base[i][0], s = DATA[m].spec[i][0];
-    if (m === "wall") return `${(b / s).toFixed(2)}×`;
-    if (m === "subcalls") { const p = Math.round((s / b - 1) * 100); return `${p > 0 ? "+" : "−"}${Math.abs(p)}%`; }
-    const d = s - b; return `${d > 0 ? "+" : d < 0 ? "−" : "±"}${Math.abs(d).toFixed(1)}`;
-  };
-  const overlap = (m, i) => { const b = DATA[m].base[i], s = DATA[m].spec[i]; return b[1] <= s[2] && s[1] <= b[2]; };
-  const tips = { key: { title: "Two runs per setting", body: "Hollow: the base RLM. Filled: the same harness with speculation. Whiskers: 95% intervals over 5 runs." } };
-  for (const m of Object.keys(DATA)) CELLS.forEach((cell, i) => {
-    for (const mode of ["base", "spec"]) {
-      const [v, lo, hi] = DATA[m][mode][i];
-      tips[`${m}:${i}:${mode}`] = { title: `${mode === "base" ? "Without" : "With"} · temp ${cell.temp} · ${cell.conc} tasks`, body: `${NAMES[m]}: mean ${fmtV(m, v)}, 95% interval ${fmtV(m, lo)} to ${fmtV(m, hi)}, over 5 runs, read off the post's plot.` };
+  /* ================= Fig 1: the puzzle scatter (two steps) ================= */
+  (() => {
+    const steps = [
+      { caption: "If face cells tracked perception, selectivity during rivalry would equal selectivity when the faces are shown alone, with every dot on the diagonal." },
+      { caption: "The recordings put nearly every strongly selective cell below the diagonal, with selectivity at about a quarter of plain viewing (slope 0.23; 5,550 cell–stimulus pairs, p = 8×10⁻¹³³, Fig. 1h)." },
+    ];
+    FS.figure("fig-puzzle", {
+      height: (w) => (w < 640 ? w - 56 + 62 : 400),
+      steps,
+      tips: { dots: { title: "Cell-stimulus pair", body: "Each illustrative dot compares selectivity when the faces are shown alone (across) with selectivity during rivalry (up); the slope is from the paper." } },
+      tipAt: hit,
+      init(f) { const r = mulberry(11), P = []; while (P.length < 440) { const x = 0.22 + 0.36 * gauss(r); if (Math.abs(x) < 0.08 || Math.abs(x) > 0.97) continue; P.push({ x, z: gauss(r) }); } f.state.P = P; },
+      render(f, c) {
+        const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 640, k = f.step === 1 ? FS.ease.inOut(f.stepT) : 1 - FS.ease.inOut(f.stepT);
+        const px = nar ? 40 : 66, py = 10, side = nar ? W - 56 : H - 66, X = (v) => px + ((v + 1) / 2) * side, Y = (v) => py + (1 - (v + 1) / 2) * side;
+        f.state.hits = [{ kind: "dots", x: px, y: py, w: side, h: side }];
+        c.strokeStyle = C.line; c.lineWidth = 1; c.strokeRect(px + 0.5, py + 0.5, side, side);
+        c.setLineDash([2, 4]); line(c, X(0), py, X(0), py + side); line(c, px, Y(0), px + side, Y(0)); c.setLineDash([]);
+        for (const v of [-1, 0, 1]) { text(f, c, String(v).replace("-", "−"), X(v), py + side + 16, { align: "center", size: 10 }); text(f, c, String(v).replace("-", "−"), px - 8, Y(v) + 4, { align: "right", size: 10 }); }
+        text(f, c, "selectivity when the faces are shown alone", X(0), py + side + 38, { align: "center", size: 10 }); vtext(f, c, "selectivity during rivalry", px - 28, Y(0), { size: 10 });
+        c.strokeStyle = C.muted; c.lineWidth = 1.4; c.setLineDash([6, 5]); line(c, X(-1), Y(-1), X(1), Y(1)); c.setLineDash([]);
+        c.fillStyle = C.fg; c.globalAlpha = 0.55;
+        for (const p of S.P) { const y = FS.clamp(FS.lerp(p.x, 0.23 * p.x + 0.13 * p.z, k), -0.98, 0.98); c.beginPath(); c.arc(X(p.x), Y(y), 1.8, 0, 6.2832); c.fill(); }
+        c.globalAlpha = 1;
+        text(f, c, "slope 1", X(0.62), Y(0.8), { color: C.muted });
+        c.globalAlpha = k; c.strokeStyle = C.strong; c.lineWidth = 2.2; line(c, X(-1), Y(-0.23), X(1), Y(0.23)); c.globalAlpha = 1;
+        FS.k.label(f, c, "slope 0.23", X(0.98), Y(0.23) - 10, { align: "right", size: 11, weight: 600, color: C.strong, alpha: k });
+        if (!nar) { const ax = px + side + 40, on = k >= 0.5; text(f, c, on ? "what the recordings show" : "if cells tracked perception", ax, py + 30, { size: 11, color: C.fg, weight: 600 }); text(f, c, on ? "slope 0.23" : "slope 1", ax, py + 64, { size: 26, weight: 600, color: C.fg }); text(f, c, on ? "5,550 cell–stimulus pairs" : "every dot on the diagonal", ax, py + 90, { size: 11, color: C.fg }); text(f, c, on ? "p = 8×10⁻¹³³" : "the null hypothesis", ax, py + 108, { size: 11 }); text(f, c, "Fig. 1h", ax, py + side - 4, { size: 10 }); }
+      },
+    });
+  })();
+
+  /* ================= Fig 2: binocular flash suppression (timeline, brain seconds −1 to +1) ================= */
+  (() => {
+    const tips = {
+      left: { title: "Left eye", body: "The primed face appears alone for 1 to 2 s before the flash and remains after it." },
+      right: { title: "Right eye", body: "This eye is blank until the flash, when the second face appears. Anaglyph goggles send each eye its own image." },
+      percept: { title: "What is seen", body: "The primed face is seen before the flash, then only the flashed face. In 14 people this held on 82% of trials against 87% for an image with no competitor (Fig. 1b, Methods)." },
+      window: { title: "Analysis window", body: "Every neural analysis uses 300 to 1000 ms after the flash, when the flashed face dominates." },
+    };
+    FS.figure("fig-flash", {
+      height: (w) => (w < 640 ? 520 : 330),
+      duration: 2.0, keyframe: 1.6,
+      chapters: [{ t: 0.2, label: "priming" }, { t: 1.0, label: "the flash" }, { t: 1.3, label: "window opens" }, { t: 2.0, label: "+1 s" }],
+      formatTime: (t) => { const s = t - 1; return `${s < 0 ? "−" : "+"}${Math.abs(s).toFixed(2)} s from the flash`; },
+      timeAxis: (f) => ({ x0: f.w < 640 ? 76 : 136, x1: f.w - (f.w < 640 ? 12 : 40), t1: 2.0 }),
+      tips, tipAt: hit,
+      init(f) { f.rate = 0.5; },
+      render(f, c) {
+        const C = f.C, W = f.w, H = f.h, nar = W < 640, tt = f.t - 1, xf = FS.clamp(tt / 0.12, 0, 1), hits = (f.state.hits = []);
+        const panel = (x, y, s, lab, sub, thick, kind) => { c.fillStyle = C.bg; FS.k.rrect(c, x, y, s, s, 4); c.fill(); c.strokeStyle = thick ? C.fg : C.line; c.lineWidth = thick ? 1.6 : 1; FS.k.rrect(c, x, y, s, s, 4); c.stroke(); text(f, c, lab, x + s / 2, y + s + 17, { align: "center", size: 10, color: C.fg }); text(f, c, sub, x + s / 2, y + s + 31, { align: "center", size: 10 }); hits.push({ kind, x, y, w: s, h: s + 32 }); };
+        let P, L, R, Pc, PcS, ey;
+        if (nar) { P = Math.min(130, (W - 30) / 2); ey = 6; L = [W / 2 - P - 10, ey]; R = [W / 2 + 10, ey]; PcS = Math.min(140, P * 1.05); Pc = [W / 2 - PcS / 2, ey + P + 66]; }
+        else { P = Math.min(128, (W - 260) / 3.4); ey = 8; L = [40, ey]; R = [40 + P + 26, ey]; PcS = P * 1.12; Pc = [W - 40 - PcS, ey - 2]; }
+        panel(L[0], L[1], P, "left eye", tt < 0 ? "primed face" : "primed face, still shown", false, "left");
+        drawFace(f, c, L[0] + P / 2, L[1] + P / 2, P * 0.82, FACE_A, { dash: dashFor(P * 0.82) });
+        panel(R[0], R[1], P, "right eye", tt < 0 ? "blank" : "flashed face", false, "right");
+        if (tt >= 0) drawFace(f, c, R[0] + P / 2, R[1] + P / 2, P * 0.82, FACE_B, { alpha: xf });
+        panel(Pc[0], Pc[1], PcS, "what is seen", tt < 0 ? "the primed face" : "only the flashed face", true, "percept");
+        const fs = PcS * 0.82;
+        if (xf < 1) drawFace(f, c, Pc[0] + PcS / 2, Pc[1] + PcS / 2, fs, FACE_A, { dash: dashFor(fs), alpha: 1 - xf });
+        if (xf > 0) drawFace(f, c, Pc[0] + PcS / 2, Pc[1] + PcS / 2, fs, FACE_B, { alpha: xf });
+        if (nar) FS.k.arrow(c, W / 2, ey + P + 38, W / 2, Pc[1] - 8, C.muted);
+        else { const ax0 = R[0] + P + 18, ax1 = Pc[0] - 16, ay = ey + P / 2; FS.k.arrow(c, ax0, ay, ax1, ay, C.muted); text(f, c, "brain", (ax0 + ax1) / 2, ay - 9, { align: "center", size: 10 }); }
+        const x0 = nar ? 76 : 136, x1 = W - (nar ? 12 : 40), tx = (s) => x0 + ((s + 1) / 2) * (x1 - x0), base = H - 104, rowsY = [base, base + 20, base + 40], labs = ["left eye", "right eye", "seen"];
+        c.save(); c.globalAlpha = 0.5; c.fillStyle = FS.k.hatch(f, c, C.faint, 7); c.fillRect(tx(0.3), base - 22, tx(1) - tx(0.3), 82); c.restore();
+        hits.push({ kind: "window", x: tx(0.3), y: base - 34, w: tx(1) - tx(0.3), h: 94 });
+        text(f, c, nar ? "300–1000 ms" : "analysis window · 300–1000 ms", tx(0.65), base - 28, { align: "center", size: 10, color: C.fg });
+        for (let i = 0; i < 3; i++) text(f, c, labs[i], x0 - 10, rowsY[i] + 10, { align: "right", size: 10, color: i === 2 ? C.fg : C.muted });
+        const tc = Math.min(tt, 1);
+        fillState(f, c, tx(-1), rowsY[0], tx(tc) - tx(-1), 12, 2);
+        if (tc > 0) fillState(f, c, tx(0), rowsY[1], tx(tc) - tx(0), 12, 1);
+        fillState(f, c, tx(-1), rowsY[2], tx(Math.min(tc, 0)) - tx(-1), 12, 2);
+        if (tc > 0) fillState(f, c, tx(0), rowsY[2], tx(tc) - tx(0), 12, 1);
+        const ay = base + 70; c.strokeStyle = C.line; c.lineWidth = 1; line(c, x0, ay, x1, ay);
+        for (const v of [-1, -0.5, 0, 0.5, 1]) { line(c, tx(v), ay, tx(v), ay + 5); text(f, c, (v === 0 ? "0" : (v > 0 ? "+" : "−") + Math.abs(v)) + (Math.abs(v) === 1 ? " s" : ""), tx(v), ay + 18, { align: "center", size: 10 }); }
+        c.strokeStyle = C.fg; c.setLineDash([3, 3]); line(c, tx(0), base - 14, tx(0), ay); c.setLineDash([]);
+        text(f, c, "flash", tx(0), base - 18, { align: "center", size: 10, color: C.fg });
+        FS.k.hoverTime(f, c, base - 22, ay, (s) => tx(s - 1), (s) => `${s - 1 < 0 ? "−" : "+"}${Math.abs(s - 1).toFixed(2)} s`);
+        FS.k.playhead(f, c, tx(tc), base - 6, ay);
+        f.api.out("phase", tt < 0 ? "before the flash · primed face seen" : tt < 0.3 ? "at the flash · flashed face takes over" : "after the flash · flashed face seen");
+      },
+    });
+  })();
+
+  /* ================= Fig 3: where the probes went (flow) ================= */
+  (() => {
+    const meta = {
+      eye: { label: "Eyes", sub: "one face each", tip: { title: "Eyes", body: "Anaglyph goggles send the primed face to the left eye and the flashed face to the right eye." } },
+      early: { label: "V1 to V4", sub: "not recorded", tip: { title: "Early visual cortex", body: "Not recorded in this study; the probes sat higher in the hierarchy." } },
+      ML: { label: "ML", sub: "middle lateral face patch", tip: { title: "ML", body: "A face patch in inferotemporal cortex, found with fMRI. 91% of visually responsive cells were face-selective in the example session (Fig. 1f)." } },
+      AM: { label: "AM", sub: "anterior medial face patch", tip: { title: "AM", body: "The most anterior face patch; 71% face-selective cells in the example session (Fig. 1f). ML and AM were recorded at once: 429 cells in one trial (Fig. 1g)." } },
+      PVL: { label: "PVL", sub: "ventrolateral prefrontal", tip: { title: "PVL", body: "A prefrontal region near the infraprincipal dimple. 661 prefrontal neurons in all, with PO (Methods)." } },
+      PO: { label: "PO", sub: "orbitofrontal", tip: { title: "PO", body: "The lateral orbitofrontal sulcus. Prefrontal cortex is where front-of-brain theories expect a pure signal of what is seen." } },
+    };
+    const layouts = {
+      wide: { box: [960, 300], at: { eye: [20, 120, 130], early: [200, 120, 140], ML: [390, 120, 130], AM: [560, 120, 130], PVL: [760, 36, 160], PO: [760, 204, 160] } },
+      narrow: { box: [360, 520], at: { eye: [100, 10, 160], early: [100, 90, 160], ML: [100, 170, 160], AM: [100, 250, 160], PVL: [100, 340, 160], PO: [100, 420, 160] } },
+    };
+    const edges = [["eye", "early"], ["early", "ML"], ["ML", "AM"], { a: "AM", b: "PVL", wide: "x", narrow: "y" }, { a: "AM", b: "PO", wide: "x", narrow: "right" }];
+    const steps = [
+      { on: Object.keys(meta), caption: "Step through the four regions recorded in two macaques with Neuropixels NHP probes, each with a 45 mm shaft and 384 of 4,416 contacts recording at once." },
+      { on: ["eye", "early"], caption: "Each eye gets its own face, and early visual areas were not recorded." },
+      { on: ["ML", "AM"], caption: "The two face patches in inferotemporal cortex were located with fMRI, and one example trial recorded 429 cells together (Fig. 1g)." },
+      { on: ["PVL", "PO"], caption: "A separate set of experiments recorded 661 neurons across two prefrontal regions (Methods)." },
+      { on: ["ML", "AM", "PVL", "PO"], caption: "The stimulus set contains 1,500 synthetic faces in 750 rival pairs, each a point in a 50-dimensional face space with 20 shape and 30 appearance features." },
+    ];
+    flowFigure("fig-rig", { meta, layouts, edges, steps, regions: [{ label: "inferotemporal", keys: ["ML", "AM"] }, { label: "prefrontal", keys: ["PVL", "PO"] }] });
+  })();
+
+  /* ================= Fig 4: the decoder at work (process) ================= */
+  (() => {
+    const STEP = 0.22;
+    function bin(S) {
+      if (S.r() < S.dt / DWELL) S.hidden = 3 - S.hidden;
+      const n = new Uint8Array(S.N), contrib = new Float32Array(S.N); let L = 0;
+      for (let i = 0; i < S.N; i++) { const lam = ((S.hidden === 1 ? S.lc[i] : S.ls[i]) * S.dt) / 1000; n[i] = poisson(S.r, lam); contrib[i] = n[i] * S.w[i] - S.b[i]; L += contrib[i]; }
+      const dec = L > 0 ? 1 : 2; S.correct += dec === S.hidden ? 1 : 0; S.total++;
+      const pos = S.disp.map((i) => { const a = []; for (let q = 0; q < n[i]; q++) a.push(0.12 + 0.76 * S.r()); return a; });
+      S.bins.push({ h: S.hidden, L, dec, contrib, pos }); if (S.bins.length > 41) S.bins.shift();
     }
-  });
-  const nice = (v) => { const p = Math.pow(10, Math.floor(Math.log10(v))), n = v / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p; };
-  const scaleOf = (m) => { const hi = Math.max(...DATA[m].base.map((d) => d[2]), ...DATA[m].spec.map((d) => d[2])); const step = nice(hi / 4); return { max: Math.ceil((hi * 1.1) / step) * step, step }; };
-  const tw = { k: 1, from: null };
-  FS.figure(ID, {
-    height: (w) => (w < 560 ? 300 : 300),
-    params: { metric: { value: "wall", label: "Measure", options: Object.keys(DATA).map((k) => ({ value: k, label: NAMES[k] })), placement: "inline" } },
-    tips,
-    tipAt: (f, x, y) => f.state.hits?.find((h) => Math.hypot(h.x - x, h.y - y) < 12)?.kind ?? (f.state.keyHit && x >= f.state.keyHit.x && x <= f.state.keyHit.x + f.state.keyHit.w && y >= f.state.keyHit.y && y <= f.state.keyHit.y + 16 ? "key" : null),
-    init(f) { outs(f); },
-    onParam(f, name, value) {
-      tw.from = f.state.last ?? null; tw.k = FS.reduced() || !tw.from ? 1 : 0;
-      if (tw.k < 1) FS.animate((dt) => { tw.k = Math.min(1, tw.k + dt / 0.6); f.dirty = true; return tw.k >= 1; });
-      outs(f); void value; void name;
-    },
-    render(f, c) {
-      const C = f.C, m = f.params.metric, narrow = f.w < 560, hits = (f.state.hits = []);
-      const L = narrow ? 46 : 64, R = f.w - 12, T = 46, B = f.h - 50;
-      const sc = scaleOf(m), Yof = (v, s = sc) => B - (B - T) * (v / s.max);
-      // grid
-      c.strokeStyle = C.line; c.lineWidth = 1;
-      for (let v = 0; v <= sc.max + 1e-9; v += sc.step) { FS.k.line(c, L, Yof(v), R, Yof(v)); FS.k.text(f, c, m === "turns" ? v.toFixed(1) : v.toLocaleString("en-US"), L - 8, Yof(v) + 4, { align: "right", size: 11 }); }
-      FS.k.text(f, c, `${NAMES[m]}${m === "wall" ? " (s)" : ""}`, L, T - 22, { size: 11, color: C.fg, weight: 600 });
-      // key
-      const kx = narrow ? L : R - 270, ky = narrow ? T - 8 : T - 26;
-      if (!narrow) {
-        c.strokeStyle = C.muted; c.lineWidth = 1.5; c.fillStyle = C.surface; c.beginPath(); c.arc(kx + 5, ky - 4, 4.5, 0, 7); c.fill(); c.stroke();
-        FS.k.text(f, c, "without speculation", kx + 15, ky, { size: 11 });
-        c.fillStyle = C.fg; c.beginPath(); c.arc(kx + 150, ky - 4, 4.5, 0, 7); c.fill();
-        FS.k.text(f, c, "with speculation", kx + 160, ky, { size: 11, color: C.fg });
-        f.state.keyHit = { x: kx, y: ky - 12, w: 270 };
-      } else f.state.keyHit = null;
-      // groups: two temperatures, two concurrencies each
-      const slotW = (R - L) / 4, gap = narrow ? 11 : 16;
-      const k = FS.ease.smooth(tw.k), last = [];
-      CELLS.forEach((cell, i) => {
-        const cx = L + slotW * (i + 0.5);
-        FS.k.text(f, c, `${cell.conc} tasks`, cx, B + 16, { align: "center", size: 11 });
-        if (i % 2 === 0) {
-          const gx = L + slotW * (i + 1);
-          FS.k.text(f, c, narrow ? `temp ${cell.temp}` : `temperature ${cell.temp}`, gx, B + 34, { align: "center", size: 11, color: C.fg, weight: 600 });
-          if (i === 2) { c.strokeStyle = C.lineStrong; FS.k.line(c, L + slotW * 2, T - 4, L + slotW * 2, B + 22); }
+    const tips = {
+      templates: { title: "Priming templates", body: "Each neuron has one average rate for the flashed, seen face (solid) and another for the primed, suppressed face (hatched), measured when each face was shown alone." },
+      raster: { title: "10 ms slices", body: "The raster shows 14 of 60 simulated neurons. Each tick is a spike; even rows prefer the seen face and odd rows prefer the suppressed face." },
+      trace: { title: "Log-likelihood ratio", body: "Positive values match the seen-face template; negative values match the suppressed-face template. Each value sums the neurons’ weighted contributions." },
+      decoded: { title: "Decoded state", body: "Positive ℓ assigns state 1, the flashed, seen face. Negative ℓ assigns state 2, the primed, suppressed face." },
+      truth: { title: "Hidden state", body: "The state is known only in this simulation. The recordings require the controls in section 07 because their underlying state is unknown." },
+      evidence: { title: "Neuron contributions", body: "For the newest 10 ms slice, a spike from a cell that strongly prefers the seen face raises ℓ; silence lowers it." },
+    };
+    FS.figure("fig-llr", {
+      height: (w) => (w < 760 ? 368 : 380),
+      reserve: { readout: ["ℓ = −99.9 · state 2 · matches hidden state 100%"] },
+      tips, tipAt: hit, settle: 3,
+      init(f) {
+        const S = f.state; S.r = mulberry(23); S.N = 60; S.dt = 10; S.lc = []; S.ls = [];
+        for (let i = 0; i < S.N; i++) { const base = 6 + 18 * S.r(), sel = 1.6 + 1.6 * S.r(), prefC = i % 2 === 0; S.lc.push(prefC ? base * sel : base); S.ls.push(prefC ? base : base * sel); }
+        S.disp = [0, 2, 4, 6, 8, 10, 12, 1, 3, 5, 7, 9, 11, 13]; S.w = S.lc.map((v, i) => Math.log(v / S.ls[i])); S.b = S.lc.map((v, i) => ((v - S.ls[i]) * S.dt) / 1000);
+        S.bins = []; S.hidden = 1; S.acc = 0; S.correct = 0; S.total = 0; for (let k = 0; k < 41; k++) bin(S);
+      },
+      update(f, dt) { const S = f.state; S.acc += dt; while (S.acc >= STEP) { S.acc -= STEP; bin(S); } },
+      render(f, c) {
+        const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 760, hits = (f.state.hits = []);
+        const tplW = nar ? 62 : 150, rx0 = tplW + (nar ? 8 : 20), evW = nar ? 0 : 196, rx1 = W - evW - (nar ? 0 : 22);
+        const y0 = 26, rowH = nar ? 13 : 15, nR = S.disp.length, y1 = y0 + rowH * nR, ncol = 40, cw = (rx1 - rx0) / ncol, off = (S.acc / STEP) * cw, n = S.bins.length, xOf = (k) => rx1 - (n - k) * cw - off;
+        text(f, c, nar ? "templates" : "templates, from priming", 0, 12, { size: 10, color: C.fg }); text(f, c, "spikes in 10 ms slices", rx0, 12, { size: 10, color: C.fg }); if (!nar) text(f, c, "contributions, newest slice", W - evW, 12, { size: 10, color: C.fg });
+        hits.push({ kind: "templates", x: 0, y: y0, w: tplW, h: y1 - y0 }, { kind: "raster", x: rx0, y: y0, w: rx1 - rx0, h: y1 - y0 });
+        let maxR = 0; for (const i of S.disp) maxR = Math.max(maxR, S.lc[i], S.ls[i]);
+        S.disp.forEach((i, r) => { const y = y0 + r * rowH; fillState(f, c, 0, y + rowH * 0.1, (S.lc[i] / maxR) * (tplW - 6), rowH * 0.36, 1); fillState(f, c, 0, y + rowH * 0.52, (S.ls[i] / maxR) * (tplW - 6), rowH * 0.36, 2); });
+        c.strokeStyle = C.line; c.setLineDash([3, 4]); line(c, 0, y0 + rowH * 7, W, y0 + rowH * 7); c.setLineDash([]);
+        const ty0 = y1 + 16, tH = 64, tz = ty0 + tH / 2, dy = ty0 + tH + 10, hy = dy + 20;
+        hits.push({ kind: "trace", x: rx0, y: ty0, w: rx1 - rx0, h: tH }, { kind: "decoded", x: rx0, y: dy, w: rx1 - rx0, h: 12 }, { kind: "truth", x: rx0, y: hy, w: rx1 - rx0, h: 12 });
+        c.save(); c.beginPath(); c.rect(rx0, 0, rx1 - rx0, H); c.clip();
+        c.strokeStyle = C.fg; c.lineWidth = 1; c.beginPath();
+        for (let k = 0; k < n; k++) { const x = xOf(k), b = S.bins[k]; for (let r = 0; r < nR; r++) for (const p of b.pos[r]) { const xx = Math.round(x + p * cw) + 0.5, y = y0 + r * rowH; c.moveTo(xx, y + 2); c.lineTo(xx, y + rowH - 2); } }
+        c.stroke();
+        c.strokeStyle = C.line; c.setLineDash([2, 3]); line(c, rx0, tz, rx1, tz); c.setLineDash([]);
+        for (let k = 0; k < n; k++) { const x = xOf(k), L = FS.clamp(S.bins[k].L * 2.6, -tH / 2, tH / 2); if (L > 0) fillState(f, c, x + 1, tz - L, cw - 2, L, 1); else fillState(f, c, x + 1, tz, cw - 2, -L, 2); }
+        runs(f, c, S.bins.map((b) => b.dec), xOf, cw, dy, 12); runs(f, c, S.bins.map((b) => b.h), xOf, cw, hy, 12);
+        const xn = xOf(n - 1); c.strokeStyle = C.strong; c.lineWidth = 1.4; c.strokeRect(xn + 0.5, y0 - 4, cw - 1, hy + 16 - y0);
+        c.restore();
+        text(f, c, nar ? "ℓ(t)" : "ℓ(t)  + seen", 0, tz - 6, { size: 10, color: C.fg }); if (!nar) text(f, c, "      − suppressed", 0, tz + 10, { size: 10 });
+        text(f, c, nar ? "decoded" : "decoded state", 0, dy + 10, { size: 10, color: C.fg }); text(f, c, nar ? "hidden" : "hidden state (simulated)", 0, hy + 10, { size: 10 });
+        const nb = S.bins[n - 1], acc = Math.round((100 * S.correct) / Math.max(1, S.total)), Ls = (nb.L >= 0 ? "+" : "−") + Math.abs(nb.L).toFixed(1);
+        if (!nar) {
+          const ex0 = W - evW, cx = ex0 + evW / 2, half = evW / 2 - 8; hits.push({ kind: "evidence", x: ex0, y: y0, w: evW, h: y1 - y0 });
+          c.strokeStyle = C.muted; c.lineWidth = 1; line(c, cx + 0.5, y0 - 2, cx + 0.5, y1 + 2);
+          S.disp.forEach((i, r) => { const v = nb.contrib[i], len = FS.clamp(v * 16, -half, half), y = y0 + r * rowH; if (len >= 0) fillState(f, c, cx + 1, y + 3, len, rowH - 6, 1); else fillState(f, c, cx + len, y + 3, -len, rowH - 6, 2); });
+          text(f, c, "← suppressed", cx - 6, y1 + 14, { align: "right", size: 10 }); text(f, c, "seen →", cx + 6, y1 + 14, { size: 10 });
+          text(f, c, `ℓ = ${Ls}`, ex0 + 4, y1 + 52, { size: 26, weight: 600, color: C.fg }); text(f, c, nb.dec === 1 ? "state 1 · flashed, seen" : "state 2 · primed, suppressed", ex0 + 4, y1 + 74, { size: 11, color: C.fg });
+          text(f, c, "sum over all 60 neurons", ex0 + 4, y1 + 92, { size: 10 }); text(f, c, `matches hidden state ${acc}%`, ex0 + 4, y1 + 116, { size: 11, color: C.fg });
         }
-        let top = Infinity;
-        for (const mode of ["base", "spec"]) {
-          const [v, lo, hi] = DATA[m][mode][i], x = cx + (mode === "base" ? -gap : gap);
-          const prev = tw.from?.[`${i}:${mode}`];
-          const yv = prev ? FS.lerp(prev[0], Yof(v), k) : Yof(v), ylo = prev ? FS.lerp(prev[1], Yof(lo), k) : Yof(lo), yhi = prev ? FS.lerp(prev[2], Yof(hi), k) : Yof(hi);
-          last.push([`${i}:${mode}`, [Yof(v), Yof(lo), Yof(hi)]]);
-          top = Math.min(top, yhi);
-          const key = `${m}:${i}:${mode}`, hot = f.hover === key, ink = mode === "base" ? C.muted : C.fg;
-          c.strokeStyle = hot ? C.accent : ink; c.lineWidth = 1.45;
-          FS.k.line(c, x, ylo, x, yhi); FS.k.line(c, x - 4, ylo, x + 4, ylo); FS.k.line(c, x - 4, yhi, x + 4, yhi);
-          c.beginPath(); c.arc(x, yv, hot ? 6 : 4.5, 0, 7);
-          if (mode === "base") { c.fillStyle = C.surface; c.fill(); c.lineWidth = 1.5; c.stroke(); } else { c.fillStyle = hot ? C.accent : C.fg; c.fill(); }
-          c.lineWidth = 1;
-          hits.push({ kind: key, x, y: yv });
-        }
-        FS.k.label(f, c, delta(m, i), cx, Math.max(T + 4, top - 12), { size: 11, align: "center", weight: 600 });
-      });
-      f.state.last = Object.fromEntries(last);
-    },
-  });
-  function outs(f) {
-    const m = f.params.metric, n = CELLS.length, ov = CELLS.filter((_, i) => overlap(m, i)).length;
-    const lower = CELLS.filter((_, i) => DATA[m].spec[i][0] < DATA[m].base[i][0]).length;
-    const text = m === "wall" ? `Lower with speculation in ${lower} of ${n} settings; the intervals overlap in ${ov} of ${n}.`
-      : m === "subcalls" ? `More sub-model calls with speculation in ${n - lower} of ${n} settings; the intervals overlap in ${ov} of ${n}.`
-      : `About 9 to 10 turns per task either way; the intervals overlap in ${ov} of ${n}.`;
-    f.api.out("readout", text);
-    const rs = CELLS.map((_, i) => DATA.wall.base[i][0] / DATA.wall.spec[i][0]);
-    f.api.out("ratios", `${Math.min(...rs).toFixed(2)}× to ${Math.max(...rs).toFixed(2)}×`);
-  }
+        f.api.out("readout", `ℓ = ${Ls} · state ${nb.dec} · matches hidden state ${acc}%`);
+      },
+    });
+  })();
+
+  /* ================= Fig 5: one percept, many flips (timeline at real speed) ================= */
+  (() => {
+    const tips = {
+      percept: { title: "What is seen", body: "Human reports indicate the primed face before the flash and the flashed face after it. The percept does not switch inside the flash-suppression window." },
+      pop: { title: "Decoded state", body: "The simulation uses 5 ms steps, the paper’s 67 ms mean dwell after the flash, and a slower pattern dominated by the primed face before it (Fig. 2c)." },
+      auto: { title: "Autocorrelation", body: "The recorded correlation fades over tens of milliseconds and fits a two-state model with a 67 ms mean dwell. The shuffled correlation vanishes after one 10 ms slice (Fig. 2d)." },
+      rates: { title: "Switching rates", body: "The population flips about 15 times a second, compared with about one perceptual switch every two seconds in classic rivalry (Discussion)." },
+    };
+    FS.figure("fig-time", {
+      height: (w) => (w < 640 ? 460 : 340),
+      duration: 2.0, keyframe: 2.0,
+      chapters: [{ t: 0.5, label: "priming" }, { t: 1.0, label: "the flash" }, { t: 2.0, label: "+1 s" }],
+      formatTime: (t) => { const s = t - 1; return `${s < 0 ? "−" : "+"}${Math.abs(s).toFixed(2)} s`; },
+      timeAxis: (f) => ({ x0: f.w < 640 ? 0 : 200, x1: f.w - 4, t1: 2.0 }),
+      tips, tipAt: hit,
+      init(f) { const r = mulberry(5); f.state.seq = []; let s = 2; for (let t = -1000; t < 1000; t += 5) { const D = t < 0 ? (s === 2 ? 150 : 50) : DWELL; if (r() < 5 / D) s = 3 - s; f.state.seq.push(s); } f.rate = 1; },
+      render(f, c) {
+        const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 640, tp = -1000 + 2000 * (f.t / 2), hits = (f.state.hits = []);
+        const x0 = nar ? 14 : 200, x1 = W - 4, tx = (t) => x0 + ((t + 1000) / 2000) * (x1 - x0);
+        let y = 6;
+        if (nar) { text(f, c, "what is seen, from human reports", 0, y + 8, { size: 10, color: C.fg }); y += 16; } else { text(f, c, "what is seen", 0, y + 11, { size: 10.5, color: C.fg }); text(f, c, "from human reports", 0, y + 25, { size: 10 }); }
+        hits.push({ kind: "percept", x: x0, y, w: x1 - x0, h: 16 });
+        fillState(f, c, tx(-1000), y, tx(Math.min(0, tp)) - tx(-1000), 16, 2); if (tp > 0) fillState(f, c, tx(0), y, tx(tp) - tx(0), 16, 1);
+        y += 16 + (nar ? 20 : 26);
+        if (nar) { text(f, c, "what the population carries", 0, y + 8, { size: 10, color: C.fg }); y += 16; } else { text(f, c, "the population", 0, y + 13, { size: 10.5, color: C.fg }); text(f, c, "decoded state, 5 ms steps", 0, y + 27, { size: 10 }); }
+        hits.push({ kind: "pop", x: x0, y, w: x1 - x0, h: 28 });
+        const cw = (x1 - x0) / S.seq.length; runs(f, c, S.seq, (k) => x0 + k * cw, cw, y, 28, Math.floor((tp + 1000) / 5));
+        const sy0 = 6, sy1 = y + 28; y += 28 + 8;
+        c.strokeStyle = C.line; c.lineWidth = 1; line(c, x0, y, x1, y);
+        for (const v of [-1000, -500, 0, 500, 1000]) { line(c, tx(v), y, tx(v), y + 5); text(f, c, v === 0 ? "flash" : (v > 0 ? "+" : "−") + Math.abs(v / 1000) + (Math.abs(v) === 1000 ? " s" : ""), tx(v), y + 18, { align: nar && v === -1000 ? "left" : nar && v === 1000 ? "right" : "center", size: 10, color: v === 0 ? C.fg : C.muted }); }
+        c.strokeStyle = C.fg; c.setLineDash([3, 3]); line(c, tx(0), sy0, tx(0), y); c.setLineDash([]);
+        FS.k.hoverTime(f, c, sy0, y, (s) => tx(-1000 + 1000 * s), (s) => `${s - 1 < 0 ? "−" : "+"}${Math.abs(s - 1).toFixed(2)} s`);
+        FS.k.playhead(f, c, tx(tp), sy0 - 2, sy1 + 2);
+        if (!nar) text(f, c, "drawn at real speed", x1, y + 34, { align: "right", size: 10 });
+        y += 52;
+        const ax0 = nar ? 30 : 40, aw = nar ? W - 40 : (W - 40) * 0.5 - 30, ay0 = y + 12, ah = nar ? 128 : H - ay0 - 34, X = (l) => ax0 + (l / 200) * aw, Y = (v) => ay0 + (1 - v) * ah;
+        hits.push({ kind: "auto", x: ax0 - 10, y: ay0 - 14, w: aw + 20, h: ah + 34 });
+        text(f, c, "autocorrelation of ℓ(t)", ax0, ay0 - 8, { size: 10, color: C.fg });
+        c.strokeStyle = C.line; c.lineWidth = 1; line(c, ax0, ay0 + ah, ax0 + aw, ay0 + ah); line(c, ax0, ay0, ax0, ay0 + ah);
+        for (const l of [0, 50, 100, 150, 200]) { line(c, X(l), ay0 + ah, X(l), ay0 + ah + 4); text(f, c, String(l), X(l), ay0 + ah + 16, { align: "center", size: 10 }); }
+        text(f, c, "lag, ms", ax0 + aw, ay0 + ah + 30, { align: "right", size: 10 }); text(f, c, "1", ax0 - 6, Y(1) + 4, { align: "right", size: 10 }); text(f, c, "0", ax0 - 6, Y(0) + 4, { align: "right", size: 10 });
+        const real = (l) => (l < 10 ? FS.lerp(1, 0.5 * Math.exp(-20 / DWELL), l / 10) : 0.5 * Math.exp((-2 * l) / DWELL)), shuf = (l) => (l < 10 ? 1 - l / 10 : 0);
+        c.strokeStyle = C.muted; c.lineWidth = 1.4; c.setLineDash([5, 4]); c.beginPath(); for (let l = 0; l <= 200; l++) { l ? c.lineTo(X(l), Y(shuf(l))) : c.moveTo(X(l), Y(shuf(l))); } c.stroke(); c.setLineDash([]);
+        c.strokeStyle = C.strong; c.lineWidth = 2; c.beginPath(); for (let l = 0; l <= 200; l++) { l ? c.lineTo(X(l), Y(real(l))) : c.moveTo(X(l), Y(real(l))); } c.stroke();
+        FS.k.label(f, c, "recorded: fades over tens of ms", X(30), Y(real(30)) - 12, { size: 10, color: C.fg }); text(f, c, "shuffled: gone after one bin", X(100), Y(0.16), { size: 10 }); FS.k.label(f, c, "two-state fit: mean dwell 67 ms", X(70), Y(0.48), { size: 10, color: C.fg });
+        const bx0 = nar ? 0 : ax0 + aw + 70, bw = nar ? W - 10 : W - bx0 - 10, by = nar ? ay0 + ah + 56 : ay0 + 4;
+        hits.push({ kind: "rates", x: bx0, y: by - 10, w: bw, h: 100 });
+        text(f, c, "switches per second", bx0, by, { size: 10, color: C.fg }); text(f, c, "the population  ≈15", bx0, by + 24, { color: C.fg }); fillState(f, c, bx0, by + 32, bw, 14, 1);
+        text(f, c, "perception in rivalry  ≈0.5", bx0, by + 68, {}); fillState(f, c, bx0, by + 76, Math.max(3, (bw * 0.5) / 15), 14, 2);
+        if (!nar) wrap(f, c, "About 30 flips of the population for every switch of perception in classic rivalry. In flash suppression the percept does not switch at all inside the window.", bx0, by + 122, bw, 19, { size: 13, color: C.fg });
+        f.api.out("note", tp < 0 ? "before the flash · primed face seen and mostly carried" : "after the flash · about 15 flips a second, percept unchanged");
+      },
+    });
+  })();
+
+  /* ================= Fig 6: reconstructing a face from each state (three steps) ================= */
+  (() => {
+    const rows = [
+      { lab: "all moments, averaged", target: mixFace(FACE_A, FACE_B, 0.5), dash: [1.5, 3.2], out: "a blend of the two" },
+      { lab: "state 1 moments only", target: FACE_B, dash: null, out: "the seen face" },
+      { lab: "state 2 moments only", target: FACE_A, dash: "d", out: "the suppressed face" },
+    ];
+    const steps = [
+      { caption: "Averaging every moment returns a blend that matches neither face (Extended Data Fig. 2)." },
+      { caption: "Averaging only state 1 moments reconstructs the seen face, with some features above 80% explained variance against a 90% ceiling (Fig. 2h–i)." },
+      { caption: "Averaging only state 2 moments reconstructs the suppressed face in detail, though the animal is not seeing it (p = 3×10⁻²⁹, Fig. 2i)." },
+    ];
+    const tips = {
+      tape: { title: "Sorted activity", body: "The rows use the same activity in three ways: all moments, state 1 moments only, and state 2 moments only." },
+      decoder: { title: "Linear decoder", body: "W maps population activity to the 50 face features. It is trained only on priming and remains the same for every row." },
+      recon: { title: "Reconstruction", body: "The returned features are drawn as schematic face glyphs. The paper reconstructs its synthetic macaque faces (Fig. 2h)." },
+      truth: { title: "Shown face", body: "The face shown to the corresponding eye." },
+    };
+    FS.figure("fig-recon", {
+      height: (w) => (w < 640 ? 420 : 410),
+      steps, tips, tipAt: hit,
+      init(f) { const S = f.state; S.r = mulberry(31); S.seq = []; let s = 1; for (let k = 0; k < 400; k++) { if (S.r() < 10 / DWELL) s = 3 - s; S.seq.push(s); } S.noise = [0, 1, 2].map(() => FACE_A.map(() => gauss(S.r) * 0.32)); S.tight = [0, 1, 2].map(() => FACE_A.map(() => gauss(S.r) * 0.08)); S.pos = 0; },
+      update(f, dt) { f.state.pos += dt * 6; },
+      render(f, c) {
+        const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 640, hits = (f.state.hits = []);
+        const top = 30, rowH = (H - top) / 3, tapeR = W * (nar ? 0.3 : 0.33), boxX = W * (nar ? 0.335 : 0.38), boxW = W * 0.075, rcx = W * (nar ? 0.6 : 0.62), tcx = W * (nar ? 0.86 : 0.85), fs = Math.min(rowH * 0.74, W * (nar ? 0.2 : 0.14));
+        text(f, c, nar ? "activity" : "population activity, sorted", 0, 12, { size: 10, color: C.fg }); text(f, c, nar ? "W" : "decoder", boxX + boxW / 2, 12, { align: "center", size: 10, color: C.fg }); text(f, c, nar ? "recon." : "reconstruction", rcx, 12, { align: "center", size: 10, color: C.fg }); text(f, c, nar ? "truth" : "ground truth", tcx, 12, { align: "center", size: 10, color: C.fg });
+        hits.push({ kind: "tape", x: 0, y: top, w: tapeR, h: H - top }, { kind: "decoder", x: boxX, y: top, w: boxW, h: H - top }, { kind: "recon", x: rcx - fs / 2, y: top, w: fs, h: H - top }, { kind: "truth", x: tcx - fs / 2, y: top, w: fs, h: H - top });
+        const nb = 26, bw = tapeR / nb, idx0 = Math.floor(S.pos), frac = S.pos - idx0;
+        rows.forEach((row, j) => {
+          const cy = top + rowH * (j + 0.5), lit = j === f.step, prog = lit ? FS.ease.out(f.stepT) : 0.15;
+          c.globalAlpha = lit ? 1 : 0.45;
+          text(f, c, row.lab, 0, cy - 18, { size: 10, color: lit ? C.fg : C.muted });
+          c.save(); c.beginPath(); c.rect(0, cy - 10, tapeR, 20); c.clip();
+          for (let q = -1; q < nb; q++) { const s = S.seq[(((idx0 - q) % 400) + 400) % 400], x = tapeR - (q + 1) * bw + frac * bw; if (j === 0 || s === j) fillState(f, c, x + 0.5, cy - 7, bw - 1, 14, s); else { c.strokeStyle = C.line; c.lineWidth = 1; c.strokeRect(x + 1, cy - 6.5, bw - 2, 13); } }
+          c.restore();
+          c.strokeStyle = C.fg; c.lineWidth = 1.2; c.strokeRect(boxX + 0.5, cy - 18 + 0.5, boxW, 36); text(f, c, "W", boxX + boxW / 2, cy + 5, { align: "center", size: 15, weight: 600, color: C.fg });
+          FS.k.arrow(c, tapeR + 4, cy, boxX - 4, cy, C.muted); FS.k.arrow(c, boxX + boxW + 4, cy, rcx - fs * 0.45, cy, C.muted);
+          const p = row.target.map((v, i) => v + FS.lerp(S.noise[j][i], S.tight[j][i], prog)), dash = row.dash === "d" ? dashFor(fs) : row.dash || [];
+          drawFace(f, c, rcx, cy, fs, p, { alpha: 0.15 + 0.85 * prog, dash }); text(f, c, row.out, rcx, cy + fs * 0.5 + 10, { align: "center", size: 10, color: C.fg, alpha: 0.3 + 0.7 * prog });
+          if (j === 0) { drawFace(f, c, tcx - fs * 0.26, cy - 2, fs * 0.5, FACE_B, { alpha: 0.6 }); drawFace(f, c, tcx + fs * 0.26, cy - 2, fs * 0.5, FACE_A, { alpha: 0.6, dash: dashFor(fs * 0.5) }); text(f, c, "matches neither", tcx, cy + fs * 0.5 + 10, { align: "center", size: 10 }); }
+          else { drawFace(f, c, tcx, cy, fs, j === 1 ? FACE_B : FACE_A, { dash: j === 2 ? dashFor(fs) : [] }); text(f, c, j === 1 ? "flashed face" : "primed face", tcx, cy + fs * 0.5 + 10, { align: "center", size: 10 }); }
+          c.globalAlpha = 1;
+          if (j < 2) { c.strokeStyle = C.line; c.lineWidth = 1; line(c, 0, top + rowH * (j + 1), W, top + rowH * (j + 1)); }
+        });
+      },
+    });
+  })();
+
+  /* ================= Fig 6b: single-trial decoding (bars, the paper's numbers) ================= */
+  (() => {
+    const groups = [
+      { name: "all moments", sub: "averaged", seen: 40, supp: 34, exact: true },
+      { name: "state 1 only", sub: "p = 2×10⁻⁶", seen: 61, supp: 4, exact: true },
+      { name: "state 2 only", sub: "p = 3×10⁻⁷", seen: 5, supp: 60, exact: false },
+    ];
+    const tips = { seen: { title: "Seen-face decoding", body: "A decoder trained on priming identifies one of 10 faces for the face that was seen. Chance is 10%." }, supp: { title: "Suppressed-face decoding", body: "The same decoder identifies the face that was suppressed." }, chance: { title: "Chance, 10%", body: "Ten faces, one right answer." } };
+    FS.figure("fig-decode", {
+      height: (w) => (w < 560 ? 250 : 220),
+      tips, tipAt: hit,
+      render(f, c) {
+        const C = f.C, W = f.w, H = f.h, hits = (f.state.hits = []), padL = 40, top = 22, bottom = H - 44, gw = (W - padL - 16) / 3, Y = (v) => bottom - (v / 70) * (bottom - top);
+        c.strokeStyle = C.line; c.lineWidth = 1; for (const v of [0, 20, 40, 60]) { line(c, padL, Y(v), W - 16, Y(v)); text(f, c, `${v}%`, padL - 6, Y(v) + 4, { align: "right", size: 10 }); }
+        c.strokeStyle = C.muted; c.setLineDash([4, 4]); line(c, padL, Y(10), W - 16, Y(10)); c.setLineDash([]); FS.k.label(f, c, "chance 10%", W - 18, Y(10) - 8, { align: "right", size: 10, color: C.muted }); hits.push({ kind: "chance", x: padL, y: Y(10) - 6, w: W - padL - 16, h: 12 });
+        groups.forEach((g, i) => {
+          const x0 = padL + i * gw + gw * 0.18, bw = gw * 0.26;
+          fillState(f, c, x0, Y(g.seen), bw, bottom - Y(g.seen), 1); fillState(f, c, x0 + bw + 6, Y(g.supp), bw, bottom - Y(g.supp), 2);
+          hits.push({ kind: "seen", x: x0, y: top, w: bw, h: bottom - top }, { kind: "supp", x: x0 + bw + 6, y: top, w: bw, h: bottom - top });
+          FS.k.label(f, c, `${g.exact ? "" : "≈"}${g.seen}%`, x0 + bw / 2, Y(g.seen) - 9, { align: "center", size: 11, weight: 600 }); FS.k.label(f, c, `${g.exact ? "" : "≈"}${g.supp}%`, x0 + bw + 6 + bw / 2, Y(g.supp) - 9, { align: "center", size: 11, weight: 600 });
+          text(f, c, g.name, x0 + bw + 3, bottom + 16, { align: "center", size: 11, weight: 600, color: C.fg }); text(f, c, g.sub, x0 + bw + 3, bottom + 30, { align: "center", size: 10 });
+        });
+        fillState(f, c, padL, 4, 14, 10, 1); text(f, c, "the seen face", padL + 20, 13, { size: 10, color: C.fg }); fillState(f, c, padL + 110, 4, 14, 10, 2); text(f, c, "the suppressed face", padL + 130, 13, { size: 10, color: C.fg });
+      },
+    });
+  })();
+
+  /* ================= Fig 7: how noise can sort itself (process, decider in the toolbar) ================= */
+  (() => {
+    function push(S) { const b = { own: gauss(S.r), other: gauss(S.r) }; S.bins.push(b); if (S.bins.length > 66) S.bins.shift(); S.hist.push(b); if (S.hist.length > 900) S.hist.shift(); }
+    FS.figure("fig-circ", {
+      height: (w) => (w < 640 ? 300 : 250),
+      params: { decider: { value: "same", label: "Who decides the state", options: [{ value: "same", label: "The same neuron" }, { value: "other", label: "Other neurons" }], placement: "inline" } },
+      reserve: { gap: ["gap between the state averages: 9.99 SD"] },
+      tips: { bars: { title: "10 ms slices", body: "The neuron’s true rate never changes; only noise changes each slice. The selected rule assigns state 1 or state 2." }, avg: { title: "State averages", body: "When the neuron’s own noise assigns the label, high and low slices separate and create a false difference." } },
+      tipAt: hit, settle: 3,
+      init(f) { const S = f.state; S.r = mulberry(41); S.bins = []; S.hist = []; S.acc = 0; for (let k = 0; k < 400; k++) push(S); },
+      update(f, dt) { const S = f.state; S.acc += dt; while (S.acc >= 0.16) { S.acc -= 0.16; push(S); } },
+      render(f, c) {
+        const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 640, same = f.params.decider === "same", label = (b) => ((same ? b.own : b.other) > 0 ? 1 : 2), hits = (f.state.hits = []);
+        const pw = nar ? W : W - 250, mid = nar ? H * 0.42 : H * 0.5, sc = nar ? 24 : 30, ncol = 64, cw = pw / ncol, off = (S.acc / 0.16) * cw, n = S.bins.length;
+        hits.push({ kind: "bars", x: 0, y: 0, w: pw, h: H });
+        c.save(); c.beginPath(); c.rect(0, 0, pw, H); c.clip();
+        for (let k = 0; k < n; k++) { const b = S.bins[k], x = pw - (n - k) * cw - off, v = FS.clamp(b.own * sc, -mid + 18, mid - 18); if (v >= 0) fillState(f, c, x + 1, mid - v, cw - 2, v, label(b)); else fillState(f, c, x + 1, mid, cw - 2, -v, label(b)); }
+        c.restore();
+        c.strokeStyle = C.muted; c.lineWidth = 1; c.setLineDash([4, 4]); line(c, 0, mid, pw, mid); c.setLineDash([]);
+        text(f, c, "true rate: constant, never switches", 0, 12, { size: 10, color: C.fg });
+        let s1 = 0, n1 = 0, s2 = 0, n2 = 0; for (const b of S.hist) { if (label(b) === 1) { s1 += b.own; n1++; } else { s2 += b.own; n2++; } }
+        const m1 = n1 ? s1 / n1 : 0, m2 = n2 ? s2 / n2 : 0, gap = m1 - m2;
+        c.strokeStyle = C.strong; c.lineWidth = 2; line(c, 0, mid - m1 * sc, pw, mid - m1 * sc); c.setLineDash([7, 4]); line(c, 0, mid - m2 * sc, pw, mid - m2 * sc); c.setLineDash([]);
+        const verdict = same ? "Self-labelling creates an apparent switch from noise." : "Labels from other neurons produce no state difference.";
+        if (!nar) { const ex = pw + 26; hits.push({ kind: "avg", x: ex, y: 0, w: W - ex, h: H }); text(f, c, "average of state 1 slices", ex, mid - m1 * sc - 5, { size: 10, color: C.fg }); text(f, c, "average of state 2 slices", ex, mid - m2 * sc + 14, { size: 10 }); text(f, c, `gap ${gap.toFixed(2)} SD`, ex, 40, { size: 24, weight: 600, color: C.fg }); wrap(f, c, verdict, ex, H - 52, W - ex - 4, 18, { size: 13, color: C.fg }); }
+        else { text(f, c, `gap between state averages  ${gap.toFixed(2)} SD`, 0, H - 40, { size: 10.5, color: C.fg }); wrap(f, c, verdict, 0, H - 20, W - 4, 16, { size: 12.5, color: C.fg }); }
+        f.api.out("gap", `gap between the state averages: ${gap.toFixed(2)} SD`);
+      },
+    });
+  })();
+
+  /* ================= Fig 8: one cell, two faces (state in the toolbar) ================= */
+  (() => {
+    FS.figure("fig-tune", {
+      height: (w) => (w < 640 ? 560 : 330),
+      params: { state: { value: "1", label: "Decoded state", options: [{ value: "1", label: "State 1 · flashed, seen" }, { value: "2", label: "State 2 · primed, suppressed" }], placement: "inline" } },
+      tips: { seen: { title: "Seen-face order", body: "Each dot is one rival pair, placed by where its seen face falls on this cell's preferred axis in face space." }, supp: { title: "Suppressed-face order", body: "The same pairs are placed by their suppressed face." } },
+      tipAt: hit,
+      init(f) { const S = f.state; S.r = mulberry(53); S.P = []; for (let i = 0; i < 160; i++) S.P.push({ xb: FS.clamp(0.42 * gauss(S.r), -0.98, 0.98), xa: FS.clamp(0.42 * gauss(S.r), -0.98, 0.98), z: gauss(S.r) }); S.k = 0; },
+      update(f, dt) { const S = f.state, target = f.params.state === "2" ? 1 : 0; S.k += (target - S.k) * Math.min(1, dt * 3.2); },
+      render(f, c) {
+        const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 640, hits = (f.state.hits = []), st = S.k < 0.5 ? 1 : 2;
+        fillState(f, c, 0, 4, 22, 12, st); text(f, c, st === 1 ? "state 1 · flashed face, seen" : "state 2 · primed face, suppressed", 32, 14, { size: nar ? 9.5 : 10.5, color: C.fg });
+        const resp = (p) => FS.lerp(1.21 * p.xb + 0.28 * p.z, 0.15 + 1.0 * p.xa + 0.28 * p.z, S.k);
+        const panels = [{ title: "seen-face order", key: "xb", kind: "seen" }, { title: "suppressed-face order", key: "xa", kind: "supp" }];
+        const gap = 40, pw = nar ? W - 36 : (W - 36 - gap) / 2, ph = nar ? (H - 40 - 70) / 2 : H - 92;
+        panels.forEach((pn, j) => {
+          const ox = 36 + (nar ? 0 : j * (pw + gap)), oy = 40 + (nar ? j * (ph + 64) : 0), X = (v) => ox + ((v + 1) / 2) * pw, Y = (v) => oy + (1 - (v + 1.9) / 3.8) * ph;
+          hits.push({ kind: pn.kind, x: ox, y: oy, w: pw, h: ph });
+          text(f, c, pn.title, ox, oy - 8, { size: 10, color: C.fg }); c.strokeStyle = C.line; c.lineWidth = 1; c.strokeRect(ox + 0.5, oy + 0.5, pw, ph); c.setLineDash([2, 4]); line(c, ox, Y(0), ox + pw, Y(0)); c.setLineDash([]);
+          text(f, c, "position on the cell's preferred axis →", ox + pw, oy + ph + 16, { align: "right", size: 10 }); vtext(f, c, "response", ox - 14, oy + ph / 2, { size: 10 });
+          const xs = [], ys = []; c.fillStyle = C.fg; c.globalAlpha = 0.7;
+          for (const p of S.P) { const x = p[pn.key], y = FS.clamp(resp(p), -1.85, 1.85); xs.push(x); ys.push(y); c.beginPath(); c.arc(X(x), Y(y), 2.1, 0, 6.2832); c.fill(); }
+          c.globalAlpha = 1;
+          const fit = lsSlope(xs, ys), steep = Math.abs(fit.b) > 0.55;
+          c.strokeStyle = C.strong; c.lineWidth = 2; c.setLineDash(j === 0 ? [] : [7, 4]); line(c, X(-1), Y(fit.a - fit.b), X(1), Y(fit.a + fit.b)); c.setLineDash([]);
+          FS.k.label(f, c, `${steep ? "ramp" : "flat"} · slope ${fit.b.toFixed(2)}`, ox + 8, oy + 18, { size: 11, color: steep ? C.fg : C.muted, weight: steep ? 600 : 400 });
+        });
+      },
+    });
+  })();
+
+  /* ================= Fig 9: selectivity split by state (four steps) ================= */
+  (() => {
+    const CONF = [
+      { s: 0.25, sd: 0.17, line: false, name: "all moments", stat: "r = 0.45" },
+      { s: 0.93, sd: 0.34, line: true, name: "state 1 only", stat: "slope 0.93 · r = 0.66" },
+      { s: -0.76, sd: 0.4, line: true, name: "state 2 only", stat: "slope −0.76 · r = −0.44" },
+      { s: 0.07, sd: 0.2, line: true, name: "gain-equalized average", stat: "slope 0.07 · r = −0.02" },
+    ];
+    const steps = [
+      { caption: "Averaging the seen and suppressed epochs removes most of both signals and leaves a weak relationship (r = 0.45)." },
+      { caption: "In state 1 moments, cells respond as if the seen face were shown alone, and the dots follow the diagonal (slope 0.93, r = 0.66)." },
+      { caption: "In state 2 moments, cells respond as if the suppressed face were shown alone, and the dots follow the anti-diagonal (slope −0.76, r = −0.44)." },
+      { caption: "Equalizing the tuning gain before averaging removes the remaining positive slope (slope 0.07, r = −0.02, p = 0.31)." },
+    ];
+    FS.figure("fig-mi", {
+      height: (w) => (w < 640 ? w - 56 + 62 : 420),
+      steps,
+      tips: { dots: { title: "Cell-stimulus pair", body: "The paper has 2,885 pairs with states inferred from the other half of the neurons (Fig. 4g). These illustrative dots use the paper’s slopes and correlations." } },
+      tipAt: hit,
+      init(f) { const S = f.state; S.r = mulberry(61); S.P = []; while (S.P.length < 480) { const x = 0.12 + 0.4 * gauss(S.r); if (Math.abs(x) < 0.05 || Math.abs(x) > 0.97) continue; S.P.push({ x, z: gauss(S.r) }); } },
+      render(f, c) {
+        const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 640, px = nar ? 40 : 66, py = 10, side = nar ? W - 56 : H - 66, X = (v) => px + ((v + 1) / 2) * side, Y = (v) => py + (1 - (v + 1) / 2) * side;
+        f.state.hits = [{ kind: "dots", x: px, y: py, w: side, h: side }];
+        const A = CONF[f.from ?? f.step], B = CONF[f.step], m = FS.ease.inOut(f.stepT);
+        c.strokeStyle = C.line; c.lineWidth = 1; c.strokeRect(px + 0.5, py + 0.5, side, side); c.setLineDash([2, 4]); line(c, X(0), py, X(0), py + side); line(c, px, Y(0), px + side, Y(0)); c.setLineDash([]);
+        c.strokeStyle = C.faint; c.setLineDash([6, 5]); line(c, X(-1), Y(-1), X(1), Y(1)); line(c, X(-1), Y(1), X(1), Y(-1)); c.setLineDash([]);
+        for (const v of [-1, 0, 1]) { text(f, c, String(v).replace("-", "−"), X(v), py + side + 16, { align: "center", size: 10 }); text(f, c, String(v).replace("-", "−"), px - 8, Y(v) + 4, { align: "right", size: 10 }); }
+        text(f, c, "selectivity when the faces are shown alone", X(0), py + side + 38, { align: "center", size: 10 }); vtext(f, c, "selectivity during rivalry", px - 28, Y(0), { size: 10 });
+        c.fillStyle = C.fg; c.globalAlpha = 0.55;
+        for (const p of S.P) { const ya = FS.clamp(A.s * p.x + A.sd * p.z, -0.98, 0.98), yb = FS.clamp(B.s * p.x + B.sd * p.z, -0.98, 0.98); c.beginPath(); c.arc(X(p.x), Y(FS.lerp(ya, yb, m)), 1.8, 0, 6.2832); c.fill(); }
+        c.globalAlpha = 1; c.strokeStyle = C.strong; c.lineWidth = 2.2;
+        if (A.line && m < 1) { c.globalAlpha = 1 - m; line(c, X(-1), Y(-A.s), X(1), Y(A.s)); }
+        if (B.line) { c.globalAlpha = m; line(c, X(-1), Y(-B.s), X(1), Y(B.s)); }
+        c.globalAlpha = 1;
+        if (nar) { text(f, c, B.name, px + 8, py + 18, { size: 10, color: C.fg }); text(f, c, B.stat, px + 8, py + 33, { size: 10 }); }
+        else { const ax = px + side + 40; text(f, c, B.name, ax, py + 30, { size: 11, color: C.fg, weight: 600 }); text(f, c, B.stat, ax, py + 62, { size: 22, weight: 600, color: C.fg }); CONF.forEach((o, i) => { const yy = py + 110 + i * 26, on = i === f.step; c.fillStyle = on ? C.fg : C.line; c.fillRect(ax, yy - 8, 8, 8); text(f, c, `${o.name}  ${o.stat}`, ax + 18, yy, { size: 11, color: on ? C.fg : C.muted }); }); text(f, c, "Fig. 4g", ax, py + side - 4, { size: 10 }); }
+      },
+    });
+  })();
+
+  /* ================= Fig 10: two patches, loosely in step (process) ================= */
+  (() => {
+    function push(S) { if (S.r() < 5 / DWELL) S.a = 3 - S.a; if (S.r() < 5 / DWELL) S.b = 3 - S.b; if (S.a !== S.b && S.r() < 0.025) S.b = S.a; S.ml.push(S.a); S.am.push(S.b); if (S.ml.length > 160) { S.ml.shift(); S.am.shift(); } }
+    FS.figure("fig-patch", {
+      height: () => 118,
+      tips: { ML: { title: "ML state", body: "This schematic shows which face the ML population carries. The paper reports weak but significant prediction across patches, not an agreement rate (Fig. 5e)." }, AM: { title: "AM state", body: "The schematic gives AM an independent switching sequence with occasional alignment to ML. ML→AM p = 3×10⁻⁴, AM→ML p = 9×10⁻⁶." } },
+      tipAt: hit, settle: 2,
+      init(f) { const S = f.state; S.r = mulberry(71); S.ml = []; S.am = []; S.a = 1; S.b = 1; S.acc = 0; for (let k = 0; k < 160; k++) push(S); },
+      update(f, dt) { const S = f.state; S.acc += dt * 100; while (S.acc >= 5) { S.acc -= 5; push(S); } },
+      render(f, c) {
+        const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 640, x0 = nar ? 44 : 120, x1 = W - 2, n = S.ml.length, cw = (x1 - x0) / n, off = (S.acc / 5) * cw, xOf = (k) => x1 - (n - k) * cw - off;
+        f.state.hits = [{ kind: "ML", x: 0, y: 6, w: W, h: 32 }, { kind: "AM", x: 0, y: 46, w: W, h: 32 }];
+        text(f, c, "ML", 0, 26, { size: 13, weight: 600, color: C.fg }); text(f, c, "AM", 0, 66, { size: 13, weight: 600, color: C.fg });
+        if (!nar) { text(f, c, "middle lateral", 30, 26, { size: 10 }); text(f, c, "anterior medial", 30, 66, { size: 10 }); }
+        c.save(); c.beginPath(); c.rect(x0, 0, x1 - x0, H); c.clip(); runs(f, c, S.ml, xOf, cw, 10, 24); runs(f, c, S.am, xOf, cw, 50, 24); c.restore();
+        const sb = (100 / 5) * cw; c.strokeStyle = C.muted; c.lineWidth = 1; line(c, x1 - sb, H - 12, x1, H - 12); text(f, c, "100 ms", x1 - sb - 8, H - 8, { align: "right", size: 10 }); text(f, c, "schematic · slowed 10×", x0, H - 8, { size: 10 });
+      },
+    });
+  })();
+
+  /* ================= Fig 11: one possible answer, speculative (process) ================= */
+  (() => {
+    function spawn(S, s0) { let d = -DWELL * Math.log(1 - S.r()); d = FS.clamp(d, 12, 220); S.state = 3 - S.state; S.tiles.push({ s: s0 == null ? 0 : s0, w: d * 0.42, st: S.state }); }
+    FS.figure("fig-route", {
+      height: (w) => (w < 640 ? 300 : 250),
+      tips: { gate: { title: "Possible routing", body: "The authors speculate that feedback from parietal cortex or the pulvinar may determine which epochs continue. The two states are linearly separable (66%, Fig. 4f), so the activity may carry a routing tag." }, up: { title: "Broadcast", body: "State 1 epochs may reach circuits for report, introspection and action." }, down: { title: "Not broadcast", body: "State 2 epochs may remain outside circuits for report, introspection and action." } },
+      tipAt: hit, settle: 4,
+      init(f) { const S = f.state; S.r = mulberry(83); S.tiles = []; S.state = 2; let s = 900; while (s > 0) { spawn(S, s); s -= S.tiles[S.tiles.length - 1].w; } S.tiles.reverse(); },
+      update(f, dt) { const S = f.state; for (const t of S.tiles) t.s += 36 * dt; const last = S.tiles[S.tiles.length - 1]; if (!last || last.s >= last.w) spawn(S, last ? last.s - last.w : 0); S.tiles = S.tiles.filter((t) => t.s < 1600); },
+      render(f, c) {
+        const S = f.state, C = f.C, W = f.w, H = f.h, nar = W < 640, my = H * 0.5, xg = W * (nar ? 0.42 : 0.46), boxW = nar ? 116 : 220, boxH = nar ? 58 : 54, bx = W - boxW - 2, up = [bx, H * 0.2], dn = [bx, H * 0.8];
+        f.state.hits = [{ kind: "gate", x: xg - 30, y: my - 50, w: 60, h: 100 }, { kind: "up", x: bx, y: up[1] - boxH / 2, w: boxW, h: boxH }, { kind: "down", x: bx, y: dn[1] - boxH / 2, w: boxW, h: boxH }];
+        text(f, c, "micro-epochs in IT", 0, my - 22, { size: 10, color: C.fg });
+        c.strokeStyle = C.fg; c.lineWidth = 1.4; c.strokeRect(xg - 4 + 0.5, my - 30 + 0.5, 8, 60); text(f, c, "possible routing", xg, my - 40, { align: "center", size: 10, color: C.fg }); if (!nar) text(f, c, "possible feedback from parietal cortex or the pulvinar", xg, my + 50, { align: "center", size: 10 });
+        const bez = (P, t) => { const cx = xg + 70, cy = my, a = (1 - t) ** 2, b = 2 * (1 - t) * t, d = t * t; return [a * xg + b * cx + d * P[0], a * my + b * cy + d * P[1]]; };
+        c.strokeStyle = C.line; c.lineWidth = 1; c.setLineDash([2, 4]); for (const P of [up, dn]) { c.beginPath(); for (let i = 0; i <= 30; i++) { const q = bez(P, i / 30); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); } c.stroke(); } c.setLineDash([]);
+        c.save(); c.beginPath(); c.rect(0, 0, xg - 6, H); c.clip(); for (const t of S.tiles) { const x = t.s - t.w; if (t.s > 0 && x < xg) fillState(f, c, x + 0.5, my - 8, t.w - 1, 16, t.st); } c.restore();
+        const len = Math.hypot(up[0] - xg, up[1] - my) + 40;
+        for (const t of S.tiles) { const past = t.s - xg; if (past <= 0) continue; const u = past / len; if (u >= 1) continue; const q = bez(t.st === 1 ? up : dn, u); c.globalAlpha = u > 0.8 ? (1 - u) / 0.2 : 1; if (t.st === 1) { c.fillStyle = C.fg; c.beginPath(); c.arc(q[0], q[1], 5, 0, 6.2832); c.fill(); } else { c.fillStyle = FS.k.hatch(f, c, C.muted, 4); c.beginPath(); c.arc(q[0], q[1], 5, 0, 6.2832); c.fill(); c.strokeStyle = C.muted; c.lineWidth = 1; c.stroke(); } c.globalAlpha = 1; }
+        const box = (P, title, sub, solid) => { const x = P[0], y = P[1] - boxH / 2; c.fillStyle = C.bg; c.fillRect(x, y, boxW, boxH); c.strokeStyle = solid ? C.fg : C.muted; c.lineWidth = 1.2; c.setLineDash(solid ? [] : [4, 3]); c.strokeRect(x + 0.5, y + 0.5, boxW - 1, boxH - 1); c.setLineDash([]); wrap(f, c, title, x + 10, y + 20, boxW - 18, 15, { size: nar ? 12 : 13, weight: 600, color: C.fg }); if (!nar) text(f, c, sub, x + 10, y + boxH - 10, { size: 10 }); };
+        box(up, nar ? "Report, introspection" : "Report · introspection · action", "state 1 epochs, broadcast", true); box(dn, "Not broadcast", nar ? "" : "state 2 epochs, not broadcast", false);
+      },
+    });
+  })();
 })();
 
 </script>
