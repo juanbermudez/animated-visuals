@@ -51,7 +51,7 @@ Two parameters at once is the usual limit. If a figure needs more, provide named
 - **Linked prose**: words that name parts of the figure are links in both directions. Hovering or focusing "router" rings the router; hovering the router node lights the word. `<span data-fs-ref="fig:router">` and `fig.hover(key)`.
 - **One clock**: a narrative timeline is `render(t)`. It plays once when it scrolls into view and stops at the payoff; the reader can scrub, jump between chapters and replay. Never loop a story.
 - **Counterfactual on the same axis**: the baseline and the change share a scale; the difference is drawn and computed from the data.
-- **Details on demand**: a crosshair or nearest-point readout on hover, written in the stage with a halo, and mirrored in an HTML readout for screen readers.
+- **Details on demand**: a crosshair or nearest-point readout on hover, written in the stage with a halo, and mirrored in an HTML readout for screen readers. Positional hover marks follow the pointer target through the runtime follower instead of staying where hover began.
 - **Focus pull**: one control or step brings one region into focus (ring, brightness, or depth of field in 3D) and dims the rest to `--fs-dim`.
 - **Presets**: named states (`fig.apply({ params, step, t })`) that jump to the interesting configurations; good as buttons under a figure or links in the prose.
 - **Compare toggle**: A/B between two states of the same marks, with the transition animated so the change is traceable; ghost the previous state at low opacity when the difference is small.
@@ -91,7 +91,8 @@ These are rules, not suggestions.
 
 **Explanations: tips.** Any part whose role is not obvious gets a tip: a 1 to 3 word title and one or two plain sentences (`content-design.md` §6).
 - HTML or SVG: `data-fs-tip="body"` with optional `data-fs-tip-title`; give SVG groups `tabindex="0"` so keyboard users reach them. Canvas: `tips: { key: { title, body } }` and `tipAt(f, x, y) -> key | { key, x, y } | null` (hit-test the rectangles stored during `render`).
-- Timing: opens after a 500 ms hover; once one is open, neighbours open at once and the tip glides to them (warm group, 450 ms); closes after a 100 ms grace. Keyboard focus opens immediately; a tap toggles on touch; Escape and scrolling close it.
+- Timing: opens after a 500 ms hover; once one is open, neighbours open at once (warm group, 450 ms); closes after a 100 ms grace. Keyboard focus opens immediately; a tap toggles on touch; Escape and scrolling close it.
+- Position: on pointer hover, the raw pointer (`f.pointer`) is the target and the tip plus positional hover marks draw from `f.hoverSmooth`, which follows with an 85 ms exponential time constant and settles exactly within 0.3 px. The tip keeps its cursor offset, flips and clamps inside the plate, and swaps title and body without resetting its drawn position when the pointer enters another part. Held handles still track 1:1, and keyboard focus stays anchored to the focused part. Reduced motion snaps to every pointer target.
 - Look: surface, 1px strong line, small radius, soft shadow; enters with opacity and a 4px rise toward the anchor (140/220 ms), exits faster. Hovering a part highlights it at once (`f.hover`), even while the tip waits.
 - Tips explain; they never hold the only copy of a number or a fact.
 
@@ -187,12 +188,12 @@ fig.apply(state);       // restore a preset or a shared link
 fig.on("param", ({ name, value }) => {}); // also: step, seek, play, pause, end, hover, reset
 fig.out("bump", "0.069");                 // writes [data-fs-out="fig-id:bump"]
 fig.openSettings(); fig.closeSettings();
-FS.rubber(x, min, max, dim); FS.springTo(state, target, dt, k, z); FS.animate((dt) => done); FS.slider(el, options);
+FS.rubber(x, min, max, dim); FS.springTo(state, target, dt, k, z); FS.follow(state, target, dt, { tau: 0.085, epsilon: 0.3 }); FS.animate((dt) => done); FS.slider(el, options);
 FS.k.playhead(f, ctx, x, y0, y1); FS.k.hoverTime(f, ctx, y0, y1, toX, format); FS.reserve(el, samples); FS.tip({ title, body }, rect);
 FS.get("fig-id"); FS.list(); FS.setTheme("tokyo-night"); FS.setMode("light");
 ```
 
-Inside `render(f, ctx)`: `f.t` (clock), `f.hoverT` (time under the pointer on a scrub surface), `f.step`, `f.from`, `f.stepT` (0→1 transition), `f.v` (eased params), `f.params` (targets), `f.hover`, `f.drag` (`"time"` while the surface is held, or a handle key) and `f.handleHover`, `f.w`, `f.h`, `f.C` (resolved theme colors and fonts), `FS.k` (drawing kit), `FS.window(t, t0, t1)` (eased progress through a declared interval). Keep `render` a pure function of these; put simulation state in `update`.
+Inside `render(f, ctx)`: `f.t` (clock), `f.pointer` (raw pointer in figure pixels), `f.hoverSmooth` (the damped pointer for positioned hover marks), `f.hoverT` and `f.hoverTSmooth` (raw and damped time on a scrub surface), `f.step`, `f.from`, `f.stepT` (0→1 transition), `f.v` (eased params), `f.params` (targets), `f.hover`, `f.drag` (`"time"` while the surface is held, or a handle key) and `f.handleHover`, `f.w`, `f.h`, `f.C` (resolved theme colors and fonts), `FS.k` (drawing kit), `FS.window(t, t0, t1)` (eased progress through a declared interval). Keep `render` a pure function of these; put simulation state in `update`.
 
 Declarative bindings let markup drive figures with no glue code: `data-fs="id play|next|prev|reset|chapter-next|chapter-prev"`, `data-fs-param="id:name"`, `data-fs-seek="id"`, `data-fs-out="id:name|t|step|caption"`, `data-fs-dots="id"`, `data-fs-scrub="id:name"`, `data-fs-ref="id:key"`, `data-fs-tip="body"` (+ `data-fs-tip-title`). Each figure element also dispatches `fs:<event>` DOM events (including `scrub` and `expand`).
 

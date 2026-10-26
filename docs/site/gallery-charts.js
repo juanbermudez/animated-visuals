@@ -152,7 +152,7 @@
         K.label(f, c, "last year", pl[0] + 8, yl, { size: 11, color: C.muted, weight: 400 });
         // Hover: the value at the week under the pointer.
         if (f.hoverT != null && !f.drag) {
-          const i = Math.round(weekAt(f.hoverT));
+          const i = Math.round(weekAt(f.hoverTSmooth ?? f.hoverT));
           dot(c, [X(i), Y(now[i])], 4, C.accent);
           K.label(f, c, `week ${i + 1}: ${now[i]}`, X(i), Y(now[i]) - 14, { size: 11, align: "center", color: C.fg });
         }
